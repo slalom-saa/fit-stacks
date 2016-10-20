@@ -1,0 +1,9 @@
+﻿2016-10-11 06:43:15.854 -07:00 [Error] something
+System.Exception: sadf ---> System.Exception: fff
+   --- End of inner exception stack trace ---
+2016-10-11 06:43:53.060 -07:00 [Error] something
+System.Exception: sadf ---> System.Exception: fff
+   --- End of inner exception stack trace ---
+2016-10-11 06:48:27.653 -07:00 [Error] something
+System.Exception: sadf ---> System.Exception: fff
+   --- End of inner exception stack trace ---
