@@ -47,9 +47,9 @@ namespace Slalom.FitStacks.Search
                 return Task.FromResult(0);
             }
 
-            var repository = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
 
-            return repository.AddAsync(instances);
+            return store.AddAsync(instances);
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace Slalom.FitStacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         public Task ClearAsync<TSearchResult>() where TSearchResult : class, ISearchResult
         {
-            var repository = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
 
-            return repository.ClearAsync();
+            return store.ClearAsync();
         }
 
         /// <summary>
@@ -80,9 +80,9 @@ namespace Slalom.FitStacks.Search
                 return Task.FromResult(0);
             }
 
-            var repository = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
 
-            return repository.DeleteAsync(instances);
+            return store.DeleteAsync(instances);
         }
 
         /// <summary>
@@ -96,9 +96,9 @@ namespace Slalom.FitStacks.Search
         {
             Argument.NotNull(() => predicate);
 
-            var repository = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
 
-            return repository.DeleteAsync(predicate);
+            return store.DeleteAsync(predicate);
         }
 
         /// <summary>
@@ -108,9 +108,9 @@ namespace Slalom.FitStacks.Search
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
         public IQueryable<TSearchResult> CreateQuery<TSearchResult>() where TSearchResult : class, ISearchResult
         {
-            var repository = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
 
-            return repository.CreateQuery();
+            return store.CreateQuery();
         }
 
         /// <summary>
@@ -121,9 +121,22 @@ namespace Slalom.FitStacks.Search
         /// <returns>Returns the instance with the specified identifier.</returns>
         public Task<TSearchResult> FindAsync<TSearchResult>(Guid id) where TSearchResult : class, ISearchResult
         {
-            var repository = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
 
-            return repository.FindAsync(id);
+            return store.FindAsync(id);
+        }
+
+        /// <summary>
+        /// Rebuilds the index of the specified search result type.
+        /// </summary>
+        /// <typeparam name="TSearchResult">The type of search result.</typeparam>
+        /// <returns>A task for asynchronous programming.</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task RebuildIndexAsync<TSearchResult>() where TSearchResult : class, ISearchResult
+        {
+            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+
+            return store.RebuildIndexAsync();
         }
 
         /// <summary>
@@ -145,9 +158,9 @@ namespace Slalom.FitStacks.Search
                 return Task.FromResult(0);
             }
 
-            var repository = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
 
-            return repository.UpdateAsync(instances);
+            return store.UpdateAsync(instances);
         }
 
         /// <summary>
@@ -164,9 +177,9 @@ namespace Slalom.FitStacks.Search
             Argument.NotNull(() => predicate);
             Argument.NotNull(() => expression);
 
-            var repository = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
 
-            return repository.UpdateAsync(predicate, expression);
+            return store.UpdateAsync(predicate, expression);
         }
     }
 }

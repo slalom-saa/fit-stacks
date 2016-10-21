@@ -16,23 +16,30 @@ namespace Slalom.FitStacks.ConsoleClient
     public class ItemSearchResultStore : ISearchStore<ItemSearchResult>
     {
         private readonly IDomainFacade _domain;
-        private List<ItemSearchResult> _instances = new List<ItemSearchResult>();
+        private static List<ItemSearchResult> _instances = new List<ItemSearchResult>();
 
         public ItemSearchResultStore(IDomainFacade domain)
         {
             _domain = domain;
         }
 
-        public async Task RebuildIndex()
+        public async Task RebuildIndexAsync()
         {
             await this.ClearAsync();
 
             var items = _domain.CreateQuery<Item>();
 
-            await this.AddAsync(items.Select(e => new ItemSearchResult
+            int index = 0;
+            var set = items.Skip(1000 * index).Take(1000);
+            
+            while (set.Any())
             {
-                Id = e.Id
-            }).ToArray());
+                await this.AddAsync(set.Select(e => new ItemSearchResult
+                {
+                    Id = e.Id
+                }).ToArray());
+                set = items.Skip(1000 * ++index).Take(1000);
+            }
         }
 
         public Task AddAsync(ItemSearchResult[] instances)
@@ -132,7 +139,7 @@ namespace Slalom.FitStacks.ConsoleClient
 
     public class Program
     {
-       
+
 
         public async void Start()
         {
@@ -149,15 +156,29 @@ namespace Slalom.FitStacks.ConsoleClient
                     //await container.Bus.Send(new CreateItemCommand());
 
 
-                    container.ResolveAll<IRebuildSearchIndex>().ToList().ForEach(e =>
-                    {
-                        e.RebuildIndex();
-                    });
+                    //await container.Domain.AddAsync(new Item("ddd"));
+
+                    //Console.WriteLine(container.Domain.CreateQuery<Item>().Count());
 
 
-                    var query = container.Search.CreateQuery<ItemSearchResult>();
+                    //var target = new List<Item>();
+                    //for (int i = 0; i < 10000; i++)
+                    //{
+                    //    target.Add(new Item("Item " + i));
+                    //}
+                    //await container.Domain.AddAsync(target);
 
-                    Console.WriteLine(query.Count());
+
+
+                    await container.Search.RebuildIndexAsync<ItemSearchResult>();
+                    await container.Bus.Send(new CreateItemCommand());
+
+                    //Console.WriteLine(container.Domain.CreateQuery<Item>().Count());
+
+
+                     var query = container.Search.CreateQuery<ItemSearchResult>();
+
+                     Console.WriteLine(query.Count());
 
                 }
             }

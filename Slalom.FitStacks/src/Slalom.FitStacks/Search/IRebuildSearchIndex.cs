@@ -12,6 +12,6 @@ namespace Slalom.FitStacks.Search
         /// Rebuilds the search index.
         /// </summary>
         /// <returns>Task.</returns>
-        Task RebuildIndex();
+        Task RebuildIndexAsync();
     }
 }

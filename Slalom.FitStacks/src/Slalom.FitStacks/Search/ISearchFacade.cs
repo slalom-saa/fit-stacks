@@ -32,6 +32,13 @@ namespace Slalom.FitStacks.Search
         Task ClearAsync<TSearchResult>() where TSearchResult : class, ISearchResult;
 
         /// <summary>
+        /// Finds all instances of the specified type.
+        /// </summary>
+        /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
+        /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
+        IQueryable<TSearchResult> CreateQuery<TSearchResult>() where TSearchResult : class, ISearchResult;
+
+        /// <summary>
         /// Removes the specified instances.
         /// </summary>
         /// <typeparam name="TSearchResult">The type of instance to remove.</typeparam>
@@ -50,13 +57,6 @@ namespace Slalom.FitStacks.Search
         Task DeleteAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate) where TSearchResult : class, ISearchResult;
 
         /// <summary>
-        /// Finds all instances of the specified type.
-        /// </summary>
-        /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
-        /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
-        IQueryable<TSearchResult> CreateQuery<TSearchResult>() where TSearchResult : class, ISearchResult;
-
-        /// <summary>
         /// Finds the instance with the specified identifier.
         /// </summary>
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
@@ -64,6 +64,13 @@ namespace Slalom.FitStacks.Search
         /// <returns>Returns the instance with the specified identifier.</returns>
         /// <exception cref="System.NotSupportedException">Thrown when an unsupported type is used.</exception>
         Task<TSearchResult> FindAsync<TSearchResult>(Guid id) where TSearchResult : class, ISearchResult;
+
+        /// <summary>
+        /// Rebuilds the index of the specified search result type.
+        /// </summary>
+        /// <typeparam name="TSearchResult">The type of search result.</typeparam>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task RebuildIndexAsync<TSearchResult>() where TSearchResult : class, ISearchResult;
 
         /// <summary>
         /// Updates the specified instances. Update is similar to Add, but Add skips a check to see if the
