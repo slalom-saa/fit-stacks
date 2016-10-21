@@ -8,7 +8,7 @@ namespace Slalom.FitStacks.Serialization
     /// Overrides the default behavior of skipping over private members.
     /// </summary>
     /// <seealso cref="Newtonsoft.Json.Serialization.DefaultContractResolver" />
-    public class MessagingContractResolver : DefaultContractResolver
+    public class DefaultContractResolver : Newtonsoft.Json.Serialization.DefaultContractResolver
     {
         /// <summary>
         /// Creates a <see cref="T:Newtonsoft.Json.Serialization.JsonProperty" /> for the given <see cref="T:System.Reflection.MemberInfo" />.

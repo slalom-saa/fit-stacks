@@ -14,10 +14,10 @@ namespace Slalom.FitStacks.Messaging
         {
             base.Load(builder);
 
-            builder.Register(c => new CommandValidator(new ComponentContext(c.Resolve<IComponentContext>()))).As<ICommandValidator>();
-            builder.Register(c => new CommandCoordinator(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<IEventPublisher>(), c.Resolve<ICommandValidator>())).As<ICommandCoordinator>();
-            builder.Register(c => new MessageBus(c.Resolve<IExecutionContextResolver>(), c.Resolve<ICommandCoordinator>())).As<IMessageBus>();
-            builder.Register(c => new EventPublisher(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<ILogger>())).As<IEventPublisher>();
+            builder.Register(c => new CommandValidator(new ComponentContext(c.Resolve<IComponentContext>()))).As<ICommandValidator>().SingleInstance();
+            builder.Register(c => new CommandCoordinator(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<IEventPublisher>(), c.Resolve<ICommandValidator>())).As<ICommandCoordinator>().SingleInstance();
+            builder.Register(c => new MessageBus(c.Resolve<IExecutionContextResolver>(), c.Resolve<ICommandCoordinator>())).As<IMessageBus>().SingleInstance();
+            builder.Register(c => new EventPublisher(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<ILogger>())).As<IEventPublisher>().SingleInstance();
         }
     }
 }

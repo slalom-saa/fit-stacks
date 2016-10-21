@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Slalom.FitStacks.Logging
+namespace Slalom.FitStacks.Validation
 {
     /// <summary>
     /// Indicates that a property should be handled securely when logged.

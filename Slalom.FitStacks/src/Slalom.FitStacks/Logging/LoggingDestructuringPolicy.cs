@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using Serilog.Core;
 using Serilog.Debugging;
 using Serilog.Events;
-using Slalom.FitStacks.Logging;
 using Slalom.FitStacks.Messaging;
 using Slalom.FitStacks.Reflection;
 using Slalom.FitStacks.Validation;
 
-namespace Destructurama.Attributed
+namespace Slalom.FitStacks.Logging
 {
     internal class LoggingDestructuringPolicy : IDestructuringPolicy
     {

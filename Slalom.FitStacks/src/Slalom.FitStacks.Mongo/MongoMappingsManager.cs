@@ -8,6 +8,7 @@ using Slalom.FitStacks.Domain;
 using Slalom.FitStacks.Messaging;
 using Slalom.FitStacks.Reflection;
 using Slalom.FitStacks.Serialization;
+using Slalom.FitStacks.Validation;
 
 namespace Slalom.FitStacks.Mongo
 {
@@ -120,7 +121,7 @@ namespace Slalom.FitStacks.Mongo
 
         private static void MapStandardProperties(Type target, PropertyInfo[] properties, BsonClassMap map)
         {
-            foreach (var info in properties.Where(e => e.DeclaringType == target && !e.GetCustomAttributes<SecurePropertyAttribute>().Any()))
+            foreach (var info in properties.Where(e => e.DeclaringType == target && !e.GetCustomAttributes<SecureAttribute>().Any()))
             {
                 map.MapProperty(info.Name);
             }

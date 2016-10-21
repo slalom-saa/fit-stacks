@@ -16,7 +16,7 @@ namespace Slalom.FitStacks.Serialization
         public DefaultSerializationSettings()
         {
             this.Formatting = Formatting.Indented;
-            this.ContractResolver = new MessagingContractResolver();
+            this.ContractResolver = new DefaultContractResolver();
         }
 
         /// <summary>

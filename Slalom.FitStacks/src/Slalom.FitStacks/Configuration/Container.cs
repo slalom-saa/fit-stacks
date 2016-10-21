@@ -1,20 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac;
 using Autofac.Core;
+using Slalom.FitStacks.Domain;
+using Slalom.FitStacks.Messaging;
 using Slalom.FitStacks.Reflection;
+using Slalom.FitStacks.Search;
 
 namespace Slalom.FitStacks.Configuration
 {
-    public class AllPropertySelector : IPropertySelector
-    {
-        public bool InjectProperty(PropertyInfo propertyInfo, object instance)
-        {
-            return true;
-        }
-    }
-
     /// <summary>
     /// Creates components, wires dependencies and manages lifetime for a set of components.
     /// </summary>
@@ -22,6 +18,9 @@ namespace Slalom.FitStacks.Configuration
     public class Container : IDisposable
     {
         private IContainer _container;
+
+        bool _disposed;
+        private IPropertySelector _selector = new AllPropertySelector();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Container"/> class.
@@ -31,14 +30,12 @@ namespace Slalom.FitStacks.Configuration
         {
             var assemblies = markers.Select(e =>
             {
-                if (e is Type)
+                var type = e as Type;
+                if (type != null)
                 {
-                    return ((Type)e).GetTypeInfo().Assembly;
+                    return type.GetTypeInfo().Assembly;
                 }
-                else
-                {
-                    return e.GetType().GetTypeInfo().Assembly;
-                }
+                return e.GetType().GetTypeInfo().Assembly;
             });
 
             var builder = new ContainerBuilder();
@@ -49,11 +46,57 @@ namespace Slalom.FitStacks.Configuration
         }
 
         /// <summary>
+        /// Gets the configured <see cref="IMessageBus"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IMessageBus"/> instance.</value>
+        public IMessageBus Bus => this.Resolve<IMessageBus>();
+
+        /// <summary>
+        /// Gets the configured <see cref="IDomainFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade"/> instance.</value>
+        public IDomainFacade Domain => this.Resolve<IDomainFacade>();
+
+        /// <summary>
+        /// Gets the configured <see cref="ISearchFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade"/> instance.</value>
+        public ISearchFacade Search => this.Resolve<ISearchFacade>();
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
-            _container.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="Container"/> class.
+        /// </summary>
+        ~Container()
+        {
+            this.Dispose(false);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _container.Dispose();
+            }
+
+            _disposed = true;
         }
 
         /// <summary>
@@ -65,7 +108,7 @@ namespace Slalom.FitStacks.Configuration
         {
             T instance;
 
-            if (!_container.TryResolve<T>(out instance))
+            if (!_container.TryResolve(out instance))
             {
                 if (!typeof(T).GetTypeInfo().IsAbstract && !typeof(T).GetTypeInfo().IsInterface)
                 {
@@ -77,9 +120,28 @@ namespace Slalom.FitStacks.Configuration
                 }
             }
 
-            _container.InjectProperties(instance, new AllPropertySelector());
+            if (instance != null)
+            {
+                _container.InjectProperties(instance, _selector);
+            }
 
             return instance;
+        }
+
+        /// <summary>
+        /// Resolves all instance of the specified type from the container.
+        /// </summary>
+        /// <returns>The resolved instances.</returns>
+        public IEnumerable<T> ResolveAll<T>()
+        {
+            var target = (IEnumerable<object>)_container.Resolve(typeof(IEnumerable<>).MakeGenericType(typeof(T)));
+
+            foreach (var instance in target)
+            {
+                _container.InjectProperties(instance, _selector);
+            }
+
+            return target.Cast<T>();
         }
 
         /// <summary>
@@ -110,6 +172,10 @@ namespace Slalom.FitStacks.Configuration
             builder.Update(_container.ComponentRegistry);
         }
 
+        /// <summary>
+        /// Registers the module with the container.
+        /// </summary>
+        /// <param name="module">The module to register.</param>
         public void RegisterModule(object module)
         {
             var builder = new ContainerBuilder();

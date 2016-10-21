@@ -1,6 +1,5 @@
 ﻿using System;
 using Autofac;
-using Destructurama.Attributed;
 using Microsoft.Extensions.Configuration;
 using Serilog.Core;
 using Slalom.FitStacks.Runtime;

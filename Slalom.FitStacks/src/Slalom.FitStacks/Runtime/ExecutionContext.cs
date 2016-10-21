@@ -5,6 +5,7 @@ using System.Security.Claims;
 using Newtonsoft.Json;
 using Slalom.FitStacks.Messaging;
 using Slalom.FitStacks.Messaging.Serialization;
+using Slalom.FitStacks.Validation;
 
 namespace Slalom.FitStacks.Runtime
 {
@@ -131,8 +132,11 @@ namespace Slalom.FitStacks.Runtime
         /// Adds an additional raised event to the context that will be published on successful completion.
         /// </summary>
         /// <param name="instance">The event to raise.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
         public void AddRaisedEvent(IEvent instance)
         {
+            Argument.NotNull(() => instance);
+
             _raisedEvents.Add(instance);
         }
     }

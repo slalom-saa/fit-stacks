@@ -10,13 +10,14 @@ using Slalom.FitStacks.Logging;
 using Slalom.FitStacks.Messaging;
 using Slalom.FitStacks.Reflection;
 using Slalom.FitStacks.Runtime;
+using Slalom.FitStacks.Search;
 using Slalom.FitStacks.Validation;
 using Module = Autofac.Module;
 
 namespace Slalom.FitStacks.Configuration
 {
     /// <summary>
-    /// An Autofac module that wires up dependencies for the stak.
+    /// An Autofac module that wires up dependencies for the full fit stack.
     /// </summary>
     /// <seealso cref="Autofac.Module" />
     public class FitStacksModule : Module
@@ -71,6 +72,7 @@ namespace Slalom.FitStacks.Configuration
             builder.RegisterModule(new DomainModule(this.Assemblies));
             builder.RegisterModule(new MessagingModule());
             builder.RegisterModule(new LoggingModule());
+            builder.RegisterModule(new SearchModule(this.Assemblies));
 
             builder.Register(c => new LocalExecutionContextResolver()).As<IExecutionContextResolver>();
 

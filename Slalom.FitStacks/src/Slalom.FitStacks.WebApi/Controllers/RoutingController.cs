@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Slalom.FitStacks.Messaging;
 using Slalom.FitStacks.Messaging.Validation;
 using Slalom.FitStacks.Runtime;
+using Slalom.FitStacks.Validation;
 
 namespace Slalom.FitStacks.WebApi.Controllers
 {
@@ -101,7 +102,7 @@ namespace Slalom.FitStacks.WebApi.Controllers
             }
             if (result.ValidationErrors.Any())
             {
-                this.HttpContext.Response.StatusCode = result.ValidationErrors.Any(e=>e.ErrorType == Validation.ValidationErrorType.Security) ? (int)HttpStatusCode.Unauthorized : (int)HttpStatusCode.BadRequest;
+                this.HttpContext.Response.StatusCode = result.ValidationErrors.Any(e=>e.ErrorType == ValidationErrorType.Security) ? (int)HttpStatusCode.Unauthorized : (int)HttpStatusCode.BadRequest;
 
                 return JsonConvert.SerializeObject(result.ValidationErrors, new JsonSerializerSettings
                 {

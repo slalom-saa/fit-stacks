@@ -8,7 +8,10 @@ using Slalom.FitStacks.Validation;
 namespace Slalom.FitStacks.Domain
 {
     /// <summary>
-    /// Default implementation for the <see cref="IDomainFacade"/>.
+    /// Provides a single access point to aggregates, allows for repositories to be granular and for
+    /// application/infrastructure components to access objects with minimal bloat and lifetime management;  Instead of using
+    /// many dependencies, in each class, for each data access component, the facade can be used and it will resolve the
+    /// dependences as needed instead of on construction.
     /// </summary>
     /// <seealso cref="IDomainFacade" />
     public class DomainFacade : IDomainFacade
@@ -168,7 +171,7 @@ namespace Slalom.FitStacks.Domain
         /// <typeparam name="TAggregateRoot">The type of instance.</typeparam>
         /// <param name="instances">The instances to update.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
         /// and have a small set, then you can use the update method.</remarks>
         public Task UpdateAsync<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot

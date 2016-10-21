@@ -6,17 +6,32 @@ using Slalom.FitStacks.Validation;
 namespace Slalom.FitStacks.Domain
 {
     /// <summary>
-    /// A <see href="https://www.safaribooksonline.com/library/view/microsoft-net-architecting/9780133986419/ch08.html#ch08lev2sec3">Value Object</see> 
-    /// that can also be represented by another type.
+    /// A <see href="http://bit.ly/2dViCg3">Value Object</see> that can also be represented by another type.
     /// </summary>
     /// <typeparam name="TValue">The type that can be interchangeably used with this concept.</typeparam>
     public abstract class ConceptAs<TValue> : IEquatable<ConceptAs<TValue>>, IValidate
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="ConceptAs{TValue}"/> class.
+        /// </summary>
+        protected ConceptAs()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConceptAs{TValue}"/> class.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        protected ConceptAs(TValue value)
+        {
+            this.Value = value;
+        }
+
+        /// <summary>
         /// Gets or sets the concept value.
         /// </summary>
         /// <value>The concept value.</value>
-        public TValue Value { get; protected set; }
+        public TValue Value { get; }
 
         /// <summary>
         /// Determines if another instance is equivalent to this instance.
@@ -66,7 +81,7 @@ namespace Slalom.FitStacks.Domain
         /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
-            return this.Value == null ? default(TValue) == null ? null : default(TValue).ToString() : this.Value.ToString();
+            return this.Value == null ? default(TValue) == null ? null : default(TValue)?.ToString() : this.Value.ToString();
         }
 
         /// <summary>
