@@ -8,7 +8,7 @@ namespace Slalom.FitStacks.Search
     /// <summary>
     /// Provides access to to search results.
     /// </summary>
-    public interface ISearchStore<TSearchResult> : IRebuildSearchIndex where TSearchResult : class, ISearchResult
+    public interface ISearchResultStore<TSearchResult> : IRebuildSearchIndex where TSearchResult : class, ISearchResult
     {
         /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the

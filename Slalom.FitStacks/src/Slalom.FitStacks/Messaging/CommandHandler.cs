@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Slalom.FitStacks.Domain;
 using Slalom.FitStacks.Runtime;
+using Slalom.FitStacks.Search;
 
 namespace Slalom.FitStacks.Messaging
 {
@@ -14,6 +16,18 @@ namespace Slalom.FitStacks.Messaging
     /// <seealso href="http://bit.ly/2eajcKW">Enterprise Integration Patterns: Designing, Building, and Deploying Messaging Solutions</seealso>
     public abstract class CommandHandler<TCommand, TResult> : ICommandHandler<TCommand, TResult> where TCommand : Command<TResult>
     {
+        /// <summary>
+        /// Gets or sets the configured <see cref="IDomainFacade"/>.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade"/>.</value>
+        public IDomainFacade Domain { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the configured <see cref="ISearchFacade"/>.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade"/>.</value>
+        public ISearchFacade Search { get; protected set; }
+
         /// <summary>
         /// Gets or sets the current <seealso cref="ExecutionContext"/>.
         /// </summary>

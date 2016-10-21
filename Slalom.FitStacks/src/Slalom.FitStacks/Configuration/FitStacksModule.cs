@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using Autofac;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Slalom.FitStacks.Domain;
 using Slalom.FitStacks.Logging;
@@ -66,13 +66,15 @@ namespace Slalom.FitStacks.Configuration
                 b.SetBasePath(Directory.GetCurrentDirectory());
                 b.AddJsonFile("appsettings.json", true, true);
                 return b.Build();
-            }).As<IConfigurationRoot>()
-                   .As<IConfiguration>();
+            }).As<IConfiguration>();
 
             builder.RegisterModule(new DomainModule(this.Assemblies));
             builder.RegisterModule(new MessagingModule());
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new SearchModule(this.Assemblies));
+
+            builder.Register(c => new ComponentContext(c.Resolve<Autofac.IComponentContext>()))
+                   .As<IComponentContext>();
 
             builder.Register(c => new LocalExecutionContextResolver()).As<IExecutionContextResolver>();
 

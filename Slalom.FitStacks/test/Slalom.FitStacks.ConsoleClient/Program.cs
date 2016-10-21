@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Slalom.FitStacks.Configuration;
 using Slalom.FitStacks.Domain;
 using Slalom.FitStacks.Logging;
@@ -9,81 +10,73 @@ using Slalom.FitStacks.Runtime;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Slalom.FitStacks.EntityFramework;
 using Slalom.FitStacks.Search;
 
 namespace Slalom.FitStacks.ConsoleClient
 {
-    public class ItemSearchResultStore : ISearchStore<ItemSearchResult>
-    {
-        private readonly IDomainFacade _domain;
-        private static List<ItemSearchResult> _instances = new List<ItemSearchResult>();
 
-        public ItemSearchResultStore(IDomainFacade domain)
+    public class SearchContext : DbContext
+    {
+        private readonly string _connectionString;
+
+        public SearchContext()
         {
-            _domain = domain;
         }
 
-        public async Task RebuildIndexAsync()
+        public SearchContext(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseSqlServer(_connectionString ?? "Data Source=localhost;Initial Catalog=Fit;Integrated Security=True");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ItemSearchResult>()
+                        .ToTable("Items")
+                        .HasKey(e => e.Id);
+        }
+    }
+
+    public class ItemSearchResultStore : EntityFrameworkSearchResultStore<ItemSearchResult>
+    {
+        public IDomainFacade Domain { get; set; }
+
+        public ItemSearchResultStore(SearchContext context)
+            : base(context)
+        {
+        }
+
+        public override async Task RebuildIndexAsync()
         {
             await this.ClearAsync();
 
-            var items = _domain.CreateQuery<Item>();
-
             int index = 0;
-            var set = items.Skip(1000 * index).Take(1000);
-            
-            while (set.Any())
+            int size = 1000;
+
+            var set = Domain.CreateQuery<Item>();
+
+            var working = set.Take(size).ToList();
+            while (working.Any())
             {
-                await this.AddAsync(set.Select(e => new ItemSearchResult
+                await this.AddAsync(working.Select(e => new ItemSearchResult
                 {
-                    Id = e.Id
                 }).ToArray());
-                set = items.Skip(1000 * ++index).Take(1000);
+                Console.WriteLine(index);
+                working = set.Skip(++index * size).Take(size).ToList();
             }
-        }
-
-        public Task AddAsync(ItemSearchResult[] instances)
-        {
-            _instances.AddRange(instances);
-
-            return Task.FromResult(0);
-        }
-
-        public Task ClearAsync()
-        {
-            _instances.Clear();
-
-            return Task.FromResult(0);
-        }
-
-        public Task DeleteAsync(ItemSearchResult[] instances)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync(Expression<Func<ItemSearchResult, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IQueryable<ItemSearchResult> CreateQuery()
-        {
-            return _instances.AsQueryable();
-        }
-
-        public Task<ItemSearchResult> FindAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(ItemSearchResult[] instances)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(Expression<Func<ItemSearchResult, bool>> predicate, Expression<Func<ItemSearchResult, ItemSearchResult>> expression)
-        {
-            throw new NotImplementedException();
         }
     }
 
@@ -115,9 +108,11 @@ namespace Slalom.FitStacks.ConsoleClient
 
     public class CreateItemCommandHandler : CommandHandler<CreateItemCommand, ItemCreatedEvent>
     {
-        public override Task<ItemCreatedEvent> Handle(CreateItemCommand command)
+        public override async Task<ItemCreatedEvent> Handle(CreateItemCommand command)
         {
-            return Task.FromResult(new ItemCreatedEvent());
+            await this.Domain.AddAsync(new Item(command.CommandName));
+
+            return new ItemCreatedEvent();
         }
     }
 
@@ -148,7 +143,11 @@ namespace Slalom.FitStacks.ConsoleClient
                 using (var container = new Container(typeof(Program)))
                 {
                     container.Register<ExecutionContext>(new LocalExecutionContext("test.user"));
-                    container.RegisterModule(new MongoModule());
+                    container.RegisterModule(new MongoDomainModule());
+                    container.RegisterModule(new EntityFrameworkSearchModule());
+                    container.Register<ISearchResultStore<ItemSearchResult>>(c => new ItemSearchResultStore(c.Resolve<SearchContext>()));
+                    container.Register(new SearchContext("Data Source=localhost;Initial Catalog=Fit;Integrated Security=True"));
+
                     //container.Register<ISearchFacade>(new SearchFacade());
 
                     //await container.Domain.AddAsync(new Item("asdf"));
@@ -171,14 +170,14 @@ namespace Slalom.FitStacks.ConsoleClient
 
 
                     await container.Search.RebuildIndexAsync<ItemSearchResult>();
-                    await container.Bus.Send(new CreateItemCommand());
+                    //await container.Bus.Send(new CreateItemCommand());
 
-                    //Console.WriteLine(container.Domain.CreateQuery<Item>().Count());
+                    Console.WriteLine(container.Domain.CreateQuery<Item>().Count());
 
 
-                     var query = container.Search.CreateQuery<ItemSearchResult>();
+                    var query = container.Search.CreateQuery<ItemSearchResult>();
 
-                     Console.WriteLine(query.Count());
+                    Console.WriteLine(query.Count());
 
                 }
             }

@@ -162,6 +162,20 @@ namespace Slalom.FitStacks.Configuration
         /// Registers an instance with the container.
         /// </summary>
         /// <typeparam name="T">The type of instance.</typeparam>
+        /// <param name="delegate">The instance to register.</param>
+        public void Register<T>(Func<IComponentContext, T> @delegate) where T : class
+        {
+            var builder = new ContainerBuilder();
+
+            builder.Register(c => @delegate.Invoke(c.Resolve<IComponentContext>()));
+
+            builder.Update(_container.ComponentRegistry);
+        }
+
+        /// <summary>
+        /// Registers an instance with the container.
+        /// </summary>
+        /// <typeparam name="T">The type of instance.</typeparam>
         /// <param name="instance">The instance to register.</param>
         public void Register<T>(T instance) where T : class
         {

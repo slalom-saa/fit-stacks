@@ -6,7 +6,7 @@ using Slalom.FitStacks.Reflection;
 
 namespace Slalom.FitStacks.Mongo
 {
-    public class MongoModule : Module
+    public class MongoDomainModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

@@ -47,7 +47,7 @@ namespace Slalom.FitStacks.Search
                 return Task.FromResult(0);
             }
 
-            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchResultStore<TSearchResult>>();
 
             return store.AddAsync(instances);
         }
@@ -59,7 +59,7 @@ namespace Slalom.FitStacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         public Task ClearAsync<TSearchResult>() where TSearchResult : class, ISearchResult
         {
-            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchResultStore<TSearchResult>>();
 
             return store.ClearAsync();
         }
@@ -80,7 +80,7 @@ namespace Slalom.FitStacks.Search
                 return Task.FromResult(0);
             }
 
-            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchResultStore<TSearchResult>>();
 
             return store.DeleteAsync(instances);
         }
@@ -96,7 +96,7 @@ namespace Slalom.FitStacks.Search
         {
             Argument.NotNull(() => predicate);
 
-            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchResultStore<TSearchResult>>();
 
             return store.DeleteAsync(predicate);
         }
@@ -108,7 +108,7 @@ namespace Slalom.FitStacks.Search
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
         public IQueryable<TSearchResult> CreateQuery<TSearchResult>() where TSearchResult : class, ISearchResult
         {
-            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchResultStore<TSearchResult>>();
 
             return store.CreateQuery();
         }
@@ -121,7 +121,7 @@ namespace Slalom.FitStacks.Search
         /// <returns>Returns the instance with the specified identifier.</returns>
         public Task<TSearchResult> FindAsync<TSearchResult>(Guid id) where TSearchResult : class, ISearchResult
         {
-            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchResultStore<TSearchResult>>();
 
             return store.FindAsync(id);
         }
@@ -134,7 +134,7 @@ namespace Slalom.FitStacks.Search
         /// <exception cref="NotImplementedException"></exception>
         public Task RebuildIndexAsync<TSearchResult>() where TSearchResult : class, ISearchResult
         {
-            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchResultStore<TSearchResult>>();
 
             return store.RebuildIndexAsync();
         }
@@ -158,7 +158,7 @@ namespace Slalom.FitStacks.Search
                 return Task.FromResult(0);
             }
 
-            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchResultStore<TSearchResult>>();
 
             return store.UpdateAsync(instances);
         }
@@ -177,7 +177,7 @@ namespace Slalom.FitStacks.Search
             Argument.NotNull(() => predicate);
             Argument.NotNull(() => expression);
 
-            var store = _componentContext.Resolve<ISearchStore<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchResultStore<TSearchResult>>();
 
             return store.UpdateAsync(predicate, expression);
         }
