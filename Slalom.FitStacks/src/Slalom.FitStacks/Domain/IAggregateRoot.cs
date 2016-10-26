@@ -9,5 +9,10 @@ namespace Slalom.FitStacks.Domain
     /// <seealso href="http://bit.ly/2dVQsXu">Domain-Driven Design: Tackling Complexity in the Heart of Software</seealso>
     public interface IAggregateRoot : IEntity
     {
+        /// <summary>
+        /// Gets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        Guid Id { get; }
     }
 }

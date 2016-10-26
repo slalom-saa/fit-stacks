@@ -1,25 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Slalom.FitStacks.Configuration;
+using Slalom.FitStacks.DocumentDb;
 using Slalom.FitStacks.Domain;
-using Slalom.FitStacks.Logging;
+using Slalom.FitStacks.EntityFramework;
 using Slalom.FitStacks.Messaging;
 using Slalom.FitStacks.Mongo;
 using Slalom.FitStacks.Runtime;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Slalom.FitStacks.EntityFramework;
 using Slalom.FitStacks.Search;
 
 namespace Slalom.FitStacks.ConsoleClient
 {
-
     public class SearchContext : DbContext
     {
         private readonly string _connectionString;
@@ -50,31 +44,28 @@ namespace Slalom.FitStacks.ConsoleClient
         }
     }
 
-    public class ItemSearchResultStore : EntityFrameworkSearchResultStore<ItemSearchResult>
+    public class ItemSearchIndex : EntityFrameworkSearchIndex<ItemSearchResult>
     {
-        public IDomainFacade Domain { get; set; }
-
-        public ItemSearchResultStore(SearchContext context)
+        public ItemSearchIndex(SearchContext context)
             : base(context)
         {
         }
+
+        public IDomainFacade Domain { get; set; }
 
         public override async Task RebuildIndexAsync()
         {
             await this.ClearAsync();
 
-            int index = 0;
-            int size = 1000;
+            var index = 0;
+            var size = 1000;
 
-            var set = Domain.CreateQuery<Item>();
+            var set = this.Domain.CreateQuery<Item>();
 
             var working = set.Take(size).ToList();
             while (working.Any())
             {
-                await this.AddAsync(working.Select(e => new ItemSearchResult
-                {
-                }).ToArray());
-                Console.WriteLine(index);
+                await this.AddAsync(working.Select(e => new ItemSearchResult()).ToArray());
                 working = set.Skip(++index * size).Take(size).ToList();
             }
         }
@@ -82,18 +73,24 @@ namespace Slalom.FitStacks.ConsoleClient
 
     public class Item : Entity, IAggregateRoot
     {
-        public string Name { get; set; }
-
         public Item(string name)
         {
             this.Name = name;
         }
+
+        public string Name { get; set; }
     }
 
-    public class ItemRepository : MongoRepository<Item>
+    public class ItemRepository : DocumentDbRepository<Item>
     {
-        public ItemRepository() : base(null, "Items")
+        public ItemRepository()
+            : base(null, "Items")
         {
+        }
+
+        public override Task AddAsync(Item[] instances)
+        {
+            return base.AddAsync(instances);
         }
     }
 
@@ -116,7 +113,6 @@ namespace Slalom.FitStacks.ConsoleClient
         }
     }
 
-
     public class ItemSearchResultUpdater : IHandleEvent<ItemCreatedEvent>
     {
         private readonly ISearchFacade _facade;
@@ -134,7 +130,12 @@ namespace Slalom.FitStacks.ConsoleClient
 
     public class Program
     {
-
+        public static void Main(string[] args)
+        {
+            new Program().Start();
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+        }
 
         public async void Start()
         {
@@ -143,55 +144,27 @@ namespace Slalom.FitStacks.ConsoleClient
                 using (var container = new Container(typeof(Program)))
                 {
                     container.Register<ExecutionContext>(new LocalExecutionContext("test.user"));
-                    container.RegisterModule(new MongoDomainModule());
+                    container.RegisterModule(new DocumentDbDomainModule());
                     container.RegisterModule(new EntityFrameworkSearchModule());
-                    container.Register<ISearchResultStore<ItemSearchResult>>(c => new ItemSearchResultStore(c.Resolve<SearchContext>()));
+                    container.Register<ISearchIndex<ItemSearchResult>>(c => new ItemSearchIndex(c.Resolve<SearchContext>()));
                     container.Register(new SearchContext("Data Source=localhost;Initial Catalog=Fit;Integrated Security=True"));
 
-                    //container.Register<ISearchFacade>(new SearchFacade());
+                    container.Configure<DocumentDbOptions>("DocumentDb");
 
-                    //await container.Domain.AddAsync(new Item("asdf"));
+                    //await container.Search.RebuildIndexAsync<ItemSearchResult>();
+                    await container.Bus.Send(new CreateItemCommand());
 
-                    //await container.Bus.Send(new CreateItemCommand());
-
-
-                    //await container.Domain.AddAsync(new Item("ddd"));
-
-                    //Console.WriteLine(container.Domain.CreateQuery<Item>().Count());
-
-
-                    //var target = new List<Item>();
-                    //for (int i = 0; i < 10000; i++)
-                    //{
-                    //    target.Add(new Item("Item " + i));
-                    //}
-                    //await container.Domain.AddAsync(target);
-
-
-
-                    await container.Search.RebuildIndexAsync<ItemSearchResult>();
-                    //await container.Bus.Send(new CreateItemCommand());
-
-                    Console.WriteLine(container.Domain.CreateQuery<Item>().Count());
-
+                    Console.WriteLine(container.Domain.CreateQuery<Item>().Select(e => 1).ToList().Count());
 
                     var query = container.Search.CreateQuery<ItemSearchResult>();
 
                     Console.WriteLine(query.Count());
-
                 }
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
             }
-        }
-
-        public static void Main(string[] args)
-        {
-            new Program().Start();
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
         }
     }
 

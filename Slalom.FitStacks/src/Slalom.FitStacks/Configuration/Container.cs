@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac;
 using Autofac.Core;
+using Microsoft.Extensions.Configuration;
 using Slalom.FitStacks.Domain;
 using Slalom.FitStacks.Messaging;
 using Slalom.FitStacks.Reflection;
@@ -195,6 +196,35 @@ namespace Slalom.FitStacks.Configuration
             var builder = new ContainerBuilder();
 
             builder.RegisterModule((IModule)module);
+
+            builder.Update(_container.ComponentRegistry);
+        }
+
+        public void Configure<T>(string section) where T : class, new()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.Register<T>(c =>
+            {
+                var options = Activator.CreateInstance<T>();
+                c.Resolve<IConfiguration>().GetSection(section).Bind(options);
+                return options;
+            });
+
+            builder.Update(_container.ComponentRegistry);
+        }
+
+
+        public void Configure<T>() where T : class, new()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.Register<T>(c =>
+            {
+                var options = Activator.CreateInstance<T>();
+                c.Resolve<IConfiguration>().Bind(options);
+                return options;
+            });
 
             builder.Update(_container.ComponentRegistry);
         }

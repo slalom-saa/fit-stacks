@@ -63,8 +63,6 @@ namespace Slalom.FitStacks.WebApi.Controllers
         {
             var user = this.Context.User;
 
-            throw new Exception("soe");
-
             return Task.FromResult(command.Text);
         }
     }
@@ -102,7 +100,7 @@ namespace Slalom.FitStacks.WebApi.Controllers
             }
             if (result.ValidationErrors.Any())
             {
-                this.HttpContext.Response.StatusCode = result.ValidationErrors.Any(e=>e.ErrorType == ValidationErrorType.Security) ? (int)HttpStatusCode.Unauthorized : (int)HttpStatusCode.BadRequest;
+                this.HttpContext.Response.StatusCode = result.ValidationErrors.Any(e => e.ErrorType == ValidationErrorType.Security) ? (int)HttpStatusCode.Unauthorized : (int)HttpStatusCode.BadRequest;
 
                 return JsonConvert.SerializeObject(result.ValidationErrors, new JsonSerializerSettings
                 {
@@ -154,17 +152,9 @@ namespace Slalom.FitStacks.WebApi.Controllers
         {
             var type = this.GetCommandType(name);
 
-            if (this.Request.Body.CanSeek)
-            {
-                this.Request.Body.Position = 0;
-            }
+            var body = this.Request.Body.ReadAsString();
 
-            using (var streamReader = new StreamReader(this.Request.Body))
-            {
-                var body = await streamReader.ReadToEndAsync();
-
-                return CreateResponse(await _bus.Send((dynamic)JsonConvert.DeserializeObject(body, type)));
-            }
+            return CreateResponse(await _bus.Send((dynamic)JsonConvert.DeserializeObject(body, type)));
         }
 
         [HttpGet, Route("secure/send"), Authorize]

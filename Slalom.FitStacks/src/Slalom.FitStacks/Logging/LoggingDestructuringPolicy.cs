@@ -9,6 +9,7 @@ using Serilog.Debugging;
 using Serilog.Events;
 using Slalom.FitStacks.Messaging;
 using Slalom.FitStacks.Reflection;
+using Slalom.FitStacks.Serialization;
 using Slalom.FitStacks.Validation;
 
 namespace Slalom.FitStacks.Logging

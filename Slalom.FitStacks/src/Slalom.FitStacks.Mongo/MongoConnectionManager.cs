@@ -11,14 +11,14 @@ namespace Slalom.FitStacks.Mongo
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="mappings">The mappings.</param>
-        public MongoConnectionManager(IConfigurationRoot configuration, MongoMappingsManager mappings)
+        public MongoConnectionManager(IConfiguration configuration, MongoMappingsManager mappings)
         {
             this._configuration = configuration;
 
             mappings.EnsureInitialized();
         }
 
-        private IConfigurationRoot _configuration;
+        private IConfiguration _configuration;
 
         /// <summary>
         /// Gets the collection with the specified database and name.

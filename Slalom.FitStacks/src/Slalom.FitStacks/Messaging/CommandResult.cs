@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Slalom.FitStacks.Logging;
 using Slalom.FitStacks.Runtime;
+using Slalom.FitStacks.Serialization;
 using Slalom.FitStacks.Validation;
 
 namespace Slalom.FitStacks.Messaging

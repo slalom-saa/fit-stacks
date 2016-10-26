@@ -7,11 +7,11 @@ using Slalom.FitStacks.Search;
 
 namespace Slalom.FitStacks.EntityFramework
 {
-    public abstract class EntityFrameworkSearchResultStore<TSearchResult> : ISearchResultStore<TSearchResult> where TSearchResult : class, ISearchResult
+    public abstract class EntityFrameworkSearchIndex<TSearchResult> : ISearchIndex<TSearchResult> where TSearchResult : class, ISearchResult
     {
         private readonly DbContext _context;
 
-        protected EntityFrameworkSearchResultStore(DbContext context)
+        protected EntityFrameworkSearchIndex(DbContext context)
         {
             _context = context;
             this.Set = _context.Set<TSearchResult>();

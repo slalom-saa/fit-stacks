@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Slalom.FitStacks.Validation;
@@ -45,7 +47,7 @@ namespace Slalom.FitStacks.Runtime
                 _configuration["Environment"],
                 httpContext.Connection.LocalIpAddress.ToString(),
                 httpRequest != null ? $"{httpRequest.Method} {httpRequest.Scheme}://{httpRequest.Host.Value}{httpRequest.Path}{httpRequest.QueryString}" : null,
-                this.GetCorrelationId(_contextAccessor),
+                this.GetCorrelationId(),
                 httpRequest?.Headers.FirstOrDefault(e => e.Key == "Session").Value,
                 httpContext.User,
                 httpContext.Connection.RemoteIpAddress.ToString(),
@@ -53,13 +55,15 @@ namespace Slalom.FitStacks.Runtime
                 Environment.CurrentManagedThreadId);
         }
 
-        private string GetCorrelationId(IHttpContextAccessor contextAccessor)
+        
+
+        private string GetCorrelationId()
         {
-            if (contextAccessor.HttpContext.Items[Key] == null)
+            if (_contextAccessor.HttpContext.Items[Key] == null)
             {
-                contextAccessor.HttpContext.Items[Key] = Guid.NewGuid().ToString();
+                _contextAccessor.HttpContext.Items[Key] = Guid.NewGuid().ToString();
             }
-            return (string)contextAccessor.HttpContext.Items[Key];
+            return (string)_contextAccessor.HttpContext.Items[Key];
         }
     }
 }

@@ -6,8 +6,7 @@ namespace Slalom.FitStacks.Messaging
     /// <summary>
     /// An atomic packet of data that is transmitted through a message channel.
     /// </summary>
-    /// <seealso cref="Slalom.FitStacks.IHaveIdentity" />
-    public interface IMessage : IHaveIdentity
+    public interface IMessage
     {
         /// <summary>
         /// Gets the message time stamp.

@@ -102,7 +102,7 @@ namespace Slalom.FitStacks.Messaging
         {
             var logger = _componentContext.Resolve<ILogger>();
 
-            logger.Information(command.CommandName + " Audit: {@Command} {@Result} {@Context}", command, new
+            logger.Information("Audit: " + command.CommandName + " {@Command} {@Result} {@Context}", command, new
             {
                 result.IsSuccessful,
                 result.ValidationErrors,
@@ -112,12 +112,12 @@ namespace Slalom.FitStacks.Messaging
 
             foreach (var instance in context.RaisedEvents)
             {
-                logger.Information(instance.EventName + " Raised: {@Event} {@Context}", instance, context);
+                logger.Information("Event: " + command.CommandName + " {@Event} {@Context}", instance, context);
             }
 
             if (result.RaisedException != null)
             {
-                logger.Error(command.CommandName + " Error: {@Command} {@Exception} {@Context}", command, result.RaisedException, context);
+                logger.Error("Error: " + command.CommandName + " {@Command} {@Exception} {@Context}", command, result.RaisedException, context);
             }
 
             return Task.FromResult(0);

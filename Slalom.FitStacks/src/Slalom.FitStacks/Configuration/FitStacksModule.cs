@@ -62,11 +62,13 @@ namespace Slalom.FitStacks.Configuration
 
             builder.Register(c =>
             {
-                var b = new ConfigurationBuilder();
-                b.SetBasePath(Directory.GetCurrentDirectory());
-                b.AddJsonFile("appsettings.json", true, true);
-                return b.Build();
+                var configurationBuilder = new ConfigurationBuilder();
+                configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
+                configurationBuilder.AddJsonFile("appsettings.json", true, true);
+                return configurationBuilder.Build();
             }).As<IConfiguration>();
+
+            
 
             builder.RegisterModule(new DomainModule(this.Assemblies));
             builder.RegisterModule(new MessagingModule());

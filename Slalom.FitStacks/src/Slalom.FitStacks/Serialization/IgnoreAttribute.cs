@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Slalom.FitStacks.Validation
+namespace Slalom.FitStacks.Serialization
 {
     /// <summary>
     /// Indicates that a property should be ignored when logged.

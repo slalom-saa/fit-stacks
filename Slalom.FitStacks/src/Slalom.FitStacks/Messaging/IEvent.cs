@@ -12,5 +12,11 @@ namespace Slalom.FitStacks.Messaging
         /// </summary>
         /// <value>The name of the event.</value>
         string EventName { get; }
+
+        /// <summary>
+        /// Gets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        Guid Id { get; }
     }
 }
