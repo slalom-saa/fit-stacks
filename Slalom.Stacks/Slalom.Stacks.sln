@@ -1,0 +1,86 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5926D369-56E5-4A1D-8E7D-22F58D593C7B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{51556D6C-A5D7-4E44-B2DA-7E1E2217C682}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+		..\README.md = ..\README.md
+		Slalom.ruleset = Slalom.ruleset
+		stylecop.json = stylecop.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E59A74CA-04D4-43F0-9C6A-BE2E6380A240}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks", "src\Slalom.Stacks\Slalom.Stacks.xproj", "{E70069BC-7243-49DC-BA35-3ACE68519338}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.DocumentDb", "src\Slalom.Stacks.DocumentDb\Slalom.Stacks.DocumentDb.xproj", "{277EF6DF-4C1D-409E-9D9F-9A334FFDDE68}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.EntityFramework", "src\Slalom.Stacks.EntityFramework\Slalom.Stacks.EntityFramework.xproj", "{1D3767CD-2EE3-4A1F-AB47-B68A6C7D5F99}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.Mongo", "src\Slalom.Stacks.Mongo\Slalom.Stacks.Mongo.xproj", "{797C4D5F-C7EC-4696-9236-AE51C314BC55}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.WebApi", "src\Slalom.Stacks.WebApi\Slalom.Stacks.WebApi.xproj", "{0BFEFBF1-EC7B-40D6-8BA1-7F2E5B8D4078}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.ConsoleClient", "test\Slalom.Stacks.ConsoleClient\Slalom.Stacks.ConsoleClient.xproj", "{5E6A48C4-E458-4FF1-BF6C-7B65ABB2F6AB}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.IntegrationTests", "test\Slalom.Stacks.IntegrationTests\Slalom.Stacks.IntegrationTests.xproj", "{3C3A5FE7-FAA2-448B-856C-D00D365290D3}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.UnitTests", "test\Slalom.Stacks.UnitTests\Slalom.Stacks.UnitTests.xproj", "{F1F20ACF-22EE-440F-AC2E-4FBD9E042047}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E70069BC-7243-49DC-BA35-3ACE68519338}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E70069BC-7243-49DC-BA35-3ACE68519338}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E70069BC-7243-49DC-BA35-3ACE68519338}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E70069BC-7243-49DC-BA35-3ACE68519338}.Release|Any CPU.Build.0 = Release|Any CPU
+		{277EF6DF-4C1D-409E-9D9F-9A334FFDDE68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{277EF6DF-4C1D-409E-9D9F-9A334FFDDE68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{277EF6DF-4C1D-409E-9D9F-9A334FFDDE68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{277EF6DF-4C1D-409E-9D9F-9A334FFDDE68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D3767CD-2EE3-4A1F-AB47-B68A6C7D5F99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D3767CD-2EE3-4A1F-AB47-B68A6C7D5F99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D3767CD-2EE3-4A1F-AB47-B68A6C7D5F99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D3767CD-2EE3-4A1F-AB47-B68A6C7D5F99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{797C4D5F-C7EC-4696-9236-AE51C314BC55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{797C4D5F-C7EC-4696-9236-AE51C314BC55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{797C4D5F-C7EC-4696-9236-AE51C314BC55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{797C4D5F-C7EC-4696-9236-AE51C314BC55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BFEFBF1-EC7B-40D6-8BA1-7F2E5B8D4078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BFEFBF1-EC7B-40D6-8BA1-7F2E5B8D4078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BFEFBF1-EC7B-40D6-8BA1-7F2E5B8D4078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BFEFBF1-EC7B-40D6-8BA1-7F2E5B8D4078}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E6A48C4-E458-4FF1-BF6C-7B65ABB2F6AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E6A48C4-E458-4FF1-BF6C-7B65ABB2F6AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E6A48C4-E458-4FF1-BF6C-7B65ABB2F6AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E6A48C4-E458-4FF1-BF6C-7B65ABB2F6AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C3A5FE7-FAA2-448B-856C-D00D365290D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C3A5FE7-FAA2-448B-856C-D00D365290D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C3A5FE7-FAA2-448B-856C-D00D365290D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C3A5FE7-FAA2-448B-856C-D00D365290D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1F20ACF-22EE-440F-AC2E-4FBD9E042047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1F20ACF-22EE-440F-AC2E-4FBD9E042047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1F20ACF-22EE-440F-AC2E-4FBD9E042047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1F20ACF-22EE-440F-AC2E-4FBD9E042047}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E70069BC-7243-49DC-BA35-3ACE68519338} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
+		{277EF6DF-4C1D-409E-9D9F-9A334FFDDE68} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
+		{1D3767CD-2EE3-4A1F-AB47-B68A6C7D5F99} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
+		{797C4D5F-C7EC-4696-9236-AE51C314BC55} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
+		{0BFEFBF1-EC7B-40D6-8BA1-7F2E5B8D4078} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
+		{5E6A48C4-E458-4FF1-BF6C-7B65ABB2F6AB} = {E59A74CA-04D4-43F0-9C6A-BE2E6380A240}
+		{3C3A5FE7-FAA2-448B-856C-D00D365290D3} = {E59A74CA-04D4-43F0-9C6A-BE2E6380A240}
+		{F1F20ACF-22EE-440F-AC2E-4FBD9E042047} = {E59A74CA-04D4-43F0-9C6A-BE2E6380A240}
+	EndGlobalSection
+EndGlobal
