@@ -3,7 +3,6 @@ using System.Linq;
 using System.Security.Claims;
 using Newtonsoft.Json;
 using Shouldly;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Serialization;
 using Xunit;

@@ -2,9 +2,9 @@
 using Shouldly;
 using System.ComponentModel;
 using System.Linq;
+using Slalom.Stacks.Communication;
+using Slalom.Stacks.Communication.Validation;
 using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Runtime;
 using Xunit;
 
