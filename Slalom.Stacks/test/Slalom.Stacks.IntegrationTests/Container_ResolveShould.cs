@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Shouldly;
+using Slalom.Stacks.Communication;
 using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Runtime;
 using Xunit;
 

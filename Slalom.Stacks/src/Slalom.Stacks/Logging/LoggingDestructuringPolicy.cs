@@ -7,7 +7,7 @@ using System.Text;
 using Serilog.Core;
 using Serilog.Debugging;
 using Serilog.Events;
-using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Communication;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Validation;

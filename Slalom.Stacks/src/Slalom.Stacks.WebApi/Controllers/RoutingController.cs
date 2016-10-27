@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Validation;
+using Slalom.Stacks.Communication;
+using Slalom.Stacks.Communication.Validation;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
@@ -122,10 +122,6 @@ namespace Slalom.Stacks.WebApi.Controllers
         {
             var type = Type.GetType(name, false);
 
-            if (type == null)
-            {
-                throw new InvalidOperationException("The command could not be found.");
-            }
             return type;
         }
     }
@@ -144,6 +140,13 @@ namespace Slalom.Stacks.WebApi.Controllers
         {
             var type = this.GetCommandType(name);
 
+            if (type == null)
+            {
+                this.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                return "The command could not be found: " + name + ".";
+            }
+
             return CreateResponse(await _bus.Send((dynamic)Activator.CreateInstance(type)));
         }
 
@@ -151,6 +154,13 @@ namespace Slalom.Stacks.WebApi.Controllers
         public async Task<dynamic> Post(string name)
         {
             var type = this.GetCommandType(name);
+
+            if (type == null)
+            {
+                this.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                return "The command could not be found: " + name + ".";
+            }
 
             var body = this.Request.Body.ReadAsString();
 
@@ -161,6 +171,13 @@ namespace Slalom.Stacks.WebApi.Controllers
         public async Task<dynamic> SecureGet(string name)
         {
             var type = this.GetCommandType(name);
+
+            if (type == null)
+            {
+                this.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                return "The command could not be found: " + name + ".";
+            }
 
             return CreateResponse(await _bus.Send((dynamic)Activator.CreateInstance(type)));
         }

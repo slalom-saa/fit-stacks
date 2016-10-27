@@ -1,0 +1,1 @@
+﻿Execute this URL: http://localhost:5000/send?name=Authentication.SecurityRules.Communication.TestCommand,%20Authentication.SecurityRules
