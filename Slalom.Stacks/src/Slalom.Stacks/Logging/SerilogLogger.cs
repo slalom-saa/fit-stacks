@@ -6,7 +6,6 @@ using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Exceptions;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 

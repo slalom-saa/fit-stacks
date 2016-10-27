@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Reflection;
 using Shouldly;
+using Slalom.Stacks.Communication;
 using Slalom.Stacks.Logging;
 using Xunit;
 

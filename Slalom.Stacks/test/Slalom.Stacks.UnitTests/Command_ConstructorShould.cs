@@ -1,6 +1,6 @@
 ﻿using System;
 using Shouldly;
-using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Communication;
 using Xunit;
 
 namespace Slalom.Stacks.UnitTests

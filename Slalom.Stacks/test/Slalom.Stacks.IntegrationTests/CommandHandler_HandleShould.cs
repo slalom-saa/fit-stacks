@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using Slalom.Stacks.Messaging;
 using Xunit;
 using Shouldly;
 using Moq;
+using Slalom.Stacks.Communication;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Runtime;
 

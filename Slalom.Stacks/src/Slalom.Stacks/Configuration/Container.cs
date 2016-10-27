@@ -5,8 +5,8 @@ using System.Reflection;
 using Autofac;
 using Autofac.Core;
 using Microsoft.Extensions.Configuration;
+using Slalom.Stacks.Communication;
 using Slalom.Stacks.Domain;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
 
