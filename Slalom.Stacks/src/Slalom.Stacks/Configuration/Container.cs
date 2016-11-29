@@ -21,7 +21,7 @@ namespace Slalom.Stacks.Configuration
         private IContainer _container;
 
         bool _disposed;
-        private IPropertySelector _selector = new AllPropertySelector();
+        private IPropertySelector _selector = new AllUnsetPropertySelector();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Container"/> class.
@@ -105,7 +105,7 @@ namespace Slalom.Stacks.Configuration
         /// </summary>
         /// <typeparam name="T">The type to resolve.</typeparam>
         /// <returns>T.</returns>
-        public T Resolve<T>()
+        public T Resolve<T>(Action<T> setup = null)
         {
             T instance;
 
@@ -124,6 +124,8 @@ namespace Slalom.Stacks.Configuration
             if (instance != null)
             {
                 _container.InjectProperties(instance, _selector);
+
+                setup?.Invoke(instance);
             }
 
             return instance;
@@ -135,7 +137,7 @@ namespace Slalom.Stacks.Configuration
         /// <returns>The resolved instances.</returns>
         public IEnumerable<T> ResolveAll<T>()
         {
-            var target = (IEnumerable<object>)_container.Resolve(typeof(IEnumerable<>).MakeGenericType(typeof(T)));
+            var target = _container.Resolve<IEnumerable<T>>();
 
             foreach (var instance in target)
             {
@@ -168,7 +170,16 @@ namespace Slalom.Stacks.Configuration
         {
             var builder = new ContainerBuilder();
 
-            builder.Register(c => @delegate.Invoke(c.Resolve<IComponentContext>()));
+            builder.Register(c =>
+            {
+                var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
+
+                _container.InjectProperties(instance, _selector);
+
+                return instance;
+
+            })
+                .As<T>();
 
             builder.Update(_container.ComponentRegistry);
         }

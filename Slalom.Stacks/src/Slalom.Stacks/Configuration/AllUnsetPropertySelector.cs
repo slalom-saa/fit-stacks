@@ -4,10 +4,10 @@ using Autofac.Core;
 namespace Slalom.Stacks.Configuration
 {
     /// <summary>
-    /// Used to select all properties.
+    /// Used to select all unset properties.
     /// </summary>
     /// <seealso cref="Autofac.Core.IPropertySelector" />
-    public class AllPropertySelector : IPropertySelector
+    public class AllUnsetPropertySelector : IPropertySelector
     {
         /// <summary>
         /// Provides filtering to determine if property should be injected
@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Configuration
         /// <returns>Whether property should be injected</returns>
         public bool InjectProperty(PropertyInfo propertyInfo, object instance)
         {
-            return propertyInfo.CanWrite;
+            return propertyInfo.CanWrite && propertyInfo.GetValue(instance) == null;
         }
     }
 }

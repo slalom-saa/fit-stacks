@@ -28,5 +28,7 @@ namespace Slalom.Stacks.Configuration
         /// <typeparam name="T">The type to resolve.</typeparam>
         /// <returns>The resolved instance.</returns>
         T Resolve<T>();
+
+        T BuildUp<T>(T instance);
     }
 }

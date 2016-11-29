@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Configuration;
-using Slalom.Stacks.DocumentDb;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.EntityFramework;
 using Slalom.Stacks.Mongo;
@@ -81,16 +80,10 @@ namespace Slalom.Stacks.ConsoleClient
         public string Name { get; set; }
     }
 
-    public class ItemRepository : DocumentDbRepository<Item>
+    public class ItemRepository : MongoRepository<Item>
     {
-        public ItemRepository()
-            : base(null, "Items")
+        public ItemRepository(ItemMongoContext context) : base(context)
         {
-        }
-
-        public override Task AddAsync(Item[] instances)
-        {
-            return base.AddAsync(instances);
         }
     }
 
@@ -99,7 +92,7 @@ namespace Slalom.Stacks.ConsoleClient
         public Guid Id { get; set; } = Guid.NewGuid();
     }
 
-    public class CreateItemCommand : Command<ItemCreatedEvent>
+    public class CreateItemCommand : Communication.Command<ItemCreatedEvent>
     {
     }
 
@@ -110,6 +103,13 @@ namespace Slalom.Stacks.ConsoleClient
             await this.Domain.AddAsync(new Item(command.CommandName));
 
             return new ItemCreatedEvent();
+        }
+    }
+
+    public class ItemMongoContext : MongoDbContext
+    {
+        public ItemMongoContext()
+        {
         }
     }
 
@@ -144,17 +144,18 @@ namespace Slalom.Stacks.ConsoleClient
                 using (var container = new Container(typeof(Program)))
                 {
                     container.Register<ExecutionContext>(new LocalExecutionContext("test.user"));
-                    container.RegisterModule(new DocumentDbDomainModule());
+                    container.RegisterModule(new MongoDomainModule());
+                    container.Register<IRepository<Item>>(c => new ItemRepository(c.BuildUp(new ItemMongoContext())));
                     container.RegisterModule(new EntityFrameworkSearchModule());
                     container.Register<ISearchIndex<ItemSearchResult>>(c => new ItemSearchIndex(c.Resolve<SearchContext>()));
                     container.Register(new SearchContext("Data Source=localhost;Initial Catalog=Fit;Integrated Security=True"));
 
-                    container.Configure<DocumentDbOptions>("DocumentDb");
-
                     //await container.Search.RebuildIndexAsync<ItemSearchResult>();
                     await container.Bus.Send(new CreateItemCommand());
 
-                    Console.WriteLine(container.Domain.CreateQuery<Item>().Select(e => 1).ToList().Count());
+                    Console.WriteLine(container.Domain.CreateQuery<Item>().Count());
+
+                    //await container.Search.RebuildIndexAsync<ItemSearchResult>();
 
                     var query = container.Search.CreateQuery<ItemSearchResult>();
 
