@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Validation;
@@ -43,7 +41,7 @@ namespace Slalom.Stacks.Runtime
             var httpContext = _contextAccessor.HttpContext;
             var httpRequest = httpContext.Request;
 
-            return new ExecutionContext(_configuration["Application"], 
+            return new ExecutionContext(_configuration["Application"],
                 _configuration["Environment"],
                 httpContext.Connection.LocalIpAddress.ToString(),
                 httpRequest != null ? $"{httpRequest.Method} {httpRequest.Scheme}://{httpRequest.Host.Value}{httpRequest.Path}{httpRequest.QueryString}" : null,
@@ -54,8 +52,6 @@ namespace Slalom.Stacks.Runtime
                 Environment.MachineName,
                 Environment.CurrentManagedThreadId);
         }
-
-        
 
         private string GetCorrelationId()
         {

@@ -4,18 +4,17 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Core;
-using Serilog.Events;
 using Serilog.Exceptions;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Logging
+namespace Slalom.Stacks.Logging.Serilog
 {
     /// <summary>
     /// A <see href="https://serilog.net/">Serilog</see> implementation of the <see cref="ILogger"/>.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Logging.ILogger" />
-    internal class SerilogLogger : ILogger
+    public class SerilogLogger : ILogger
     {
         private readonly Logger _logger;
 
@@ -36,8 +35,6 @@ namespace Slalom.Stacks.Logging
                 .ReadFrom.Configuration(configuration)
                 .Enrich.WithExceptionDetails()
                 .Destructure.With(policies.ToArray());
-
-            this.AddApplicationInsightsSink(builder, configuration);
 
             _logger = builder.CreateLogger();
         }
@@ -186,15 +183,6 @@ namespace Slalom.Stacks.Logging
             if (disposing)
             {
                 _logger?.Dispose();
-            }
-        }
-
-        private void AddApplicationInsightsSink(LoggerConfiguration builder, IConfiguration configuration)
-        {
-            var value = configuration["ApplicationInsights:InstrumentationKey"];
-            if (value != null)
-            {
-                builder.WriteTo.ApplicationInsightsEvents(value);
             }
         }
     }

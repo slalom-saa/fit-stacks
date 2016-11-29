@@ -12,9 +12,9 @@ using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Logging
+namespace Slalom.Stacks.Logging.Serilog
 {
-    internal class LoggingDestructuringPolicy : IDestructuringPolicy
+    internal class DestructuringPolicy : IDestructuringPolicy
     {
         private readonly Dictionary<Type, Func<object, ILogEventPropertyValueFactory, LogEventPropertyValue>> _cache = new Dictionary<Type, Func<object, ILogEventPropertyValueFactory, LogEventPropertyValue>>();
         private readonly object _cacheLock = new object();
@@ -62,7 +62,7 @@ namespace Slalom.Stacks.Logging
 
                 if (pi.GetCustomAttributes<SecureAttribute>().Any())
                 {
-                    structureProperties.Add(new LogEventProperty(pi.Name, new ScalarValue("[SECURE]")));
+                    structureProperties.Add(new LogEventProperty(pi.Name, new ScalarValue(SecureAttribute.DefaultDisplayText)));
                     continue;
                 }
                 if (typeof(ClaimsPrincipal).IsAssignableFrom(pi.PropertyType))

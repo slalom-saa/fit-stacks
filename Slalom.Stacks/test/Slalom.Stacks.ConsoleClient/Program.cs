@@ -7,6 +7,7 @@ using Slalom.Stacks.Communication;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.EntityFramework;
+using Slalom.Stacks.Logging.Serilog;
 using Slalom.Stacks.Mongo;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
@@ -143,23 +144,9 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var container = new Container(typeof(Program)))
                 {
-                    container.Register<ExecutionContext>(new LocalExecutionContext("test.user"));
-                    container.RegisterModule(new MongoDomainModule());
-                    container.Register<IRepository<Item>>(c => new ItemRepository(c.BuildUp(new ItemMongoContext())));
-                    container.RegisterModule(new EntityFrameworkSearchModule());
-                    container.Register<ISearchIndex<ItemSearchResult>>(c => new ItemSearchIndex(c.Resolve<SearchContext>()));
-                    container.Register(new SearchContext("Data Source=localhost;Initial Catalog=Fit;Integrated Security=True"));
+                    container.RegisterModule(new SerilogModule());
 
-                    //await container.Search.RebuildIndexAsync<ItemSearchResult>();
-                    await container.Bus.Send(new CreateItemCommand());
-
-                    Console.WriteLine(container.Domain.CreateQuery<Item>().Count());
-
-                    //await container.Search.RebuildIndexAsync<ItemSearchResult>();
-
-                    var query = container.Search.CreateQuery<ItemSearchResult>();
-
-                    Console.WriteLine(query.Count());
+                    container.Logger.Error("template");
                 }
             }
             catch (Exception exception)

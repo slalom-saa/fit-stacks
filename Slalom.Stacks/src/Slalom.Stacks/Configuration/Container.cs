@@ -7,6 +7,7 @@ using Autofac.Core;
 using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Logging;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
 
@@ -51,6 +52,12 @@ namespace Slalom.Stacks.Configuration
         /// </summary>
         /// <value>The configured <see cref="IMessageBus"/> instance.</value>
         public IMessageBus Bus => this.Resolve<IMessageBus>();
+
+        /// <summary>
+        /// Gets the configured <see cref="ILogger"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="ILogger"/> instance.</value>
+        public ILogger Logger => this.Resolve<ILogger>();
 
         /// <summary>
         /// Gets the configured <see cref="IDomainFacade"/> instance.
