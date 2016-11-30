@@ -8,9 +8,10 @@ using Slalom.Stacks.ConsoleClient;
 namespace Slalom.Stacks.ConsoleClient.Migrations
 {
     [DbContext(typeof(SearchContext))]
-    partial class SearchContextModelSnapshot : ModelSnapshot
+    [Migration("20161130150243_Initial2")]
+    partial class Initial2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -79,23 +80,15 @@ namespace Slalom.Stacks.ConsoleClient.Migrations
 
                     b.Property<string>("Environment");
 
-                    b.Property<string>("Host");
-
                     b.Property<bool>("IsSuccessful");
 
                     b.Property<string>("MachineName");
-
-                    b.Property<string>("Path");
 
                     b.Property<string>("Payload");
 
                     b.Property<string>("SessionId");
 
-                    b.Property<int>("ThreadId");
-
                     b.Property<DateTimeOffset?>("TimeStamp");
-
-                    b.Property<string>("UserHostAddress");
 
                     b.Property<string>("UserName");
 

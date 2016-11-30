@@ -7,11 +7,11 @@ using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks.EntityFramework
 {
-    public abstract class EntityFrameworkSearchIndex<TSearchResult> : ISearchIndex<TSearchResult> where TSearchResult : class, ISearchResult
+    public abstract class SearchIndex<TSearchResult> : ISearchIndex<TSearchResult> where TSearchResult : class, ISearchResult
     {
         private readonly DbContext _context;
 
-        protected EntityFrameworkSearchIndex(DbContext context)
+        protected SearchIndex(DbContext context)
         {
             _context = context;
             this.Set = _context.Set<TSearchResult>();

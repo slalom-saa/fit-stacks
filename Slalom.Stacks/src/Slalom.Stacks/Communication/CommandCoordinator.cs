@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Slalom.Stacks.Communication.Logging;
 using Slalom.Stacks.Communication.Validation;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
@@ -100,14 +101,26 @@ namespace Slalom.Stacks.Communication
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual Task Audit<TResult>(Command<TResult> command, CommandResult<TResult> result, ExecutionContext context)
         {
-            var logger = _componentContext.Resolve<ILogger>();
-            var stores = _componentContext.ResolveAll<IAuditStore>().ToList();
+            var logs = _componentContext.ResolveAll<ILogStore>().ToList();
+            logs.ForEach(e => e.AppendAsync(command, result, context));
 
-            stores.ForEach(async e => await e.AppendAsync(command, result, context));
+            
 
-            if (result.RaisedException != null)
+            if (result.Value is IEvent)
             {
-                logger.Error(result.RaisedException, "Error executing command: " + command.CommandName + " {@Command} {@Context}", command, context);
+                var stores = _componentContext.ResolveAll<IAuditStore>().ToList();
+                stores.ForEach(async e => await e.AppendAsync((IEvent)result.Value, context));
+            }
+
+            if (!result.IsSuccessful)
+            {
+                var stores = _componentContext.ResolveAll<IAuditStore>().ToList();
+                stores.ForEach(async e => await e.AppendAsync(new CommandExecutionFailedEvent(command, result), context));
+                if (result.RaisedException != null)
+                {
+                    var logger = _componentContext.Resolve<ILogger>();
+                    logger.Error(result.RaisedException, "Error executing command: " + command.CommandName + ". {@Command} {@Context}", command, context);
+                }
             }
 
             return Task.FromResult(0);

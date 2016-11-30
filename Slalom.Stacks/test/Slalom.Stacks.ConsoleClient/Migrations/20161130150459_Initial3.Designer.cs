@@ -8,8 +8,8 @@ using Slalom.Stacks.ConsoleClient;
 namespace Slalom.Stacks.ConsoleClient.Migrations
 {
     [DbContext(typeof(SearchContext))]
-    [Migration("20161130015729_Another")]
-    partial class Another
+    [Migration("20161130150459_Initial3")]
+    partial class Initial3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,14 +34,6 @@ namespace Slalom.Stacks.ConsoleClient.Migrations
 
                     b.Property<string>("ApplicationName");
 
-                    b.Property<Guid>("CommandId");
-
-                    b.Property<string>("CommandName");
-
-                    b.Property<string>("CommandPayload");
-
-                    b.Property<DateTimeOffset>("CommandTimeStamp");
-
                     b.Property<Guid>("CorrelationId");
 
                     b.Property<string>("Environment");
@@ -50,23 +42,69 @@ namespace Slalom.Stacks.ConsoleClient.Migrations
 
                     b.Property<string>("EventName");
 
-                    b.Property<string>("EventPayload");
-
-                    b.Property<DateTimeOffset?>("EventTimeStamp");
-
-                    b.Property<bool>("IsSuccessful");
+                    b.Property<string>("Host");
 
                     b.Property<string>("MachineName");
 
+                    b.Property<string>("Path");
+
+                    b.Property<string>("Payload");
+
                     b.Property<string>("SessionId");
 
-                    b.Property<bool>("StateChanged");
+                    b.Property<int>("ThreadId");
+
+                    b.Property<DateTimeOffset?>("TimeStamp");
+
+                    b.Property<string>("UserHostAddress");
 
                     b.Property<string>("UserName");
 
                     b.HasKey("Id");
 
                     b.ToTable("Audits");
+                });
+
+            modelBuilder.Entity("Slalom.Stacks.EntityFramework.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationName");
+
+                    b.Property<Guid>("CommandId");
+
+                    b.Property<string>("CommandName");
+
+                    b.Property<Guid>("CorrelationId");
+
+                    b.Property<string>("Environment");
+
+                    b.Property<string>("Host");
+
+                    b.Property<bool>("IsSuccessful");
+
+                    b.Property<string>("MachineName");
+
+                    b.Property<string>("Path");
+
+                    b.Property<string>("Payload");
+
+                    b.Property<string>("SessionId");
+
+                    b.Property<int>("ThreadId");
+
+                    b.Property<DateTimeOffset?>("TimeStamp");
+
+                    b.Property<string>("UserHostAddress");
+
+                    b.Property<string>("UserName");
+
+                    b.Property<string>("ValidationErrors");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
                 });
         }
     }

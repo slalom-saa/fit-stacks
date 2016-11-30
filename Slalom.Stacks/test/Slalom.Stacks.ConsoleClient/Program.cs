@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Communication;
+using Slalom.Stacks.Communication.Logging;
 using Slalom.Stacks.Communication.Validation;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
@@ -47,10 +48,14 @@ namespace Slalom.Stacks.ConsoleClient
             modelBuilder.Entity<Audit>()
                         .ToTable("Audits")
                         .HasKey(e => e.Id);
+
+            modelBuilder.Entity<Log>()
+                        .ToTable("Logs")
+                        .HasKey(e => e.Id);
         }
     }
 
-    public class ItemSearchIndex : EntityFrameworkSearchIndex<ItemSearchResult>
+    public class ItemSearchIndex : SearchIndex<ItemSearchResult>
     {
         public ItemSearchIndex(SearchContext context)
             : base(context)
@@ -159,14 +164,16 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var container = new Container(typeof(Program)))
                 {
-                    container.RegisterModule(new SerilogModule());
-                    container.Register<IAuditStore>(c => new EntityFrameworkAuditStore(new SearchContext()));
+                    //container.RegisterModule(new SerilogModule());
+                    container.RegisterModule(new LoggingModule<SearchContext>());
+                    container.Register(c => new SearchContext());
 
                     new SearchContext().Database.Migrate();
 
                     var result = container.Bus.Send(new CreateItemCommand()).Result;
 
                     Console.WriteLine(result.IsSuccessful);
+                    Console.ReadKey();
                 }
             }
             catch (Exception exception)
