@@ -1,4 +1,6 @@
-﻿namespace Slalom.Stacks.Communication
+﻿using System;
+
+namespace Slalom.Stacks.Communication
 {
     /// <summary>
     /// An imperative message to perform an action.
@@ -11,5 +13,11 @@
         /// </summary>
         /// <value>The name of the command.</value>
         string CommandName { get; }
+
+        /// <summary>
+        /// Gets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        Guid Id { get; }
     }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Communication;
+using Slalom.Stacks.Communication.Validation;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.EntityFramework;
@@ -11,6 +12,7 @@ using Slalom.Stacks.Logging.Serilog;
 using Slalom.Stacks.Mongo;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient
 {
@@ -40,6 +42,10 @@ namespace Slalom.Stacks.ConsoleClient
 
             modelBuilder.Entity<ItemSearchResult>()
                         .ToTable("Items")
+                        .HasKey(e => e.Id);
+
+            modelBuilder.Entity<Audit>()
+                        .ToTable("Audits")
                         .HasKey(e => e.Id);
         }
     }
@@ -129,6 +135,15 @@ namespace Slalom.Stacks.ConsoleClient
         }
     }
 
+    public class must_do_this : BusinessValidationRule<CreateItemCommand>
+    {
+        protected override async Task<ValidationError> Validate(CreateItemCommand instance)
+        {
+            return "asdf";
+        }
+    }
+    
+
     public class Program
     {
         public static void Main(string[] args)
@@ -145,8 +160,13 @@ namespace Slalom.Stacks.ConsoleClient
                 using (var container = new Container(typeof(Program)))
                 {
                     container.RegisterModule(new SerilogModule());
+                    container.Register<IAuditStore>(c => new EntityFrameworkAuditStore(new SearchContext()));
 
-                    container.Logger.Error("template");
+                    new SearchContext().Database.Migrate();
+
+                    var result = container.Bus.Send(new CreateItemCommand()).Result;
+
+                    Console.WriteLine(result.IsSuccessful);
                 }
             }
             catch (Exception exception)

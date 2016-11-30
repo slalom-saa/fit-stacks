@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
@@ -14,6 +14,28 @@ namespace Slalom.Stacks.Communication.Validation
     public class InputValidationRuleSet<TValue> : IInputValidationRule<TValue> where TValue : ICommand
     {
         private readonly List<IValidationRule<TValue, ExecutionContext>> _rules = new List<IValidationRule<TValue, ExecutionContext>>();
+
+        /// <summary>
+        /// Validates the specified instance.
+        /// </summary>
+        /// <param name="instance">The instance to validate.</param>
+        /// <param name="context">The current context.</param>
+        /// <returns>Returns all found validation messages.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
+        public virtual async Task<IEnumerable<ValidationError>> Validate(TValue instance, ExecutionContext context)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+
+            var target = new List<ValidationError>();
+            foreach (var rule in _rules)
+            {
+                target.AddRange(await rule.Validate(instance, context));
+            }
+            return target.WithType(ValidationErrorType.Input);
+        }
 
         /// <summary>
         /// Adds the specified property rule.
@@ -42,22 +64,6 @@ namespace Slalom.Stacks.Communication.Validation
             var target = new EnumerablePropertyRuleCollection<TValue, TProperty>(property, action);
 
             _rules.Add(target);
-        }
-
-        /// <summary>
-        /// Validates the specified instance.
-        /// </summary>
-        /// <param name="instance">The instance to validate.</param>
-        /// <param name="context">The current context.</param>
-        /// <returns>Returns all found validation messages.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        public virtual IEnumerable<ValidationError> Validate(TValue instance, ExecutionContext context)
-        {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-            return _rules.SelectMany(e => e.Validate(instance, context)).Select(e => e.WithType(ValidationErrorType.Input));
         }
     }
 }

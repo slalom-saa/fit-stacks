@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
@@ -26,14 +26,16 @@ namespace Slalom.Stacks.Communication.Validation
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        public Task<ValidationError> Validate(TCommand instance, ExecutionContext context)
+        public async Task<IEnumerable<ValidationError>> Validate(TCommand instance, ExecutionContext context)
         {
             Argument.NotNull(() => instance);
             Argument.NotNull(() => context);
 
             this.Context = context;
 
-            return this.Validate(instance);
+            var result = await this.Validate(instance);
+
+            return new[] { result };
         }
 
         /// <summary>

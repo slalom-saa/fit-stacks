@@ -30,5 +30,7 @@ namespace Slalom.Stacks.Configuration
         T Resolve<T>();
 
         T BuildUp<T>(T instance);
+
+        IEnumerable<T> ResolveAll<T>();
     }
 }

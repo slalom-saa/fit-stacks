@@ -11,7 +11,7 @@ namespace Slalom.Stacks.Communication
     /// Represents the result of command execution and contains the value returned by the handler.
     /// </summary>
     /// <typeparam name="TResult">The type of the result returned from the handler.</typeparam>
-    public class CommandResult<TResult>
+    public class CommandResult<TResult> : ICommandResult
     {
         private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
 

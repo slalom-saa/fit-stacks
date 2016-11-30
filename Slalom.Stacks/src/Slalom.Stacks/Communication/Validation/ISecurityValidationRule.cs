@@ -7,7 +7,7 @@ namespace Slalom.Stacks.Communication.Validation
     /// Defines a contract for security validation rules.
     /// </summary>
     /// <typeparam name="TCommand">The type of command to validate.</typeparam>
-    public interface ISecurityValidationRule<in TCommand> : IAsyncValidationRule<TCommand, ExecutionContext> where TCommand : ICommand
+    public interface ISecurityValidationRule<in TCommand> : IValidationRule<TCommand, ExecutionContext> where TCommand : ICommand
     {
     }
 }

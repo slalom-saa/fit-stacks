@@ -8,9 +8,10 @@ using Slalom.Stacks.ConsoleClient;
 namespace Slalom.Stacks.ConsoleClient.Migrations
 {
     [DbContext(typeof(SearchContext))]
-    partial class SearchContextModelSnapshot : ModelSnapshot
+    [Migration("20161130015729_Another")]
+    partial class Another
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -32,8 +33,6 @@ namespace Slalom.Stacks.ConsoleClient.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("ApplicationName");
-
-                    b.Property<bool>("ChangesState");
 
                     b.Property<Guid>("CommandId");
 

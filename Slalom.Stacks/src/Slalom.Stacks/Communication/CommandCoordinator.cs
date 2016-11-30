@@ -101,23 +101,13 @@ namespace Slalom.Stacks.Communication
         protected virtual Task Audit<TResult>(Command<TResult> command, CommandResult<TResult> result, ExecutionContext context)
         {
             var logger = _componentContext.Resolve<ILogger>();
+            var stores = _componentContext.ResolveAll<IAuditStore>().ToList();
 
-            logger.Information("Audit: " + command.CommandName + " {@Command} {@Result} {@Context}", command, new
-            {
-                result.IsSuccessful,
-                result.ValidationErrors,
-                result.RaisedException,
-                context.RaisedEvents
-            }, context);
-
-            foreach (var instance in context.RaisedEvents)
-            {
-                logger.Information("Event: " + command.CommandName + " {@Event} {@Context}", instance, context);
-            }
+            stores.ForEach(async e => await e.AppendAsync(command, result, context));
 
             if (result.RaisedException != null)
             {
-                logger.Error("Error: " + command.CommandName + " {@Command} {@Exception} {@Context}", command, result.RaisedException, context);
+                logger.Error(result.RaisedException, "Error executing command: " + command.CommandName + " {@Command} {@Context}", command, context);
             }
 
             return Task.FromResult(0);
