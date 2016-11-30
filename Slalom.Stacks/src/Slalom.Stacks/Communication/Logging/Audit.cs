@@ -33,11 +33,12 @@ namespace Slalom.Stacks.Communication.Logging
             this.UserHostAddress = context.UserHostAddress;
             this.Host = context.Host;
             this.ThreadId = context.ThreadId;
+            this.CorrelationId = context.CorrelationId;
         }
 
         public string ApplicationName { get; set; }
 
-        public Guid CorrelationId { get; set; }
+        public string CorrelationId { get; set; }
 
         public string Environment { get; set; }
 

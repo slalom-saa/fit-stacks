@@ -137,10 +137,10 @@ namespace Slalom.Stacks.Communication.Validation
 
             foreach (var set in sets)
             {
-                var result = await (Task<ValidationError>)method.Invoke(set, new object[] { command, context });
+                var result = await (Task<IEnumerable<ValidationError>>)method.Invoke(set, new object[] { command, context });
                 if (result != null)
                 {
-                    return new[] { result };
+                    return result;
                 }
             }
             return Enumerable.Empty<ValidationError>();

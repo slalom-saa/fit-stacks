@@ -6,11 +6,14 @@ using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Slalom.Stacks.Communication.Logging;
 using Slalom.Stacks.Configuration;
+using Slalom.Stacks.EntityFramework;
 using Slalom.Stacks.Runtime;
 using Module = Autofac.Module;
 
@@ -63,11 +66,48 @@ namespace Slalom.Stacks.WebApi
 
             builder.RegisterModule(new StacksWebApiModule());
 
+            builder.Register(c => new SearchContext());
+            builder.RegisterModule(new LoggingModule<SearchContext>());
+
             builder.Populate(services);
 
             this.ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(this.ApplicationContainer);
+        }
+    }
+
+    public class SearchContext : DbContext
+    {
+        private readonly string _connectionString;
+
+        public SearchContext()
+        {
+        }
+
+        public SearchContext(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseSqlServer(_connectionString ?? "Data Source=localhost;Initial Catalog=Fit;Integrated Security=True");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Audit>()
+                        .ToTable("Audits")
+                        .HasKey(e => e.Id);
+
+            modelBuilder.Entity<Log>()
+                        .ToTable("Logs")
+                        .HasKey(e => e.Id);
         }
     }
 
