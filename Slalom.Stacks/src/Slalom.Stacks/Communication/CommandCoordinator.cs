@@ -101,17 +101,18 @@ namespace Slalom.Stacks.Communication
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual Task Audit<TResult>(Command<TResult> command, CommandResult<TResult> result, ExecutionContext context)
         {
+            // Log the command
             var logs = _componentContext.ResolveAll<ILogStore>().ToList();
             logs.ForEach(e => e.AppendAsync(command, result, context));
 
-            
-
+            // Add an audit if state was changed
             if (result.Value is IEvent)
             {
                 var stores = _componentContext.ResolveAll<IAuditStore>().ToList();
                 stores.ForEach(async e => await e.AppendAsync((IEvent)result.Value, context));
             }
 
+            // Add addtional audits and diagnostic messages if the result was unsuccessful.
             if (!result.IsSuccessful)
             {
                 var stores = _componentContext.ResolveAll<IAuditStore>().ToList();
