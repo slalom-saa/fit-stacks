@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using Newtonsoft.Json;
 using Serilog.Core;
 using Serilog.Debugging;
 using Serilog.Events;
@@ -14,40 +16,42 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Logging.Serilog
 {
-   internal class DestructuringPolicy : IDestructuringPolicy
+    internal class DestructuringPolicy : IDestructuringPolicy
     {
         private readonly Dictionary<Type, Func<object, ILogEventPropertyValueFactory, LogEventPropertyValue>> _cache = new Dictionary<Type, Func<object, ILogEventPropertyValueFactory, LogEventPropertyValue>>();
         private readonly object _cacheLock = new object();
-        private readonly HashSet<Type> _ignored = new HashSet<Type>();
 
         public bool TryDestructure(object value, ILogEventPropertyValueFactory propertyValueFactory, out LogEventPropertyValue result)
         {
             var type = value.GetType();
-            lock (_cacheLock)
-            {
-                if (_ignored.Contains(type))
-                {
-                    result = null;
-                    return false;
-                }
-
-                Func<object, ILogEventPropertyValueFactory, LogEventPropertyValue> cached;
-                if (_cache.TryGetValue(type, out cached))
-                {
-                    result = cached(value, propertyValueFactory);
-                    return true;
-                }
-            }
+            //lock (_cacheLock)
+            //{
+            //    Func<object, ILogEventPropertyValueFactory, LogEventPropertyValue> cached;
+            //    if (_cache.TryGetValue(type, out cached))
+            //    {
+            //        result = cached(value, propertyValueFactory);
+            //        return true;
+            //    }
+            //}
 
             var properties = type.GetPropertiesRecursive()
                                  .ToList();
 
-            lock (_cacheLock)
+            var target = new List<LogEventProperty>();
+            foreach (var pi in properties)
             {
-                _cache[type] = (o, f) => MakeStructure(o, properties, f, type);
+                var piValue = pi.GetValue(value);
+                target.Add(new LogEventProperty(pi.Name, new ScalarValue(JsonConvert.SerializeObject(piValue))));
             }
+            result = new StructureValue(target, type.Name);
+            return true;
 
-            return this.TryDestructure(value, propertyValueFactory, out result);
+            //lock (_cacheLock)
+            //{
+            //    _cache[type] = (o, f) => MakeStructure(o, properties, f, type);
+            //}
+
+            //return this.TryDestructure(value, propertyValueFactory, out result);
         }
 
         private static LogEventPropertyValue MakeStructure(object value, IEnumerable<PropertyInfo> properties, ILogEventPropertyValueFactory propertyValueFactory, Type type)
@@ -85,7 +89,15 @@ namespace Slalom.Stacks.Logging.Serilog
                 }
                 else
                 {
-                    pv = propertyValueFactory.CreatePropertyValue(propValue, true);
+                    if (pi.PropertyType.GetTypeInfo().IsGenericType && (pi.PropertyType.GetGenericTypeDefinition() == typeof(List<>) || pi.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                    {
+                        structureProperties.Add(new LogEventProperty(pi.Name, new ScalarValue(JsonConvert.SerializeObject(propValue))));
+                        continue;
+                    }
+                    else
+                    {
+                        pv = propertyValueFactory.CreatePropertyValue(propValue, true);
+                    }
                 }
 
                 structureProperties.Add(new LogEventProperty(pi.Name, pv));
