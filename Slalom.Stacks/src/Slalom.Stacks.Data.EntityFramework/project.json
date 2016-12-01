@@ -4,7 +4,8 @@
   "dependencies": {
     "Microsoft.EntityFrameworkCore": "1.0.1",
     "NETStandard.Library": "1.6.0",
-    "Slalom.Stacks": "1.0.0-*"
+    "Slalom.Stacks": "1.0.0-*",
+    "System.Reflection": "4.1.0"
   },
 
     "frameworks": {

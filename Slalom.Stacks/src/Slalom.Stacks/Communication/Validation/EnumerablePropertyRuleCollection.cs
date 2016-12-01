@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
@@ -20,7 +21,7 @@ namespace Slalom.Stacks.Communication.Validation
             _action = action;
         }
 
-        public IEnumerable<ValidationError> Validate(TValue instance, ExecutionContext context)
+        public async Task<IEnumerable<ValidationError>> Validate(TValue instance, ExecutionContext context)
         {
             var value = _property.Compile()(instance);
 
@@ -28,7 +29,7 @@ namespace Slalom.Stacks.Communication.Validation
 
             foreach (var item in value)
             {
-                var target = StarterRule.Validate(item, context);
+                var target = await StarterRule.Validate(item, context);
                 if (target.Any())
                 {
                     return target;

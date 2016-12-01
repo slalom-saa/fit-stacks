@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
@@ -16,7 +17,7 @@ namespace Slalom.Stacks.Communication.Validation
             _property = property;
         }
 
-        public IEnumerable<ValidationError> Validate(TValue instance, ExecutionContext context)
+        public Task<IEnumerable<ValidationError>> Validate(TValue instance, ExecutionContext context)
         {
             var value = _property.Compile()(instance);
 

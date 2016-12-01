@@ -1,4 +1,4 @@
-{
+﻿{
   "version": "1.0.1-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
@@ -18,12 +18,20 @@
     //},
     "Autofac": "4.1.1",
     "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
+    "Serilog": "2.3.0",
+    "Serilog.Sinks.Literate": "2.0.0",
+    "Serilog.Sinks.File": "2.0.0",
+    "Serilog.Sinks.ApplicationInsights": "2.1.0",
+    "Serilog.Exceptions": "2.2.1",
+    "Serilog.Settings.Configuration": "2.1.0",
+    "System.Reflection": "4.1.0",
     "Microsoft.Extensions.Configuration.Abstractions": "1.0.0",
     "Microsoft.Extensions.Configuration": "1.0.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-final",
     "Microsoft.Extensions.DependencyModel": "1.0.0",
-    "Microsoft.Extensions.Configuration.Binder": "1.0.0"
+    "Microsoft.Extensions.Configuration.Binder": "1.0.0",
+    "Slalom.Stacks": "1.0.1-*"
   },
 
   "buildOptions": {

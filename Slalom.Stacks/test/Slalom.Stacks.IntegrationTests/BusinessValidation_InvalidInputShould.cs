@@ -56,7 +56,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var mock = new Mock<IInputValidationRule<TestCommand>>();
                 mock.Setup(e => e.Validate(It.IsAny<TestCommand>(), It.IsAny<ExecutionContext>()))
-                    .Returns(new[] { new ValidationError("none") });
+                    .Returns(Task.FromResult((IEnumerable<ValidationError>)new[] { new ValidationError("none") }));
                 container.Register(mock.Object);
 
                 var bus = container.Resolve<IMessageBus>();
@@ -112,7 +112,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var mock = new Mock<IInputValidationRule<TestCommand>>();
                 mock.Setup(e => e.Validate(It.IsAny<TestCommand>(), It.IsAny<ExecutionContext>()))
-                    .Returns(new[] { new ValidationError("none") });
+                    .Returns(Task.FromResult((IEnumerable<ValidationError>)new[] { new ValidationError("none") }));
                 container.Register(mock.Object);
 
                 var bus = container.Resolve<IMessageBus>();
@@ -132,7 +132,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var mock = new Mock<ISecurityValidationRule<TestCommand>>();
                 mock.Setup(e => e.Validate(It.IsAny<TestCommand>(), It.IsAny<ExecutionContext>()))
-                    .Returns(Task.FromResult(new ValidationError("none")));
+                    .Returns(Task.FromResult((IEnumerable<ValidationError>)new[] { new ValidationError("none") }));
                 container.Register(mock.Object);
 
                 var bus = container.Resolve<IMessageBus>();

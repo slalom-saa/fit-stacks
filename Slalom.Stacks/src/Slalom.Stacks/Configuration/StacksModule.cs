@@ -68,11 +68,10 @@ namespace Slalom.Stacks.Configuration
                 return configurationBuilder.Build();
             }).As<IConfiguration>();
 
-            
+            builder.Register<ILogger>(c => new NullLogger());
 
             builder.RegisterModule(new DomainModule(this.Assemblies));
             builder.RegisterModule(new MessagingModule());
-            builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new SearchModule(this.Assemblies));
 
             builder.Register(c => new ComponentContext(c.Resolve<Autofac.IComponentContext>()))
@@ -93,7 +92,7 @@ namespace Slalom.Stacks.Configuration
                    .As(e => e.GetBaseAndContractTypes().Where(x => !x.GetTypeInfo().IsGenericTypeDefinition));
 
             builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>) || x == typeof(IAsyncValidationRule<,>)))
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>)))
                    .As(e => e.GetBaseAndContractTypes().Where(x => !x.GetTypeInfo().IsGenericTypeDefinition));
         }
     }

@@ -101,7 +101,7 @@ namespace Slalom.Stacks.Reflection
         /// </summary>
         /// <param name="type">The root type.</param>
         /// <returns>All discovered properties.</returns>
-        internal static IEnumerable<PropertyInfo> GetPropertiesRecursive(this Type type)
+        public static IEnumerable<PropertyInfo> GetPropertiesRecursive(this Type type)
         {
             var seenNames = new HashSet<string>();
 

@@ -10,7 +10,7 @@ using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Mongo
+namespace Slalom.Stacks.Data.Mongo
 {
     public class MongoMappingsManager
     {

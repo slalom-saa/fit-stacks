@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-namespace Slalom.Stacks.Mongo
+namespace Slalom.Stacks.Data.Mongo
 {
     public class MongoConnectionManager
     {

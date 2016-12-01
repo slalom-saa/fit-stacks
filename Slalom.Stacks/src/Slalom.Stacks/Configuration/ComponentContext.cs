@@ -97,6 +97,11 @@ namespace Slalom.Stacks.Configuration
             return instance;
         }
 
+        public IEnumerable<T> ResolveAll<T>()
+        {
+            return _context.Resolve<IEnumerable<T>>();
+        }
+
         /// <summary>
         /// Resolves all instance of the specified type from the container.
         /// </summary>
