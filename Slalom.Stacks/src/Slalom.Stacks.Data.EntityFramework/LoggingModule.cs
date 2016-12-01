@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Communication.Logging;
 
-namespace Slalom.Stacks.EntityFramework
+namespace Slalom.Stacks.Data.EntityFramework
 {
     public class LoggingModule<TContext> : Module where TContext : DbContext
     {

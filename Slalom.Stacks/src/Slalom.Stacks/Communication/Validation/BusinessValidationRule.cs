@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Search;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Communication.Validation
@@ -18,6 +20,18 @@ namespace Slalom.Stacks.Communication.Validation
         /// </summary>
         /// <value>The execution context.</value>
         public ExecutionContext Context { get; private set; }
+
+        /// <summary>
+        /// Gets the configured <see cref="IDomainFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade"/> instance.</value>
+        public DomainFacade Domain { get; set; }
+
+        /// <summary>
+        /// Gets the configured <see cref="ISearchFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade"/> instance.</value>
+        public ISearchFacade Search { get; set; }
 
         /// <summary>
         /// Validates the specified command instance.

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Slalom.Stacks.EntityFramework")]
+[assembly: AssemblyProduct("Slalom.Stacks.Data.Mongo")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -16,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1d3767cd-2ee3-4a1f-ab47-b68a6c7d5f99")]
+[assembly: Guid("797c4d5f-c7ec-4696-9236-ae51c314bc55")]

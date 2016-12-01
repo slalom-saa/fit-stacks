@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Slalom.Stacks.Communication.Logging;
 using Slalom.Stacks.Configuration;
-using Slalom.Stacks.EntityFramework;
+using Slalom.Stacks.Data.EntityFramework;
 using Slalom.Stacks.Runtime;
 using Module = Autofac.Module;
 

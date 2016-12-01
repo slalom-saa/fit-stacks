@@ -15,14 +15,15 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
-    "Slalom.Stacks": "1.0.0-*",
     "Autofac.Extensions.DependencyInjection": "4.0.0",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "IdentityServer4.AccessTokenValidation": "1.0.1-rc1",
     "Serilog": "2.3.0",
     "Microsoft.EntityFrameworkCore": "1.0.1",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.1",
-    "Slalom.Stacks.EntityFramework": "1.0.0-*"
+    "Slalom.Stacks": "1.0.1-*",
+    "Slalom.Stacks.Data.EntityFramework": "1.0.0-*",
+    "Slalom.Stacks.Data.Mongo": "1.0.0-*"
   },
 
   "tools": {

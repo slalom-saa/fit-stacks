@@ -14,7 +14,7 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Logging.Serilog
 {
-    internal class DestructuringPolicy : IDestructuringPolicy
+   internal class DestructuringPolicy : IDestructuringPolicy
     {
         private readonly Dictionary<Type, Func<object, ILogEventPropertyValueFactory, LogEventPropertyValue>> _cache = new Dictionary<Type, Func<object, ILogEventPropertyValueFactory, LogEventPropertyValue>>();
         private readonly object _cacheLock = new object();
@@ -63,39 +63,6 @@ namespace Slalom.Stacks.Logging.Serilog
                 if (pi.GetCustomAttributes<SecureAttribute>().Any())
                 {
                     structureProperties.Add(new LogEventProperty(pi.Name, new ScalarValue(SecureAttribute.DefaultDisplayText)));
-                    continue;
-                }
-                if (typeof(ClaimsPrincipal).IsAssignableFrom(pi.PropertyType))
-                {
-                    var user = pi.GetValue(value) as ClaimsPrincipal;
-                    if (user != null)
-                    {
-                        structureProperties.Add(new LogEventProperty(pi.Name, new ScalarValue(user.Identity?.Name)));
-                    }
-                    continue;
-                }
-
-                if (typeof(IEnumerable<IEvent>).IsAssignableFrom(pi.PropertyType))
-                {
-                    var builder = new StringBuilder();
-                    var events = (IEnumerable<IEvent>)pi.GetValue(value);
-                    foreach (var instance in events)
-                    {
-                        builder.AppendLine(instance.EventName + ": " + instance.Id);
-                    }
-                    structureProperties.Add(new LogEventProperty(pi.Name, new ScalarValue(builder.ToString())));
-                    continue;
-                }
-
-                if (typeof(IEnumerable<ValidationError>).IsAssignableFrom(pi.PropertyType))
-                {
-                    var builder = new StringBuilder();
-                    var errors = (IEnumerable<ValidationError>)pi.GetValue(value);
-                    foreach (var error in errors)
-                    {
-                        builder.AppendLine(error.ErrorType + ": " + error.Message);
-                    }
-                    structureProperties.Add(new LogEventProperty(pi.Name, new ScalarValue(builder.ToString())));
                     continue;
                 }
 

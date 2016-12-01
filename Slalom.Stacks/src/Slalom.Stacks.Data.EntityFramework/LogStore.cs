@@ -6,7 +6,7 @@ using Slalom.Stacks.Communication;
 using Slalom.Stacks.Communication.Logging;
 using Slalom.Stacks.Runtime;
 
-namespace Slalom.Stacks.EntityFramework
+namespace Slalom.Stacks.Data.EntityFramework
 {
     public class LogStore : ILogStore
     {

@@ -6,7 +6,7 @@ using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Mongo
+namespace Slalom.Stacks.Data.Mongo
 {
     /// <summary>
     /// A MongoDB <see cref="IRepository{TRoot}"/> implementation.

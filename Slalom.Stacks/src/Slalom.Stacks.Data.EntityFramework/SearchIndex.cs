@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Slalom.Stacks.Search;
 
-namespace Slalom.Stacks.EntityFramework
+namespace Slalom.Stacks.Data.EntityFramework
 {
     public abstract class SearchIndex<TSearchResult> : ISearchIndex<TSearchResult> where TSearchResult : class, ISearchResult
     {

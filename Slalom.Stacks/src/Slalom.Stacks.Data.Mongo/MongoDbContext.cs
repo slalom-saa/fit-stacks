@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using Slalom.Stacks.Domain;
 
-namespace Slalom.Stacks.Mongo
+namespace Slalom.Stacks.Data.Mongo
 {
     public abstract class MongoDbContext
     {

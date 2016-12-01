@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Reflection;
 
-namespace Slalom.Stacks.Mongo
+namespace Slalom.Stacks.Data.Mongo
 {
     public class MongoDomainModule : Module
     {
