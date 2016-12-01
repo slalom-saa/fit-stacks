@@ -12,10 +12,10 @@ namespace Slalom.Stacks.Domain
     public interface IRepository<TRoot> where TRoot : IAggregateRoot
     {
         /// <summary>
-        /// Removes all instances.
+        /// Clears all instances.
         /// </summary>
         /// <returns>A task for asynchronous programming.</returns>
-        Task RemoveAsync();
+        Task ClearAsync();
 
         /// <summary>
         /// Removes the specified instances.

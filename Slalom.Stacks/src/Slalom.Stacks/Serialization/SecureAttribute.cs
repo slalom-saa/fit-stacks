@@ -8,5 +8,9 @@ namespace Slalom.Stacks.Serialization
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class SecureAttribute : Attribute
     {
+        /// <summary>
+        /// The default display text.
+        /// </summary>
+        public const string DefaultDisplayText = "[SECURE]";
     }
 }

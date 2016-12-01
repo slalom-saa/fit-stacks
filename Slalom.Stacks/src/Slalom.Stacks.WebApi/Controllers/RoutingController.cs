@@ -100,7 +100,7 @@ namespace Slalom.Stacks.WebApi.Controllers
             }
             if (result.ValidationErrors.Any())
             {
-                this.HttpContext.Response.StatusCode = result.ValidationErrors.Any(e => e.ErrorType == ValidationErrorType.Security) ? (int)HttpStatusCode.Unauthorized : (int)HttpStatusCode.BadRequest;
+                this.HttpContext.Response.StatusCode = result.ValidationErrors.Any(e => e.ErrorType == ValidationErrorType.Security) ? (int)HttpStatusCode.Forbidden : (int)HttpStatusCode.BadRequest;
 
                 return JsonConvert.SerializeObject(result.ValidationErrors, new JsonSerializerSettings
                 {

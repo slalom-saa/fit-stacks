@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Slalom.Stacks.Communication.Logging;
 using Slalom.Stacks.Communication.Validation;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
@@ -13,7 +14,7 @@ namespace Slalom.Stacks.Communication
 {
     /// <summary>
     /// Supervises the execution and completion of commands.  Returns a result containing the returned value if the command is successful; 
-    /// otherwise, returns information about why the execution was not succesful.
+    /// otherwise, returns information about why the execution was not successful.
     /// </summary>
     /// <seealso cref="ICommandCoordinator" />
     public class CommandCoordinator : ICommandCoordinator
@@ -21,6 +22,7 @@ namespace Slalom.Stacks.Communication
         private readonly IComponentContext _componentContext;
         private readonly IEventPublisher _eventPublisher;
         private readonly ICommandValidator _validator;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandCoordinator"/> class.
@@ -40,6 +42,7 @@ namespace Slalom.Stacks.Communication
             _componentContext = componentContext;
             _eventPublisher = eventPublisher;
             _validator = validator;
+            _logger = _componentContext.Resolve<ILogger>();
         }
 
         /// <summary>
@@ -56,6 +59,8 @@ namespace Slalom.Stacks.Communication
             Argument.NotNull(() => command);
             Argument.NotNull(() => context);
 
+            _logger.Verbose("Starting execution for " + command.CommandName + ". {@Command}", command);
+
             // Create the result
             var result = new CommandResult<TResult>(context);
 
@@ -64,9 +69,9 @@ namespace Slalom.Stacks.Communication
                 // Validate the command
                 result.AddValidationErrors(await _validator.Validate(command, context));
 
-                // Execute the handler
-                if (!result.ValidationErrors.Any())
+                if (!result.ValidationErrors?.Any() ?? false)
                 {
+                    // Execute the handler
                     result.Value = await this.ExecuteHandler<TResult>(command, context);
 
                     var value = result.Value as IEvent;
@@ -100,24 +105,38 @@ namespace Slalom.Stacks.Communication
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual Task Audit<TResult>(Command<TResult> command, CommandResult<TResult> result, ExecutionContext context)
         {
-            var logger = _componentContext.Resolve<ILogger>();
+            // Log the command
+            var logs = _componentContext.ResolveAll<ILogStore>().ToList();
+            logs.ForEach(e => e.AppendAsync(command, result, context));
 
-            logger.Information("Audit: " + command.CommandName + " {@Command} {@Result} {@Context}", command, new
+            // Add an audit if state was changed
+            if (result.Value is IEvent)
             {
-                result.IsSuccessful,
-                result.ValidationErrors,
-                result.RaisedException,
-                context.RaisedEvents
-            }, context);
-
-            foreach (var instance in context.RaisedEvents)
-            {
-                logger.Information("Event: " + command.CommandName + " {@Event} {@Context}", instance, context);
+                var stores = _componentContext.ResolveAll<IAuditStore>().ToList();
+                stores.ForEach(async e => await e.AppendAsync((IEvent)result.Value, context));
             }
 
-            if (result.RaisedException != null)
+            // Add additional audits and diagnostic messages if the result was unsuccessful.
+            if (!result.IsSuccessful)
             {
-                logger.Error("Error: " + command.CommandName + " {@Command} {@Exception} {@Context}", command, result.RaisedException, context);
+                var stores = _componentContext.ResolveAll<IAuditStore>().ToList();
+                stores.ForEach(async e => await e.AppendAsync(new CommandExecutionFailedEvent(command, result), context));
+                if (result.RaisedException != null)
+                {
+                    _logger.Error(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@Context}", command, context);
+                }
+                else if (result.ValidationErrors?.Any() ?? false)
+                {
+                    _logger.Verbose("Execution completed with validation errors while executing " + command.CommandName + ". {@Command} {@ValidationErrors} {@Context}", command, result.ValidationErrors, context);
+                }
+                else
+                {
+                    _logger.Verbose("Execution completed unsuccessfully while executing " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
+                }
+            }
+            else
+            {
+                _logger.Verbose("Successfully completed " + command.CommandName + ". {@Command}", command);
             }
 
             return Task.FromResult(0);
@@ -215,7 +234,7 @@ namespace Slalom.Stacks.Communication
         }
 
         /// <summary>
-        /// The validatoin stage of the pipeline.
+        /// The validation stage of the pipeline.
         /// </summary>
         /// <typeparam name="TResult">The return type of the command.</typeparam>
         /// <param name="command">The command.</param>

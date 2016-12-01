@@ -15,7 +15,7 @@ namespace Slalom.Stacks.Configuration
     internal class ComponentContext : IComponentContext
     {
         private readonly Autofac.IComponentContext _context;
-        private IPropertySelector _selector = new AllPropertySelector();
+        private IPropertySelector _selector = new AllUnsetPropertySelector();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentContext"/> class.
@@ -88,6 +88,18 @@ namespace Slalom.Stacks.Configuration
             }
 
             return instance;
+        }
+
+        public T BuildUp<T>(T instance)
+        {
+            _context.InjectProperties(instance, _selector);
+
+            return instance;
+        }
+
+        public IEnumerable<T> ResolveAll<T>()
+        {
+            return _context.Resolve<IEnumerable<T>>();
         }
 
         /// <summary>

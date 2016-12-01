@@ -115,7 +115,7 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task ClearAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
         {
-            return _componentContext.Resolve<IRepository<TAggregateRoot>>().RemoveAsync();
+            return _componentContext.Resolve<IRepository<TAggregateRoot>>().ClearAsync();
         }
 
         /// <summary>

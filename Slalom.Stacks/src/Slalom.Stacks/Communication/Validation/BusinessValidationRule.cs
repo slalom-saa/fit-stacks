@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Search;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Communication.Validation
@@ -20,6 +22,18 @@ namespace Slalom.Stacks.Communication.Validation
         public ExecutionContext Context { get; private set; }
 
         /// <summary>
+        /// Gets the configured <see cref="IDomainFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade"/> instance.</value>
+        public DomainFacade Domain { get; set; }
+
+        /// <summary>
+        /// Gets the configured <see cref="ISearchFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade"/> instance.</value>
+        public ISearchFacade Search { get; set; }
+
+        /// <summary>
         /// Validates the specified command instance.
         /// </summary>
         /// <param name="instance">The instance to validate.</param>
@@ -27,14 +41,16 @@ namespace Slalom.Stacks.Communication.Validation
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        public Task<ValidationError> Validate(TCommand instance, ExecutionContext context)
+        public async Task<IEnumerable<ValidationError>> Validate(TCommand instance, ExecutionContext context)
         {
             Argument.NotNull(() => instance);
             Argument.NotNull(() => context);
 
             this.Context = context;
 
-            return this.Validate(instance);
+            var result = await this.Validate(instance);
+
+            return new[] { result };
         }
 
         /// <summary>

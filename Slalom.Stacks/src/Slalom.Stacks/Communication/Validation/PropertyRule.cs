@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
@@ -54,19 +54,21 @@ namespace Slalom.Stacks.Communication.Validation
         /// <returns>Returns all found validation errors.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        public virtual IEnumerable<ValidationError> Validate(TValue instance, ExecutionContext context)
+        public virtual async Task<IEnumerable<ValidationError>> Validate(TValue instance, ExecutionContext context)
         {
+            var target = new List<ValidationError>();
             if (!_validation(instance, context))
             {
-                yield return _message;
+                target.Add(_message);
             }
             else if (Then != null)
             {
-                foreach (var error in Then.Validate(instance, context))
+                foreach (var error in await Then.Validate(instance, context))
                 {
-                    yield return error;
+                    target.Add(error);
                 }
             }
+            return target;
         }
     }
 }

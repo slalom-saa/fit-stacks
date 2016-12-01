@@ -80,14 +80,14 @@ namespace Slalom.Stacks.Communication.Validation
             var type = typeof(IBusinessValidationRule<>).MakeGenericType(command.GetType());
             var sets = _componentContext.ResolveAll(type);
 
-            var method = typeof(IAsyncValidationRule<,>).MakeGenericType(command.GetType(), context.GetType()).GetMethod("Validate");
+            var method = typeof(IValidationRule<,>).MakeGenericType(command.GetType(), context.GetType()).GetMethod("Validate");
 
             foreach (var set in sets)
             {
-                var result = await (Task<ValidationError>)method.Invoke(set, new object[] { command, context });
+                var result = await (Task<IEnumerable<ValidationError>>)method.Invoke(set, new object[] { command, context });
                 if (result != null)
                 {
-                    return new[] { result };
+                    return result;
                 }
             }
             return Enumerable.Empty<ValidationError>();
@@ -133,14 +133,14 @@ namespace Slalom.Stacks.Communication.Validation
             var type = typeof(ISecurityValidationRule<>).MakeGenericType(command.GetType());
             var sets = _componentContext.ResolveAll(type);
 
-            var method = typeof(IAsyncValidationRule<,>).MakeGenericType(command.GetType(), context.GetType()).GetMethod("Validate");
+            var method = typeof(IValidationRule<,>).MakeGenericType(command.GetType(), context.GetType()).GetMethod("Validate");
 
             foreach (var set in sets)
             {
-                var result = await (Task<ValidationError>)method.Invoke(set, new object[] { command, context });
+                var result = await (Task<IEnumerable<ValidationError>>)method.Invoke(set, new object[] { command, context });
                 if (result != null)
                 {
-                    return new[] { result };
+                    return result;
                 }
             }
             return Enumerable.Empty<ValidationError>();
