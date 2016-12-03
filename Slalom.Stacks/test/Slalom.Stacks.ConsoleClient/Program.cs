@@ -1,20 +1,49 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Communication.Validation;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging.Serilog;
+using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient
 {
     public class TestEvent : Event
     {
+        public Dictionary<string, string> Dictionary { get; set; }
+
+        public List<string> List { get; set; }
+
+        public TestEvent()
+        {
+            Dictionary = new Dictionary<string, string>();
+            Dictionary.Add("fff", "ggg");
+            List = new List<string> { "ff", "gg" };
+        }
     }
 
     public class TestCommand : Command<TestEvent>
     {
+        [Secure]
+        public string Hidden { get; set; }
+
+        [Ignore]
+        public string Ignore { get; set; }
+
+        public Dictionary<string,string> Dictionary { get; set; }
+
+        public List<string> List { get; set; }
+
+        public TestCommand()
+        {
+            Dictionary = new Dictionary<string, string>();
+            Dictionary.Add("fff", "ggg");
+            List = new List<string> { "ff", "gg" };
+        }
+
     }
 
     public class TestCommandHandler : CommandHandler<TestCommand, TestEvent>

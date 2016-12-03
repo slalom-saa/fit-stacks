@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Serilog.Core;
 using Serilog.Debugging;
 using Serilog.Events;
+using Serilog.Parsing;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Serialization;
@@ -18,92 +19,45 @@ namespace Slalom.Stacks.Logging.Serilog
 {
     internal class DestructuringPolicy : IDestructuringPolicy
     {
-        private readonly Dictionary<Type, Func<object, ILogEventPropertyValueFactory, LogEventPropertyValue>> _cache = new Dictionary<Type, Func<object, ILogEventPropertyValueFactory, LogEventPropertyValue>>();
-        private readonly object _cacheLock = new object();
-
         public bool TryDestructure(object value, ILogEventPropertyValueFactory propertyValueFactory, out LogEventPropertyValue result)
         {
             var type = value.GetType();
-            //lock (_cacheLock)
-            //{
-            //    Func<object, ILogEventPropertyValueFactory, LogEventPropertyValue> cached;
-            //    if (_cache.TryGetValue(type, out cached))
-            //    {
-            //        result = cached(value, propertyValueFactory);
-            //        return true;
-            //    }
-            //}
-
             var properties = type.GetPropertiesRecursive()
                                  .ToList();
-
-            var target = new List<LogEventProperty>();
-            foreach (var pi in properties)
+            
+            if (!properties.Any(e => e.GetCustomAttributes<SecureAttribute>().Any()) && !(value is ICommandResult))
             {
-                var piValue = pi.GetValue(value);
-                target.Add(new LogEventProperty(pi.Name, new ScalarValue(JsonConvert.SerializeObject(piValue))));
+                result = null;
+                return false;
             }
-            result = new StructureValue(target, type.Name);
-            return true;
-
-            //lock (_cacheLock)
-            //{
-            //    _cache[type] = (o, f) => MakeStructure(o, properties, f, type);
-            //}
-
-            //return this.TryDestructure(value, propertyValueFactory, out result);
-        }
-
-        private static LogEventPropertyValue MakeStructure(object value, IEnumerable<PropertyInfo> properties, ILogEventPropertyValueFactory propertyValueFactory, Type type)
-        {
-            var structureProperties = new List<LogEventProperty>();
-            foreach (var pi in properties)
+            else
             {
-                if (pi.GetCustomAttributes<IgnoreAttribute>().Any())
+                var target = new List<LogEventProperty>();
+                foreach (var item in properties)
                 {
-                    continue;
-                }
-
-                if (pi.GetCustomAttributes<SecureAttribute>().Any())
-                {
-                    structureProperties.Add(new LogEventProperty(pi.Name, new ScalarValue(SecureAttribute.DefaultDisplayText)));
-                    continue;
-                }
-
-                object propValue;
-                try
-                {
-                    propValue = pi.GetValue(value);
-                }
-                catch (TargetInvocationException ex)
-                {
-                    SelfLog.WriteLine("The property accessor {0} threw exception {1}", pi, ex);
-                    propValue = "The property accessor threw an exception: " + ex.InnerException.GetType().Name;
-                }
-
-                LogEventPropertyValue pv;
-
-                if (propValue == null)
-                {
-                    pv = new ScalarValue(null);
-                }
-                else
-                {
-                    if (pi.PropertyType.GetTypeInfo().IsGenericType && (pi.PropertyType.GetGenericTypeDefinition() == typeof(List<>) || pi.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                    if ((item.Name == "Value" && value is ICommand) || item.GetCustomAttributes<IgnoreAttribute>().Any())
                     {
-                        structureProperties.Add(new LogEventProperty(pi.Name, new ScalarValue(JsonConvert.SerializeObject(propValue))));
                         continue;
                     }
-                    else
+
+                    if (item.GetCustomAttributes<SecureAttribute>().Any())
                     {
-                        pv = propertyValueFactory.CreatePropertyValue(propValue, true);
+                        target.Add(new LogEventProperty(item.Name, new ScalarValue(SecureAttribute.DefaultDisplayText)));
+                        continue;
                     }
+
+                    var piValue = item.GetValue(value);
+                    if (piValue == null)
+                    {
+                        target.Add(new LogEventProperty(item.Name, new ScalarValue(null)));
+                        continue;
+                    }
+
+                    target.Add(new LogEventProperty(item.Name, propertyValueFactory.CreatePropertyValue(piValue, true)));
                 }
-
-                structureProperties.Add(new LogEventProperty(pi.Name, pv));
+                result = new StructureValue(target, type.Name);
+                return true;
             }
-
-            return new StructureValue(structureProperties, type.Name);
         }
     }
 }
