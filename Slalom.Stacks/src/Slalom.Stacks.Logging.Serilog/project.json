@@ -35,6 +35,7 @@
   },
 
   "buildOptions": {
+    "preserveCompilationContext": true,
     "additionalArguments": [ "/ruleset:../../Slalom.ruleset", "/additionalfile:../../stylecop.json" ],
     "xmlDoc": true
   },
@@ -45,6 +46,11 @@
         "dotnet54",
         "portable-net45+win8"
       ]
+    },
+    "net461": {
+      "dependencies": {
+      },
+      "imports": "dnxcore50"
     }
   },
 

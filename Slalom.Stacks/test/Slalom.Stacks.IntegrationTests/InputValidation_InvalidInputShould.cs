@@ -34,7 +34,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public async void HaveValidationMessage()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Register<ExecutionContext>(new LocalExecutionContext());
 

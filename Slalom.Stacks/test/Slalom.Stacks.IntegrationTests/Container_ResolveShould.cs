@@ -22,7 +22,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public void FindEventPublisher()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Resolve<IEventPublisher>().ShouldNotBeNull();
             }
@@ -31,7 +31,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public void FindMessageBus()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Register<LocalExecutionContext>();
                 container.Resolve<IMessageBus>().ShouldNotBeNull();
@@ -41,7 +41,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public void FindUpdatedType()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Register<NewMessageBus>();
                 container.Register<LocalExecutionContext>();

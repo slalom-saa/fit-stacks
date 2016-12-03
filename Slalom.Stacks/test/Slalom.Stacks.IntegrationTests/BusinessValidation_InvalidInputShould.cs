@@ -35,7 +35,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public async void HaveValidationMessage()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Register<ExecutionContext>(new LocalExecutionContext());
 
@@ -50,7 +50,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public async void NotRunIfInputValidatinFails()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Register<ExecutionContext>(new LocalExecutionContext());
 
@@ -91,7 +91,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public async void HaveValidationMessage()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Register<ExecutionContext>(new LocalExecutionContext());
 
@@ -106,7 +106,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public async void NotRunIfInputValidatinFails()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Register<ExecutionContext>(new LocalExecutionContext());
 
@@ -126,7 +126,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public async void NotRunIfSecurityValidatinFails()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Register<ExecutionContext>(new LocalExecutionContext());
 

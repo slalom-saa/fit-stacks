@@ -15,7 +15,7 @@ namespace Slalom.Stacks.IntegrationTests
     public class CommandHandler_HandleShould : IDisposable
     {
         private IMessageBus _bus;
-        private Container _container;
+        private ApplicationContainer _container;
 
         public class TestCommand : Command<string>
         {
@@ -39,7 +39,7 @@ namespace Slalom.Stacks.IntegrationTests
 
         public CommandHandler_HandleShould()
         {
-            _container = new Container(this);
+            _container = new ApplicationContainer(this);
 
             _container.Register<LocalExecutionContext>();
             _container.Register<TestCommandHandler>();

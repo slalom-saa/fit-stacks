@@ -37,7 +37,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public void ResolveAllHandlers()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 var target = container.Resolve<IEnumerable<IHandleEvent<TestEvent>>>();
 
@@ -48,7 +48,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public async void FindAllEventHandlers()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Register<TestEventHandler2>();
 
@@ -62,7 +62,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public async void CallHandlers()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 var mock = new Mock<IHandleEvent<TestEvent>>();
                 container.Register(mock.Object);

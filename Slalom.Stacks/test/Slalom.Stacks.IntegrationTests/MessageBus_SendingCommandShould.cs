@@ -50,7 +50,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Theory, InlineData("test")]
         public async void RaiseAdditionalEvents(string text)
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 var mock = new Mock<IHandleEvent<TestEvent>>();
                 mock.Setup(e => e.Handle(It.IsAny<TestEvent>(), It.IsAny<ExecutionContext>()))
@@ -73,7 +73,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Theory, InlineData("test")]
         public async void RaiseEventWithReturnValue(string text)
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 var mock = new Mock<IHandleEvent<TestEvent>>();
                 mock.Setup(e => e.Handle(It.IsAny<TestEvent>(), It.IsAny<ExecutionContext>()))
@@ -89,7 +89,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Theory, InlineData("test")]
         public async void RaiseAddedEvents(string text)
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 var mock = new Mock<IHandleEvent<TestEvent>>();
                 mock.Setup<Task>(e => e.Handle(It.IsAny<TestEvent>(), It.IsAny<ExecutionContext>()))
@@ -105,7 +105,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Theory, InlineData("test")]
         public async void ContainContext(string text)
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 ExecutionContext context = null;
                 var currentContext = new LocalExecutionContext();

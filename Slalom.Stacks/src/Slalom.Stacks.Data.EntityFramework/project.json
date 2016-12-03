@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.1-*",
 
   "dependencies": {
     "Microsoft.EntityFrameworkCore": "1.0.1",
@@ -8,12 +8,34 @@
     "System.Reflection": "4.1.0"
   },
 
-    "frameworks": {
+  "frameworks": {
     "netcoreapp1.0": {
       "imports": [
         "dotnet54",
         "portable-net45+win8"
       ]
+    },
+    "net461": {
+      "dependencies": {
+      },
+      "imports": "dnxcore50"
     }
+  },
+
+  "buildOptions": {
+    "additionalArguments": [ "/ruleset:../../Slalom.ruleset", "/additionalfile:../../stylecop.json" ],
+    "xmlDoc": true
+  },
+
+  "packOptions": {
+    "tags": [ "slalom", "stacks", "entity framework" ],
+    "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+    "requireLicenseAcceptance": true,
+    "summary": "The Entity Framework library for Slalom Stacks projects."
+  },
+  "scripts": {
+    "postcompile": [
+      "dotnet pack --no-build --configuration %compile:Configuration%"
+    ]
   }
 }

@@ -41,7 +41,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public async void ReturnErrorWhenNotInRole()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Register<ExecutionContext>(new LocalExecutionContext());
 
@@ -56,7 +56,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Fact]
         public async void ReturnSuccessWhenInRole()
         {
-            using (var container = new Container(this))
+            using (var container = new ApplicationContainer(this))
             {
                 container.Register<IExecutionContextResolver>(new LocalExecutionContextResolver(new LocalExecutionContext("Administrator", new Claim(ClaimTypes.Role, "Administrator"))));
 
