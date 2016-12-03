@@ -56,6 +56,7 @@ namespace Slalom.Stacks.ConsoleClient.Migrations
                     TimeStamp = table.Column<DateTimeOffset>(nullable: true),
                     UserHostAddress = table.Column<string>(nullable: true),
                     UserName = table.Column<string>(nullable: true),
+                    RaisedException = table.Column<string>(nullable: true),
                     ValidationErrors = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

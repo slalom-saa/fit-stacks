@@ -41,7 +41,10 @@ namespace Slalom.Stacks.Communication.Logging
             this.Host = context.Host;
             this.ThreadId = context.ThreadId;
             this.CorrelationId = context.CorrelationId;
+            this.RaisedException = result.RaisedException?.ToString();
         }
+
+        public string RaisedException { get; set; }
 
         public string ApplicationName { get; set; }
 

@@ -112,7 +112,7 @@ namespace Slalom.Stacks.Communication.Validation
 
             var method = typeof(IValidationRule<,>).MakeGenericType(command.GetType(), context.GetType()).GetMethod("Validate");
 
-            return sets.SelectMany(e => (IEnumerable<ValidationError>)method.Invoke(e, new object[] { command, context }))
+            return sets.SelectMany(e => ((Task<IEnumerable<ValidationError>>)method.Invoke(e, new object[] { command, context })).Result)
                        .Select(e => e.WithType(ValidationErrorType.Input));
         }
 

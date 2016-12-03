@@ -35,6 +35,10 @@ namespace Slalom.FitStacks.ConsoleClient
                     await container.Resolve<SearchContext>().EnsureMigrations();
 
                     await container.Bus.Send(new AddItemCommand("testing"));
+
+                    await container.Bus.Send(new AddItemCommand(null));
+
+                    await container.Bus.Send(new AddItemCommand("error"));
                 }
             }
             catch (Exception exception)
