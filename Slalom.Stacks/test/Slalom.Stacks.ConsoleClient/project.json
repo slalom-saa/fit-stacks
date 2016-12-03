@@ -19,20 +19,20 @@
     "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0"
   },
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": [
-        "dotnet54",
-        "portable-net45+win8"
-      ],
-      "dependencies": {
-        "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.0.0-preview3-final"
-      }
-    }
-    //"net461": {
+    //"netcoreapp1.0": {
+    //  "imports": [
+    //    "dotnet54",
+    //    "portable-net45+win8"
+    //  ],
     //  "dependencies": {
-    //  },
-    //  "imports": "dnxcore50"
+    //    "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.0.0-preview3-final"
+    //  }
     //}
+    "net461": {
+      "dependencies": {
+      },
+      "imports": "dnxcore50"
+    }
   },
   "tools": {
     "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.1.0-preview3-final"

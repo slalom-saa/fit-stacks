@@ -2,10 +2,11 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Slalom.Stacks.Communication.Logging;
+using Slalom.Stacks.EntityFramework;
 
 namespace Slalom.FitStacks.ConsoleClient.Search
 {
-    public class SearchContext : DbContext
+    public class SearchContext : StacksDbContext
     {
         private readonly string _connectionString;
 
@@ -22,7 +23,7 @@ namespace Slalom.FitStacks.ConsoleClient.Search
         {
             base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder.UseSqlServer(_connectionString ?? "Data Source=localhost;Initial Catalog=Search;Integrated Security=True");
+            optionsBuilder.UseSqlServer(_connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,14 +33,6 @@ namespace Slalom.FitStacks.ConsoleClient.Search
             modelBuilder.Entity<ItemSearchResult>()
                         .ToTable("Items")
                         .HasKey(e => e.Id);
-
-            //modelBuilder.Entity<Audit>()
-            //            .ToTable("Audits")
-            //            .HasKey(e => e.Id);
-
-            //modelBuilder.Entity<Log>()
-            //            .ToTable("Logs")
-            //            .HasKey(e => e.Id);
         }
     }
 

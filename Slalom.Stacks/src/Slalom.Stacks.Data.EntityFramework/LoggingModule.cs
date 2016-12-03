@@ -3,6 +3,7 @@ using System.Linq;
 using Autofac;
 using Microsoft.EntityFrameworkCore;
 using Slalom.Stacks.Communication.Logging;
+using Slalom.Stacks.Configuration;
 
 namespace Slalom.Stacks.EntityFramework
 {
@@ -19,19 +20,16 @@ namespace Slalom.Stacks.EntityFramework
         {
             base.Load(builder);
 
-            builder.Register(c => new LoggingDbContext(_connectionString));
-
-            builder.Register<IAuditStore>(c => new AuditStore(c.Resolve<LoggingDbContext>()));
-            builder.Register<ILogStore>(c => new LogStore(c.Resolve<LoggingDbContext>()));
-
-
-            using (var context = new LoggingDbContext(_connectionString))
+            builder.Register(c =>
             {
-                if (context.Database.GetPendingMigrations().Any())
-                {
-                    context.Database.Migrate();
-                }
-            }
+                var context = new LoggingContext(_connectionString);
+                c.InjectProperties(context, new AllUnsetPropertySelector());
+                context.EnsureMigrations().Wait();
+                return context;
+            }).As<LoggingContext>();
+
+            builder.Register<IAuditStore>(c => new AuditStore(c.Resolve<LoggingContext>()));
+            builder.Register<ILogStore>(c => new LogStore(c.Resolve<LoggingContext>()));
         }
     }
 }

@@ -27,16 +27,12 @@ namespace Slalom.FitStacks.ConsoleClient
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
                     container.RegisterModule(new SerilogModule());
-                    container.RegisterModule(new LoggingModule("Data Source=localhost;Initial Catalog=Logs;Integrated Security=True"));
+                    container.RegisterModule(new LoggingModule("Data Source=localhost;Initial Catalog=Stacks;Integrated Security=True"));
 
                     container.Register(c => new EntityContext());
-                    container.Register(c => new SearchContext());
+                    container.Register(c => new SearchContext("Data Source=localhost;Initial Catalog=Stacks;Integrated Security=True"));
 
-                    var database = container.Resolve<SearchContext>().Database;
-                    if (database.GetPendingMigrations().Any())
-                    {
-                        database.Migrate();
-                    }
+                    await container.Resolve<SearchContext>().EnsureMigrations();
 
                     await container.Bus.Send(new AddItemCommand("testing"));
                 }

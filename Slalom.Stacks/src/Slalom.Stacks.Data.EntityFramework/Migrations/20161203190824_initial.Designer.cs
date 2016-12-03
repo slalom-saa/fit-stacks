@@ -7,7 +7,7 @@ using Slalom.Stacks.EntityFramework;
 
 namespace Slalom.Stacks.ConsoleClient.Migrations
 {
-    [DbContext(typeof(LoggingDbContext))]
+    [DbContext(typeof(LoggingContext))]
     [Migration("20161203190824_initial")]
     partial class initial
     {

@@ -5,11 +5,11 @@ using Slalom.Stacks.Communication.Logging;
 
 namespace Slalom.Stacks.EntityFramework
 {
-    public class LoggingDbContext : DbContext
+    public class LoggingContext : StacksDbContext
     {
         private readonly string _connectionString;
 
-        public LoggingDbContext(string connectionString)
+        public LoggingContext(string connectionString)
         {
             _connectionString = connectionString;
         }
