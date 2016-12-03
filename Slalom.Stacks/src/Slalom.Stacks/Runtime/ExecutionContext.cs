@@ -5,6 +5,7 @@ using System.Security.Claims;
 using Newtonsoft.Json;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Communication.Serialization;
+using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Runtime

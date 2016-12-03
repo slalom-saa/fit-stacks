@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using Newtonsoft.Json;
 
-namespace Slalom.Stacks.Communication.Serialization
+namespace Slalom.Stacks.Serialization
 {
     /// <summary>
     /// Allows for serialization and deserialziation of <see cref="ClaimsPrincipal"/> instances.
@@ -11,14 +11,24 @@ namespace Slalom.Stacks.Communication.Serialization
     /// <seealso cref="Newtonsoft.Json.JsonConverter" />
     public class ClaimsPrincipalConverter : JsonConverter
     {
-        private class ClaimsPrincipalHolder
+        public class ClaimsPrincipalHolder
         {
+            public ClaimsPrincipalHolder()
+            {
+            }
+
+            public ClaimsPrincipalHolder(ClaimsPrincipal source)
+            {
+                this.AuthenticationType = source.Identity.AuthenticationType;
+                this.Claims = source.Claims.Select(x => new ClaimHolder { Type = x.Type, Value = x.Value }).ToArray();
+            }
+
             public string AuthenticationType { get; set; }
 
             public ClaimHolder[] Claims { get; set; }
         }
 
-        private class ClaimHolder
+        public class ClaimHolder
         {
             public string Type { get; set; }
 
@@ -64,11 +74,8 @@ namespace Slalom.Stacks.Communication.Serialization
         {
             var source = (ClaimsPrincipal)value;
 
-            var target = new ClaimsPrincipalHolder
-            {
-                AuthenticationType = source.Identity.AuthenticationType,
-                Claims = source.Claims.Select(x => new ClaimHolder { Type = x.Type, Value = x.Value }).ToArray()
-            };
+            var target = new ClaimsPrincipalHolder(source);
+
             serializer.Serialize(writer, target);
         }
     }
