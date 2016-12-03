@@ -1,9 +1,13 @@
-﻿using Slalom.Stacks.Data.Mongo;
+﻿using Slalom.FitStacks.ConsoleClient.Domain;
+using Slalom.Stacks.Data.Mongo;
 
-public class ItemRepository : MongoRepository<Item>
+namespace Slalom.FitStacks.ConsoleClient.Data
 {
-    public ItemRepository(EntityContext context)
-        : base(context)
+    public class ItemRepository : MongoRepository<Item>
     {
+        public ItemRepository(EntityContext context)
+            : base(context)
+        {
+        }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Slalom.Stacks.Search;
 
-namespace Slalom.Stacks.Data.EntityFramework
+namespace Slalom.Stacks.EntityFramework
 {
     public abstract class SearchIndex<TSearchResult> : ISearchIndex<TSearchResult> where TSearchResult : class, ISearchResult
     {
@@ -19,7 +19,7 @@ namespace Slalom.Stacks.Data.EntityFramework
 
         protected DbSet<TSearchResult> Set { get; private set; }
 
-        public Task AddAsync(TSearchResult[] instances)
+        public Task AddAsync(params TSearchResult[] instances)
         {
             _context.AddRange(instances);
 
@@ -52,7 +52,7 @@ namespace Slalom.Stacks.Data.EntityFramework
             return _context.SaveChangesAsync();
         }
 
-        public Task<TSearchResult> FindAsync(Guid id)
+        public Task<TSearchResult> FindAsync(int id)
         {
             return this.Set.Where(e => e.Id == id).FirstOrDefaultAsync();
         }

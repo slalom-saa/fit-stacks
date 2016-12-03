@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Slalom.Stacks.Communication.Logging;
 
-namespace Slalom.FitStacks.ConsoleClient.TestCommands
+namespace Slalom.FitStacks.ConsoleClient.Search
 {
     public class SearchContext : DbContext
     {
@@ -35,13 +33,13 @@ namespace Slalom.FitStacks.ConsoleClient.TestCommands
                         .ToTable("Items")
                         .HasKey(e => e.Id);
 
-            modelBuilder.Entity<Audit>()
-                        .ToTable("Audits")
-                        .HasKey(e => e.Id);
+            //modelBuilder.Entity<Audit>()
+            //            .ToTable("Audits")
+            //            .HasKey(e => e.Id);
 
-            modelBuilder.Entity<Log>()
-                        .ToTable("Logs")
-                        .HasKey(e => e.Id);
+            //modelBuilder.Entity<Log>()
+            //            .ToTable("Logs")
+            //            .HasKey(e => e.Id);
         }
     }
 

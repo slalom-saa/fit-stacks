@@ -1,6 +1,7 @@
+using Slalom.FitStacks.ConsoleClient.Domain;
 using Slalom.Stacks.Communication;
 
-namespace Slalom.Stacks.ConsoleClient
+namespace Slalom.FitStacks.ConsoleClient.Commands.AddItem
 {
     public class AddItemCommand : Command<ItemAddedEvent>
     {

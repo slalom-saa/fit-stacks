@@ -6,7 +6,7 @@ using Slalom.Stacks.Communication;
 using Slalom.Stacks.Communication.Logging;
 using Slalom.Stacks.Runtime;
 
-namespace Slalom.Stacks.Data.EntityFramework
+namespace Slalom.Stacks.EntityFramework
 {
     public class LogStore : ILogStore
     {
@@ -15,6 +15,8 @@ namespace Slalom.Stacks.Data.EntityFramework
         public LogStore(DbContext context)
         {
             _context = context;
+
+            //_context.Database.ExecuteSqlCommand(
         }
 
         public Task AppendAsync(ICommand command, ICommandResult result, ExecutionContext context)

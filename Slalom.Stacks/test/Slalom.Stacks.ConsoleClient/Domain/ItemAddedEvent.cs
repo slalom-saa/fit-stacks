@@ -1,6 +1,6 @@
 using Slalom.Stacks.Communication;
 
-namespace Slalom.Stacks.ConsoleClient
+namespace Slalom.FitStacks.ConsoleClient.Domain
 {
     public class ItemAddedEvent : Event
     {

@@ -12,6 +12,6 @@ namespace Slalom.Stacks.Search
         /// Gets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        Guid Id { get; }
+        int Id { get; }
     }
 }

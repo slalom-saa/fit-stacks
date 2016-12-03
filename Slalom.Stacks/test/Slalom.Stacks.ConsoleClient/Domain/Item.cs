@@ -1,18 +1,21 @@
 ﻿using Slalom.Stacks.Domain;
 
-public class Item : Entity, IAggregateRoot
+namespace Slalom.FitStacks.ConsoleClient.Domain
 {
-    protected Item()
+    public class Item : Entity, IAggregateRoot
     {
-    }
-
-    public static Item Create(string text)
-    {
-        return new Item
+        protected Item()
         {
-            Text = text
-        };
-    }
+        }
 
-    public string Text { get; private set; }
+        public static Item Create(string text)
+        {
+            return new Item
+            {
+                Text = text
+            };
+        }
+
+        public string Text { get; private set; }
+    }
 }

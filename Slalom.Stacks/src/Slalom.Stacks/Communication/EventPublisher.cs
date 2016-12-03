@@ -56,7 +56,7 @@ namespace Slalom.Stacks.Communication
             }
             catch (Exception exception)
             {
-                _logger.Error(exception, "Event Handling: {@Event} {@Context}", instance, context);
+                _logger.Error(exception, "An unhandled exception was raised while handling " + instance.EventName + ": {@Event} {@Context}", instance, context);
             }
         }
     }

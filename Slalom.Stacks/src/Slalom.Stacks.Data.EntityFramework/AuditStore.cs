@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +6,7 @@ using Slalom.Stacks.Communication;
 using Slalom.Stacks.Communication.Logging;
 using Slalom.Stacks.Runtime;
 
-namespace Slalom.Stacks.Data.EntityFramework
+namespace Slalom.Stacks.EntityFramework
 {
     public class AuditStore : IAuditStore
     {

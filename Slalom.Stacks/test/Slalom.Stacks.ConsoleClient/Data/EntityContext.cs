@@ -1,5 +1,8 @@
 ﻿using Slalom.Stacks.Data.Mongo;
 
-public class EntityContext : MongoDbContext
+namespace Slalom.FitStacks.ConsoleClient.Data
 {
+    public class EntityContext : MongoDbContext
+    {
+    }
 }

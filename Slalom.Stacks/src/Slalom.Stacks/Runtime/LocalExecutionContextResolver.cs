@@ -25,8 +25,12 @@ namespace Slalom.Stacks.Runtime
         private readonly LocalExecutionContext _context;
 
 #if !NET461
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocalExecutionContextResolver"/> class.
+        /// </summary>
         public LocalExecutionContextResolver()
         {
+            _context = new LocalExecutionContext();
         }
 #endif
 

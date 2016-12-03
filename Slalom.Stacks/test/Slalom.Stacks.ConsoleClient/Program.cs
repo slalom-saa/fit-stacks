@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Linq;
-using Newtonsoft.Json;
-using Slalom.FitStacks.ConsoleClient.TestCommands;
+using Slalom.FitStacks.ConsoleClient.Commands.AddItem;
+using Slalom.FitStacks.ConsoleClient.Data;
+using Slalom.FitStacks.ConsoleClient.Search;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging.Serilog;
-using Slalom.Stacks.Runtime;
+using Microsoft.EntityFrameworkCore;
+using Slalom.Stacks.EntityFramework;
 
-namespace Slalom.Stacks.ConsoleClient
+namespace Slalom.FitStacks.ConsoleClient
 {
     public class Program
 
@@ -24,10 +26,17 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
+                    container.RegisterModule(new SerilogModule());
+                    container.RegisterModule(new LoggingModule("Data Source=localhost;Initial Catalog=Logs;Integrated Security=True"));
+
                     container.Register(c => new EntityContext());
                     container.Register(c => new SearchContext());
 
-                    container.RegisterModule(new SerilogModule());
+                    var database = container.Resolve<SearchContext>().Database;
+                    if (database.GetPendingMigrations().Any())
+                    {
+                        database.Migrate();
+                    }
 
                     await container.Bus.Send(new AddItemCommand("testing"));
                 }

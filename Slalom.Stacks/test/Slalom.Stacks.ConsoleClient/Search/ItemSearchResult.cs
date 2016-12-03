@@ -1,7 +1,12 @@
 ﻿using System;
 using Slalom.Stacks.Search;
 
-public class ItemSearchResult : ISearchResult
+namespace Slalom.FitStacks.ConsoleClient.Search
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public class ItemSearchResult : ISearchResult
+    {
+        public int Id { get; set; }
+
+        public string Text { get; set; }
+    }
 }

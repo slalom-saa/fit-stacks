@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Slalom.Stacks.Communication.Logging;
 using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Data.EntityFramework;
+using Slalom.Stacks.EntityFramework;
 using Slalom.Stacks.Runtime;
 using Module = Autofac.Module;
 
@@ -45,7 +45,7 @@ namespace Slalom.Stacks.WebApi
             app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
             {
                 Authority = this.Configuration["Authority"],
-                ScopeName = "api",
+                //ScopeName = "api",
                 RequireHttpsMetadata = false
             });
 
@@ -67,7 +67,7 @@ namespace Slalom.Stacks.WebApi
             builder.RegisterModule(new StacksWebApiModule());
 
             builder.Register(c => new SearchContext());
-            builder.RegisterModule(new LoggingModule<SearchContext>());
+            //builder.RegisterModule(new LoggingModule<SearchContext>());
 
             builder.Populate(services);
 

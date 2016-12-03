@@ -52,7 +52,7 @@ namespace Slalom.Stacks.Search
         /// <param name="id">The instance identifier.</param>
         /// <returns>Returns the instance with the specified identifier.</returns>
         /// <exception cref="System.NotSupportedException">Thrown when an unsupported type is used.</exception>
-        Task<TSearchResult> FindAsync(Guid id);
+        Task<TSearchResult> FindAsync(int id);
 
         /// <summary>
         /// Updates the specified instances. Update is similar to Add, but Add skips a check to see if the

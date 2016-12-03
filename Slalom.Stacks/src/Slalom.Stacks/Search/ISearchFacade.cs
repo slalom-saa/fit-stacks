@@ -63,7 +63,7 @@ namespace Slalom.Stacks.Search
         /// <param name="id">The instance identifier.</param>
         /// <returns>Returns the instance with the specified identifier.</returns>
         /// <exception cref="System.NotSupportedException">Thrown when an unsupported type is used.</exception>
-        Task<TSearchResult> FindAsync<TSearchResult>(Guid id) where TSearchResult : class, ISearchResult;
+        Task<TSearchResult> FindAsync<TSearchResult>(int id) where TSearchResult : class, ISearchResult;
 
         /// <summary>
         /// Rebuilds the index of the specified search result type.

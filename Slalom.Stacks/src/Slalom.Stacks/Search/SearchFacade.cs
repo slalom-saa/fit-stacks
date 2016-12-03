@@ -119,7 +119,7 @@ namespace Slalom.Stacks.Search
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
         /// <param name="id">The instance identifier.</param>
         /// <returns>Returns the instance with the specified identifier.</returns>
-        public Task<TSearchResult> FindAsync<TSearchResult>(Guid id) where TSearchResult : class, ISearchResult
+        public Task<TSearchResult> FindAsync<TSearchResult>(int id) where TSearchResult : class, ISearchResult
         {
             var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
 

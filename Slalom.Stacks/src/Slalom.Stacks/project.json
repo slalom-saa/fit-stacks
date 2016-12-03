@@ -8,13 +8,13 @@
     "summary": "The core library for Slalom Stacks projects."
   },
   "dependencies": {
-    "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
     "Newtonsoft.Json": "9.0.2-beta1",
     //"StyleCop.Analyzers": {
     //  "version": "1.0.0",
     //  "type": "build"
     //},
     "Autofac": "4.2.1",
+    "Microsoft.AspNetCore.Http.Abstractions": "1.1.0",
     "Microsoft.Extensions.Configuration": "1.1.0",
     "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
     "Microsoft.Extensions.Configuration.Binder": "1.1.0",

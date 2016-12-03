@@ -1,11 +1,17 @@
 {
   "version": "1.0.1-*",
 
+  "buildOptions": {
+    "additionalArguments": [ "/ruleset:../../Slalom.ruleset", "/additionalfile:../../stylecop.json" ],
+    "xmlDoc": true
+  },
+
   "dependencies": {
-    "Microsoft.EntityFrameworkCore": "1.0.1",
-    "NETStandard.Library": "1.6.0",
-    "Slalom.Stacks": "1.0.0-*",
-    "System.Reflection": "4.1.0"
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "Microsoft.EntityFrameworkCore.Relational": "1.1.0",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
+    "NETStandard.Library": "1.6.1",
+    "Slalom.Stacks": "1.0.1-*"
   },
 
   "frameworks": {
@@ -13,19 +19,20 @@
       "imports": [
         "dotnet54",
         "portable-net45+win8"
-      ]
+      ],
+      "dependencies": {
+        "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.1.0-preview4-final"
+      }
     },
     "net461": {
       "dependencies": {
+        "System.Reflection": "4.3.0"
       },
       "imports": "dnxcore50"
     }
   },
 
-  "buildOptions": {
-    "additionalArguments": [ "/ruleset:../../Slalom.ruleset", "/additionalfile:../../stylecop.json" ],
-    "xmlDoc": true
-  },
+
 
   "packOptions": {
     "tags": [ "slalom", "stacks", "entity framework" ],
@@ -37,5 +44,9 @@
     "postcompile": [
       "dotnet pack --no-build --configuration %compile:Configuration%"
     ]
+  },
+
+  "tools": {
+    "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.1.0-preview4-final"
   }
 }
