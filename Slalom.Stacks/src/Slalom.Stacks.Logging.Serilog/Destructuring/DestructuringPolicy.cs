@@ -19,11 +19,62 @@ namespace Slalom.Stacks.Logging.Serilog
 {
     internal class DestructuringPolicy : IDestructuringPolicy
     {
+
+        bool IsValidDictionaryKeyType(Type valueType)
+        {
+            return BuiltInScalarTypes.Contains(valueType) ||
+                   valueType.GetTypeInfo().IsEnum;
+        }
+
+        static readonly HashSet<Type> BuiltInScalarTypes = new HashSet<Type>
+        {
+            typeof(bool),
+            typeof(char),
+            typeof(byte), typeof(short), typeof(ushort), typeof(int), typeof(uint),
+            typeof(long), typeof(ulong), typeof(float), typeof(double), typeof(decimal),
+            typeof(string),
+            typeof(DateTime), typeof(DateTimeOffset), typeof(TimeSpan),
+            typeof(Guid), typeof(Uri)
+        };
+
+
+        bool IsValueTypeDictionary(Type valueType)
+        {
+            return valueType.IsConstructedGenericType &&
+                   valueType.GetGenericTypeDefinition() == typeof(Dictionary<,>) &&
+                   IsValidDictionaryKeyType(valueType.GenericTypeArguments[0]);
+        }
+
         public bool TryDestructure(object value, ILogEventPropertyValueFactory propertyValueFactory, out LogEventPropertyValue result)
         {
-            var type = value.GetType();
-            var properties = type.GetPropertiesRecursive()
+            var valueType = value.GetType();
+            var properties = valueType.GetPropertiesRecursive()
                                  .ToList();
+
+            var enumerable = value as IEnumerable;
+            if (enumerable != null)
+            {
+                if (IsValueTypeDictionary(valueType))
+                {
+                    var typeInfo = typeof(KeyValuePair<,>).MakeGenericType(valueType.GenericTypeArguments).GetTypeInfo();
+                    var keyProperty = typeInfo.GetDeclaredProperty("Key");
+                    var valueProperty = typeInfo.GetDeclaredProperty("Value");
+
+                    result = new DictionaryValue(enumerable.Cast<object>()
+                        .Select(kvp => new KeyValuePair<ScalarValue, LogEventPropertyValue>(
+                                           (ScalarValue)propertyValueFactory.CreatePropertyValue(keyProperty.GetValue(kvp), true),
+                                           propertyValueFactory.CreatePropertyValue(valueProperty.GetValue(kvp), true)))
+                        .Where(kvp => kvp.Key.Value != null));
+                    return true;
+                }
+
+                result = new StructureValue(new[]
+                {
+                    new LogEventProperty(valueType.Name, new SequenceValue(
+                        ((IEnumerable)value).Cast<object>().Select(o => propertyValueFactory.CreatePropertyValue(o, true))))
+                });
+                return true;
+            }
 
             var target = new List<LogEventProperty>();
             foreach (var item in properties)
@@ -46,17 +97,54 @@ namespace Slalom.Stacks.Logging.Serilog
                     continue;
                 }
 
+                if (piValue is Exception)
+                {
+                    var exception = (Exception)piValue;
+                    var items = new List<LogEventProperty>();
+                    items.Add(new LogEventProperty("Message", new ScalarValue(exception.Message)));
+                    items.Add(new LogEventProperty("Source", new ScalarValue(exception.Source)));
+                    items.Add(new LogEventProperty("StackTrace", new ScalarValue(exception.StackTrace)));
+#if NET461
+                    items.Add(new LogEventProperty("StackTrace", new ScalarValue(exception.TargetSite)));
+#endif
+                    target.Add(new LogEventProperty(item.Name, new StructureValue(items)));
+                    continue;
+
+                }
+
                 // TODO: Continue to build out for specific types.
                 if (piValue is ClaimsPrincipal)
                 {
-                    target.Add(new LogEventProperty(item.Name, propertyValueFactory.CreatePropertyValue(new ClaimsPrincipalConverter.ClaimsPrincipalHolder((ClaimsPrincipal)piValue), true)));
+                    var p = (ClaimsPrincipal)piValue;
+                    var items = new List<LogEventProperty>();
+                    items.Add(new LogEventProperty("AuthenticationType", new ScalarValue(p.Identity.AuthenticationType)));
+
+                    items.Add(new LogEventProperty("Claims", new DictionaryValue(p.Claims.Select(e =>
+                        new KeyValuePair<ScalarValue, LogEventPropertyValue>(new ScalarValue(e.Type), new ScalarValue(e.Value))
+                    ))));
+
+                    target.Add(new LogEventProperty(item.Name, new StructureValue(items)));
+
+                    continue;
+                }
+
+                if (piValue is String)
+                {
+                    target.Add(new LogEventProperty(item.Name, new ScalarValue(piValue)));
+                    continue;
+                }
+
+                if (piValue is IEnumerable)
+                {
+                    target.Add(new LogEventProperty(item.Name, new SequenceValue(
+                    ((IEnumerable)piValue).Cast<object>().Select(o => propertyValueFactory.CreatePropertyValue(o, true)))));
                     continue;
                 }
 
 
                 target.Add(new LogEventProperty(item.Name, propertyValueFactory.CreatePropertyValue(piValue, true)));
             }
-            result = new StructureValue(target, type.Name);
+            result = new StructureValue(target, valueType.Name);
             return true;
         }
     }
