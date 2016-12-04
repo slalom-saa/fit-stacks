@@ -59,7 +59,8 @@ namespace Slalom.Stacks.ConsoleClient.Migrations
                     RaisedException = table.Column<string>(nullable: true),
                     Elapsed = table.Column<TimeSpan>(nullable: true),
                     Started = table.Column<DateTimeOffset>(nullable: true),
-                    Completed = table.Column<DateTimeOffset>(nullable: true)
+                    Completed = table.Column<DateTimeOffset>(nullable: true),
+                    ValidationErrors = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
