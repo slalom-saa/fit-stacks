@@ -26,7 +26,7 @@ namespace Slalom.Stacks.Logging.ApplicationInsights
             if (!(@event is CommandExecutionFailedEvent))
             {
                 var instance = new EventTelemetry(@event.EventName);
-                instance.Context.User.Id = "me";
+                instance.Context.User.Id = context.User?.Identity?.Name;
                 instance.Context.Session.Id = context.SessionId;
 
                 _client.TrackEvent(instance);
