@@ -12,7 +12,7 @@ namespace Slalom.Stacks.Communication.Serialization
     /// <summary>
     /// A JSON Contract Resolver for <see cref="IEvent"/> instances.
     /// </summary>
-    public class JsonEventContractResolver : SecureJsonContractResolver
+    public class EventContractResolver : SecureJsonContractResolver
     {
         /// <summary>
         /// Creates a <see cref="T:Newtonsoft.Json.Serialization.JsonProperty" /> for the given <see cref="T:System.Reflection.MemberInfo" />.

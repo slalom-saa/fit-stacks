@@ -13,7 +13,7 @@ namespace Slalom.Stacks.Communication.Logging
             {
                 this.Payload = JsonConvert.SerializeObject(@event, new JsonSerializerSettings
                 {
-                    ContractResolver = new JsonEventContractResolver()
+                    ContractResolver = new EventContractResolver()
                 });
             }
             catch

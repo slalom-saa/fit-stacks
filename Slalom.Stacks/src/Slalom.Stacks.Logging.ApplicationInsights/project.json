@@ -1,0 +1,43 @@
+﻿{
+  "version": "1.0.1-*",
+  "authors": [ "Slalom Architect Academy" ],
+  "packOptions": {
+    "tags": [ "slalom", "stacks" ],
+    "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+    "requireLicenseAcceptance": true,
+    "summary": "The Azure Application Insights library for Slalom Stacks."
+  },
+
+  "dependencies": {
+    "Microsoft.ApplicationInsights": "2.2.0-beta4",
+    "NETStandard.Library": "1.6.0",
+    "Slalom.Stacks": "1.0.1-*"
+  },
+
+  "buildOptions": {
+    "preserveCompilationContext": true,
+    "additionalArguments": [ "/ruleset:../../Slalom.ruleset", "/additionalfile:../../stylecop.json" ],
+    "xmlDoc": true
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "dotnet54",
+        "portable-net45+win8"
+      ]
+    },
+    "net461": {
+      "dependencies": {
+        "System.Reflection": "4.3.0"
+      },
+      "imports": "dnxcore50"
+    }
+  },
+
+  "scripts": {
+    "postcompile": [
+      "dotnet pack --no-build --configuration %compile:Configuration%"
+    ]
+  }
+}

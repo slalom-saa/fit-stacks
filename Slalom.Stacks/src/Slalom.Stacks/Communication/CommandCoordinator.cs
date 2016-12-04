@@ -89,6 +89,8 @@ namespace Slalom.Stacks.Communication
                 await this.HandleException(command, context, result, exception);
             }
 
+            result.Complete();
+
             // Audit the results
             await this.Audit(command, result, context);
 
@@ -123,7 +125,7 @@ namespace Slalom.Stacks.Communication
                 stores.ForEach(async e => await e.AppendAsync(new CommandExecutionFailedEvent(command, result), context));
                 if (result.RaisedException != null)
                 {
-                    _logger.Error(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@Context}", command, context);
+                    _logger.Verbose(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@Context}", command, context);
                 }
                 else if (result.ValidationErrors?.Any() ?? false)
                 {

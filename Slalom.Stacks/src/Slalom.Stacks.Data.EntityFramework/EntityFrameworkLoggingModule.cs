@@ -7,11 +7,11 @@ using Slalom.Stacks.Configuration;
 
 namespace Slalom.Stacks.EntityFramework
 {
-    public class LoggingModule : Module
+    public class EntityFrameworkLoggingModule : Module
     {
         private readonly string _connectionString;
 
-        public LoggingModule(string connectionString)
+        public EntityFrameworkLoggingModule(string connectionString)
         {
             _connectionString = connectionString;
         }

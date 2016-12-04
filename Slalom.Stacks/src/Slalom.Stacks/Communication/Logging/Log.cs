@@ -14,7 +14,7 @@ namespace Slalom.Stacks.Communication.Logging
             {
                 this.Payload = JsonConvert.SerializeObject(command, new JsonSerializerSettings
                 {
-                    ContractResolver = new JsonEventContractResolver()
+                    ContractResolver = new EventContractResolver()
                 });
             }
             catch
@@ -42,7 +42,16 @@ namespace Slalom.Stacks.Communication.Logging
             this.ThreadId = context.ThreadId;
             this.CorrelationId = context.CorrelationId;
             this.RaisedException = result.RaisedException?.ToString();
+            this.Elapsed = result.Elapsed;
+            this.Started = result.Started;
+            this.Completed = result.Completed;
         }
+
+        public DateTimeOffset? Completed { get; set; }
+
+        public DateTimeOffset Started { get; set; }
+
+        public TimeSpan? Elapsed { get; set; }
 
         public string RaisedException { get; set; }
 

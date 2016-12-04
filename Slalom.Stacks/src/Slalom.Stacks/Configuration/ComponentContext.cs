@@ -30,7 +30,7 @@ namespace Slalom.Stacks.Configuration
         }
 
         /// <summary>
-        /// Resolves an instance of the speciifed type from the context.
+        /// Resolves an instance of the specified type from the context.
         /// </summary>
         /// <param name="type">The type to resolve.</param>
         /// <returns>The resolved instance.</returns>
@@ -62,7 +62,7 @@ namespace Slalom.Stacks.Configuration
         }
 
         /// <summary>
-        /// Resolves an instance of the speciifed type from the context.
+        /// Resolves an instance of the specified type from the context.
         /// </summary>
         /// <typeparam name="T">The type to resolve.</typeparam>
         /// <returns>The resolved instance.</returns>

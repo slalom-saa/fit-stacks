@@ -22,7 +22,33 @@ namespace Slalom.Stacks.Communication
         public CommandResult(ExecutionContext context)
         {
             this.CorrelationId = context.CorrelationId;
+            this.Started = DateTimeOffset.UtcNow;
         }
+
+        /// <summary>
+        /// Gets or sets the date and time completed.
+        /// </summary>
+        /// <value>The date and time completed.</value>
+        public DateTimeOffset? Completed { get; set; }
+
+        /// <summary>
+        /// Gets the time elapsed.
+        /// </summary>
+        /// <value>The time elapsed.</value>
+        public TimeSpan? Elapsed => this.Completed - this.Started;
+
+        /// <summary>
+        /// Gets or sets the date and time started.
+        /// </summary>
+        /// <value>The date and time started.</value>
+        public DateTimeOffset Started { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value returned by the handler.
+        /// </summary>
+        /// <value>The value returned by the handler.</value>
+        [Ignore]
+        public TResult Value { get; set; }
 
         /// <summary>
         /// Gets the correlation identifier for the request.
@@ -49,13 +75,6 @@ namespace Slalom.Stacks.Communication
         public IEnumerable<ValidationError> ValidationErrors => _validationErrors.AsEnumerable();
 
         /// <summary>
-        /// Gets or sets the value returned by the handler.
-        /// </summary>
-        /// <value>The value returned by the handler.</value>
-        [Ignore]
-        public TResult Value { get; set; }
-
-        /// <summary>
         /// Adds the exception to the raised exceptions.
         /// </summary>
         /// <param name="exception">The exception to add.</param>
@@ -71,6 +90,14 @@ namespace Slalom.Stacks.Communication
         public void AddValidationErrors(IEnumerable<ValidationError> validationErrors)
         {
             _validationErrors.AddRange(validationErrors);
+        }
+
+        /// <summary>
+        /// Completes this instance.
+        /// </summary>
+        public void Complete()
+        {
+            this.Completed = DateTimeOffset.UtcNow;
         }
     }
 }

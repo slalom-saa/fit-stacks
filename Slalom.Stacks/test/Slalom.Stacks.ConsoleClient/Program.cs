@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
+using Microsoft.ApplicationInsights;
 using Slalom.FitStacks.ConsoleClient.Commands.AddItem;
 using Slalom.FitStacks.ConsoleClient.Data;
 using Slalom.FitStacks.ConsoleClient.Search;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging.Serilog;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Slalom.Stacks.EntityFramework;
+using Slalom.Stacks.Logging.ApplicationInsights;
 
 namespace Slalom.FitStacks.ConsoleClient
 {
@@ -27,7 +31,8 @@ namespace Slalom.FitStacks.ConsoleClient
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
                     container.RegisterModule(new SerilogModule());
-                    container.RegisterModule(new LoggingModule("Data Source=localhost;Initial Catalog=Stacks;Integrated Security=True"));
+                    container.RegisterModule(new EntityFrameworkLoggingModule("Data Source=localhost;Initial Catalog=Stacks;Integrated Security=True"));
+                    container.RegisterModule(new ApplicationInsightsLoggingModule());
 
                     container.Register(c => new EntityContext());
                     container.Register(c => new SearchContext("Data Source=localhost;Initial Catalog=Stacks;Integrated Security=True"));
@@ -40,6 +45,7 @@ namespace Slalom.FitStacks.ConsoleClient
 
                     await container.Bus.Send(new AddItemCommand("error"));
                 }
+                Console.WriteLine("done");
             }
             catch (Exception exception)
             {
