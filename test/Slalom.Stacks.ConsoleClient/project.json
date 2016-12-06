@@ -8,7 +8,8 @@
     "emitEntryPoint": true
   },
   "dependencies": {
-    "Slalom.Stacks": "1.0.2-*"
+    "Slalom.Stacks": "1.0.2-*",
+    "Slalom.Stacks.Logging.MSSqlServer": "1.0.0"
   },
   "frameworks": {
     //"netcoreapp1.0": {

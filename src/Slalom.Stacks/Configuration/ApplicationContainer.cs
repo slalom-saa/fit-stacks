@@ -132,6 +132,7 @@ namespace Slalom.Stacks.Configuration
         {
             var builder = new ContainerBuilder();
 
+
             builder.Register(c =>
             {
                 var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
@@ -139,8 +140,7 @@ namespace Slalom.Stacks.Configuration
                 _container.InjectProperties(instance, _selector);
 
                 return instance;
-            })
-                   .As<T>();
+            }).As<T>();
 
             builder.Update(_container.ComponentRegistry);
         }
@@ -258,5 +258,22 @@ namespace Slalom.Stacks.Configuration
         }
 
         #endregion Dispose Routine
+
+        public void Register(Func<IComponentContext, object> @delegate, params Type[] services)
+        {
+            var builder = new ContainerBuilder();
+
+
+            builder.Register(c =>
+            {
+                var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
+
+                _container.InjectProperties(instance, _selector);
+
+                return instance;
+            }).As(services);
+
+            builder.Update(_container.ComponentRegistry);
+        }
     }
 }

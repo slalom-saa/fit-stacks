@@ -1,11 +1,11 @@
 {
-  "version": "1.0.6-*",
+  "version": "1.0.7-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks" ],
     "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
     "requireLicenseAcceptance": true,
-    "summary": "The core library for Slalom Stacks projects."
+    "summary": "The core library for Stacks."
   },
   "dependencies": {
     "Newtonsoft.Json": "9.0.2-beta1",

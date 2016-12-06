@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Logging.MSSqlServer;
 
 namespace Slalom.FitStacks.ConsoleClient
 {
@@ -20,6 +21,9 @@ namespace Slalom.FitStacks.ConsoleClient
             {
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
+                    container.RegisterModule(new MSSqlServerLoggingModule());
+
+                    await container.Bus.Send(new Commands.AddItem.AddItemCommand("tes"));
                 }
 
                 Console.WriteLine("done");
