@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0-*",
+  "runtimes": {
+    "win10-x64": {}
+  },
+  "buildOptions": {
+    "preserveCompilationContext": true,
+    "emitEntryPoint": true
+  },
+  "dependencies": {
+    "Slalom.Stacks": "1.0.7-*"
+  },
+  "frameworks": {
+    //"netcoreapp1.0": {
+    //  "imports": [
+    //    "dotnet54",
+    //    "portable-net45+win8"
+    //  ],
+    //  "dependencies": {
+    //    "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.0.0-preview3-final"
+    //  }
+    //}
+    "net461": {
+      "dependencies": {
+      },
+      "imports": "dnxcore50"
+    }
+  },
+  "tools": {
+    "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.1.0-preview4-final"
+  }
+}
