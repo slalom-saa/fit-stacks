@@ -1,29 +1,19 @@
-{
-  "version": "1.0.2-*",
+﻿{
+  "version": "1.0.0-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks" ],
     "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
     "requireLicenseAcceptance": true,
-    "summary": "The Serilog Logging library for Slalom Stacks."
+    "summary": "The core library for Slalom Stacks projects."
   },
   "dependencies": {
-    "Newtonsoft.Json": "9.0.2-beta1",
-    //"StyleCop.Analyzers": {
-    //  "version": "1.0.0",
-    //  "type": "build"
-    //},
-    "Serilog.Exceptions": "2.2.1",
-    "Slalom.Stacks": "1.0.1-*",
-    "Autofac": "4.2.1",
-    "NETStandard.Library": "1.6.1",
-    "Serilog": "2.4.0-dev-00767",
-    "Serilog.Settings.Configuration": "2.2.0",
-    "System.Security.Claims": "4.3.0"
+    "NETStandard.Library": "1.6.0",
+    "RavenDB.Client": "3.5.2-patch-35181",
+    "Slalom.Stacks": "1.0.1"
   },
 
   "buildOptions": {
-    "preserveCompilationContext": true,
     "additionalArguments": [ "/ruleset:../../Slalom.ruleset", "/additionalfile:../../stylecop.json" ],
     "xmlDoc": true
   },
@@ -37,7 +27,6 @@
     },
     "net461": {
       "dependencies": {
-        "System.Reflection": "4.3.0"
       },
       "imports": "dnxcore50"
     }

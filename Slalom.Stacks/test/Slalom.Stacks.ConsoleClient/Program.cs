@@ -44,7 +44,13 @@ namespace Slalom.FitStacks.ConsoleClient
                     await container.Bus.Send(new AddItemCommand(null));
 
                     await container.Bus.Send(new AddItemCommand("error"));
+
+
+                    var builder = new LoggerConfiguration()
+                        .WriteTo.File("out.txt")
+                        .CreateLogger();
                 }
+
                 Console.WriteLine("done");
             }
             catch (Exception exception)

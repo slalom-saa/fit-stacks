@@ -11,7 +11,7 @@ using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Logging.ApplicationInsights
 {
-    public class AuditStore : IAuditStore
+    public sealed class AuditStore : IAuditStore, IDisposable
     {
         private readonly TelemetryClient _client;
 
@@ -30,11 +30,14 @@ namespace Slalom.Stacks.Logging.ApplicationInsights
                 instance.Context.Session.Id = context.SessionId;
 
                 _client.TrackEvent(instance);
-
-                _client.Flush();
             }
 
             return Task.FromResult(0);
+        }
+
+        public void Dispose()
+        {
+            _client.Flush();
         }
     }
 }

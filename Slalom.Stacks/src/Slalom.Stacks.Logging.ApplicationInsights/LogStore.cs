@@ -12,7 +12,7 @@ using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Logging.ApplicationInsights
 {
-    public class LogStore : ILogStore
+    public sealed class LogStore : ILogStore, IDisposable
     {
         private readonly TelemetryClient _client;
 
@@ -54,8 +54,6 @@ namespace Slalom.Stacks.Logging.ApplicationInsights
                 _client.TrackException(exception);
             }
 
-            _client.Flush();
-
             return Task.FromResult(0);
         }
 
@@ -82,6 +80,11 @@ namespace Slalom.Stacks.Logging.ApplicationInsights
                 }
             }
             return status;
+        }
+
+        public void Dispose()
+        {
+            _client.Flush();
         }
     }
 }

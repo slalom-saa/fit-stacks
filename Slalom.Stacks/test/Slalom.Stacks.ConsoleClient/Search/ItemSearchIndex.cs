@@ -5,6 +5,7 @@ using Slalom.Stacks.Communication;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.EntityFramework;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Search;
 
 namespace Slalom.FitStacks.ConsoleClient.Search
 {
