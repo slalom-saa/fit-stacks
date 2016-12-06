@@ -1,1 +1,1 @@
-# Slalom Stacks
+# Stacks
