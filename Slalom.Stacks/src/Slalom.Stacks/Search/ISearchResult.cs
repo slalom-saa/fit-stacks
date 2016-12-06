@@ -9,9 +9,9 @@ namespace Slalom.Stacks.Search
     public interface ISearchResult
     {
         /// <summary>
-        /// Gets the identifier.
+        /// Gets or sets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        int Id { get; }
+        int Id { get; set; }
     }
 }

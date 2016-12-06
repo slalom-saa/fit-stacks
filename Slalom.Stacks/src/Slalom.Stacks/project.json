@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2-*",
+  "version": "1.0.6-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks" ],
@@ -23,7 +23,8 @@
     "Microsoft.Extensions.DependencyModel": "1.1.0",
     "Microsoft.Extensions.PlatformAbstractions": "1.1.0",
     "NETStandard.Library": "1.6.1",
-    "System.Security.Claims": "4.3.0"
+    "System.Security.Claims": "4.3.0",
+    "System.Linq.Queryable": "4.3.0"
   },
 
   "buildOptions": {

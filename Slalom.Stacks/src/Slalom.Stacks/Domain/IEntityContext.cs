@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Stacks.Domain;
 
-namespace Slalom.Stacks.Data
+namespace Slalom.Stacks.Domain
 {
     public interface IEntityContext
     {
