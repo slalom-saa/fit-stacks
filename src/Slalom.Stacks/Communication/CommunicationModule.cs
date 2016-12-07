@@ -37,15 +37,27 @@ namespace Slalom.Stacks.Communication
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ICommandHandler<,>)))
-                   .As(e => typeof(ICommandHandler<,>).MakeGenericType(e.GetTypeInfo().BaseType.GetGenericArguments()[0], e.GetTypeInfo().BaseType.GetGenericArguments()[1]));
+                   .As(instance =>
+                   {
+                       var interfaces = instance.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(ICommandHandler<,>));
+                       return interfaces.Select(e => typeof(ICommandHandler<,>).MakeGenericType(e.GetGenericArguments()[0], e.GetGenericArguments()[1]));
+                   });
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandleEvent<>)))
-                   .As(e => typeof(IHandleEvent<>).MakeGenericType(e.GetTypeInfo().BaseType.GetGenericArguments()[0]));
+                   .As(instance =>
+                   {
+                       var interfaces = instance.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(IHandleEvent<>));
+                       return interfaces.Select(e => typeof(IHandleEvent<>).MakeGenericType(e.GetGenericArguments()[0]));
+                   });
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>)))
-                   .As(e => typeof(ICommandHandler<,>).MakeGenericType(e.GetTypeInfo().BaseType.GetGenericArguments()[0], e.GetTypeInfo().BaseType.GetGenericArguments()[1]));
+                   .As(instance =>
+                   {
+                       var interfaces = instance.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(IValidationRule<,>));
+                       return interfaces.Select(e => typeof(IValidationRule<,>).MakeGenericType(e.GetGenericArguments()[0], e.GetGenericArguments()[1]));
+                   });
         }
     }
 }
