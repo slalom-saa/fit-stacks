@@ -13,3 +13,17 @@ build_script:
 test: off
 artifacts:
 - path: artifacts/Slalom.*.nupkg
+deploy:
+- provider: NuGet
+  api_key:
+    secure: sY7tVlCO7MiUuEI/m2MeYMwvmLKZj2ORZyZ5wAxWLzBOIyfLcsp+vGerXS4lgi54
+  skip_symbols: true
+  on:
+    branch: /^(master|dev)$/
+- provider: GitHub
+  auth_token:
+    secure: 0e0e1faea345ceb1b0033c95d861a5a12e8d4bca
+  artifact: /Slalom.*\.nupkg/
+  tag: v$(appveyor_build_version)
+  on:
+    branch: master
