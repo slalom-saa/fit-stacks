@@ -144,7 +144,7 @@ namespace Slalom.Stacks.Communication
             }
             else
             {
-                _logger.Verbose("Successfully completed " + command.CommandName + ". {@Command}", command);
+                _logger.Verbose("Successfully completed " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
             }
         }
 
