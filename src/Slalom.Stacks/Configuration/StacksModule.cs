@@ -71,7 +71,7 @@ namespace Slalom.Stacks.Configuration
             builder.Register<ILogger>(c => new NullLogger());
 
             builder.RegisterModule(new DomainModule(this.Assemblies));
-            builder.RegisterModule(new CommunicationModule());
+            builder.RegisterModule(new CommunicationModule(this.Assemblies));
             builder.RegisterModule(new SearchModule(this.Assemblies));
 
             builder.Register(c => new ComponentContext(c.Resolve<Autofac.IComponentContext>()))
@@ -89,18 +89,6 @@ namespace Slalom.Stacks.Configuration
             builder.Register(c => new DiscoveryService(c.Resolve<ILogger>()))
                    .As<IDiscoverTypes>()
                    .SingleInstance();
-
-            builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ICommandHandler<,>)))
-                   .As(e => e.GetBaseAndContractTypes().Where(x => !x.GetTypeInfo().IsGenericTypeDefinition));
-
-            builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandleEvent<>)))
-                   .As(e => e.GetBaseAndContractTypes().Where(x => !x.GetTypeInfo().IsGenericTypeDefinition));
-
-            builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>)))
-                   .As(e => e.GetBaseAndContractTypes().Where(x => !x.GetTypeInfo().IsGenericTypeDefinition));
         }
     }
 }

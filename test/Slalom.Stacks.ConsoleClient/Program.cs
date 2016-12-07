@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Slalom.FitStacks.ConsoleClient.Domain;
+using Slalom.Stacks.Communication;
 using Slalom.Stacks.Configuration;
 
 namespace Slalom.FitStacks.ConsoleClient
@@ -19,9 +21,12 @@ namespace Slalom.FitStacks.ConsoleClient
             {
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
+                    Console.WriteLine(container.ResolveAll<IHandleEvent<ItemAddedEvent>>().Count());
+
+
                    // container.RegisterModule(new MSSqlServerLoggingModule());
 
-                    await container.Bus.Send(new Commands.AddItem.AddItemCommand("tes"));
+                  //  await container.Bus.Send(new Commands.AddItem.AddItemCommand("tes"));
                 }
 
                 Console.WriteLine("done");

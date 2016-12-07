@@ -22,12 +22,15 @@ namespace Slalom.Stacks.Search
         {
             base.Load(builder);
 
+            builder.Register(c => new NullSearchContext())
+                   .As<ISearchContext>();
+
             builder.Register(c => new SearchFacade(new ComponentContext(c.Resolve<IComponentContext>())))
                    .As<ISearchFacade>();
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ISearchIndexer<>)))
-                   .As(e => e.GetBaseAndContractTypes().Where(x => !x.GetTypeInfo().IsGenericTypeDefinition));
+                   .As(e => typeof(ISearchIndexer<>).MakeGenericType(e.GetTypeInfo().BaseType.GetGenericArguments()[0]));
         }
     }
 }

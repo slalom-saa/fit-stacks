@@ -52,7 +52,10 @@ namespace Slalom.Stacks.Communication
 
             try
             {
-                await Task.WhenAll(target.Select(e => (Task)e.Handle((dynamic)instance, context)));
+                foreach (var item in target)
+                {
+                    await (Task)item.Handle((dynamic)instance, context);
+                }
             }
             catch (Exception exception)
             {
