@@ -12,18 +12,17 @@ namespace Slalom.Stacks.Domain
     public interface IRepository<TRoot> where TRoot : IAggregateRoot
     {
         /// <summary>
+        /// Adds the specified instances.
+        /// </summary>
+        /// <param name="instances">The instances to update.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
+        Task AddAsync(TRoot[] instances);
+
+        /// <summary>
         /// Clears all instances.
         /// </summary>
         /// <returns>A task for asynchronous programming.</returns>
         Task ClearAsync();
-
-        /// <summary>
-        /// Removes the specified instances.
-        /// </summary>
-        /// <param name="instances">The instances to remove.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
-        /// <returns>A task for asynchronous programming.</returns>
-        Task RemoveAsync(TRoot[] instances);
 
         /// <summary>
         /// Finds the instance with the specified identifier.
@@ -39,11 +38,12 @@ namespace Slalom.Stacks.Domain
         IQueryable<TRoot> OpenQuery();
 
         /// <summary>
-        /// Adds the specified instances.
+        /// Removes the specified instances.
         /// </summary>
-        /// <param name="instances">The instances to update.</param>
+        /// <param name="instances">The instances to remove.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
-        Task AddAsync(TRoot[] instances);
+        /// <returns>A task for asynchronous programming.</returns>
+        Task RemoveAsync(TRoot[] instances);
 
         /// <summary>
         /// Updates the specified instances.

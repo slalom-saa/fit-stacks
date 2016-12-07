@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using Autofac;
+using System.Linq;
 using Slalom.Stacks.Communication.Validation;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
@@ -13,15 +13,33 @@ using Module = Autofac.Module;
 
 namespace Slalom.Stacks.Communication
 {
+    /// <summary>
+    /// An Autofac module to configure the communication depdencies.
+    /// </summary>
+    /// <seealso cref="Autofac.Module" />
     public class CommunicationModule : Module
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommunicationModule"/> class.
+        /// </summary>
+        /// <param name="assemblies">The assemblies used to probe.</param>
         public CommunicationModule(Assembly[] assemblies)
         {
             this.Assemblies = assemblies;
         }
 
+        /// <summary>
+        /// Gets or sets the assemblies.
+        /// </summary>
+        /// <value>The assemblies.</value>
         public Assembly[] Assemblies { get; set; }
 
+        /// <summary>
+        /// Override to add registrations to the container.
+        /// </summary>
+        /// <param name="builder">The builder through which components can be
+        /// registered.</param>
+        /// <remarks>Note that the ContainerBuilder parameter is unique to this module.</remarks>
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);

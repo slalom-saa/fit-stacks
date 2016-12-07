@@ -49,7 +49,7 @@ namespace Slalom.Stacks.Search
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
         public virtual IQueryable<TSearchResult> OpenQuery()
         {
-            return _context.CreateQuery<TSearchResult>();
+            return _context.OpenQuery<TSearchResult>();
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         public virtual Task DeleteAsync(Expression<Func<TSearchResult, bool>> predicate)
         {
-            return _context.DeleteAsync(predicate);
+            return _context.RemoveAsync(predicate);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         public virtual Task DeleteAsync(TSearchResult[] instances)
         {
-            return _context.DeleteAsync(instances);
+            return _context.RemoveAsync(instances);
         }
 
         /// <summary>

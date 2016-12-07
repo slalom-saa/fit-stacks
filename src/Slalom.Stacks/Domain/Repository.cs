@@ -47,14 +47,14 @@ namespace Slalom.Stacks.Domain
         /// <returns>Returns an IQueryable that can be used to execute queries.</returns>
         public IQueryable<TRoot> OpenQuery()
         {
-            return _context.CreateQuery<TRoot>();
+            return _context.OpenQuery<TRoot>();
         }
 
         /// <summary>
         /// Adds the specified instances.
         /// </summary>
         /// <param name="instances">The instances to update.</param>
-        /// <returns>Task.</returns>
+        /// <returns>A task for asynchronous programming.</returns>
         public Task AddAsync(TRoot[] instances)
         {
             return _context.AddAsync(instances);
@@ -64,7 +64,7 @@ namespace Slalom.Stacks.Domain
         /// Updates the specified instances.
         /// </summary>
         /// <param name="instances">The instances to update.</param>
-        /// <returns>Task.</returns>
+        /// <returns>A task for asynchronous programming.</returns>
         public Task UpdateAsync(TRoot[] instances)
         {
             return _context.UpdateAsync(instances);

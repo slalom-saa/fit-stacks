@@ -9,15 +9,33 @@ using Module = Autofac.Module;
 
 namespace Slalom.Stacks.Search
 {
+    /// <summary>
+    /// Autofac module that registers search dependencies.
+    /// </summary>
+    /// <seealso cref="Autofac.Module" />
     public class SearchModule : Module
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SearchModule"/> class.
+        /// </summary>
+        /// <param name="assemblies">The assemblies to probe for needed components.</param>
         public SearchModule(Assembly[] assemblies)
         {
             this.Assemblies = assemblies;
         }
 
+        /// <summary>
+        /// Gets or sets the assemblies.
+        /// </summary>
+        /// <value>The assemblies.</value>
         public Assembly[] Assemblies { get; set; }
 
+        /// <summary>
+        /// Override to add registrations to the container.
+        /// </summary>
+        /// <param name="builder">The builder through which components can be
+        /// registered.</param>
+        /// <remarks>Note that the ContainerBuilder parameter is unique to this module.</remarks>
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
@@ -30,7 +48,11 @@ namespace Slalom.Stacks.Search
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ISearchIndexer<>)))
-                   .As(e => typeof(ISearchIndexer<>).MakeGenericType(e.GetTypeInfo().BaseType.GetGenericArguments()[0]));
+                   .As(instance =>
+                   {
+                       var interfaces = instance.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(ISearchIndexer<>));
+                       return interfaces.Select(e => typeof(ISearchIndexer<>).MakeGenericType(e.GetGenericArguments()[0]));
+                   });
         }
     }
 }

@@ -7,13 +7,13 @@
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Shouldly": "2.8.2",
     "Moq": "4.6.38-alpha",
-    "Slalom.Stacks": "1.0.0-*",
     "Microsoft.NETCore.App": {
       "version": "1.1.0",
       "type": "platform"
     },
     "System.Runtime.Serialization.Primitives": "4.3.0",
-    "xunit": "2.2.0-beta4-build3444"
+    "xunit": "2.2.0-beta4-build3444",
+    "Slalom.Stacks": "1.0.15"
   },
   "testRunner": "xunit",
   "frameworks": {

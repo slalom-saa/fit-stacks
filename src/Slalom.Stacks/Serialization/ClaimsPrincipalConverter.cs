@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using Newtonsoft.Json;
+using Slalom.Stacks.Serialization.Model;
 
 namespace Slalom.Stacks.Serialization
 {
@@ -11,30 +12,6 @@ namespace Slalom.Stacks.Serialization
     /// <seealso cref="Newtonsoft.Json.JsonConverter" />
     public class ClaimsPrincipalConverter : JsonConverter
     {
-        public class ClaimsPrincipalHolder
-        {
-            public ClaimsPrincipalHolder()
-            {
-            }
-
-            public ClaimsPrincipalHolder(ClaimsPrincipal source)
-            {
-                this.AuthenticationType = source.Identity.AuthenticationType;
-                this.Claims = source.Claims.Select(x => new ClaimHolder { Type = x.Type, Value = x.Value }).ToArray();
-            }
-
-            public string AuthenticationType { get; set; }
-
-            public ClaimHolder[] Claims { get; set; }
-        }
-
-        public class ClaimHolder
-        {
-            public string Type { get; set; }
-
-            public string Value { get; set; }
-        }
-
         /// <summary>
         /// Determines whether this instance can convert the specified object type.
         /// </summary>

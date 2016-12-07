@@ -52,7 +52,7 @@ namespace Slalom.Stacks.Runtime
         }
 
 #if NET461
-        public Guid GetCorrelationId()
+        private Guid GetCorrelationId()
         {
             
             if (CallContext.GetData(Key) == null)
@@ -63,7 +63,7 @@ namespace Slalom.Stacks.Runtime
             return new Guid(CallContext.GetData(Key).ToString());
         }
 
-        public string GetLocalIPAddress()
+        private string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in host.AddressList)

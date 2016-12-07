@@ -20,8 +20,8 @@ namespace Slalom.Stacks.Configuration
     /// <seealso cref="System.IDisposable" />
     public class ApplicationContainer : IDisposable
     {
-        private readonly IContainer _container;
         private readonly IPropertySelector _selector = new AllUnsetPropertySelector();
+        private IContainer _container;
 
         bool _disposed;
 
@@ -72,6 +72,11 @@ namespace Slalom.Stacks.Configuration
         /// <value>The configured <see cref="ISearchFacade"/> instance.</value>
         public ISearchFacade Search => this.Resolve<ISearchFacade>();
 
+        /// <summary>
+        /// Builds a configuration object of the specified type using the specified section of the current configuration.
+        /// </summary>
+        /// <typeparam name="T">The type of configuration object</typeparam>
+        /// <param name="section">The section.</param>
         public void Configure<T>(string section) where T : class, new()
         {
             var builder = new ContainerBuilder();
@@ -83,9 +88,19 @@ namespace Slalom.Stacks.Configuration
                 return options;
             });
 
-            builder.Update(_container.ComponentRegistry);
+            foreach (var item in _container.ComponentRegistry.Registrations)
+            {
+                builder.RegisterComponent(item);
+            }
+
+            _container.Dispose();
+            _container = builder.Build();
         }
 
+        /// <summary>
+        /// Builds a configuration object of the specified type using current configuration.
+        /// </summary>
+        /// <typeparam name="T">The type of configuration object</typeparam>
         public void Configure<T>() where T : class, new()
         {
             var builder = new ContainerBuilder();
@@ -96,8 +111,13 @@ namespace Slalom.Stacks.Configuration
                 c.Resolve<IConfiguration>().Bind(options);
                 return options;
             });
+            foreach (var item in _container.ComponentRegistry.Registrations)
+            {
+                builder.RegisterComponent(item);
+            }
 
-            builder.Update(_container.ComponentRegistry);
+            _container.Dispose();
+            _container = builder.Build();
         }
 
         /// <summary>
@@ -120,7 +140,13 @@ namespace Slalom.Stacks.Configuration
             builder.RegisterType<T>()
                    .As(typeof(T).GetBaseAndContractTypes().Where(e => !e.GetTypeInfo().IsGenericTypeDefinition).ToArray());
 
-            builder.Update(_container.ComponentRegistry);
+            foreach (var item in _container.ComponentRegistry.Registrations)
+            {
+                builder.RegisterComponent(item);
+            }
+
+            _container.Dispose();
+            _container = builder.Build();
         }
 
         /// <summary>
@@ -132,7 +158,6 @@ namespace Slalom.Stacks.Configuration
         {
             var builder = new ContainerBuilder();
 
-
             builder.Register(c =>
             {
                 var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
@@ -142,7 +167,13 @@ namespace Slalom.Stacks.Configuration
                 return instance;
             }).As<T>();
 
-            builder.Update(_container.ComponentRegistry);
+            foreach (var item in _container.ComponentRegistry.Registrations)
+            {
+                builder.RegisterComponent(item);
+            }
+
+            _container.Dispose();
+            _container = builder.Build();
         }
 
         /// <summary>
@@ -156,7 +187,40 @@ namespace Slalom.Stacks.Configuration
 
             builder.RegisterInstance(instance).As<T>();
 
-            builder.Update(_container.ComponentRegistry);
+            foreach (var item in _container.ComponentRegistry.Registrations)
+            {
+                builder.RegisterComponent(item);
+            }
+
+            _container.Dispose();
+            _container = builder.Build();
+        }
+
+        /// <summary>
+        /// Registers an instance with the container using the specified service types.
+        /// </summary>
+        /// <param name="delegate">The delegate.</param>
+        /// <param name="services">The services.</param>
+        public void Register(Func<IComponentContext, object> @delegate, params Type[] services)
+        {
+            var builder = new ContainerBuilder();
+
+            builder.Register(c =>
+            {
+                var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
+
+                _container.InjectProperties(instance, _selector);
+
+                return instance;
+            }).As(services);
+
+            foreach (var item in _container.ComponentRegistry.Registrations)
+            {
+                builder.RegisterComponent(item);
+            }
+
+            _container.Dispose();
+            _container = builder.Build();
         }
 
         /// <summary>
@@ -169,7 +233,13 @@ namespace Slalom.Stacks.Configuration
 
             builder.RegisterModule((IModule)module);
 
-            builder.Update(_container.ComponentRegistry);
+            foreach (var item in _container.ComponentRegistry.Registrations)
+            {
+                builder.RegisterComponent(item);
+            }
+
+            _container.Dispose();
+            _container = builder.Build();
         }
 
         /// <summary>
@@ -187,7 +257,14 @@ namespace Slalom.Stacks.Configuration
                 {
                     var builder = new ContainerBuilder();
                     builder.RegisterType(typeof(T));
-                    builder.Update(_container.ComponentRegistry);
+
+                    foreach (var item in _container.ComponentRegistry.Registrations)
+                    {
+                        builder.RegisterComponent(item);
+                    }
+
+                    _container.Dispose();
+                    _container = builder.Build();
 
                     instance = _container.Resolve<T>();
                 }
@@ -258,22 +335,5 @@ namespace Slalom.Stacks.Configuration
         }
 
         #endregion Dispose Routine
-
-        public void Register(Func<IComponentContext, object> @delegate, params Type[] services)
-        {
-            var builder = new ContainerBuilder();
-
-
-            builder.Register(c =>
-            {
-                var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
-
-                _container.InjectProperties(instance, _selector);
-
-                return instance;
-            }).As(services);
-
-            builder.Update(_container.ComponentRegistry);
-        }
     }
 }

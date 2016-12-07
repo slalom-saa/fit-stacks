@@ -8,7 +8,7 @@
     "emitEntryPoint": true
   },
   "dependencies": {
-    "Slalom.Stacks": "1.0.7-*"
+    "Slalom.Stacks": "1.0.15"
   },
   "frameworks": {
     //"netcoreapp1.0": {

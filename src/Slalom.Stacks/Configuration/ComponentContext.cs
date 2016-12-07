@@ -45,11 +45,7 @@ namespace Slalom.Stacks.Configuration
             {
                 if (!type.GetTypeInfo().IsAbstract && !type.GetTypeInfo().IsInterface)
                 {
-                    var builder = new ContainerBuilder();
-                    builder.RegisterType(type);
-                    builder.Update(_context.ComponentRegistry);
-
-                    instance = _context.Resolve(type);
+                    instance = Activator.CreateInstance(type);
                 }
             }
 
@@ -74,11 +70,7 @@ namespace Slalom.Stacks.Configuration
             {
                 if (!typeof(T).GetTypeInfo().IsAbstract && !typeof(T).GetTypeInfo().IsInterface)
                 {
-                    var builder = new ContainerBuilder();
-                    builder.RegisterType(typeof(T));
-                    builder.Update(_context.ComponentRegistry);
-
-                    instance = _context.Resolve<T>();
+                    instance = Activator.CreateInstance<T>();
                 }
             }
 
