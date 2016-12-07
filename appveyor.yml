@@ -11,3 +11,5 @@ install:
 build_script:
 - ps: ./Build.ps1
 test: off
+artifacts:
+- path: artifacts/Slalom.*.nupkg
