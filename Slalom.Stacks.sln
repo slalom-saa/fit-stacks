@@ -7,14 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5926D369-56E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{51556D6C-A5D7-4E44-B2DA-7E1E2217C682}"
 	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
-		Build.ps1 = Build.ps1
 		global.json = global.json
-		Links.txt = Links.txt
-		README.md = README.md
-		Setup.ps1 = Setup.ps1
-		Slalom.ruleset = Slalom.ruleset
-		stylecop.json = stylecop.json
+		assets\stacks.ruleset = assets\stacks.ruleset
+		assets\stylecop.json = assets\stylecop.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E59A74CA-04D4-43F0-9C6A-BE2E6380A240}"

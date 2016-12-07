@@ -28,7 +28,7 @@
   },
 
   "buildOptions": {
-    "additionalArguments": [ "/ruleset:../../Slalom.ruleset", "/additionalfile:../../stylecop.json" ],
+    "additionalArguments": [ "/ruleset:../../assets/stacks.ruleset", "/additionalfile:../../assets/stylecop.json" ],
     "xmlDoc": true
   },
 
