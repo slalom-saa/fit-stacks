@@ -56,11 +56,11 @@ namespace Slalom.Stacks.Domain
         Task AddAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
-        /// Creates a query that can be used to search.
+        /// Opens a query that can be used to filter and project.
         /// </summary>
         /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
         /// <returns>An IQueryable&lt;TAggregateRoot&gt; that can be used to filter and project.</returns>
-        IQueryable<TAggregateRoot> CreateQuery<TAggregateRoot>() where TAggregateRoot : IAggregateRoot;
+        IQueryable<TAggregateRoot> OpenQuery<TAggregateRoot>() where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Finds the instance with the specified identifier.

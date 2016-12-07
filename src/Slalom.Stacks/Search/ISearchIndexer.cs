@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 namespace Slalom.Stacks.Search
 {
     /// <summary>
-    /// Provides access to to search results.
+    /// Manages a search index with methods to immediately add an item to the index.
     /// </summary>
-    public interface ISearchIndex<TSearchResult> : IRebuildSearchIndex where TSearchResult : class, ISearchResult
+    public interface ISearchIndexer<TSearchResult> : IRebuildSearchIndex where TSearchResult : class, ISearchResult
     {
         /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
@@ -41,10 +41,10 @@ namespace Slalom.Stacks.Search
         Task DeleteAsync(Expression<Func<TSearchResult, bool>> predicate);
 
         /// <summary>
-        /// Finds all instances of the specified type.
+        /// Opens a query that can be used to filter and project.
         /// </summary>
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
-        IQueryable<TSearchResult> CreateQuery();
+        IQueryable<TSearchResult> OpenQuery();
 
         /// <summary>
         /// Finds the instance with the specified identifier.
@@ -70,7 +70,7 @@ namespace Slalom.Stacks.Search
         /// Updates all instances found using the specified predicate and uses the provided expression for the update.
         /// </summary>
         /// <param name="predicate">The predicate to match.</param>
-        /// <param name="expression">The update make.</param>
+        /// <param name="expression">The update to make.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="predicate"/> argument is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="expression"/> argument is null.</exception>
         Task UpdateAsync(Expression<Func<TSearchResult, bool>> predicate, Expression<Func<TSearchResult, TSearchResult>> expression);

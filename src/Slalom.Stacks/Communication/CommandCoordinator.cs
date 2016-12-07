@@ -105,17 +105,23 @@ namespace Slalom.Stacks.Communication
         /// <param name="result">The result.</param>
         /// <param name="context">The execution context.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        protected virtual Task Audit<TResult>(Command<TResult> command, CommandResult<TResult> result, ExecutionContext context)
+        protected async virtual Task Audit<TResult>(Command<TResult> command, CommandResult<TResult> result, ExecutionContext context)
         {
             // Log the command
             var logs = _componentContext.ResolveAll<ILogStore>().ToList();
-            logs.ForEach(e => e.AppendAsync(command, result, context));
+            foreach (var item in logs)
+            {
+                await item.AppendAsync(command, result, context);
+            }
 
             // Add an audit if state was changed
             if (result.Value is IEvent)
             {
                 var stores = _componentContext.ResolveAll<IAuditStore>().ToList();
-                stores.ForEach(async e => await e.AppendAsync((IEvent)result.Value, context));
+                foreach (var item in stores)
+                {
+                    await item.AppendAsync((IEvent)result.Value, context);
+                }
             }
 
             // Add additional audits and diagnostic messages if the result was unsuccessful.
@@ -140,8 +146,6 @@ namespace Slalom.Stacks.Communication
             {
                 _logger.Verbose("Successfully completed " + command.CommandName + ". {@Command}", command);
             }
-
-            return Task.FromResult(0);
         }
 
         /// <summary>

@@ -91,9 +91,9 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
         /// <returns>An IQueryable&lt;TAggregateRoot&gt; that can be used to filter and project.</returns>
-        public IQueryable<TAggregateRoot> CreateQuery<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
+        public IQueryable<TAggregateRoot> OpenQuery<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
         {
-            return _componentContext.Resolve<IRepository<TAggregateRoot>>().CreateQuery();
+            return _componentContext.Resolve<IRepository<TAggregateRoot>>().OpenQuery();
         }
 
         /// <summary>

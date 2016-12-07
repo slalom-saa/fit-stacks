@@ -5,7 +5,6 @@ using Slalom.Stacks.Configuration;
 namespace Slalom.FitStacks.ConsoleClient
 {
     public class Program
-
     {
         public static void Main(string[] args)
         {

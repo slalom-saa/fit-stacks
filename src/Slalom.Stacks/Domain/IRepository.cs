@@ -33,10 +33,10 @@ namespace Slalom.Stacks.Domain
         Task<TRoot> FindAsync(Guid id);
 
         /// <summary>
-        /// Creates an IQueryable that can be used to execute queries.
+        /// Opens a query that can be used to filter and project.
         /// </summary>
         /// <returns>Returns an IQueryable that can be used to execute queries.</returns>
-        IQueryable<TRoot> CreateQuery();
+        IQueryable<TRoot> OpenQuery();
 
         /// <summary>
         /// Adds the specified instances.

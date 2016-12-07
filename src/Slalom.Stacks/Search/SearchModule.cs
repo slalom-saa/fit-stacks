@@ -26,7 +26,7 @@ namespace Slalom.Stacks.Search
                    .As<ISearchFacade>();
 
             builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ISearchIndex<>)))
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ISearchIndexer<>)))
                    .As(e => e.GetBaseAndContractTypes().Where(x => !x.GetTypeInfo().IsGenericTypeDefinition));
         }
     }
