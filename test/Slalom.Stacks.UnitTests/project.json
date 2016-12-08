@@ -13,8 +13,11 @@
     },
     "System.Runtime.Serialization.Primitives": "4.3.0",
     "xunit": "2.2.0-beta4-build3444",
-    "Slalom.Stacks": "1.0.15"
-  },
+    "Slalom.Stacks": {
+      "target": "project"
+    },
+    "Microsoft.DotNet.InternalAbstractions": "1.0.0"
+    },
   "testRunner": "xunit",
   "frameworks": {
     "netcoreapp1.0": {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Autofac;
+using System.Linq;
 using Autofac.Core;
 using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Communication;
@@ -23,8 +23,6 @@ namespace Slalom.Stacks.Configuration
     {
         private readonly IContainer _container;
         private readonly IPropertySelector _selector = new AllUnsetPropertySelector();
-
-        bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationContainer"/> class.
@@ -248,7 +246,9 @@ namespace Slalom.Stacks.Configuration
             return target.Cast<T>();
         }
 
-        #region Dispose Routine
+        #region IDisposable Implementation
+
+        bool _disposed;
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -280,12 +280,16 @@ namespace Slalom.Stacks.Configuration
 
             if (disposing)
             {
+                // free other managed objects that implement IDisposable only
                 _container.Dispose();
             }
+
+            // release any unmanaged objects
+            // set the object references to null
 
             _disposed = true;
         }
 
-        #endregion Dispose Routine
+        #endregion
     }
 }

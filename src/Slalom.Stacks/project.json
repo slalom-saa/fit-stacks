@@ -1,14 +1,13 @@
 {
-  "version": "1.0.27-*",
+  "version": "1.0.33-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
-    "tags": [ "slalom", "stacks" ],
+    "tags": [ "slalom", "stacks", "blocks" ],
     "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
     "requireLicenseAcceptance": true,
-    "summary": "The core library for Stacks."
+    "summary": "The runtime and core library for Stacks."
   },
   "dependencies": {
-    "Newtonsoft.Json": "9.0.2-beta1",
     //"StyleCop.Analyzers": {
     //  "version": "1.0.0",
     //  "type": "build"
@@ -24,7 +23,10 @@
     "Microsoft.Extensions.PlatformAbstractions": "1.1.0",
     "NETStandard.Library": "1.6.1",
     "System.Security.Claims": "4.3.0",
-    "System.Linq.Queryable": "4.0.0-*"
+    "System.Linq.Queryable": "4.0.0-*",
+    "Newtonsoft.Json": "9.0.1",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0"
   },
 
   "buildOptions": {

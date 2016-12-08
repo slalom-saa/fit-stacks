@@ -2,6 +2,7 @@
 using Shouldly;
 using System.ComponentModel;
 using System.Linq;
+using NUnit.Framework;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Communication.Validation;
 using Slalom.Stacks.Configuration;
