@@ -43,9 +43,13 @@ namespace Slalom.Stacks.Domain
                    .As<IDomainFacade>()
                    .SingleInstance();
 
-            builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IRepository<>)))
-                   .As(e => e.GetBaseAndContractTypes().Where(x => !x.GetTypeInfo().IsGenericTypeDefinition));
+            //builder.RegisterAssemblyTypes(this.Assemblies)
+            //       .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IRepository<>)))
+            //       .As(e => e.GetBaseAndContractTypes().Where(x => !x.GetTypeInfo().IsGenericTypeDefinition));
+
+            builder.RegisterGeneric(typeof(Repository<>))
+                   .As(typeof(IRepository<>))
+                   .InstancePerDependency();
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var handler = container.Resolve<IEventPublisher>();
 
-                await handler.Publish(new TestEvent(), new LocalExecutionContext());
+                await handler.PublishAsync(new TestEvent(), new LocalExecutionContext());
             }
         }
 
@@ -70,7 +70,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var handler = container.Resolve<IEventPublisher>();
 
-                await handler.Publish(new TestEvent(), new LocalExecutionContext());
+                await handler.PublishAsync(new TestEvent(), new LocalExecutionContext());
 
                 mock.Verify();
             }

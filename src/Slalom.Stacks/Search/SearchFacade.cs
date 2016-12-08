@@ -49,6 +49,11 @@ namespace Slalom.Stacks.Search
 
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
 
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
+
             return store.AddAsync(instances);
         }
 
@@ -60,6 +65,11 @@ namespace Slalom.Stacks.Search
         public Task ClearAsync<TSearchResult>() where TSearchResult : class, ISearchResult
         {
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
+
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
 
             return store.ClearAsync();
         }
@@ -81,8 +91,11 @@ namespace Slalom.Stacks.Search
             }
 
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
-
-            return store.DeleteAsync(instances);
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
+            return store.RemoveAsync(instances);
         }
 
         /// <summary>
@@ -97,8 +110,11 @@ namespace Slalom.Stacks.Search
             Argument.NotNull(() => predicate);
 
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
-
-            return store.DeleteAsync(predicate);
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
+            return store.RemoveAsync(predicate);
         }
 
         /// <summary>
@@ -109,7 +125,10 @@ namespace Slalom.Stacks.Search
         public IQueryable<TSearchResult> CreateQuery<TSearchResult>() where TSearchResult : class, ISearchResult
         {
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
-
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
             return store.OpenQuery();
         }
 
@@ -122,7 +141,10 @@ namespace Slalom.Stacks.Search
         public Task<TSearchResult> FindAsync<TSearchResult>(int id) where TSearchResult : class, ISearchResult
         {
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
-
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
             return store.FindAsync(id);
         }
 
@@ -135,7 +157,10 @@ namespace Slalom.Stacks.Search
         public Task RebuildIndexAsync<TSearchResult>() where TSearchResult : class, ISearchResult
         {
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
-
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
             return store.RebuildIndexAsync();
         }
 
@@ -159,7 +184,10 @@ namespace Slalom.Stacks.Search
             }
 
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
-
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
             return store.UpdateAsync(instances);
         }
 
@@ -178,7 +206,10 @@ namespace Slalom.Stacks.Search
             Argument.NotNull(() => expression);
 
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
-
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
             return store.UpdateAsync(predicate, expression);
         }
     }

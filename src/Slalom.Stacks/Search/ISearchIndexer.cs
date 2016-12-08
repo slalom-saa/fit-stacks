@@ -31,14 +31,14 @@ namespace Slalom.Stacks.Search
         /// </summary>
         /// <param name="instances">The instances to remove.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
-        Task DeleteAsync(TSearchResult[] instances);
+        Task RemoveAsync(TSearchResult[] instances);
 
         /// <summary>
         /// Removes all instances that match the specified predicate.
         /// </summary>
         /// <param name="predicate">The predicate to match.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="predicate"/> argument is null.</exception>
-        Task DeleteAsync(Expression<Func<TSearchResult, bool>> predicate);
+        Task RemoveAsync(Expression<Func<TSearchResult, bool>> predicate);
 
         /// <summary>
         /// Opens a query that can be used to filter and project.

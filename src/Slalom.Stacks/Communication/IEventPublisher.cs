@@ -16,6 +16,6 @@ namespace Slalom.Stacks.Communication
         /// <param name="instance">The event to publish.</param>
         /// <param name="context">The current context.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task Publish<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent;
+        Task PublishAsync<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent;
     }
 }

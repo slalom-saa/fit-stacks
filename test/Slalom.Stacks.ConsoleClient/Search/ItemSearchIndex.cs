@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Slalom.FitStacks.ConsoleClient.Domain;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Logging;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
 

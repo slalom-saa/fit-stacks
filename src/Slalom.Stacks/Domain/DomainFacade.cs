@@ -53,6 +53,11 @@ namespace Slalom.Stacks.Domain
 
             var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
 
+            if (repository == null)
+            {
+                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
+            }
+
             return repository.AddAsync(instances);
         }
 
@@ -93,7 +98,14 @@ namespace Slalom.Stacks.Domain
         /// <returns>An IQueryable&lt;TAggregateRoot&gt; that can be used to filter and project.</returns>
         public IQueryable<TAggregateRoot> OpenQuery<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
         {
-            return _componentContext.Resolve<IRepository<TAggregateRoot>>().OpenQuery();
+            var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
+
+            if (repository == null)
+            {
+                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
+            }
+
+            return repository.OpenQuery();
         }
 
         /// <summary>
@@ -105,7 +117,14 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="System.ArgumentNullException"></exception>
         public Task<TAggregateRoot> FindAsync<TAggregateRoot>(Guid id) where TAggregateRoot : IAggregateRoot
         {
-            return _componentContext.Resolve<IRepository<TAggregateRoot>>().FindAsync(id);
+            var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
+
+            if (repository == null)
+            {
+                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
+            }
+
+            return repository.FindAsync(id);
         }
 
         /// <summary>
@@ -115,7 +134,12 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task ClearAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
         {
-            return _componentContext.Resolve<IRepository<TAggregateRoot>>().ClearAsync();
+            var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
+            if (repository == null)
+            {
+                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
+            }
+            return repository.ClearAsync();
         }
 
         /// <summary>
@@ -137,7 +161,12 @@ namespace Slalom.Stacks.Domain
                 return Task.FromResult(0);
             }
 
-            return _componentContext.Resolve<IRepository<TAggregateRoot>>().RemoveAsync(instances);
+            var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
+            if (repository == null)
+            {
+                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
+            }
+            return repository.RemoveAsync(instances);
         }
 
         /// <summary>
@@ -186,7 +215,12 @@ namespace Slalom.Stacks.Domain
                 return Task.FromResult(0);
             }
 
-            return _componentContext.Resolve<IRepository<TAggregateRoot>>().UpdateAsync(instances);
+            var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
+            if (repository == null)
+            {
+                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
+            }
+            return repository.UpdateAsync(instances);
         }
 
         /// <summary>

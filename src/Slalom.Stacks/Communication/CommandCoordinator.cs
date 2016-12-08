@@ -105,7 +105,7 @@ namespace Slalom.Stacks.Communication
         /// <param name="result">The result.</param>
         /// <param name="context">The execution context.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        protected async virtual Task Audit<TResult>(Command<TResult> command, CommandResult<TResult> result, ExecutionContext context)
+        protected virtual async Task Audit<TResult>(Command<TResult> command, CommandResult<TResult> result, ExecutionContext context)
         {
             // Log the command
             var logs = _componentContext.ResolveAll<ILogStore>().ToList();
@@ -232,11 +232,14 @@ namespace Slalom.Stacks.Communication
         /// <param name="context">The current execution context.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        protected virtual Task PublishEvents(ExecutionContext context)
+        protected virtual async Task PublishEvents(ExecutionContext context)
         {
             Argument.NotNull(() => context);
 
-            return Task.WhenAll(context.RaisedEvents.Select(e => _eventPublisher.Publish(e, context)));
+            foreach (var item in context.RaisedEvents)
+            {
+                await _eventPublisher.PublishAsync(item, context);
+            }
         }
 
         /// <summary>
