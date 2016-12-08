@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 namespace Slalom.Stacks.Search
 {
     /// <summary>
-    /// The null special case implementation for <see cref="ISearchContext" />.
+    /// An in-memory <see cref="ISearchContext" /> instance.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Search.ISearchContext" />
-    public class NullSearchContext : ISearchContext
+    public class InMemorySearchContext : ISearchContext
     {
+        private readonly List<ISearchResult> _instances = new List<ISearchResult>();
+
         /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
         /// item already exists.
@@ -21,8 +23,15 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
         /// and have a small set, then you can use the update method.</remarks>
-        public Task AddAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class
+        public Task AddAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
+            var index = !_instances.OfType<TSearchResult>().Any() ? 0 : _instances.OfType<TSearchResult>().Max(e => e.Id);
+            foreach (var item in instances)
+            {
+                item.Id = ++index;
+                _instances.Add(item);
+            }
+
             return Task.FromResult(0);
         }
 
@@ -31,8 +40,10 @@ namespace Slalom.Stacks.Search
         /// </summary>
         /// <typeparam name="TSearchResult">The type of instance.</typeparam>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task ClearAsync<TSearchResult>() where TSearchResult : class
+        public Task ClearAsync<TSearchResult>() where TSearchResult : class, ISearchResult
         {
+            _instances.Clear();
+
             return Task.FromResult(0);
         }
 
@@ -41,9 +52,9 @@ namespace Slalom.Stacks.Search
         /// </summary>
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
         /// <returns>An IQueryable&lt;TAggregateRoot&gt; that can be used to filter and project.</returns>
-        public IQueryable<TSearchResult> OpenQuery<TSearchResult>() where TSearchResult : class
+        public IQueryable<TSearchResult> OpenQuery<TSearchResult>() where TSearchResult : class, ISearchResult
         {
-            return Enumerable.Empty<TSearchResult>().AsQueryable();
+            return _instances.OfType<TSearchResult>().AsQueryable();
         }
 
         /// <summary>
@@ -52,8 +63,12 @@ namespace Slalom.Stacks.Search
         /// <typeparam name="TSearchResult">The type of instance to remove.</typeparam>
         /// <param name="instances">The instances to remove.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task RemoveAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class
+        public Task RemoveAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
+            foreach (var item in instances)
+            {
+                _instances.Remove(item);
+            }
             return Task.FromResult(0);
         }
 
@@ -63,8 +78,13 @@ namespace Slalom.Stacks.Search
         /// <typeparam name="TSearchResult">The type of instance to remove.</typeparam>
         /// <param name="predicate">The predicate used to filter.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task RemoveAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate) where TSearchResult : class
+        public Task RemoveAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate) where TSearchResult : class, ISearchResult
         {
+            var target = _instances.OfType<TSearchResult>().Where(e => predicate.Compile()(e));
+            foreach (var item in target)
+            {
+                _instances.Remove(item);
+            }
             return Task.FromResult(0);
         }
 
@@ -74,9 +94,9 @@ namespace Slalom.Stacks.Search
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<TSearchResult> FindAsync<TSearchResult>(int id) where TSearchResult : class
+        public Task<TSearchResult> FindAsync<TSearchResult>(int id) where TSearchResult : class, ISearchResult
         {
-            return Task.FromResult((TSearchResult)null);
+            return Task.FromResult(_instances.OfType<TSearchResult>().FirstOrDefault(e => e.Id == id));
         }
 
         /// <summary>
@@ -88,9 +108,21 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
         /// and have a small set, then you can use the update method.</remarks>
-        public Task UpdateAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class
+        public async Task UpdateAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
-            return Task.FromResult(0);
+            foreach (var item in instances)
+            {
+                var current = await this.FindAsync<TSearchResult>(item.Id);
+                if (current != null)
+                {
+                    _instances.Remove(current);
+                    _instances.Add(item);
+                }
+                else
+                {
+                    _instances.Add(item);
+                }
+            }
         }
 
         /// <summary>
@@ -100,9 +132,9 @@ namespace Slalom.Stacks.Search
         /// <param name="predicate">The predicate used to filter.</param>
         /// <param name="expression">The expression used to update.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task UpdateAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate, Expression<Func<Type, Type>> expression) where TSearchResult : class
+        public Task UpdateAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate, Expression<Func<Type, Type>> expression) where TSearchResult : class, ISearchResult
         {
-            return Task.FromResult(0);
+            throw new NotSupportedException();
         }
     }
 }
