@@ -61,12 +61,13 @@ namespace Slalom.Stacks.Configuration
             base.Load(builder);
 
             builder.Register(c =>
-            {
-                var configurationBuilder = new ConfigurationBuilder();
-                configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
-                configurationBuilder.AddJsonFile("appsettings.json", true, true);
-                return configurationBuilder.Build();
-            }).As<IConfiguration>();
+                   {
+                       var configurationBuilder = new ConfigurationBuilder();
+                       configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
+                       configurationBuilder.AddJsonFile("appsettings.json", true, true);
+                       return configurationBuilder.Build();
+                   }).As<IConfiguration>()
+                   .SingleInstance();
 
             builder.Register<ILogger>(c => new NullLogger());
 
