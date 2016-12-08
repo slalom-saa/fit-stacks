@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Autofac;
-using System.Linq;
 using Autofac.Core;
 using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
-using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
+
+#pragma warning disable 618
 
 namespace Slalom.Stacks.Configuration
 {
@@ -20,8 +21,8 @@ namespace Slalom.Stacks.Configuration
     /// <seealso cref="System.IDisposable" />
     public class ApplicationContainer : IDisposable
     {
+        private readonly IContainer _container;
         private readonly IPropertySelector _selector = new AllUnsetPropertySelector();
-        private IContainer _container;
 
         bool _disposed;
 
@@ -80,10 +81,6 @@ namespace Slalom.Stacks.Configuration
         public void Configure<T>(string section) where T : class, new()
         {
             var builder = new ContainerBuilder();
-            foreach (var item in _container.ComponentRegistry.Registrations)
-            {
-                builder.RegisterComponent(item);
-            }
 
             builder.Register(c =>
             {
@@ -92,8 +89,7 @@ namespace Slalom.Stacks.Configuration
                 return options;
             });
 
-            _container.Dispose();
-            _container = builder.Build();
+            builder.Update(_container.ComponentRegistry);
         }
 
         /// <summary>
@@ -103,11 +99,6 @@ namespace Slalom.Stacks.Configuration
         public void Configure<T>() where T : class, new()
         {
             var builder = new ContainerBuilder();
-            foreach (var item in _container.ComponentRegistry.Registrations)
-            {
-                builder.RegisterComponent(item);
-            }
-
             builder.Register(c =>
             {
                 var options = Activator.CreateInstance<T>();
@@ -115,8 +106,7 @@ namespace Slalom.Stacks.Configuration
                 return options;
             });
 
-            _container.Dispose();
-            _container = builder.Build();
+            builder.Update(_container.ComponentRegistry);
         }
 
         /// <summary>
@@ -135,16 +125,11 @@ namespace Slalom.Stacks.Configuration
         public void Register<T>()
         {
             var builder = new ContainerBuilder();
-            foreach (var item in _container.ComponentRegistry.Registrations)
-            {
-                builder.RegisterComponent(item);
-            }
-
             builder.RegisterType<T>()
-                  .As(typeof(T).GetBaseAndContractTypes().Where(e => !e.GetTypeInfo().IsGenericTypeDefinition).ToArray());
+                   .AsSelf()
+                   .AsImplementedInterfaces();
 
-            _container.Dispose();
-            _container = builder.Build();
+            builder.Update(_container.ComponentRegistry);
         }
 
         /// <summary>
@@ -155,11 +140,6 @@ namespace Slalom.Stacks.Configuration
         public void Register<T>(Func<IComponentContext, T> @delegate) where T : class
         {
             var builder = new ContainerBuilder();
-            foreach (var item in _container.ComponentRegistry.Registrations)
-            {
-                builder.RegisterComponent(item);
-            }
-
             builder.Register(c =>
             {
                 var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
@@ -167,10 +147,9 @@ namespace Slalom.Stacks.Configuration
                 _container.InjectProperties(instance, _selector);
 
                 return instance;
-            }).As<T>();
+            }).As<T>().AsImplementedInterfaces();
 
-            _container.Dispose();
-            _container = builder.Build();
+            builder.Update(_container.ComponentRegistry);
         }
 
         /// <summary>
@@ -181,15 +160,10 @@ namespace Slalom.Stacks.Configuration
         public void Register<T>(T instance) where T : class
         {
             var builder = new ContainerBuilder();
-            foreach (var item in _container.ComponentRegistry.Registrations)
-            {
-                builder.RegisterComponent(item);
-            }
 
-            builder.RegisterInstance(instance).As<T>();
+            builder.RegisterInstance(instance).As<T>().AsImplementedInterfaces();
 
-            _container.Dispose();
-            _container = builder.Build();
+            builder.Update(_container.ComponentRegistry);
         }
 
         /// <summary>
@@ -200,11 +174,6 @@ namespace Slalom.Stacks.Configuration
         public void Register(Func<IComponentContext, object> @delegate, params Type[] services)
         {
             var builder = new ContainerBuilder();
-            foreach (var item in _container.ComponentRegistry.Registrations)
-            {
-                builder.RegisterComponent(item);
-            }
-
             builder.Register(c =>
             {
                 var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
@@ -214,8 +183,7 @@ namespace Slalom.Stacks.Configuration
                 return instance;
             }).As(services);
 
-            _container.Dispose();
-            _container = builder.Build();
+            builder.Update(_container.ComponentRegistry);
         }
 
         /// <summary>
@@ -225,15 +193,10 @@ namespace Slalom.Stacks.Configuration
         public void RegisterModule(object module)
         {
             var builder = new ContainerBuilder();
-            foreach (var item in _container.ComponentRegistry.Registrations)
-            {
-                builder.RegisterComponent(item);
-            }
 
             builder.RegisterModule((IModule)module);
 
-            _container.Dispose();
-            _container = builder.Build();
+            builder.Update(_container.ComponentRegistry);
         }
 
         /// <summary>
@@ -250,14 +213,10 @@ namespace Slalom.Stacks.Configuration
                 if (!typeof(T).GetTypeInfo().IsAbstract && !typeof(T).GetTypeInfo().IsInterface)
                 {
                     var builder = new ContainerBuilder();
-                    foreach (var item in _container.ComponentRegistry.Registrations)
-                    {
-                        builder.RegisterComponent(item);
-                    }
+
                     builder.RegisterType(typeof(T));
 
-                    _container.Dispose();
-                    _container = builder.Build();
+                    builder.Update(_container.ComponentRegistry);
 
                     instance = _container.Resolve<T>();
                 }

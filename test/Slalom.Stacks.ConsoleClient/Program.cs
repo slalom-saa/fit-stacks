@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using Slalom.FitStacks.ConsoleClient.Commands.AddItem;
-using Slalom.FitStacks.ConsoleClient.Domain;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 
@@ -22,7 +20,7 @@ namespace Slalom.FitStacks.ConsoleClient
             {
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
-                    container.Register<IRepository<Item>>(c => new Repository<Item>(new InMemoryEntityContext()));
+                    container.Register(c => new InMemoryEntityContext());
 
                     var result = await container.Bus.Send(new AddItemCommand("testing " + DateTime.Now.Ticks));
 

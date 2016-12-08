@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Slalom.Stacks.Logging;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Domain
 {
@@ -14,11 +16,19 @@ namespace Slalom.Stacks.Domain
         private readonly IEntityContext _context;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Repository{TRoot}"/> class.
+        /// Gets or sets the configured logger.
         /// </summary>
-        /// <param name="context">The context.</param>
+        /// <value>The configured logger.</value>
+        public ILogger Logger { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Repository{TRoot}" /> class.
+        /// </summary>
+        /// <param name="context">The configured context.</param>
         public Repository(IEntityContext context)
         {
+            Argument.NotNull(() => context);
+
             _context = context;
         }
 
@@ -28,6 +38,8 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task ClearAsync()
         {
+            this.Logger.Verbose($"Clearing all items of type {typeof(TRoot)} using {_context.GetType()}.");
+
             return _context.ClearAsync<TRoot>();
         }
 
@@ -38,6 +50,10 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task RemoveAsync(TRoot[] instances)
         {
+            Argument.NotNull(() => instances);
+
+            this.Logger.Verbose($"Removing {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
+
             return _context.RemoveAsync(instances);
         }
 
@@ -47,6 +63,8 @@ namespace Slalom.Stacks.Domain
         /// <returns>Returns an IQueryable that can be used to execute queries.</returns>
         public IQueryable<TRoot> OpenQuery()
         {
+            this.Logger.Verbose($"Opening a query for items of type {typeof(TRoot)} using {_context.GetType()}.");
+
             return _context.OpenQuery<TRoot>();
         }
 
@@ -57,6 +75,10 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task AddAsync(TRoot[] instances)
         {
+            Argument.NotNull(() => instances);
+
+            this.Logger.Verbose($"Adding {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
+
             return _context.AddAsync(instances);
         }
 
@@ -67,6 +89,10 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task UpdateAsync(TRoot[] instances)
         {
+            Argument.NotNull(() => instances);
+
+            this.Logger.Verbose($"Updating {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
+
             return _context.UpdateAsync(instances);
         }
 
@@ -77,6 +103,8 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task<TRoot> FindAsync(Guid id)
         {
+            this.Logger.Verbose($"Finding item of type {typeof(TRoot)} with ID {id} using {_context.GetType()}.");
+
             return _context.FindAsync<TRoot>(id);
         }
     }

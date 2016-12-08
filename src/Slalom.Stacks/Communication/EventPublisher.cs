@@ -43,7 +43,7 @@ namespace Slalom.Stacks.Communication
         /// <returns>Returns a task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception> 
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception> 
-        public async Task Publish<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent
+        public async Task PublishAsync<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent
         {
             Argument.NotNull(() => instance);
             Argument.NotNull(() => context);
