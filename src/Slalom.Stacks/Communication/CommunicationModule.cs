@@ -71,11 +71,7 @@ namespace Slalom.Stacks.Communication
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>)))
-                   .As(instance =>
-                   {
-                       var interfaces = instance.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(IValidationRule<,>));
-                       return interfaces.Select(e => typeof(IValidationRule<,>).MakeGenericType(e.GetGenericArguments()[0], e.GetGenericArguments()[1]));
-                   });
+                   .As(instance => instance.GetBaseAndContractTypes());
         }
     }
 }
