@@ -51,7 +51,7 @@ namespace Slalom.Stacks.Reflection
                     }
                     catch
                     {
-                        logger.Verbose("Type Discovery: Could not load library {name}.", compilationLibrary.Name);
+                        logger.Debug("Type Discovery: Could not load library {name}.", compilationLibrary.Name);
                     }
                 }
 
