@@ -5,7 +5,7 @@ namespace Slalom.Stacks.Communication
 {
     /// <summary>
     /// Supervises the execution and completion of commands.  Returns a result containing the returned value if the command is successful; 
-    /// otherwise, returns information about why the execution was not succesful.
+    /// otherwise, returns information about why the execution was not successful.
     /// </summary>
     public interface ICommandCoordinator
     {

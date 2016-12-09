@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5926D369-56E5-4A1D-8E7D-22F58D593C7B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{51556D6C-A5D7-4E44-B2DA-7E1E2217C682}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{51556D6C-A5D7-4E44-B2DA-7E1E2217C682}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
 		README.md = README.md

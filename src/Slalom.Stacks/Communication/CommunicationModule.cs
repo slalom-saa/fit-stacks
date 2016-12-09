@@ -14,7 +14,7 @@ using Module = Autofac.Module;
 namespace Slalom.Stacks.Communication
 {
     /// <summary>
-    /// An Autofac module to configure the communication depdencies.
+    /// An Autofac module to configure the communication dependencies.
     /// </summary>
     /// <seealso cref="Autofac.Module" />
     public class CommunicationModule : Module

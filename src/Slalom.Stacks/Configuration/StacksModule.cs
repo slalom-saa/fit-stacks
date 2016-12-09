@@ -79,7 +79,7 @@ namespace Slalom.Stacks.Configuration
                    .As<IComponentContext>();
 
 #if !NET461
-            builder.Register(c => new LocalExecutionContextResolver())
+            builder.Register(c => new LocalExecutionContextResolver(c.Resolve<IConfiguration>()))
                 .As<IExecutionContextResolver>();
 #else
             builder.Register(c => new LocalExecutionContextResolver(c.Resolve<IConfiguration>()))

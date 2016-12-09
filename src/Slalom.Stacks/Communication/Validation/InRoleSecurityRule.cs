@@ -7,7 +7,7 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Communication.Validation
 {
     /// <summary>
-    /// A rule that cheks to make sure the current user is in a specific role.
+    /// A rule that checks to make sure the current user is in a specific role.
     /// </summary>
     /// <typeparam name="TCommand">The type of the command to validate.</typeparam>
     /// <seealso cref="Slalom.Stacks.Communication.Validation.SecurityValidationRule{TCommand}" />
