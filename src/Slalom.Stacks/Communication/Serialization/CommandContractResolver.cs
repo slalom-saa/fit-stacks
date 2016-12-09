@@ -27,7 +27,7 @@ namespace Slalom.Stacks.Communication.Serialization
                 return prop;
             }
             var declaringType = (member as PropertyInfo)?.DeclaringType;
-            if (((declaringType?.GetTypeInfo().IsGenericType ?? false) && declaringType?.GetGenericTypeDefinition() == typeof(Command<>)))
+            if (((declaringType?.GetTypeInfo().IsGenericType ?? false) && declaringType.GetGenericTypeDefinition() == typeof(Command<>)))
             {
                 prop.Ignored = true;
                 return prop;

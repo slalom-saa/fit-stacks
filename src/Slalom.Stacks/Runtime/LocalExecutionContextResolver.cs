@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Security.Claims;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
+using Slalom.Stacks.Validation;
 
 #if !core
 using System.Runtime.Remoting.Messaging;
@@ -48,6 +49,8 @@ namespace Slalom.Stacks.Runtime
         /// <param name="context">The context to return.</param>
         public LocalExecutionContextResolver(LocalExecutionContext context)
         {
+            Argument.NotNull(() => context);
+
             _context = context;
         }
 
@@ -106,8 +109,8 @@ namespace Slalom.Stacks.Runtime
                 Environment.MachineName,
                 Environment.CurrentManagedThreadId);
 #else
-            return new LocalExecutionContext(_configuration["Application"],
-                _configuration["Environment"], this.GetLocalIPAddress(),
+            return _context ?? new LocalExecutionContext(_configuration?["Application"],
+                _configuration?["Environment"], this.GetLocalIPAddress(),
                 "",
                 Guid.NewGuid().ToString(),
                 session.ToString(),

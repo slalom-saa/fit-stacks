@@ -92,38 +92,13 @@ namespace Slalom.Stacks.IntegrationTests
             using (var container = new ApplicationContainer(this))
             {
                 var mock = new Mock<IHandleEvent<TestEvent>>();
-                mock.Setup<Task>(e => e.Handle(It.IsAny<TestEvent>(), It.IsAny<ExecutionContext>()))
+                mock.Setup(e => e.Handle(It.IsAny<TestEvent>(), It.IsAny<ExecutionContext>()))
                     .Returns(Task.FromResult(0));
 
                 container.Register(mock.Object);
                 container.Register<LocalExecutionContext>();
 
                 await container.Resolve<IMessageBus>().Send(new TestCommand(text));
-            }
-        }
-
-        [Theory, InlineData("test")]
-        public async void ContainContext(string text)
-        {
-            using (var container = new ApplicationContainer(this))
-            {
-                ExecutionContext context = null;
-                var currentContext = new LocalExecutionContext();
-                container.Register<ExecutionContext>(currentContext);
-
-                var mock = new Mock<IHandleEvent<TestEvent>>();
-                mock.Setup(e => e.Handle(It.IsAny<TestEvent>(), It.IsAny<ExecutionContext>()))
-                    .Callback<TestEvent, ExecutionContext>((a, b) =>
-                    {
-                        context = b;
-                    })
-                    .Returns(Task.FromResult(0));
-
-                container.Register(mock.Object);
-
-                await container.Resolve<IMessageBus>().Send(new TestCommand(text));
-
-                context.SessionId.ShouldBe(currentContext.SessionId);
             }
         }
     }
