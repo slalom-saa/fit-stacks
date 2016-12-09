@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Slalom.FitStacks.ConsoleClient.Commands.AddItem;
 using Slalom.Stacks.Configuration;
@@ -12,8 +13,8 @@ namespace Slalom.FitStacks.ConsoleClient
     {
         public static void Main(string[] args)
         {
-            new Program().Start();
-            Console.WriteLine("Press any key to exit...");
+            Task.Factory.StartNew(() => new Program().Start());
+            Console.WriteLine("Running application.  Press any key to halt...");
             Console.ReadKey();
         }
 
@@ -25,16 +26,24 @@ namespace Slalom.FitStacks.ConsoleClient
                 {
                     container.Register(c => new InMemoryEntityContext());
 
-                    var result = await container.Bus.Send(new AddItemCommand("testing " + DateTime.Now.Ticks));
+                    var tasks = new List<Task>();
+                    for (int i = 0; i < 100; i++)
+                    {
+                        tasks.Add(container.Bus.Send(new AddItemCommand("testing " + DateTime.Now.Ticks)));
+                    }
 
-                    Console.WriteLine(result.IsSuccessful);
+                    await Task.WhenAll(tasks);
                 }
 
-                Console.WriteLine("Done with async execution.");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Execution completed successfully.  Press any key to exit...");
+                Console.ResetColor();
             }
             catch (Exception exception)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(exception);
+                Console.ResetColor();
             }
         }
     }
