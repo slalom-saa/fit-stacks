@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Slalom.FitStacks.ConsoleClient.Commands.AddItem;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
+
+#pragma warning disable 4014
 
 namespace Slalom.FitStacks.ConsoleClient
 {
@@ -14,7 +17,7 @@ namespace Slalom.FitStacks.ConsoleClient
             Console.ReadKey();
         }
 
-        public async void Start()
+        public async Task Start()
         {
             try
             {
@@ -27,7 +30,7 @@ namespace Slalom.FitStacks.ConsoleClient
                     Console.WriteLine(result.IsSuccessful);
                 }
 
-                Console.WriteLine("done");
+                Console.WriteLine("Done with async execution.");
             }
             catch (Exception exception)
             {

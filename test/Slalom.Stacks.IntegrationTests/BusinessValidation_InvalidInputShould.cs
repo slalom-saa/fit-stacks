@@ -48,7 +48,7 @@ namespace Slalom.Stacks.IntegrationTests
         }
 
         [Fact]
-        public async void NotRunIfInputValidatinFails()
+        public async void NotRunIfInputValidationFails()
         {
             using (var container = new ApplicationContainer(this))
             {
@@ -104,7 +104,7 @@ namespace Slalom.Stacks.IntegrationTests
         }
 
         [Fact]
-        public async void NotRunIfInputValidatinFails()
+        public async void NotRunIfInputValidationFails()
         {
             using (var container = new ApplicationContainer(this))
             {
@@ -124,7 +124,7 @@ namespace Slalom.Stacks.IntegrationTests
         }
 
         [Fact]
-        public async void NotRunIfSecurityValidatinFails()
+        public async void NotRunIfSecurityValidationFails()
         {
             using (var container = new ApplicationContainer(this))
             {

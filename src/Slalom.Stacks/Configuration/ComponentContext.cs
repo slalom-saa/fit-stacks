@@ -66,7 +66,7 @@ namespace Slalom.Stacks.Configuration
         {
             T instance;
 
-            if (!_context.TryResolve<T>(out instance))
+            if (!_context.TryResolve(out instance))
             {
                 if (!typeof(T).GetTypeInfo().IsAbstract && !typeof(T).GetTypeInfo().IsInterface)
                 {

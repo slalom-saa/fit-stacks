@@ -122,7 +122,7 @@ namespace Slalom.Stacks.Domain
                 return false;
             }
 
-            return left?.Equals(right) ?? right == null;
+            return (bool)left?.Equals(right);
         }
 
         /// <summary>

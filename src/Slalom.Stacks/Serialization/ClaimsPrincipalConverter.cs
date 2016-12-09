@@ -7,7 +7,7 @@ using Slalom.Stacks.Serialization.Model;
 namespace Slalom.Stacks.Serialization
 {
     /// <summary>
-    /// Allows for serialization and deserialziation of <see cref="ClaimsPrincipal"/> instances.
+    /// Allows for serialization and deserialization of <see cref="ClaimsPrincipal"/> instances.
     /// </summary>
     /// <seealso cref="Newtonsoft.Json.JsonConverter" />
     public class ClaimsPrincipalConverter : JsonConverter

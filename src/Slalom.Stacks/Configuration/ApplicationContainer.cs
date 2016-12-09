@@ -243,7 +243,7 @@ namespace Slalom.Stacks.Configuration
                 _container.InjectProperties(instance, _selector);
             }
 
-            return target.Cast<T>();
+            return target;
         }
 
         #region IDisposable Implementation

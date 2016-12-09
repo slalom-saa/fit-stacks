@@ -4,8 +4,9 @@ using System.Net.Sockets;
 using System.Security.Claims;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
+using Slalom.Stacks.Validation;
 
-#if NET461
+#if !core
 using System.Runtime.Remoting.Messaging;
 #endif
 
@@ -20,11 +21,11 @@ namespace Slalom.Stacks.Runtime
     {
         private const string Key = "CorrelationId";
 
-        private static Guid Session = Guid.NewGuid();
+        private static Guid session = Guid.NewGuid();
         private readonly IConfiguration _configuration;
         private readonly LocalExecutionContext _context;
 
-#if !NET461
+#if core
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalExecutionContextResolver"/> class.
         /// </summary>
@@ -48,13 +49,14 @@ namespace Slalom.Stacks.Runtime
         /// <param name="context">The context to return.</param>
         public LocalExecutionContextResolver(LocalExecutionContext context)
         {
+            Argument.NotNull(() => context);
+
             _context = context;
         }
 
-#if NET461
+#if !core
         private Guid GetCorrelationId()
         {
-            
             if (CallContext.GetData(Key) == null)
             {
                 var id = Guid.NewGuid();
@@ -75,6 +77,19 @@ namespace Slalom.Stacks.Runtime
             }
             throw new Exception("Local IP Address Not Found!");
         }
+#else
+        private string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntryAsync(Dns.GetHostName()).Result;
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("Local IP Address Not Found!");
+        }
 #endif
 
         /// <summary>
@@ -83,18 +98,25 @@ namespace Slalom.Stacks.Runtime
         /// <exception cref="System.NotImplementedException"></exception>
         public ExecutionContext Resolve()
         {
-#if NET461
+#if !core
 
-            return new ExecutionContext(_configuration["Application"],
+            return new LocalExecutionContext(_configuration["Application"],
                 _configuration["Environment"], this.GetLocalIPAddress(),
                 "",
                 this.GetCorrelationId().ToString(),
-                Session.ToString(),
+                session.ToString(),
                 new ClaimsPrincipal(Thread.CurrentPrincipal.Identity), this.GetLocalIPAddress(),
                 Environment.MachineName,
                 Environment.CurrentManagedThreadId);
 #else
-            return _context;
+            return _context ?? new LocalExecutionContext(_configuration?["Application"],
+                _configuration?["Environment"], this.GetLocalIPAddress(),
+                "",
+                Guid.NewGuid().ToString(),
+                session.ToString(),
+                ClaimsPrincipal.Current, this.GetLocalIPAddress(),
+                Environment.MachineName,
+                Environment.CurrentManagedThreadId);
 #endif
         }
     }
