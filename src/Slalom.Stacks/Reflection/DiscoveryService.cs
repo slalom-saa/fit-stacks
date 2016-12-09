@@ -41,7 +41,7 @@ namespace Slalom.Stacks.Reflection
                 var assemblies = new List<Assembly>();
 
                 var dependencies = DependencyContext.Default;
-                foreach (var compilationLibrary in dependencies.CompileLibraries)
+                foreach (var compilationLibrary in dependencies.RuntimeLibraries)
                 {
                     try
                     {
