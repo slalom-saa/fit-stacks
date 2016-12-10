@@ -64,7 +64,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 container.Register<LocalExecutionContext>();
 
-                await container.Resolve<IMessageBus>().Send(new TestCommand(text));
+                await container.Resolve<IMessageBus>().SendAsync(new TestCommand(text));
 
                 additional.Verify(e => e.Handle(It.IsAny<AdditionalEvent>(), It.IsAny<ExecutionContext>()));
             }
@@ -82,7 +82,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 container.Register<LocalExecutionContext>();
 
-                await container.Resolve<IMessageBus>().Send(new TestCommand(text));
+                await container.Resolve<IMessageBus>().SendAsync(new TestCommand(text));
             }
         }
 
@@ -98,7 +98,7 @@ namespace Slalom.Stacks.IntegrationTests
                 container.Register(mock.Object);
                 container.Register<LocalExecutionContext>();
 
-                await container.Resolve<IMessageBus>().Send(new TestCommand(text));
+                await container.Resolve<IMessageBus>().SendAsync(new TestCommand(text));
             }
         }
     }

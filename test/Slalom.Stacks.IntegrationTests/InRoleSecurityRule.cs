@@ -47,7 +47,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var bus = container.Resolve<IMessageBus>();
 
-                var result = await bus.Send(new TestCommand());
+                var result = await bus.SendAsync(new TestCommand());
 
                 result.ValidationErrors.Count(e => e.ErrorType == ValidationErrorType.Security).ShouldBe(1);
             }
@@ -62,7 +62,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var bus = container.Resolve<IMessageBus>();
 
-                var result = await bus.Send(new TestCommand());
+                var result = await bus.SendAsync(new TestCommand());
 
                 result.ValidationErrors.Count(e => e.ErrorType == ValidationErrorType.Security).ShouldBe(0);
             }

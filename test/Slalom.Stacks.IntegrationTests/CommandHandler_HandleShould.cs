@@ -49,7 +49,7 @@ namespace Slalom.Stacks.IntegrationTests
         [Theory, InlineData("Hello")]
         public async void ReturnValue(string text)
         {
-            var result = await _bus.Send(new TestCommand(text));
+            var result = await _bus.SendAsync(new TestCommand(text));
 
             result.Value.ShouldBe(text);
         }
@@ -69,7 +69,7 @@ namespace Slalom.Stacks.IntegrationTests
 
             _container.Register(mock.Object);
 
-            var result = await _bus.Send(new TestCommand(text));
+            var result = await _bus.SendAsync(new TestCommand(text));
 
             context.ShouldNotBeNull();
         }

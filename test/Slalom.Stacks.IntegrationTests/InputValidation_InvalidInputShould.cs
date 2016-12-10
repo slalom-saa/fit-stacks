@@ -41,7 +41,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var bus = container.Resolve<IMessageBus>();
 
-                var result = await bus.Send(new TestCommand(null));
+                var result = await bus.SendAsync(new TestCommand(null));
 
                 result.ValidationErrors.Count().ShouldBe(1);
             }

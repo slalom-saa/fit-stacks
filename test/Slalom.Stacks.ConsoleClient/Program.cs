@@ -26,13 +26,10 @@ namespace Slalom.FitStacks.ConsoleClient
                 {
                     container.Register(c => new InMemoryEntityContext());
 
-                    var tasks = new List<Task>();
                     for (int i = 0; i < 100; i++)
                     {
-                        tasks.Add(container.Bus.Send(new AddItemCommand("testing " + DateTime.Now.Ticks)));
+                        await container.Bus.SendAsync(new AddItemCommand("testing " + DateTime.Now.Ticks));
                     }
-
-                    await Task.WhenAll(tasks);
                 }
 
                 Console.ForegroundColor = ConsoleColor.Green;
