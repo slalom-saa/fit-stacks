@@ -41,7 +41,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var bus = container.Resolve<IMessageBus>();
 
-                var result = await bus.Send(new TestCommand(null));
+                var result = await bus.SendAsync(new TestCommand(null));
 
                 result.ValidationErrors.Count(e => e.ErrorType == ValidationErrorType.Security).ShouldBe(1);
             }
@@ -61,7 +61,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var bus = container.Resolve<IMessageBus>();
 
-                var result = await bus.Send(new TestCommand(null));
+                var result = await bus.SendAsync(new TestCommand(null));
 
                 result.ValidationErrors.Count(e => e.ErrorType == ValidationErrorType.Security).ShouldBe(0);
             }
@@ -97,7 +97,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var bus = container.Resolve<IMessageBus>();
 
-                var result = await bus.Send(new TestCommand(null));
+                var result = await bus.SendAsync(new TestCommand(null));
 
                 result.ValidationErrors.Count().ShouldBe(1);
             }
@@ -117,7 +117,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var bus = container.Resolve<IMessageBus>();
 
-                var result = await bus.Send(new TestCommand(null));
+                var result = await bus.SendAsync(new TestCommand(null));
 
                 result.ValidationErrors.Count(e => e.ErrorType == ValidationErrorType.Business).ShouldBe(0);
             }
@@ -137,7 +137,7 @@ namespace Slalom.Stacks.IntegrationTests
 
                 var bus = container.Resolve<IMessageBus>();
 
-                var result = await bus.Send(new TestCommand(null));
+                var result = await bus.SendAsync(new TestCommand(null));
 
                 result.ValidationErrors.Count(e => e.ErrorType == ValidationErrorType.Business).ShouldBe(0);
             }

@@ -16,6 +16,6 @@ namespace Slalom.Stacks.Communication
         /// <typeparam name="TResult">The return type of the command.</typeparam>
         /// <param name="command">The command to send and execute.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<CommandResult<TResult>> Send<TResult>(Command<TResult> command);
+        Task<CommandResult<TResult>> SendAsync<TResult>(Command<TResult> command);
     }
 }

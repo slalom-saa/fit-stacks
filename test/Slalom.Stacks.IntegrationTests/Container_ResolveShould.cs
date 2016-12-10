@@ -13,7 +13,7 @@ namespace Slalom.Stacks.IntegrationTests
     {
         public class NewMessageBus : IMessageBus
         {
-            public Task<CommandResult<TResult>> Send<TResult>(Command<TResult> command)
+            public Task<CommandResult<TResult>> SendAsync<TResult>(Command<TResult> command)
             {
                 throw new NotImplementedException();
             }
