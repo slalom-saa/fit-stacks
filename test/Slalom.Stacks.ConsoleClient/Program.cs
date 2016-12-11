@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Slalom.FitStacks.ConsoleClient.Commands.AddItem;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
@@ -24,8 +25,6 @@ namespace Slalom.FitStacks.ConsoleClient
             {
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
-                    container.Register(c => new InMemoryEntityContext());
-
                     for (int i = 0; i < 100; i++)
                     {
                         await container.Bus.SendAsync(new AddItemCommand("testing " + DateTime.Now.Ticks));

@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Validation;
@@ -92,6 +93,16 @@ namespace Slalom.Stacks.Runtime
         }
 #endif
 
+        private ClaimsPrincipal GetWindowsClaimsPrincipal()
+        {
+            var target = WindowsIdentity.GetCurrent();
+            if (target != null)
+            {
+                return new ClaimsPrincipal(target);
+            }
+            return null;
+        }
+
         /// <summary>
         /// Resolves the current execution context.
         /// </summary>
@@ -105,7 +116,8 @@ namespace Slalom.Stacks.Runtime
                 "",
                 this.GetCorrelationId().ToString(),
                 session.ToString(),
-                new ClaimsPrincipal(Thread.CurrentPrincipal.Identity), this.GetLocalIPAddress(),
+                this.GetWindowsClaimsPrincipal(), 
+                this.GetLocalIPAddress(),
                 Environment.MachineName,
                 Environment.CurrentManagedThreadId);
 #else
@@ -114,7 +126,8 @@ namespace Slalom.Stacks.Runtime
                 "",
                 Guid.NewGuid().ToString(),
                 session.ToString(),
-                ClaimsPrincipal.Current, this.GetLocalIPAddress(),
+                this.GetWindowsClaimsPrincipal(), 
+                this.GetLocalIPAddress(),
                 Environment.MachineName,
                 Environment.CurrentManagedThreadId);
 #endif
