@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Security.Claims;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -21,14 +22,17 @@ namespace Slalom.Stacks.Serialization
             MemberSerialization memberSerialization)
         {
             var prop = base.CreateProperty(member, memberSerialization);
-
-            if (!prop.Writable)
+            var property = member as PropertyInfo;
+            if (property != null)
             {
-                var property = member as PropertyInfo;
-                if (property != null)
+                if (!prop.Writable)
                 {
                     var hasPrivateSetter = property.GetSetMethod(true) != null;
                     prop.Writable = hasPrivateSetter;
+                }
+                if (prop.PropertyType == typeof(ClaimsPrincipal))
+                {
+                    prop.Converter = new ClaimsPrincipalConverter();
                 }
             }
 
