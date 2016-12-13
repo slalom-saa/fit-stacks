@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Slalom.FitStacks.ConsoleClient.Commands.AddItem;
 using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Domain;
+
+// ReSharper disable AccessToDisposedClosure
 
 #pragma warning disable 4014
 
@@ -23,16 +23,19 @@ namespace Slalom.FitStacks.ConsoleClient
         {
             try
             {
+                var watch = new Stopwatch();
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
-                    for (int i = 0; i < 100; i++)
+                    watch.Start();
+                    for (var i = 0; i < 10000; i++)
                     {
-                        await container.Bus.SendAsync(new AddItemCommand("testing " + DateTime.Now.Ticks));
+                        await Task.Run(() => container.Bus.SendAsync(new AddItemCommand("testing " + DateTime.Now.Ticks)).ConfigureAwait(false));
                     }
+                    watch.Stop();
                 }
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Execution completed successfully.  Press any key to exit...");
+                Console.WriteLine($"Execution completed successfully in {watch.Elapsed}.  Press any key to exit...");
                 Console.ResetColor();
             }
             catch (Exception exception)

@@ -23,7 +23,7 @@ namespace Slalom.Stacks.Search
         /// <param name="componentContext">The component context.</param>
         public SearchFacade(IComponentContext componentContext)
         {
-            Argument.NotNull(() => componentContext);
+            Argument.NotNull(componentContext, nameof(componentContext));
 
             _componentContext = componentContext;
         }
@@ -40,7 +40,7 @@ namespace Slalom.Stacks.Search
         /// and have a small set, then you can use the update method.</remarks>
         public Task AddAsync<TSearchResult>(params TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
-            Argument.NotNull(() => instances);
+            Argument.NotNull(instances, nameof(instances));
 
             if (!instances.Any())
             {
@@ -81,9 +81,9 @@ namespace Slalom.Stacks.Search
         /// <param name="instances">The instances to remove.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception>Thrown when the <paramref name="instances"/> argument is null.</exception>
-        public Task DeleteAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
+        public Task RemoveAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
-            Argument.NotNull(() => instances);
+            Argument.NotNull(instances, nameof(instances));
 
             if (!instances.Any())
             {
@@ -105,9 +105,9 @@ namespace Slalom.Stacks.Search
         /// <param name="predicate">The predicate to match.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception>Thrown when the <paramref name="predicate"/> argument is null.</exception>
-        public Task DeleteAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate) where TSearchResult : class, ISearchResult
+        public Task RemoveAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate) where TSearchResult : class, ISearchResult
         {
-            Argument.NotNull(() => predicate);
+            Argument.NotNull(predicate, nameof(predicate));
 
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
             if (store == null)
@@ -176,7 +176,7 @@ namespace Slalom.Stacks.Search
         /// <exception>Thrown when the <paramref name="instances"/> argument is null.</exception>
         public Task UpdateAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
-            Argument.NotNull(() => instances);
+            Argument.NotNull(instances, nameof(instances));
 
             if (!instances.Any())
             {
@@ -202,8 +202,8 @@ namespace Slalom.Stacks.Search
         /// <exception>Thrown when the <paramref name="expression"/> argument is null.</exception>
         public Task UpdateAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate, Expression<Func<TSearchResult, TSearchResult>> expression) where TSearchResult : class, ISearchResult
         {
-            Argument.NotNull(() => predicate);
-            Argument.NotNull(() => expression);
+            Argument.NotNull(predicate, nameof(predicate));
+            Argument.NotNull(expression, nameof(expression));
 
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
             if (store == null)

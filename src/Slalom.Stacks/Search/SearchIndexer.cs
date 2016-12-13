@@ -22,7 +22,7 @@ namespace Slalom.Stacks.Search
         /// <param name="context">The configured context.</param>
         public SearchIndexer(ISearchContext context)
         {
-            Argument.NotNull(() => context);
+            Argument.NotNull(context, nameof(context));
 
             _context = context;
         }
@@ -84,7 +84,7 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         public virtual Task RemoveAsync(TSearchResult[] instances)
         {
-            Argument.NotNull(() => instances);
+            Argument.NotNull(instances, nameof(instances));
 
             this.Logger.Verbose($"Removing {instances.Count()} items of type {typeof(TSearchResult)} using {_context.GetType()}.");
 
@@ -122,7 +122,7 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         public virtual Task UpdateAsync(TSearchResult[] instances)
         {
-            Argument.NotNull(() => instances);
+            Argument.NotNull(instances, nameof(instances));
 
             this.Logger.Verbose($"Updating {instances.Count()} items of type {typeof(TSearchResult)} using {_context.GetType()}.");
 

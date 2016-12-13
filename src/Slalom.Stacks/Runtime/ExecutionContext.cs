@@ -136,7 +136,7 @@ namespace Slalom.Stacks.Runtime
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
         public void AddRaisedEvent(IEvent instance)
         {
-            Argument.NotNull(() => instance);
+            Argument.NotNull(instance, nameof(instance));
 
             _raisedEvents.Add(instance);
         }

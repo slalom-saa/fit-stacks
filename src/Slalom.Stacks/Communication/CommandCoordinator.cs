@@ -35,9 +35,9 @@ namespace Slalom.Stacks.Communication
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="validator"/> argument is null.</exception>
         public CommandCoordinator(IComponentContext componentContext, IEventPublisher eventPublisher, ICommandValidator validator)
         {
-            Argument.NotNull(() => componentContext);
-            Argument.NotNull(() => eventPublisher);
-            Argument.NotNull(() => validator);
+            Argument.NotNull(componentContext, nameof(componentContext));
+            Argument.NotNull(eventPublisher, nameof(eventPublisher));
+            Argument.NotNull(validator, nameof(validator));
 
             _componentContext = componentContext;
             _eventPublisher = eventPublisher;
@@ -56,8 +56,8 @@ namespace Slalom.Stacks.Communication
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context" /> argument is null.</exception>
         public async Task<CommandResult<TResult>> Handle<TResult>(Command<TResult> command, ExecutionContext context)
         {
-            Argument.NotNull(() => command);
-            Argument.NotNull(() => context);
+            Argument.NotNull(command, nameof(command));
+            Argument.NotNull(context, nameof(context));
 
             _logger.Verbose("Starting execution for " + command.CommandName + ". {@Command}", command);
 
@@ -159,9 +159,6 @@ namespace Slalom.Stacks.Communication
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
         protected virtual async Task<TResult> ExecuteHandler<TResult>(ICommand command, ExecutionContext context)
         {
-            Argument.NotNull(() => command);
-            Argument.NotNull(() => context);
-
             var handler = (dynamic)_componentContext.Resolve(typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult)));
 
             if (handler == null)
@@ -188,11 +185,6 @@ namespace Slalom.Stacks.Communication
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
         protected virtual Task HandleException<TResult>(Command<TResult> command, ExecutionContext context, CommandResult<TResult> result, Exception exception)
         {
-            Argument.NotNull(() => command);
-            Argument.NotNull(() => context);
-            Argument.NotNull(() => result);
-            Argument.NotNull(() => exception);
-
             var validationException = exception as ValidationException;
             if (validationException != null)
             {
@@ -234,8 +226,6 @@ namespace Slalom.Stacks.Communication
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
         protected virtual async Task PublishEvents(ExecutionContext context)
         {
-            Argument.NotNull(() => context);
-
             foreach (var item in context.RaisedEvents)
             {
                 await _eventPublisher.PublishAsync(item, context);
@@ -253,9 +243,6 @@ namespace Slalom.Stacks.Communication
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context" /> argument is null.</exception>
         protected Task<IEnumerable<ValidationError>> ValidateCommand<TResult>(Command<TResult> command, ExecutionContext context)
         {
-            Argument.NotNull(() => command);
-            Argument.NotNull(() => context);
-
             return _validator.Validate(command, context);
         }
     }

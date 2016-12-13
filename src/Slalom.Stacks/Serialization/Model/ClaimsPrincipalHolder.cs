@@ -23,7 +23,7 @@ namespace Slalom.Stacks.Serialization.Model
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="source"/> argument is null.</exception>
         public ClaimsPrincipalHolder(ClaimsPrincipal source)
         {
-            Argument.NotNull(() => source);
+            Argument.NotNull(source, nameof(source));
 
             this.AuthenticationType = source.Identity.AuthenticationType;
             this.Claims = source.Claims.Select(x => new ClaimHolder { Type = x.Type, Value = x.Value }).ToArray();

@@ -28,8 +28,8 @@ namespace Slalom.Stacks.Communication.Validation
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
         public async Task<IEnumerable<ValidationError>> Validate(TCommand instance, ExecutionContext context)
         {
-            Argument.NotNull(() => instance);
-            Argument.NotNull(() => context);
+            Argument.NotNull(instance, nameof(instance));
+            Argument.NotNull(context, nameof(context));
 
             this.Context = context;
 

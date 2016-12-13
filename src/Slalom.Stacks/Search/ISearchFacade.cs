@@ -45,7 +45,7 @@ namespace Slalom.Stacks.Search
         /// <param name="instances">The instances to remove.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances" /> argument is null.</exception>
-        Task DeleteAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult;
+        Task RemoveAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult;
 
         /// <summary>
         /// Removes all instances that match the specified predicate.
@@ -54,7 +54,7 @@ namespace Slalom.Stacks.Search
         /// <param name="predicate">The predicate to match.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="predicate" /> argument is null.</exception>
-        Task DeleteAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate) where TSearchResult : class, ISearchResult;
+        Task RemoveAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate) where TSearchResult : class, ISearchResult;
 
         /// <summary>
         /// Finds the instance with the specified identifier.

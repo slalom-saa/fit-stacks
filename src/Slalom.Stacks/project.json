@@ -1,11 +1,14 @@
 {
-  "version": "1.0.40-*",
+  "version": "1.0.90-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks", "blocks" ],
     "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
     "requireLicenseAcceptance": true,
-    "summary": "The runtime and core library for Stacks."
+    "summary": "The core library for Slalom.Stacks.",
+    "files": {
+      "include": [ "Tools", "Lib" ]
+    } 
   },
   "dependencies": {
     //"StyleCop.Analyzers": {
@@ -42,7 +45,7 @@
         "dotnet54",
         "portable-net45+win8"
       ],
-      "buildOptions": {"define": ["core"]}
+      "buildOptions": { "define": [ "core" ] }
     },
     "net461": {
       "dependencies": {
@@ -52,6 +55,8 @@
   },
 
   "scripts": {
+    "precompile": [
+    ],
     "postcompile": [
       "dotnet pack --no-build --configuration %compile:Configuration%",
       "xcopy .\\bin\\debug\\*.nupkg c:\\nuget\\ /y"
