@@ -127,7 +127,7 @@ namespace Slalom.Stacks.Search
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
             if (store == null)
             {
-                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+                throw new InvalidOperationException($"No search indexer has been registered for type {typeof(TSearchResult)}.");
             }
             return store.OpenQuery();
         }

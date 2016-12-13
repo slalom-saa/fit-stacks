@@ -49,6 +49,10 @@ namespace Slalom.Stacks.Search
                    .AsSelf()
                    .SingleInstance();
 
+            builder.RegisterGeneric(typeof(SearchIndexer<>))
+                   .As(typeof(ISearchIndexer<>))
+                   .InstancePerDependency();
+
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ISearchIndexer<>)))
                    .As(instance =>
