@@ -23,7 +23,7 @@ namespace Slalom.Stacks.Communication.Validation
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="componentContext"/> argument is null.</exception>
         public CommandValidator(IComponentContext componentContext)
         {
-            Argument.NotNull(() => componentContext);
+            Argument.NotNull(componentContext, nameof(componentContext));
 
             _componentContext = componentContext;
         }
@@ -39,8 +39,8 @@ namespace Slalom.Stacks.Communication.Validation
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
         public async Task<IEnumerable<ValidationError>> Validate<TResponse>(Command<TResponse> command, ExecutionContext context)
         {
-            Argument.NotNull(() => command);
-            Argument.NotNull(() => context);
+            Argument.NotNull(command, nameof(command));
+            Argument.NotNull(context, nameof(context));
 
             var input = (this.CheckInputRules(command, context)).ToList();
             if (input.Any())
@@ -74,9 +74,6 @@ namespace Slalom.Stacks.Communication.Validation
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual async Task<IEnumerable<ValidationError>> CheckBusinessRules<TResponse>(Command<TResponse> command, ExecutionContext context)
         {
-            Argument.NotNull(() => command);
-            Argument.NotNull(() => context);
-
             var type = typeof(IBusinessValidationRule<>).MakeGenericType(command.GetType());
             var sets = _componentContext.ResolveAll(type);
 
@@ -104,9 +101,6 @@ namespace Slalom.Stacks.Communication.Validation
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual IEnumerable<ValidationError> CheckInputRules<TResponse>(Command<TResponse> command, ExecutionContext context)
         {
-            Argument.NotNull(() => command);
-            Argument.NotNull(() => context);
-
             var type = typeof(IInputValidationRule<>).MakeGenericType(command.GetType());
             var sets = _componentContext.ResolveAll(type);
 
@@ -127,9 +121,6 @@ namespace Slalom.Stacks.Communication.Validation
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual async Task<IEnumerable<ValidationError>> CheckSecurityRules<TResponse>(Command<TResponse> command, ExecutionContext context)
         {
-            Argument.NotNull(() => command);
-            Argument.NotNull(() => context);
-
             var type = typeof(ISecurityValidationRule<>).MakeGenericType(command.GetType());
             var sets = _componentContext.ResolveAll(type);
 

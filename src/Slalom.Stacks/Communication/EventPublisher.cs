@@ -27,8 +27,8 @@ namespace Slalom.Stacks.Communication
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="logger"/> argument is null.</exception> 
         internal EventPublisher(IComponentContext componentContext, ILogger logger)
         {
-            Argument.NotNull(() => componentContext);
-            Argument.NotNull(() => logger);
+            Argument.NotNull(componentContext, nameof(componentContext));
+            Argument.NotNull(logger, nameof(logger));
 
             _componentContext = componentContext;
             _logger = logger;
@@ -45,8 +45,8 @@ namespace Slalom.Stacks.Communication
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception> 
         public async Task PublishAsync<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent
         {
-            Argument.NotNull(() => instance);
-            Argument.NotNull(() => context);
+            Argument.NotNull(instance, nameof(instance));
+            Argument.NotNull(context, nameof(context));
 
             var target = (IEnumerable<dynamic>)_componentContext.ResolveAll(typeof(IHandleEvent<>).MakeGenericType(instance.GetType()));
 

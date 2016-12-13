@@ -24,7 +24,7 @@ namespace Slalom.Stacks.Configuration
         /// <exception>Thrown when the <paramref name="context"/> argument is null.</exception>
         internal ComponentContext(Autofac.IComponentContext context)
         {
-            Argument.NotNull(() => context);
+            Argument.NotNull(context, nameof(context));
 
             _context = context;
         }
@@ -37,8 +37,6 @@ namespace Slalom.Stacks.Configuration
         /// <exception>Thrown when the <paramref name="type"/> argument is null.</exception>
         public object Resolve(Type type)
         {
-            Argument.NotNull(() => type);
-
             object instance;
 
             if (!_context.TryResolve(type, out instance))
@@ -102,8 +100,6 @@ namespace Slalom.Stacks.Configuration
         /// <exception>Thrown when the <paramref name="type"/> argument is null.</exception>
         public IEnumerable<object> ResolveAll(Type type)
         {
-            Argument.NotNull(() => type);
-
             var target = (IEnumerable<object>)_context.Resolve(typeof(IEnumerable<>).MakeGenericType(type));
 
             foreach (var instance in target)

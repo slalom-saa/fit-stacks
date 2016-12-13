@@ -25,8 +25,8 @@ namespace Slalom.Stacks.Runtime
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="contextAccessor"/> argument is null.</exception>
         public WebExecutionContextResolver(IConfiguration configuration, IHttpContextAccessor contextAccessor)
         {
-            Argument.NotNull(() => configuration);
-            Argument.NotNull(() => contextAccessor);
+            Argument.NotNull(configuration, nameof(configuration));
+            Argument.NotNull(contextAccessor, nameof(contextAccessor));
 
             _configuration = configuration;
             _contextAccessor = contextAccessor;

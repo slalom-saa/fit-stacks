@@ -19,7 +19,7 @@ namespace Slalom.Stacks.Communication.Validation
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
         public static IEnumerable<ValidationError> WithType(this IEnumerable<ValidationError> instance, ValidationErrorType type)
         {
-            Argument.NotNull(() => instance);
+            Argument.NotNull(instance, nameof(instance));
 
             return instance.Select(e => e.WithType(type));
         }

@@ -27,7 +27,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="context">The configured context.</param>
         public Repository(IEntityContext context)
         {
-            Argument.NotNull(() => context);
+            Argument.NotNull(context, nameof(context));
 
             _context = context;
         }
@@ -50,7 +50,7 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task RemoveAsync(TRoot[] instances)
         {
-            Argument.NotNull(() => instances);
+            Argument.NotNull(instances, nameof(instances));
 
             this.Logger.Verbose($"Removing {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
 
@@ -75,7 +75,7 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task AddAsync(TRoot[] instances)
         {
-            Argument.NotNull(() => instances);
+            Argument.NotNull(instances, nameof(instances));
 
             this.Logger.Verbose($"Adding {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
 
@@ -89,7 +89,7 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task UpdateAsync(TRoot[] instances)
         {
-            Argument.NotNull(() => instances);
+            Argument.NotNull(instances, nameof(instances));
 
             this.Logger.Verbose($"Updating {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
 

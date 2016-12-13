@@ -20,8 +20,8 @@ namespace Slalom.Stacks.Communication.Logging
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
         public Audit(IEvent @event, ExecutionContext context)
         {
-            Argument.NotNull(() => @event);
-            Argument.NotNull(() => context);
+            Argument.NotNull(@event, nameof(@event));
+            Argument.NotNull(context, nameof(context));
 
             try
             {

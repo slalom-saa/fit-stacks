@@ -24,7 +24,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="componentContext">The component context.</param>
         public DomainFacade(IComponentContext componentContext)
         {
-            Argument.NotNull(() => componentContext);
+            Argument.NotNull(componentContext, nameof(componentContext));
 
             _componentContext = componentContext;
         }
