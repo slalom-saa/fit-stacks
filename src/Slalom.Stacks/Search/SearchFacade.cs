@@ -118,11 +118,11 @@ namespace Slalom.Stacks.Search
         }
 
         /// <summary>
-        /// Finds all instances of the specified type.
+        /// Creates a query that can be used to search.
         /// </summary>
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
-        public IQueryable<TSearchResult> CreateQuery<TSearchResult>() where TSearchResult : class, ISearchResult
+        public IQueryable<TSearchResult> OpenQuery<TSearchResult>() where TSearchResult : class, ISearchResult
         {
             var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
             if (store == null)

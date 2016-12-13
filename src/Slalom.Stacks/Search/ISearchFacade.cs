@@ -32,11 +32,11 @@ namespace Slalom.Stacks.Search
         Task ClearAsync<TSearchResult>() where TSearchResult : class, ISearchResult;
 
         /// <summary>
-        /// Finds all instances of the specified type.
+        /// Creates a query that can be used to search.
         /// </summary>
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
-        IQueryable<TSearchResult> CreateQuery<TSearchResult>() where TSearchResult : class, ISearchResult;
+        IQueryable<TSearchResult> OpenQuery<TSearchResult>() where TSearchResult : class, ISearchResult;
 
         /// <summary>
         /// Removes the specified instances.
