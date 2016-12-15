@@ -24,18 +24,19 @@ namespace Slalom.FitStacks.ConsoleClient
             try
             {
                 var watch = new Stopwatch();
+                var count = 10000;
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
                     watch.Start();
-                    for (var i = 0; i < 10000; i++)
+                    for (var i = 0; i < count; i++)
                     {
-                        await Task.Run(() => container.Bus.SendAsync(new AddItemCommand("testing " + DateTime.Now.Ticks)).ConfigureAwait(false));
+                        await Task.Run(() => container.Bus.SendAsync(new AddItemCommand(DateTime.Now.Ticks.ToString())).ConfigureAwait(false));
                     }
                     watch.Stop();
                 }
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Execution completed successfully in {watch.Elapsed}.  Press any key to exit...");
+                Console.WriteLine($"Execution for {count} items completed successfully in {watch.Elapsed} - {(int)(count / watch.Elapsed.TotalSeconds)} per second.  Press any key to exit...");
                 Console.ResetColor();
             }
             catch (Exception exception)
