@@ -17,16 +17,16 @@ using Module = Autofac.Module;
 namespace Slalom.Stacks.Configuration
 {
     /// <summary>
-    /// An Autofac module that wires up dependencies for the full fit stack.
+    /// An Autofac module that wires up root dependencies for the stack.
     /// </summary>
     /// <seealso cref="Autofac.Module" />
-    public class StacksModule : Module
+    public class ConfigurationModule : Module
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StacksModule"/> class.
+        /// Initializes a new instance of the <see cref="ConfigurationModule"/> class.
         /// </summary>
-        /// <param name="indicators">Any indicators as a type of instance for assembly scanning.</param>
-        public StacksModule(params object[] indicators)
+        /// <param name="indicators">Any indicators as types or instances for assembly scanning.</param>
+        public ConfigurationModule(params object[] indicators)
         {
             var target = new List<Assembly>();
             foreach (var instance in indicators)
@@ -69,7 +69,8 @@ namespace Slalom.Stacks.Configuration
                    }).As<IConfiguration>()
                    .SingleInstance();
 
-            builder.Register<ILogger>(c => new NullLogger());
+            builder.Register<ILogger>(c => new NullLogger())
+                .SingleInstance();
 
             builder.RegisterModule(new DomainModule(this.Assemblies));
             builder.RegisterModule(new CommunicationModule(this.Assemblies));
@@ -80,10 +81,12 @@ namespace Slalom.Stacks.Configuration
 
 #if !NET461
             builder.Register(c => new LocalExecutionContextResolver(c.Resolve<IConfiguration>()))
-                .As<IExecutionContextResolver>();
+                .As<IExecutionContextResolver>()
+                .SingleInstance();
 #else
             builder.Register(c => new LocalExecutionContextResolver(c.Resolve<IConfiguration>()))
-                .As<IExecutionContextResolver>();
+                .As<IExecutionContextResolver>()
+                .SingleInstance();
 #endif
 
 
