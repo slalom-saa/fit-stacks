@@ -33,6 +33,18 @@ namespace Slalom.Stacks.Domain
         /// <value>The entity identifier.</value>
         public Guid Id { get; private set; }
 
+        /// <summary>
+        /// Gets the keys for this instance.  It may be just the identifier or a combination of identifier and human readable keys.
+        /// </summary>
+        /// <returns>Returns the keys for this instance.</returns>
+        public virtual object GetKeys()
+        {
+            return new
+            {
+                this.Id
+            };
+        }
+
         #region Equality Members
 
         /// <summary>

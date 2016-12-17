@@ -22,6 +22,6 @@ namespace Slalom.Stacks.Communication
         /// </summary>
         /// <param name="command">The command to execute.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<TResult> Handle(TCommand command);
+        Task<TResult> HandleAsync(TCommand command);
     }
 }
