@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Microsoft.Extensions.DependencyModel;
 using Slalom.Stacks.Logging;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Reflection
 {
@@ -13,7 +16,8 @@ namespace Slalom.Stacks.Reflection
     /// <seealso cref="Slalom.Stacks.Reflection.IDiscoverTypes" />
     public class DiscoveryService : IDiscoverTypes
     {
-        private static readonly Dictionary<Type, List<Type>> Cache = new Dictionary<Type, List<Type>>();
+        private readonly ILogger _logger;
+        private static readonly ConcurrentDictionary<Type, List<Type>> Cache = new ConcurrentDictionary<Type, List<Type>>();
         private Lazy<List<Assembly>> _assemblies;
 
         /// <summary>
@@ -22,6 +26,10 @@ namespace Slalom.Stacks.Reflection
         /// <param name="logger">The configured <see cref="ILogger"/> instance.</param>
         public DiscoveryService(ILogger logger)
         {
+            Argument.NotNull(logger, nameof(logger));
+
+            _logger = logger;
+
             this.CreateAssemblyFactory(logger);
         }
 
@@ -32,11 +40,7 @@ namespace Slalom.Stacks.Reflection
         /// <returns>All available types that are assignable to the specified type.</returns>
         public IEnumerable<Type> Find<TType>()
         {
-            if (!Cache.ContainsKey(typeof(TType)))
-            {
-                Cache.Add(typeof(TType), _assemblies.Value.SafelyGetTypes<TType>().ToList());
-            }
-            return Cache[typeof(TType)];
+            return Cache.GetOrAdd(typeof(TType), t => _assemblies.Value.SafelyGetTypes<TType>().ToList());
         }
 
         private void CreateAssemblyFactory(ILogger logger)
@@ -50,7 +54,9 @@ namespace Slalom.Stacks.Reflection
                 {
                     try
                     {
-                        var assembly = Assembly.Load(new AssemblyName(compilationLibrary.Name));
+                        var assemblyName = new AssemblyName(compilationLibrary.Name);
+
+                        var assembly = Assembly.Load(assemblyName);
 
                         assemblies.Add(assembly);
                     }

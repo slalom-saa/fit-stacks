@@ -84,7 +84,7 @@ namespace Slalom.Stacks.Reflection
         {
             try
             {
-                return assembly.GetTypes();
+                return assembly.GetTypes().Where(e => e != null).ToArray();
             }
             catch (ReflectionTypeLoadException exception)
             {
