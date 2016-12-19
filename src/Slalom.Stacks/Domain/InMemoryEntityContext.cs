@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Domain
@@ -11,7 +12,8 @@ namespace Slalom.Stacks.Domain
     /// <seealso cref="Slalom.Stacks.Domain.IEntityContext" />
     public class InMemoryEntityContext : IEntityContext
     {
-        private readonly List<IAggregateRoot> _instances = new List<IAggregateRoot>();
+        private List<IAggregateRoot> _instances = new List<IAggregateRoot>();
+        
 
         /// <summary>
         /// Adds the specified instances.
@@ -21,7 +23,19 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task AddAsync<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
         {
-            _instances.AddRange(instances.Cast<IAggregateRoot>());
+            while (true)
+            {
+                var original = Interlocked.CompareExchange(ref _instances, null, null);
+
+                var copy = original.ToList();
+                copy.AddRange(instances.Cast<IAggregateRoot>());
+
+                var result = Interlocked.CompareExchange(ref _instances, copy, original);
+                if (result == original)
+                {
+                    break;
+                }
+            }
             return Task.FromResult(0);
         }
 
@@ -32,7 +46,19 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task ClearAsync<TEntity>() where TEntity : IAggregateRoot
         {
-            _instances.Clear();
+            while (true)
+            {
+                var original = Interlocked.CompareExchange(ref _instances, null, null);
+
+                var copy = original.ToList();
+                copy.Clear();
+
+                var result = Interlocked.CompareExchange(ref _instances, copy, original);
+                if (result == original)
+                {
+                    break;
+                }
+            }
             return Task.FromResult(0);
         }
 
@@ -65,9 +91,21 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task RemoveAsync<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
         {
-            foreach (var item in instances)
+            while (true)
             {
-                _instances.Remove(item);
+                var original = Interlocked.CompareExchange(ref _instances, null, null);
+
+                var copy = original.ToList();
+                foreach (var item in instances)
+                {
+                    copy.Remove(item);
+                }
+
+                var result = Interlocked.CompareExchange(ref _instances, copy, original);
+                if (result == original)
+                {
+                    break;
+                }
             }
             return Task.FromResult(0);
         }
