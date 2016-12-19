@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Slalom.FitStacks.ConsoleClient.Commands.AddItem;
+using Slalom.FitStacks.ConsoleClient.Domain;
+using Slalom.FitStacks.ConsoleClient.Search;
 using Slalom.Stacks.Configuration;
 
 // ReSharper disable AccessToDisposedClosure
@@ -28,16 +32,24 @@ namespace Slalom.FitStacks.ConsoleClient
                 var count = 10000;
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
+
                     watch.Start();
 
                     var tasks = new List<Task>(count);
-                    Parallel.For(0, count, e =>
+                    Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
                     {
                         tasks.Add(container.Bus.SendAsync(new AddItemCommand(DateTime.Now.Ticks.ToString())));
                     });
                     await Task.WhenAll(tasks);
 
                     watch.Stop();
+
+                    var searchResultCount = container.Search.OpenQuery<ItemSearchResult>().Count();
+                    var entityCount = container.Domain.OpenQuery<Item>().Count();
+                    if (searchResultCount != count || entityCount != count)
+                    {
+                        throw new Exception($"The execution did not have the expected results. {searchResultCount} search results and {entityCount} entities out of {count}.");
+                    }
                 }
 
                 Console.ForegroundColor = ConsoleColor.Green;
