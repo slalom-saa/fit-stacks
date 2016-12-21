@@ -5,9 +5,10 @@ using Slalom.Stacks.Domain;
 namespace Slalom.Stacks.Caching
 {
     /// <summary>
-    /// Defines a contract for managing a cache.
+    /// A null <see cref="ICacheManager"/> implementation.
     /// </summary>
-    public interface ICacheManager
+    /// <seealso cref="Slalom.Stacks.Caching.ICacheManager" />
+    public class NullCacheManager : ICacheManager
     {
         /// <summary>
         /// Adds the items to the cache.
@@ -15,7 +16,10 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to add.</typeparam>
         /// <param name="instances">The instances to add.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task AddAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot;
+        public Task AddAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
+        {
+            return Task.FromResult(0);
+        }
 
         /// <summary>
         /// Finds the item in the cache with the specified ID.
@@ -23,14 +27,20 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of item to find.</typeparam>
         /// <param name="id">The identifier.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task<TItem> FindAsync<TItem>(Guid id) where TItem : IAggregateRoot;
+        public Task<TItem> FindAsync<TItem>(Guid id) where TItem : IAggregateRoot
+        {
+            return Task.FromResult(default(TItem));
+        }
 
         /// <summary>
         /// Clears all items of the specified type.
         /// </summary>
         /// <typeparam name="TItem">The type of items to clear.</typeparam>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task ClearAsync<TItem>() where TItem : IAggregateRoot;
+        public Task ClearAsync<TItem>() where TItem : IAggregateRoot
+        {
+            return Task.FromResult(0);
+        }
 
         /// <summary>
         /// Removes the specified items to the cache.
@@ -38,7 +48,10 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to remove.</typeparam>
         /// <param name="instances">The instances to remove.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task RemoveAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot;
+        public Task RemoveAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
+        {
+            return Task.FromResult(0);
+        }
 
         /// <summary>
         /// Updates the items in the cache.
@@ -46,6 +59,9 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to update.</typeparam>
         /// <param name="instances">The instances to update.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task UpdateAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot;
+        public Task UpdateAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
+        {
+            return Task.FromResult(0);
+        }
     }
 }

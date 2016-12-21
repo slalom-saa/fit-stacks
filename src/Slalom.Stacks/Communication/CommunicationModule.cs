@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Communication
     /// An Autofac module to configure the communication dependencies.
     /// </summary>
     /// <seealso cref="Autofac.Module" />
-    public class CommunicationModule : Module
+    internal class CommunicationModule : Module
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CommunicationModule"/> class.

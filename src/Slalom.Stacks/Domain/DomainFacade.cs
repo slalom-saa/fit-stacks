@@ -112,7 +112,7 @@ namespace Slalom.Stacks.Domain
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
-            return _cacheManager.OpenQuery(() => repository.OpenQuery());
+            return repository.OpenQuery();
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public Task<TAggregateRoot> FindAsync<TAggregateRoot>(Guid id) where TAggregateRoot : IAggregateRoot
+        public async Task<TAggregateRoot> FindAsync<TAggregateRoot>(Guid id) where TAggregateRoot : IAggregateRoot
         {
             var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
 
@@ -131,7 +131,20 @@ namespace Slalom.Stacks.Domain
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
-            return repository.FindAsync(id);
+            var target = await _cacheManager.FindAsync<TAggregateRoot>(id);
+            if (target != null)
+            {
+                return target;
+            }
+
+            target = await repository.FindAsync(id);
+
+            if (target != null)
+            {
+                await _cacheManager.AddAsync(target);
+            }
+
+            return target;
         }
 
         /// <summary>
@@ -139,14 +152,17 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         /// <typeparam name="TAggregateRoot">The type of instance.</typeparam>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task ClearAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
+        public async Task ClearAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
         {
             var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
             if (repository == null)
             {
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
-            return repository.ClearAsync();
+
+            await repository.ClearAsync();
+
+            await _cacheManager.ClearAsync<TAggregateRoot>();
         }
 
         /// <summary>
@@ -156,7 +172,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to remove.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public Task RemoveAsync<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
+        public async Task RemoveAsync<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
         {
             if (instances == null)
             {
@@ -165,7 +181,7 @@ namespace Slalom.Stacks.Domain
 
             if (!instances.Any())
             {
-                return Task.FromResult(0);
+                return;
             }
 
             var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
@@ -173,7 +189,10 @@ namespace Slalom.Stacks.Domain
             {
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
-            return repository.RemoveAsync(instances);
+
+            await repository.RemoveAsync(instances);
+
+            await _cacheManager.RemoveAsync(instances);
         }
 
         /// <summary>
@@ -210,7 +229,7 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
         /// and have a small set, then you can use the update method.</remarks>
-        public Task UpdateAsync<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
+        public async Task UpdateAsync<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
         {
             if (instances == null)
             {
@@ -219,7 +238,7 @@ namespace Slalom.Stacks.Domain
 
             if (!instances.Any())
             {
-                return Task.FromResult(0);
+                return;
             }
 
             var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
@@ -227,7 +246,10 @@ namespace Slalom.Stacks.Domain
             {
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
-            return repository.UpdateAsync(instances);
+
+            await repository.UpdateAsync(instances);
+
+            await _cacheManager.UpdateAsync(instances);
         }
 
         /// <summary>

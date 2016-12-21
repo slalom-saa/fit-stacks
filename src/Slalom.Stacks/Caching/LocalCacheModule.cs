@@ -1,13 +1,12 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 
 namespace Slalom.Stacks.Caching
 {
     /// <summary>
-    /// An Autofac module to configure the caching dependencies.
+    /// An Autofac module to configure the local caching dependencies.
     /// </summary>
     /// <seealso cref="Autofac.Module" />
-    internal class CachingModule : Module
+    public class LocalCacheModule : Module
     {
         /// <summary>
         /// Override to add registrations to the container.
@@ -19,7 +18,7 @@ namespace Slalom.Stacks.Caching
         {
             base.Load(builder);
 
-            builder.Register(c => new NullCacheManager())
+            builder.Register(c => new LocalCacheManager())
                    .AsImplementedInterfaces()
                    .SingleInstance();
         }

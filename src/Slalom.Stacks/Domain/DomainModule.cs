@@ -13,7 +13,7 @@ namespace Slalom.Stacks.Domain
     /// <summary>
     /// An Autofac module that wires up dependencies for the domain module.
     /// </summary>
-    public class DomainModule : Module
+    internal class DomainModule : Module
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DomainModule"/> class.

@@ -168,7 +168,7 @@ namespace Slalom.Stacks.Communication
 
             handler.Context = context;
 
-            return await handler.Handle((dynamic)command);
+            return await handler.HandleAsync((dynamic)command);
         }
 
         /// <summary>

@@ -25,6 +25,12 @@ namespace Slalom.Stacks.Configuration
         private readonly IPropertySelector _selector = new AllUnsetPropertySelector();
 
         /// <summary>
+        /// Gets the root <see cref="IContainer"/>.
+        /// </summary>
+        /// <value>The root <see cref="IContainer"/>.</value>
+        internal IContainer RootContainer => _container;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationContainer"/> class.
         /// </summary>
         /// <param name="markers">Either a type to be used for assembly scanning, or an instance of the type.</param>

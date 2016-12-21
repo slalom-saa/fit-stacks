@@ -8,6 +8,7 @@ using Slalom.FitStacks.ConsoleClient.Commands.AddItem;
 using Slalom.FitStacks.ConsoleClient.Domain;
 using Slalom.FitStacks.ConsoleClient.Search;
 using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Caching;
 
 // ReSharper disable AccessToDisposedClosure
 
@@ -29,27 +30,37 @@ namespace Slalom.FitStacks.ConsoleClient
             try
             {
                 var watch = new Stopwatch();
-                var count = 1000;
+                var count = 10000;
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
+                    container.UseLocalCache();
 
                     watch.Start();
 
-                    var tasks = new List<Task>(count);
-                    Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
+                    var item = Item.Create("asdf");
+
+                    container.Domain.AddAsync(item);
+
+                    for (int i = 0; i < 10; i++)
                     {
-                        tasks.Add(container.Bus.SendAsync(new AddItemCommand(DateTime.Now.Ticks.ToString())));
-                    });
-                    await Task.WhenAll(tasks);
+                        var current = await container.Domain.FindAsync<Item>(item.Id);
+                    }
+
+                    await container.Domain.UpdateAsync(item);
+
+                    for (int i = 0; i < 10; i++)
+                    {
+                        var current = await container.Domain.FindAsync<Item>(item.Id);
+                    }
+
+                    await container.Domain.RemoveAsync(item);
+
+                    for (int i = 0; i < 10; i++)
+                    {
+                        var current = await container.Domain.FindAsync<Item>(item.Id);
+                    }
 
                     watch.Stop();
-
-                    var searchResultCount = container.Search.OpenQuery<ItemSearchResult>().Count();
-                    var entityCount = container.Domain.OpenQuery<Item>().Count();
-                    if (searchResultCount != count || entityCount != count)
-                    {
-                        throw new Exception($"The execution did not have the expected results. {searchResultCount} search results and {entityCount} entities out of {count}.");
-                    }
                 }
 
                 Console.ForegroundColor = ConsoleColor.Green;

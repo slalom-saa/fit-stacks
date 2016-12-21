@@ -51,7 +51,11 @@ namespace Slalom.Stacks.Domain
                 var original = Interlocked.CompareExchange(ref _instances, null, null);
 
                 var copy = original.ToList();
-                copy.Clear();
+
+                foreach (var item in copy.OfType<TEntity>().ToList())
+                {
+                    copy.Remove(item);
+                }
 
                 var result = Interlocked.CompareExchange(ref _instances, copy, original);
                 if (result == original)
