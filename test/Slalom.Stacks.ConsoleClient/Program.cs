@@ -24,7 +24,7 @@ namespace Slalom.FitStacks.ConsoleClient
             try
             {
                 var watch = new Stopwatch();
-                var count = 10000;
+                var count = 1000;
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
                     watch.Start();

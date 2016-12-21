@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Slalom.Stacks.Caching;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Validation;
 
@@ -17,16 +18,20 @@ namespace Slalom.Stacks.Domain
     public class DomainFacade : IDomainFacade
     {
         private readonly IComponentContext _componentContext;
+        private readonly ICacheManager _cacheManager;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DomainFacade"/> class.
+        /// Initializes a new instance of the <see cref="DomainFacade" /> class.
         /// </summary>
         /// <param name="componentContext">The component context.</param>
-        public DomainFacade(IComponentContext componentContext)
+        /// <param name="cacheManager">The cache manager.</param>
+        public DomainFacade(IComponentContext componentContext, ICacheManager cacheManager)
         {
             Argument.NotNull(componentContext, nameof(componentContext));
+            Argument.NotNull(cacheManager, nameof(cacheManager));
 
             _componentContext = componentContext;
+            _cacheManager = cacheManager;
         }
 
         /// <summary>
@@ -39,7 +44,7 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
         /// and have a small set, then you can use the update method.</remarks>
-        public Task AddAsync<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
+        public async Task AddAsync<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
         {
             if (instances == null)
             {
@@ -48,7 +53,7 @@ namespace Slalom.Stacks.Domain
 
             if (!instances.Any())
             {
-                return Task.FromResult(0);
+                return;
             }
 
             var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
@@ -58,7 +63,9 @@ namespace Slalom.Stacks.Domain
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
-            return repository.AddAsync(instances);
+            await repository.AddAsync(instances);
+
+            await _cacheManager.AddAsync(instances);
         }
 
         /// <summary>
@@ -105,7 +112,7 @@ namespace Slalom.Stacks.Domain
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
-            return repository.OpenQuery();
+            return _cacheManager.OpenQuery(() => repository.OpenQuery());
         }
 
         /// <summary>
