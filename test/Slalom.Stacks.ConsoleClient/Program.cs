@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Slalom.FitStacks.ConsoleClient.Commands.AddItem;
+using Slalom.FitStacks.ConsoleClient.Domain;
+using Slalom.FitStacks.ConsoleClient.Search;
 using Slalom.Stacks.Configuration;
 
 // ReSharper disable AccessToDisposedClosure
@@ -27,16 +32,28 @@ namespace Slalom.FitStacks.ConsoleClient
                 var count = 1000;
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
+
                     watch.Start();
-                    for (var i = 0; i < count; i++)
+
+                    var tasks = new List<Task>(count);
+                    Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
                     {
-                        await Task.Run(() => container.Bus.SendAsync(new AddItemCommand(DateTime.Now.Ticks.ToString())).ConfigureAwait(false));
-                    }
+                        tasks.Add(container.Bus.SendAsync(new AddItemCommand(DateTime.Now.Ticks.ToString())));
+                    });
+                    await Task.WhenAll(tasks);
+
                     watch.Stop();
+
+                    var searchResultCount = container.Search.OpenQuery<ItemSearchResult>().Count();
+                    var entityCount = container.Domain.OpenQuery<Item>().Count();
+                    if (searchResultCount != count || entityCount != count)
+                    {
+                        throw new Exception($"The execution did not have the expected results. {searchResultCount} search results and {entityCount} entities out of {count}.");
+                    }
                 }
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Execution for {count} items completed successfully in {watch.Elapsed} - {(int)(count / watch.Elapsed.TotalSeconds)} per second.  Press any key to exit...");
+                Console.WriteLine($"Execution for {count:N0} items completed successfully in {watch.Elapsed} - {Math.Ceiling(count / watch.Elapsed.TotalSeconds):N0} per second.  Press any key to exit...");
                 Console.ResetColor();
             }
             catch (Exception exception)

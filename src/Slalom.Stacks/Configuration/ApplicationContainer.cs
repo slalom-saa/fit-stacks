@@ -42,7 +42,7 @@ namespace Slalom.Stacks.Configuration
 
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new StacksModule { Assemblies = assemblies.ToArray() });
+            builder.RegisterModule(new ConfigurationModule { Assemblies = assemblies.ToArray() });
 
             _container = builder.Build();
         }
