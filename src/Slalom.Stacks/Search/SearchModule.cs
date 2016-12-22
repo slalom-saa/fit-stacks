@@ -13,7 +13,7 @@ namespace Slalom.Stacks.Search
     /// Autofac module that registers search dependencies.
     /// </summary>
     /// <seealso cref="Autofac.Module" />
-    public class SearchModule : Module
+    internal class SearchModule : Module
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchModule"/> class.

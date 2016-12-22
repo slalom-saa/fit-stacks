@@ -67,5 +67,14 @@ namespace Slalom.Stacks.Communication
         {
             return other != null && this.Id.Equals(other.Id);
         }
+
+        /// <summary>
+        /// Gets the event body payload that will be forwarded.
+        /// </summary>
+        /// <returns>Returns the event body payload that will be forwarded.</returns>
+        public virtual object GetPayload()
+        {
+            return this;    
+        }
     }
 }

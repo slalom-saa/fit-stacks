@@ -39,7 +39,7 @@ namespace Slalom.Stacks.IntegrationTests
 
         public class TestCommandHandler : CommandHandler<TestCommand, TestEvent>
         {
-            public override Task<TestEvent> Handle(TestCommand command)
+            public override Task<TestEvent> HandleAsync(TestCommand command)
             {
                 this.Context.AddRaisedEvent(new AdditionalEvent());
 

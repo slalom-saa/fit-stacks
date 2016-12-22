@@ -7,7 +7,7 @@ namespace Slalom.FitStacks.ConsoleClient.Commands.AddItem
 {
     public class AddItemCommandHandler : CommandHandler<AddItemCommand, ItemAddedEvent>
     {
-        public override async Task<ItemAddedEvent> Handle(AddItemCommand command)
+        public override async Task<ItemAddedEvent> HandleAsync(AddItemCommand command)
         {
             if (command.Text == "error")
             {

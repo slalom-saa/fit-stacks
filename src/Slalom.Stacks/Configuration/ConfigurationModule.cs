@@ -5,6 +5,7 @@ using System.Reflection;
 using Autofac;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using Slalom.Stacks.Caching;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
@@ -20,7 +21,7 @@ namespace Slalom.Stacks.Configuration
     /// An Autofac module that wires up root dependencies for the stack.
     /// </summary>
     /// <seealso cref="Autofac.Module" />
-    public class ConfigurationModule : Module
+    internal class ConfigurationModule : Module
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationModule"/> class.
@@ -75,6 +76,7 @@ namespace Slalom.Stacks.Configuration
             builder.RegisterModule(new DomainModule(this.Assemblies));
             builder.RegisterModule(new CommunicationModule(this.Assemblies));
             builder.RegisterModule(new SearchModule(this.Assemblies));
+            builder.RegisterModule(new CachingModule());
 
             builder.Register(c => new ComponentContext(c.Resolve<Autofac.IComponentContext>()))
                    .As<IComponentContext>();

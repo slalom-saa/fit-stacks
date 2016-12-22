@@ -31,7 +31,7 @@ namespace Slalom.Stacks.IntegrationTests
 
         public class TestCommandHandler : CommandHandler<TestCommand, string>
         {
-            public override Task<string> Handle(TestCommand command)
+            public override Task<string> HandleAsync(TestCommand command)
             {
                 return Task.FromResult(command.Text);
             }

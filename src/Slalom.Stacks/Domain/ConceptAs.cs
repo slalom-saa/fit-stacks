@@ -31,7 +31,7 @@ namespace Slalom.Stacks.Domain
         /// Gets or sets the concept value.
         /// </summary>
         /// <value>The concept value.</value>
-        public TValue Value { get; }
+        public TValue Value { get; protected set; }
 
         /// <summary>
         /// Determines if another instance is equivalent to this instance.
