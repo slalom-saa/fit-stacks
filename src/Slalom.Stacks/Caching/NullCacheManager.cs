@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 
@@ -22,6 +24,25 @@ namespace Slalom.Stacks.Caching
         }
 
         /// <summary>
+        /// Clears all items of the specified type.
+        /// </summary>
+        /// <typeparam name="TItem">The type of items to clear.</typeparam>
+        /// <returns>Returns a task for asynchronous programming.</returns>
+        public Task ClearAsync<TItem>() where TItem : IAggregateRoot
+        {
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// Clears the cache.
+        /// </summary>
+        /// <returns>Returns a task for asynchronous programming.</returns>
+        public Task ClearAsync()
+        {
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
         /// Finds the item in the cache with the specified ID.
         /// </summary>
         /// <typeparam name="TItem">The type of item to find.</typeparam>
@@ -33,13 +54,13 @@ namespace Slalom.Stacks.Caching
         }
 
         /// <summary>
-        /// Clears all items of the specified type.
+        /// Gets the items in the cache of the specified type.
         /// </summary>
-        /// <typeparam name="TItem">The type of items to clear.</typeparam>
-        /// <returns>Returns a task for asynchronous programming.</returns>
-        public Task ClearAsync<TItem>() where TItem : IAggregateRoot
+        /// <typeparam name="TItem">The type of item.</typeparam>
+        /// <returns>Returns items in the cache of the specified type.</returns>
+        public IEnumerable<TItem> GetItems<TItem>() where TItem : IAggregateRoot
         {
-            return Task.FromResult(0);
+            return Enumerable.Empty<TItem>();
         }
 
         /// <summary>

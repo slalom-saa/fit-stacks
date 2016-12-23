@@ -4,11 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Slalom.FitStacks.ConsoleClient.Commands.AddItem;
-using Slalom.FitStacks.ConsoleClient.Domain;
-using Slalom.FitStacks.ConsoleClient.Search;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Caching;
+using Slalom.Stacks.Test.Domain;
 
 // ReSharper disable AccessToDisposedClosure
 
@@ -30,7 +28,7 @@ namespace Slalom.FitStacks.ConsoleClient
             try
             {
                 var watch = new Stopwatch();
-                var count = 10000;
+                var count = 100;
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
                     container.UseLocalCache();

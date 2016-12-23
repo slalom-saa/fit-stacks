@@ -9,9 +9,15 @@ namespace Slalom.Stacks.Communication
     public interface IMessage
     {
         /// <summary>
-        /// Gets the message time stamp.
+        /// Gets the message identifier.
         /// </summary>
-        /// <value>The message time stamp.</value>
+        /// <value>The message identifier.</value>
+        Guid Id { get; }
+
+        /// <summary>
+        /// Gets the message timestamp.
+        /// </summary>
+        /// <value>The message timestamp.</value>
         DateTimeOffset TimeStamp { get; }
     }
 }

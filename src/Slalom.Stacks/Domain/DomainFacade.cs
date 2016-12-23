@@ -162,7 +162,7 @@ namespace Slalom.Stacks.Domain
 
             await repository.ClearAsync();
 
-            await _cacheManager.ClearAsync<TAggregateRoot>();
+            await _cacheManager.ClearAsync();
         }
 
         /// <summary>

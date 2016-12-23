@@ -22,6 +22,10 @@ namespace Slalom.Stacks.Caching
             builder.Register(c => new NullCacheManager())
                    .AsImplementedInterfaces()
                    .SingleInstance();
+
+            builder.Register(c => new NullCacheConnector())
+                   .AsImplementedInterfaces()
+                   .SingleInstance();
         }
     }
 }

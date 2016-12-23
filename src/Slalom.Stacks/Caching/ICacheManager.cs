@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 
@@ -26,13 +27,6 @@ namespace Slalom.Stacks.Caching
         Task<TItem> FindAsync<TItem>(Guid id) where TItem : IAggregateRoot;
 
         /// <summary>
-        /// Clears all items of the specified type.
-        /// </summary>
-        /// <typeparam name="TItem">The type of items to clear.</typeparam>
-        /// <returns>Returns a task for asynchronous programming.</returns>
-        Task ClearAsync<TItem>() where TItem : IAggregateRoot;
-
-        /// <summary>
         /// Removes the specified items to the cache.
         /// </summary>
         /// <typeparam name="TItem">The type of items to remove.</typeparam>
@@ -47,5 +41,11 @@ namespace Slalom.Stacks.Caching
         /// <param name="instances">The instances to update.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
         Task UpdateAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot;
+
+        /// <summary>
+        /// Clears the cache.
+        /// </summary>
+        /// <returns>Returns a task for asynchronous programming.</returns>
+        Task ClearAsync();
     }
 }

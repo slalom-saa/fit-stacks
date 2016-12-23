@@ -1,13 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Slalom.FitStacks.ConsoleClient.Domain;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Domain;
-using Slalom.Stacks.Logging;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
+using Slalom.Stacks.Test.Domain;
 
-namespace Slalom.FitStacks.ConsoleClient.Search
+namespace Slalom.Stacks.Test.Search
 {
     public class ItemSearchIndex : SearchIndexer<ItemSearchResult>, IHandleEvent<ItemAddedEvent>
     {

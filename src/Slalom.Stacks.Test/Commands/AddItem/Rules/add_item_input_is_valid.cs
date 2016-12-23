@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Slalom.Stacks.Communication.Validation;
 
-namespace Slalom.FitStacks.ConsoleClient.Commands.AddItem.Rules
+namespace Slalom.Stacks.Test.Commands.AddItem.Rules
 {
     public class add_item_input_is_valid : InputValidationRuleSet<AddItemCommand>
     {

@@ -1,6 +1,6 @@
 ﻿using Slalom.Stacks.Domain;
 
-namespace Slalom.FitStacks.ConsoleClient.Domain
+namespace Slalom.Stacks.Test.Domain
 {
     public class Item : Entity, IAggregateRoot
     {

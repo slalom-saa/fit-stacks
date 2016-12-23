@@ -14,7 +14,25 @@ namespace Slalom.Stacks.Caching
     /// <seealso cref="Slalom.Stacks.Caching.ICacheManager" />
     public class LocalCacheManager : ICacheManager
     {
+        private readonly ICacheConnector _connector;
         private readonly ConcurrentDictionary<Guid, object> _instances = new ConcurrentDictionary<Guid, object>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocalCacheManager"/> class.
+        /// </summary>
+        /// <param name="connector">The configured <see cref="ICacheConnector"/>.</param>
+        public LocalCacheManager(ICacheConnector connector)
+        {
+            Argument.NotNull(connector, nameof(connector));
+
+            _connector = connector;
+        }
+
+        /// <summary>
+        /// Gets the item count.
+        /// </summary>
+        /// <value>The item count.</value>
+        public int ItemCount => _instances.Count;
 
         /// <summary>
         /// Adds the items to the cache.
@@ -22,7 +40,7 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to add.</typeparam>
         /// <param name="instances">The instances to add.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public Task AddAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
+        public virtual async Task AddAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
         {
             Argument.NotNull(instances, nameof(instances));
 
@@ -30,6 +48,18 @@ namespace Slalom.Stacks.Caching
             {
                 _instances.AddOrUpdate(instance.Id, instance, (id, current) => instance);
             }
+
+            await _connector.PublishChangesAsync(instances.Select(e => e.Id));
+        }
+
+        /// <summary>
+        /// Clears the cache.
+        /// </summary>
+        /// <returns>Returns a task for asynchronous programming.</returns>
+        public Task ClearAsync()
+        {
+            _instances.Clear();
+
             return Task.FromResult(0);
         }
 
@@ -39,7 +69,7 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of item to find.</typeparam>
         /// <param name="id">The identifier.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public Task<TItem> FindAsync<TItem>(Guid id) where TItem : IAggregateRoot
+        public virtual Task<TItem> FindAsync<TItem>(Guid id) where TItem : IAggregateRoot
         {
             object target;
             if (_instances.TryGetValue(id, out target))
@@ -50,19 +80,19 @@ namespace Slalom.Stacks.Caching
         }
 
         /// <summary>
-        /// Clears all items of the specified type.
+        /// Removes the items with the specified keys.
         /// </summary>
-        /// <typeparam name="TItem">The type of items to clear.</typeparam>
+        /// <param name="keys">The keys to remove.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public Task ClearAsync<TItem>() where TItem : IAggregateRoot
+        public virtual async Task RemoveAsync(params Guid[] keys)
         {
-            var instances = _instances.Where(e => e.Value is TItem);
-            foreach (var item in instances)
+            object instance;
+            foreach (var key in keys)
             {
-                object instance = null;
-                _instances.TryRemove(item.Key, out instance);
+                _instances.TryRemove(key, out instance);
             }
-            return Task.FromResult(0);
+
+            await _connector.PublishChangesAsync(keys);
         }
 
         /// <summary>
@@ -71,17 +101,17 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to remove.</typeparam>
         /// <param name="instances">The instances to remove.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public Task RemoveAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
+        public virtual async Task RemoveAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
         {
             Argument.NotNull(instances, nameof(instances));
 
             var target = _instances.Where(e => instances.Select(x => x.Id).Contains(e.Key));
+            object instance;
             foreach (var item in target)
             {
-                object instance = null;
                 _instances.TryRemove(item.Key, out instance);
             }
-            return Task.FromResult(0);
+            await _connector.PublishChangesAsync(instances.Select(e => e.Id));
         }
 
         /// <summary>
@@ -90,7 +120,7 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to update.</typeparam>
         /// <param name="instances">The instances to update.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public Task UpdateAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
+        public virtual async Task UpdateAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
         {
             Argument.NotNull(instances, nameof(instances));
 
@@ -98,7 +128,8 @@ namespace Slalom.Stacks.Caching
             {
                 _instances.AddOrUpdate(instance.Id, instance, (key, current) => instance);
             }
-            return Task.FromResult(0);
+
+            await _connector.PublishChangesAsync(instances.Select(e => e.Id));
         }
     }
 }
