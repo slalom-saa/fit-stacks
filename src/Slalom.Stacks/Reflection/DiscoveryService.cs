@@ -48,7 +48,7 @@ namespace Slalom.Stacks.Reflection
             _assemblies = new Lazy<List<Assembly>>(() =>
             {
                 var assemblies = new List<Assembly>();
-
+#if core
                 var dependencies = DependencyContext.Default;
                 foreach (var compilationLibrary in dependencies.RuntimeLibraries)
                 {
@@ -62,9 +62,12 @@ namespace Slalom.Stacks.Reflection
                     }
                     catch
                     {
-                        logger.Debug("Type Discovery: Could not load library {name}.", compilationLibrary.Name);
+                        logger?.Debug("Type Discovery: Could not load library {name}.", compilationLibrary.Name);
                     }
                 }
+#else
+                assemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies());
+#endif
 
                 return assemblies;
             });

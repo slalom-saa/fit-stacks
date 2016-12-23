@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Search;
 using Slalom.Stacks.Test.Commands.AddItem;
 using Slalom.Stacks.Test.Domain;
 using Slalom.Stacks.Test.Search;
@@ -31,6 +33,15 @@ namespace Slalom.Stacks.ConsoleClient
                 var count = 1000;
                 using (var container = new ApplicationContainer(typeof(Item)))
                 {
+
+
+
+                    var enumerable = container.Resolve<IDiscoverTypes>().Find<ISearchResult>();
+                    var result = enumerable
+                                .Where(x => !x.IsAbstract && !x.IsInterface).ToList();
+
+
+
 
                     watch.Start();
 
