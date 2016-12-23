@@ -13,11 +13,5 @@ namespace Slalom.Stacks.Communication
         /// </summary>
         /// <value>The name of the command.</value>
         string CommandName { get; }
-
-        /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        /// <value>The identifier.</value>
-        Guid Id { get; }
     }
 }

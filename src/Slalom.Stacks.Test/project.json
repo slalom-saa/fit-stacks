@@ -1,0 +1,38 @@
+﻿{
+  "version": "1.0.1-*",
+  "authors": [ "Slalom Architect Academy" ],
+  "packOptions": {
+    "tags": [ "slalom", "stacks", "test" ],
+    "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+    "summary": "A library with common test classes Slalom.Stacks."
+  },
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "Slalom.Stacks": {
+      "target": "project"
+    }
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "dotnet54",
+        "portable-net45+win8"
+      ],
+      "buildOptions": { "define": [ "core" ] }
+    },
+    "net461": {
+      "dependencies": {
+      },
+      "imports": "dnxcore50"
+    }
+  },
+  "scripts": {
+    "precompile": [
+    ],
+    "postcompile": [
+      "dotnet pack --no-build --configuration %compile:Configuration%",
+      "xcopy .\\bin\\debug\\*.nupkg c:\\nuget\\ /y"
+    ]
+  }
+}

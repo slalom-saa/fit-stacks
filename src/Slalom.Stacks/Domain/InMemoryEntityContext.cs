@@ -72,7 +72,7 @@ namespace Slalom.Stacks.Domain
         /// <typeparam name="TEntity">The type of the t entity.</typeparam>
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<TEntity> FindAsync<TEntity>(Guid id) where TEntity : IAggregateRoot
+        public Task<TEntity> FindAsync<TEntity>(string id) where TEntity : IAggregateRoot
         {
             return Task.FromResult(_instances.OfType<TEntity>().FirstOrDefault(e => e.Id == id));
         }

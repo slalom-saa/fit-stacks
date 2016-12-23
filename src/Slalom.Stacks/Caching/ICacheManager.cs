@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 
@@ -15,7 +16,7 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to add.</typeparam>
         /// <param name="instances">The instances to add.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task AddAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot;
+        Task AddAsync<TItem>(params TItem[] instances);
 
         /// <summary>
         /// Finds the item in the cache with the specified ID.
@@ -23,14 +24,7 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of item to find.</typeparam>
         /// <param name="id">The identifier.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task<TItem> FindAsync<TItem>(Guid id) where TItem : IAggregateRoot;
-
-        /// <summary>
-        /// Clears all items of the specified type.
-        /// </summary>
-        /// <typeparam name="TItem">The type of items to clear.</typeparam>
-        /// <returns>Returns a task for asynchronous programming.</returns>
-        Task ClearAsync<TItem>() where TItem : IAggregateRoot;
+        Task<TItem> FindAsync<TItem>(string id);
 
         /// <summary>
         /// Removes the specified items to the cache.
@@ -38,7 +32,7 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to remove.</typeparam>
         /// <param name="instances">The instances to remove.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task RemoveAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot;
+        Task RemoveAsync<TItem>(params TItem[] instances);
 
         /// <summary>
         /// Updates the items in the cache.
@@ -46,6 +40,12 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to update.</typeparam>
         /// <param name="instances">The instances to update.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task UpdateAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot;
+        Task UpdateAsync<TItem>(params TItem[] instances);
+
+        /// <summary>
+        /// Clears the cache.
+        /// </summary>
+        /// <returns>Returns a task for asynchronous programming.</returns>
+        Task ClearAsync();
     }
 }

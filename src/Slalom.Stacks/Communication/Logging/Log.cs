@@ -66,7 +66,7 @@ namespace Slalom.Stacks.Communication.Logging
         /// Gets or sets the command identifier.
         /// </summary>
         /// <value>The command identifier.</value>
-        public Guid CommandId { get; set; }
+        public string CommandId { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the command.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Communication
 {
@@ -12,7 +13,7 @@ namespace Slalom.Stacks.Communication
         /// Gets the event ID.
         /// </summary>
         /// <value>The event ID.</value>
-        public Guid Id { get; private set; } = Guid.NewGuid();
+        public string Id { get; private set; } = NewId.NextId();
 
         /// <summary>
         /// Gets the name of the event.

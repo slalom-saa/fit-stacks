@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using Slalom.FitStacks.ConsoleClient.Domain;
 using Slalom.Stacks.Communication;
+using Slalom.Stacks.Test.Domain;
 
-namespace Slalom.FitStacks.ConsoleClient.Commands.AddItem
+namespace Slalom.Stacks.Test.Commands.AddItem
 {
     public class AddItemCommandHandler : CommandHandler<AddItemCommand, ItemAddedEvent>
     {

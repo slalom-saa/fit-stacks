@@ -1,7 +1,7 @@
 ﻿using System;
 using Slalom.Stacks.Search;
 
-namespace Slalom.FitStacks.ConsoleClient.Search
+namespace Slalom.Stacks.Test.Search
 {
     public class ItemSearchResult : ISearchResult
     {

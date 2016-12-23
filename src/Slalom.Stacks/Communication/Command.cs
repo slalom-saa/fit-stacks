@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Communication
 {
@@ -16,7 +17,7 @@ namespace Slalom.Stacks.Communication
         /// Gets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        public Guid Id { get; } = Guid.NewGuid();
+        public string Id { get; } = NewId.NextId();
 
         /// <summary>
         /// Gets the message time stamp.

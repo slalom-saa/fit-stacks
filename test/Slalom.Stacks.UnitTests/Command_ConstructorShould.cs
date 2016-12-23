@@ -24,7 +24,7 @@ namespace Slalom.Stacks.UnitTests
         {
             var command = new TestCommand();
 
-            command.Id.ShouldNotBe(Guid.Empty);
+            command.Id.ShouldNotBeNull();
         }
     }
 }

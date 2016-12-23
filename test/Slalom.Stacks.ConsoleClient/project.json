@@ -10,6 +10,9 @@
   "dependencies": {
     "Slalom.Stacks": {
       "target": "project"
+    },
+    "Slalom.Stacks.Test": {
+      "target": "project"
     }
   },
   "frameworks": {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Domain
 {
@@ -14,7 +15,7 @@ namespace Slalom.Stacks.Domain
         /// Initializes a new instance of the <see cref="Entity"/> class.
         /// </summary>
         protected Entity()
-            : this(Guid.NewGuid())
+            : this(NewId.NextId())
         {
         }
 
@@ -22,7 +23,7 @@ namespace Slalom.Stacks.Domain
         /// Initializes a new instance of the <see cref="Entity"/> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        protected Entity(Guid id)
+        protected Entity(string id)
         {
             this.Id = id;
         }
@@ -31,7 +32,7 @@ namespace Slalom.Stacks.Domain
         /// Gets or sets the entity identifier.
         /// </summary>
         /// <value>The entity identifier.</value>
-        public Guid Id { get; private set; }
+        public string Id { get; private set; }
 
         /// <summary>
         /// Gets the keys for this instance.  It may be just the identifier or a combination of identifier and human readable keys.

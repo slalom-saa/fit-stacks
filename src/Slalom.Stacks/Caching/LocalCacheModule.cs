@@ -18,7 +18,7 @@ namespace Slalom.Stacks.Caching
         {
             base.Load(builder);
 
-            builder.Register(c => new LocalCacheManager())
+            builder.Register(c => new LocalCacheManager(c.Resolve<ICacheConnector>()))
                    .AsImplementedInterfaces()
                    .SingleInstance();
         }
