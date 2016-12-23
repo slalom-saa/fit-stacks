@@ -101,7 +101,7 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<TRoot> FindAsync(Guid id)
+        public Task<TRoot> FindAsync(string id)
         {
             this.Logger.Verbose($"Finding item of type {typeof(TRoot)} with ID {id} using {_context.GetType()}.");
 

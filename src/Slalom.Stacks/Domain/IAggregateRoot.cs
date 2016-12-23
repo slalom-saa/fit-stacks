@@ -13,6 +13,6 @@ namespace Slalom.Stacks.Domain
         /// Gets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        Guid Id { get; }
+        string Id { get; }
     }
 }

@@ -68,7 +68,7 @@ namespace Slalom.Stacks.Domain
         /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<TAggregateRoot> FindAsync<TAggregateRoot>(Guid id) where TAggregateRoot : IAggregateRoot;
+        Task<TAggregateRoot> FindAsync<TAggregateRoot>(string id) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Clears all instances of the specified type.

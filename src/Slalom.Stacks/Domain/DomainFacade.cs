@@ -122,7 +122,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public async Task<TAggregateRoot> FindAsync<TAggregateRoot>(Guid id) where TAggregateRoot : IAggregateRoot
+        public async Task<TAggregateRoot> FindAsync<TAggregateRoot>(string id) where TAggregateRoot : IAggregateRoot
         {
             var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
 

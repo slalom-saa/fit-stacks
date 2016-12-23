@@ -7,6 +7,19 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Caching
 {
+    internal static class Identity
+    {
+        public static object GetIdentity(object instance)
+        {
+            var entity = instance as IAggregateRoot;
+            if (entity != null)
+            {
+                return entity.Id;
+            }
+            return instance.GetHashCode();
+        }
+    }
+
     /// <summary>
     /// A local <see cref="ICacheManager"/> implementation that uses an in-memory store.  This is not to be used in a distributed
     /// environment.
@@ -15,7 +28,7 @@ namespace Slalom.Stacks.Caching
     public class LocalCacheManager : ICacheManager
     {
         private readonly ICacheConnector _connector;
-        private readonly ConcurrentDictionary<Guid, object> _instances = new ConcurrentDictionary<Guid, object>();
+        private readonly ConcurrentDictionary<string, object> _instances = new ConcurrentDictionary<string, object>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalCacheManager"/> class.
@@ -40,16 +53,15 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to add.</typeparam>
         /// <param name="instances">The instances to add.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public virtual async Task AddAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
+        public virtual Task AddAsync<TItem>(params TItem[] instances)
         {
             Argument.NotNull(instances, nameof(instances));
 
             foreach (var instance in instances)
             {
-                _instances.AddOrUpdate(instance.Id, instance, (id, current) => instance);
+                _instances.AddOrUpdate(Identity.GetIdentity(instance).ToString(), instance, (id, current) => instance);
             }
-
-            await _connector.PublishChangesAsync(instances.Select(e => e.Id));
+            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -69,7 +81,7 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of item to find.</typeparam>
         /// <param name="id">The identifier.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public virtual Task<TItem> FindAsync<TItem>(Guid id) where TItem : IAggregateRoot
+        public virtual Task<TItem> FindAsync<TItem>(string id)
         {
             object target;
             if (_instances.TryGetValue(id, out target))
@@ -84,11 +96,11 @@ namespace Slalom.Stacks.Caching
         /// </summary>
         /// <param name="keys">The keys to remove.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public virtual async Task RemoveAsync(params Guid[] keys)
+        public virtual async Task RemoveAsync(params string[] keys)
         {
-            object instance;
             foreach (var key in keys)
             {
+                object instance;
                 _instances.TryRemove(key, out instance);
             }
 
@@ -101,17 +113,17 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to remove.</typeparam>
         /// <param name="instances">The instances to remove.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public virtual async Task RemoveAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
+        public virtual async Task RemoveAsync<TItem>(params TItem[] instances)
         {
             Argument.NotNull(instances, nameof(instances));
 
-            var target = _instances.Where(e => instances.Select(x => x.Id).Contains(e.Key));
-            object instance;
+            var target = _instances.Where(e => instances.Select(x => Identity.GetIdentity(x)).Contains(e.Key));
             foreach (var item in target)
             {
+                object instance;
                 _instances.TryRemove(item.Key, out instance);
             }
-            await _connector.PublishChangesAsync(instances.Select(e => e.Id));
+            await _connector.PublishChangesAsync(instances.Select(e => Identity.GetIdentity(e).ToString()));
         }
 
         /// <summary>
@@ -120,16 +132,15 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to update.</typeparam>
         /// <param name="instances">The instances to update.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public virtual async Task UpdateAsync<TItem>(params TItem[] instances) where TItem : IAggregateRoot
+        public virtual async Task UpdateAsync<TItem>(params TItem[] instances)
         {
             Argument.NotNull(instances, nameof(instances));
 
             foreach (var instance in instances)
             {
-                _instances.AddOrUpdate(instance.Id, instance, (key, current) => instance);
+                _instances.AddOrUpdate(Identity.GetIdentity(instance).ToString(), instance, (key, current) => instance);
             }
-
-            await _connector.PublishChangesAsync(instances.Select(e => e.Id));
+            await _connector.PublishChangesAsync(instances.Select(e => Identity.GetIdentity(e).ToString()));
         }
     }
 }

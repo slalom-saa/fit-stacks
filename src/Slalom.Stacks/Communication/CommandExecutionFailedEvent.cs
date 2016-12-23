@@ -28,7 +28,7 @@ namespace Slalom.Stacks.Communication
         /// Gets the command identifier.
         /// </summary>
         /// <value>The command identifier.</value>
-        public Guid CommandId { get; private set; }
+        public string CommandId { get; private set; }
 
         /// <summary>
         /// Gets the name of the command.

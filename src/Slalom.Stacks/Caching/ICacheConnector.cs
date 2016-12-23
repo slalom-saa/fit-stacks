@@ -7,7 +7,7 @@ namespace Slalom.Stacks.Caching
 {
     public interface ICacheConnector
     {
-        Task PublishChangesAsync(IEnumerable<Guid> itemIds);
+        Task PublishChangesAsync(IEnumerable<string> itemIds);
 
         void OnChanged(Action<CacheUpdatedMessage> action);
     }

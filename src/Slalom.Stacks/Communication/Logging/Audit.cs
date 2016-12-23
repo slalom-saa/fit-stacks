@@ -72,7 +72,7 @@ namespace Slalom.Stacks.Communication.Logging
         /// Gets or sets the event identifier.
         /// </summary>
         /// <value>The event identifier.</value>
-        public Guid? EventId { get; set; }
+        public string EventId { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the event.

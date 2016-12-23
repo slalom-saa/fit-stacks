@@ -7,7 +7,7 @@ namespace Slalom.Stacks.Caching
 {
     public class NullCacheConnector : ICacheConnector
     {
-        public Task PublishChangesAsync(IEnumerable<Guid> itemIds)
+        public Task PublishChangesAsync(IEnumerable<string> itemIds)
         {
             return Task.FromResult(0);
         }

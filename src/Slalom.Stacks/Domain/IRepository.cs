@@ -29,7 +29,7 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<TRoot> FindAsync(Guid id);
+        Task<TRoot> FindAsync(string id);
 
         /// <summary>
         /// Opens a query that can be used to filter and project.

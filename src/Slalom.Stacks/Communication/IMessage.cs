@@ -12,7 +12,7 @@ namespace Slalom.Stacks.Communication
         /// Gets the message identifier.
         /// </summary>
         /// <value>The message identifier.</value>
-        Guid Id { get; }
+        string Id { get; }
 
         /// <summary>
         /// Gets the message timestamp.
