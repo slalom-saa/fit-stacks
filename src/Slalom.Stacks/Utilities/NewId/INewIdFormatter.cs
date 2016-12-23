@@ -1,6 +1,6 @@
 ﻿namespace Slalom.Stacks.Utilities.NewId
 {
-    public interface INewIdFormatter
+    internal interface INewIdFormatter
     {
         string Format(byte[] bytes);
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Slalom.Stacks.Utilities.NewId.NewIdFormatters;
 using Slalom.Stacks.Utilities.NewId.NewIdProviders;
 
@@ -9,7 +10,7 @@ namespace Slalom.Stacks.Utilities.NewId
     /// but is guaranteed to be both unique and ordered, assuming it is generated using
     /// a single instance of the generator for each network address used.
     /// </summary>
-    public struct NewId :
+    internal struct NewId :
         IEquatable<NewId>,
         IComparable<NewId>,
         IComparable,
@@ -64,7 +65,7 @@ namespace Slalom.Stacks.Utilities.NewId
             _c = c;
             _d = d;
         }
-
+        
         public NewId(int a, short b, short c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k)
         {
             _a = (f << 24) | (g << 16) | (h << 8) | i;

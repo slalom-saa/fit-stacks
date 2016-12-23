@@ -1,6 +1,6 @@
 namespace Slalom.Stacks.Utilities.NewId
 {
-    public interface IWorkerIdProvider
+    internal interface IWorkerIdProvider
     {
         byte[] GetWorkerId(int index);
     }

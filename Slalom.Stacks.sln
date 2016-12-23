@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{51556D
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
 		README.md = README.md
+		assets\stacks.ruleset = assets\stacks.ruleset
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E59A74CA-04D4-43F0-9C6A-BE2E6380A240}"

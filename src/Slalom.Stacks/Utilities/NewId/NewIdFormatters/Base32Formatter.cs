@@ -2,7 +2,7 @@
 
 namespace Slalom.Stacks.Utilities.NewId.NewIdFormatters
 {
-    public class Base32Formatter :
+    internal class Base32Formatter :
         INewIdFormatter
     {
         const string LowerCaseChars = "abcdefghijklmnopqrstuvwxyz234567";

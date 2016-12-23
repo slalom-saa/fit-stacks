@@ -31,7 +31,9 @@
     "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
     "System.Net.NameResolution": "4.3.0",
-    "System.Security.Principal.Windows": "4.3.0"
+    "System.Security.Principal.Windows": "4.3.0",
+    "System.Net.NetworkInformation": "4.1.0",
+    "System.Diagnostics.Process": "4.3.0"
   },
 
   "buildOptions": {

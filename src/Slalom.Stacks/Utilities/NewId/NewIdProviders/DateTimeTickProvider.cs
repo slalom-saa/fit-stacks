@@ -2,7 +2,7 @@
 
 namespace Slalom.Stacks.Utilities.NewId.NewIdProviders
 {
-    public class DateTimeTickProvider :
+    internal class DateTimeTickProvider :
         ITickProvider
     {
         public long Ticks

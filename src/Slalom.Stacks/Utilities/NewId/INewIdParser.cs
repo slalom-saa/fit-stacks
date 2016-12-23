@@ -1,6 +1,6 @@
 ﻿namespace Slalom.Stacks.Utilities.NewId
 {
-    public interface INewIdParser
+    internal interface INewIdParser
     {
         NewId Parse(string text);
     }

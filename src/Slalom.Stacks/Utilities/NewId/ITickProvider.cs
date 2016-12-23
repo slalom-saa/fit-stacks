@@ -1,6 +1,6 @@
 namespace Slalom.Stacks.Utilities.NewId
 {
-    public interface ITickProvider
+    internal interface ITickProvider
     {
         long Ticks { get; }
     }

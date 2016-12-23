@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Slalom.Stacks.Utilities.NewId.NewIdProviders
 {
-    public class CurrentProcessIdProvider :
+    internal class CurrentProcessIdProvider :
         IProcessIdProvider
     {
         public byte[] GetProcessId()

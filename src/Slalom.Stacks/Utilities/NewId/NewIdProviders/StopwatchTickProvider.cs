@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Slalom.Stacks.Utilities.NewId.NewIdProviders
 {
-    public class StopwatchTickProvider :
+    internal class StopwatchTickProvider :
         ITickProvider
     {
         readonly Stopwatch _stopwatch;

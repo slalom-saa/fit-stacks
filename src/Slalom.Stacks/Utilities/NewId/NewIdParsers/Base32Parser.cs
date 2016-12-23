@@ -2,7 +2,7 @@
 
 namespace Slalom.Stacks.Utilities.NewId.NewIdParsers
 {
-    public class Base32Parser :
+    internal class Base32Parser :
         INewIdParser
     {
         const string ConvertChars = "abcdefghijklmnopqrstuvwxyz234567ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";

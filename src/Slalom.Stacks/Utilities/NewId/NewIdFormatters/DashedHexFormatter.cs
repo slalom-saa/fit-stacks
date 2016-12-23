@@ -1,6 +1,6 @@
 ﻿namespace Slalom.Stacks.Utilities.NewId.NewIdFormatters
 {
-    public class DashedHexFormatter :
+    internal class DashedHexFormatter :
         INewIdFormatter
     {
         readonly int _alpha;

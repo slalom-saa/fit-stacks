@@ -1,6 +1,6 @@
 ﻿namespace Slalom.Stacks.Utilities.NewId.NewIdFormatters
 {
-    public class ZBase32Formatter :
+    internal class ZBase32Formatter :
         Base32Formatter
     {
         // taken from analysis done at http://philzimmermann.com/docs/human-oriented-base-32-encoding.txt
