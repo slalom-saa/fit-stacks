@@ -1,6 +1,6 @@
 ﻿namespace Slalom.Stacks.Utilities.NewId
 {
-    public class NewIdGenerator
+    internal class NewIdGenerator
     {
         readonly int _c;
         readonly int _d;
@@ -14,6 +14,13 @@
         ushort _sequence;
 
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NewIdGenerator"/> class.
+        /// </summary>
+        /// <param name="tickProvider">The tick provider.</param>
+        /// <param name="workerIdProvider">The worker identifier provider.</param>
+        /// <param name="processIdProvider">The process identifier provider.</param>
+        /// <param name="workerIndex">Index of the worker.</param>
         public NewIdGenerator(ITickProvider tickProvider, IWorkerIdProvider workerIdProvider, IProcessIdProvider processIdProvider = null, int workerIndex = 0)
         {
             _tickProvider = tickProvider;
@@ -33,6 +40,10 @@
             }
         }
 
+        /// <summary>
+        /// Nexts this instance.
+        /// </summary>
+        /// <returns>NewId.</returns>
         public NewId Next()
         {
             long ticks = _tickProvider.Ticks;

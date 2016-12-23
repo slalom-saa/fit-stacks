@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Slalom.Stacks.Utilities.NewId.NewIdProviders
 {
-    public class HostNameHashWorkerIdProvider :
+    internal class HostNameHashWorkerIdProvider :
         IWorkerIdProvider
     {
         public byte[] GetWorkerId(int index)

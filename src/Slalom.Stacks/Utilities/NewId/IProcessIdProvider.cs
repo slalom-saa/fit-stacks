@@ -1,6 +1,6 @@
 namespace Slalom.Stacks.Utilities.NewId
 {
-    public interface IProcessIdProvider
+    internal interface IProcessIdProvider
     {
         byte[] GetProcessId();
     }

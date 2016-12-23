@@ -1,6 +1,6 @@
 ﻿namespace Slalom.Stacks.Utilities.NewId.NewIdFormatters
 {
-    public class HexFormatter :
+    internal class HexFormatter :
         INewIdFormatter
     {
         readonly int _alpha;

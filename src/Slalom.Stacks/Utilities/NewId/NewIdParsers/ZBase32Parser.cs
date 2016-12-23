@@ -1,6 +1,6 @@
 ﻿namespace Slalom.Stacks.Utilities.NewId.NewIdParsers
 {
-    public class ZBase32Parser :
+    internal class ZBase32Parser :
         Base32Parser
     {
         const string ConvertChars = "ybndrfg8ejkmcpqxot1uwisza345h769YBNDRFG8EJKMCPQXOT1UWISZA345H769";

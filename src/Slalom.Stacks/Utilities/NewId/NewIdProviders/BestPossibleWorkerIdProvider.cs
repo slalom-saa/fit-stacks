@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Slalom.Stacks.Utilities.NewId.NewIdProviders
 {
-    public class BestPossibleWorkerIdProvider :
+    internal class BestPossibleWorkerIdProvider :
         IWorkerIdProvider
     {
         public byte[] GetWorkerId(int index)

@@ -4,7 +4,7 @@ using System.Net.NetworkInformation;
 
 namespace Slalom.Stacks.Utilities.NewId.NewIdProviders
 {
-    public class NetworkAddressWorkerIdProvider :
+    internal class NetworkAddressWorkerIdProvider :
         IWorkerIdProvider
     {
         public byte[] GetWorkerId(int index)

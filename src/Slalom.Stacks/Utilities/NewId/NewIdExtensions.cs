@@ -2,7 +2,7 @@
 
 namespace Slalom.Stacks.Utilities.NewId
 {
-    public static class NewIdExtensions
+    internal static class NewIdExtensions
     {
         public static NewId ToNewId(this Guid guid)
         {
