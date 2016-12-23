@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Test.Commands.AddItem;
@@ -13,7 +12,7 @@ using Slalom.Stacks.Test.Search;
 
 #pragma warning disable 4014
 
-namespace Slalom.FitStacks.ConsoleClient
+namespace Slalom.Stacks.ConsoleClient
 {
     public class Program
     {
