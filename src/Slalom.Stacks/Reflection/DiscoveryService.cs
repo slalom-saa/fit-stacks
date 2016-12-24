@@ -3,10 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using Microsoft.Extensions.DependencyModel;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Validation;
+using Microsoft.Extensions.DependencyModel;
 
 namespace Slalom.Stacks.Reflection
 {
@@ -16,8 +15,10 @@ namespace Slalom.Stacks.Reflection
     /// <seealso cref="Slalom.Stacks.Reflection.IDiscoverTypes" />
     public class DiscoveryService : IDiscoverTypes
     {
-        private readonly ILogger _logger;
         private static readonly ConcurrentDictionary<Type, List<Type>> Cache = new ConcurrentDictionary<Type, List<Type>>();
+
+        private static readonly string[] _ignores = { "Libuv", "Microsoft.", "NETStandard" };
+        private readonly ILogger _logger;
         private Lazy<List<Assembly>> _assemblies;
 
         /// <summary>
@@ -54,6 +55,16 @@ namespace Slalom.Stacks.Reflection
                 {
                     try
                     {
+                        if (compilationLibrary.Name.StartsWith("runtime"))
+                        {
+                            continue;
+                        }
+
+                        if (_ignores.Any(e=>compilationLibrary.Name.StartsWith(e)))
+                        {
+                            continue;
+                        }
+
                         var assemblyName = new AssemblyName(compilationLibrary.Name);
 
                         var assembly = Assembly.Load(assemblyName);

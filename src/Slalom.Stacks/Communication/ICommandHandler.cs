@@ -9,7 +9,7 @@ namespace Slalom.Stacks.Communication
     /// <typeparam name="TCommand">The type of command.</typeparam>
     /// <typeparam name="TResult">The type of result.  Either an event or a message.</typeparam>
     /// <seealso href="http://bit.ly/2eajcKW">Enterprise Integration Patterns: Designing, Building, and Deploying Messaging Solutions</seealso>
-    public interface ICommandHandler<in TCommand, TResult> where TCommand : Command<TResult>
+    public interface ICommandHandler<in TCommand, TResult> : IActor where TCommand : Command<TResult>
     {
         /// <summary>
         /// Gets or sets the current <seealso cref="ExecutionContext"/>.
