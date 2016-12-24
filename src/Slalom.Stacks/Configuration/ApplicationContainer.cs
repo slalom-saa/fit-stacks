@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using System.Linq;
 using Autofac.Core;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
@@ -21,14 +23,7 @@ namespace Slalom.Stacks.Configuration
     /// <seealso cref="System.IDisposable" />
     public class ApplicationContainer : IDisposable
     {
-        private readonly IContainer _container;
         private readonly IPropertySelector _selector = new AllUnsetPropertySelector();
-
-        /// <summary>
-        /// Gets the root <see cref="IContainer"/>.
-        /// </summary>
-        /// <value>The root <see cref="IContainer"/>.</value>
-        internal IContainer RootContainer => _container;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationContainer"/> class.
@@ -50,7 +45,7 @@ namespace Slalom.Stacks.Configuration
 
             builder.RegisterModule(new ConfigurationModule { Assemblies = assemblies.ToArray() });
 
-            _container = builder.Build();
+            this.RootContainer = builder.Build();
         }
 
         /// <summary>
@@ -78,6 +73,12 @@ namespace Slalom.Stacks.Configuration
         public ISearchFacade Search => this.Resolve<ISearchFacade>();
 
         /// <summary>
+        /// Gets the root <see cref="IContainer"/>.
+        /// </summary>
+        /// <value>The root <see cref="IContainer"/>.</value>
+        internal IContainer RootContainer { get; }
+
+        /// <summary>
         /// Builds a configuration object of the specified type using the specified section of the current configuration.
         /// </summary>
         /// <typeparam name="T">The type of configuration object</typeparam>
@@ -93,7 +94,7 @@ namespace Slalom.Stacks.Configuration
                 return options;
             });
 
-            builder.Update(_container.ComponentRegistry);
+            builder.Update(this.RootContainer.ComponentRegistry);
         }
 
         /// <summary>
@@ -110,7 +111,7 @@ namespace Slalom.Stacks.Configuration
                 return options;
             });
 
-            builder.Update(_container.ComponentRegistry);
+            builder.Update(this.RootContainer.ComponentRegistry);
         }
 
         /// <summary>
@@ -120,6 +121,21 @@ namespace Slalom.Stacks.Configuration
         public ExecutionContext GetExecutionContext()
         {
             return this.Resolve<IExecutionContextResolver>()?.Resolve();
+        }
+
+        /// <summary>
+        /// Populates the container with the set of registered service descriptors
+        /// and makes <see cref="T:System.IServiceProvider" /> and <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceScopeFactory" />
+        /// available in the container.
+        /// </summary>
+        /// <param name="services">
+        /// The set of service descriptors to register in the container.
+        /// </param>
+        public void Populate(IServiceCollection services)
+        {
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+            builder.Update(this.RootContainer.ComponentRegistry);
         }
 
         /// <summary>
@@ -133,7 +149,7 @@ namespace Slalom.Stacks.Configuration
                    .AsSelf()
                    .AsImplementedInterfaces();
 
-            builder.Update(_container.ComponentRegistry);
+            builder.Update(this.RootContainer.ComponentRegistry);
         }
 
         /// <summary>
@@ -148,12 +164,12 @@ namespace Slalom.Stacks.Configuration
             {
                 var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
 
-                _container.InjectProperties(instance, _selector);
+                this.RootContainer.InjectProperties(instance, _selector);
 
                 return instance;
             }).As<T>().AsImplementedInterfaces();
 
-            builder.Update(_container.ComponentRegistry);
+            builder.Update(this.RootContainer.ComponentRegistry);
         }
 
         /// <summary>
@@ -167,7 +183,7 @@ namespace Slalom.Stacks.Configuration
 
             builder.RegisterInstance(instance).As<T>().AsImplementedInterfaces();
 
-            builder.Update(_container.ComponentRegistry);
+            builder.Update(this.RootContainer.ComponentRegistry);
         }
 
         /// <summary>
@@ -182,12 +198,12 @@ namespace Slalom.Stacks.Configuration
             {
                 var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
 
-                _container.InjectProperties(instance, _selector);
+                this.RootContainer.InjectProperties(instance, _selector);
 
                 return instance;
             }).As(services);
 
-            builder.Update(_container.ComponentRegistry);
+            builder.Update(this.RootContainer.ComponentRegistry);
         }
 
         /// <summary>
@@ -200,7 +216,7 @@ namespace Slalom.Stacks.Configuration
 
             builder.RegisterModule((IModule)module);
 
-            builder.Update(_container.ComponentRegistry);
+            builder.Update(this.RootContainer.ComponentRegistry);
         }
 
         /// <summary>
@@ -212,7 +228,7 @@ namespace Slalom.Stacks.Configuration
         {
             T instance;
 
-            if (!_container.TryResolve(out instance))
+            if (!this.RootContainer.TryResolve(out instance))
             {
                 if (!typeof(T).GetTypeInfo().IsAbstract && !typeof(T).GetTypeInfo().IsInterface)
                 {
@@ -220,15 +236,15 @@ namespace Slalom.Stacks.Configuration
 
                     builder.RegisterType(typeof(T));
 
-                    builder.Update(_container.ComponentRegistry);
+                    builder.Update(this.RootContainer.ComponentRegistry);
 
-                    instance = _container.Resolve<T>();
+                    instance = this.RootContainer.Resolve<T>();
                 }
             }
 
             if (instance != null)
             {
-                _container.InjectProperties(instance, _selector);
+                this.RootContainer.InjectProperties(instance, _selector);
 
                 setup?.Invoke(instance);
             }
@@ -242,11 +258,11 @@ namespace Slalom.Stacks.Configuration
         /// <returns>The resolved instances.</returns>
         public IEnumerable<T> ResolveAll<T>()
         {
-            var target = _container.Resolve<IEnumerable<T>>();
+            var target = this.RootContainer.Resolve<IEnumerable<T>>();
 
             foreach (var instance in target)
             {
-                _container.InjectProperties(instance, _selector);
+                this.RootContainer.InjectProperties(instance, _selector);
             }
 
             return target;
@@ -287,7 +303,7 @@ namespace Slalom.Stacks.Configuration
             if (disposing)
             {
                 // free other managed objects that implement IDisposable only
-                _container.Dispose();
+                this.RootContainer.Dispose();
             }
 
             // release any unmanaged objects
