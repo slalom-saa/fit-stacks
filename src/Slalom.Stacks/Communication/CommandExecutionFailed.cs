@@ -6,17 +6,17 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Communication
 {
     /// <summary>
-    /// An event that is raised when command execution fails.
+    /// Represents an event that is raised when command execution fails.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Communication.Event" />
-    public class CommandExecutionFailedEvent : Event
+    public class CommandExecutionFailed : Event
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandExecutionFailedEvent"/> class.
+        /// Initializes a new instance of the <see cref="CommandExecutionFailed"/> class.
         /// </summary>
         /// <param name="command">The command that failed.</param>
         /// <param name="result">The result of the execution.</param>
-        public CommandExecutionFailedEvent(ICommand command, ICommandResult result)
+        public CommandExecutionFailed(ICommand command, ICommandResult result)
         {
             this.ValidationErrors = result.ValidationErrors;
             this.RaisedException = result.RaisedException;

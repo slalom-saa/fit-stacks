@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac;
 using Slalom.Stacks.Caching;
+using Slalom.Stacks.Communication;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Reflection;
 using IComponentContext = Autofac.IComponentContext;
@@ -40,7 +41,7 @@ namespace Slalom.Stacks.Domain
         {
             base.Load(builder);
 
-            builder.Register(c => new DomainFacade(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<ICacheManager>()))
+            builder.Register(c => new DomainFacade(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<ICacheManager>(), c.Resolve<IEventPublisher>()))
                    .As<IDomainFacade>()
                    .SingleInstance();
 

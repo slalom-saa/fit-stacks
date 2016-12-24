@@ -25,7 +25,7 @@ namespace Slalom.Stacks.Communication.Validation
         /// Gets the configured <see cref="IDomainFacade"/> instance.
         /// </summary>
         /// <value>The configured <see cref="IDomainFacade"/> instance.</value>
-        public DomainFacade Domain { get; set; }
+        public IDomainFacade Domain { get; set; }
 
         /// <summary>
         /// Gets the configured <see cref="ISearchFacade"/> instance.
@@ -50,7 +50,11 @@ namespace Slalom.Stacks.Communication.Validation
 
             var result = await this.Validate(instance);
 
-            return new[] { result };
+            if (result != null)
+            {
+                return new[] { result };
+            }
+            return new ValidationError[0];
         }
 
         /// <summary>

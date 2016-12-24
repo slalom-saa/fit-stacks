@@ -128,10 +128,10 @@ namespace Slalom.Stacks.Communication
             if (!result.IsSuccessful)
             {
                 var stores = _componentContext.ResolveAll<IAuditStore>().ToList();
-                stores.ForEach(async e => await e.AppendAsync(new CommandExecutionFailedEvent(command, result), context));
+                stores.ForEach(async e => await e.AppendAsync(new CommandExecutionFailed(command, result), context));
                 if (result.RaisedException != null)
                 {
-                    _logger.Verbose(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@Context}", command, context);
+                    _logger.Error(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@Context}", command, context);
                 }
                 else if (result.ValidationErrors?.Any() ?? false)
                 {

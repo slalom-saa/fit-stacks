@@ -2,24 +2,10 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Stacks.Domain;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Caching
 {
-    internal static class Identity
-    {
-        public static object GetIdentity(object instance)
-        {
-            var entity = instance as IAggregateRoot;
-            if (entity != null)
-            {
-                return entity.Id;
-            }
-            return instance.GetHashCode();
-        }
-    }
-
     /// <summary>
     /// A local <see cref="ICacheManager"/> implementation that uses an in-memory store.  This is not to be used in a distributed
     /// environment.
