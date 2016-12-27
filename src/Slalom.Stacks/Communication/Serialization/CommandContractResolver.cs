@@ -8,7 +8,7 @@ using Slalom.Stacks.Serialization;
 namespace Slalom.Stacks.Communication.Serialization
 {
     /// <summary>
-    /// A JSON Contract Resolver for <see cref="ICommand"/> instances.
+    /// A JSON Contract Resolver for <see cref="Command"/> instances.
     /// </summary>
     public class CommandContractResolver : SecureJsonContractResolver
     {
@@ -27,7 +27,7 @@ namespace Slalom.Stacks.Communication.Serialization
                 return prop;
             }
             var declaringType = (member as PropertyInfo)?.DeclaringType;
-            if (((declaringType?.GetTypeInfo().IsGenericType ?? false) && declaringType.GetGenericTypeDefinition() == typeof(Command<>)))
+            if (((declaringType?.GetTypeInfo().IsGenericType ?? false) && declaringType.GetGenericTypeDefinition() == typeof(Command)))
             {
                 prop.Ignored = true;
                 return prop;

@@ -21,7 +21,6 @@ namespace Slalom.Stacks.Domain
     {
         private readonly IComponentContext _componentContext;
         private readonly ICacheManager _cacheManager;
-        private readonly IEventPublisher _events;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DomainFacade" /> class.
@@ -29,15 +28,13 @@ namespace Slalom.Stacks.Domain
         /// <param name="componentContext">The component context.</param>
         /// <param name="cacheManager">The cache manager.</param>
         /// <param name="events">The configured events.</param>
-        public DomainFacade(IComponentContext componentContext, ICacheManager cacheManager, IEventPublisher events)
+        public DomainFacade(IComponentContext componentContext, ICacheManager cacheManager)
         {
             Argument.NotNull(componentContext, nameof(componentContext));
             Argument.NotNull(cacheManager, nameof(cacheManager));
-            Argument.NotNull(events, nameof(events));
 
             _componentContext = componentContext;
             _cacheManager = cacheManager;
-            _events = events;
         }
 
         private readonly ConcurrentDictionary<Type, object> _instances = new ConcurrentDictionary<Type, object>();

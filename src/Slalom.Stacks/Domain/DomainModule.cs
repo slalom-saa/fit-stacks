@@ -41,7 +41,7 @@ namespace Slalom.Stacks.Domain
         {
             base.Load(builder);
 
-            builder.Register(c => new DomainFacade(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<ICacheManager>(), c.Resolve<IEventPublisher>()))
+            builder.Register(c => new DomainFacade(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<ICacheManager>()))
                    .As<IDomainFacade>()
                    .SingleInstance();
 

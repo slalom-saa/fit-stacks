@@ -8,10 +8,9 @@ namespace Slalom.Stacks.Communication
     /// An imperative message to perform an action.  It can either request to change state, which returns an event message, 
     /// or can request data, which returns a document message.
     /// </summary>
-    /// <typeparam name="TResult">The type of response expected as a result.</typeparam>
     /// <seealso cref="ICommand" />
-    /// <seealso href="http://bit.ly/2d01rc7" />
-    public abstract class Command<TResult> : ICommand
+    /// <seealso href="http://bit.ly/2d01rc7">Reactive Messaging Patterns with the Actor Model: Applications and Integration in Scala and Akka</seealso>
+    public abstract class Command : ICommand
     {
         /// <summary>
         /// Gets the identifier.
@@ -53,7 +52,7 @@ namespace Slalom.Stacks.Communication
                 return false;
             }
 
-            return this.Equals((Command<TResult>)obj);
+            return this.Equals((Command)obj);
         }
 
         /// <summary>
@@ -70,7 +69,7 @@ namespace Slalom.Stacks.Communication
         /// </summary>
         /// <param name="other">The object to compare with the current object.</param>
         /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-        protected bool Equals(Command<TResult> other)
+        protected bool Equals(Command other)
         {
             return this.Id.Equals(other.Id);
         }

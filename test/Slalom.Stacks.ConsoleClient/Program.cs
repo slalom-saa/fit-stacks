@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
-using Slalom.Stacks.Test.Commands.AddItem;
 using Slalom.Stacks.Test.Domain;
 using Slalom.Stacks.Test.Search;
 
@@ -30,7 +29,7 @@ namespace Slalom.Stacks.ConsoleClient
             try
             {
                 var watch = new Stopwatch();
-                var count = 200000;
+                var count = 100000;
                 using (var container = new ApplicationContainer(typeof(Item)))
                 {
                     watch.Start();
@@ -38,18 +37,18 @@ namespace Slalom.Stacks.ConsoleClient
                     var tasks = new List<Task>(count);
                     Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
                     {
-                        tasks.Add(container.Bus.SendAsync(new AddItemCommand(DateTime.Now.Ticks.ToString())));
+                        //tasks.Add(container.Bus.SendAsync(new AddItemCommand(DateTime.Now.Ticks.ToString())));
                     });
                     await Task.WhenAll(tasks);
 
                     watch.Stop();
 
-                    //var searchResultCount = container.Search.OpenQuery<ItemSearchResult>().Count();
-                    //var entityCount = container.Domain.OpenQuery<Item>().Count();
-                    //if (entityCount != count)
-                    //{
-                    //    throw new Exception($"The execution did not have the expected results. {searchResultCount} search results and {entityCount} entities out of {count}.");
-                    //}
+                    var searchResultCount = container.Search.OpenQuery<ItemSearchResult>().Count();
+                    var entityCount = container.Domain.OpenQuery<Item>().Count();
+                    if (entityCount != count)
+                    {
+                        throw new Exception($"The execution did not have the expected results. {searchResultCount} search results and {entityCount} entities out of {count}.");
+                    }
                 }
 
                 Console.ForegroundColor = ConsoleColor.Green;

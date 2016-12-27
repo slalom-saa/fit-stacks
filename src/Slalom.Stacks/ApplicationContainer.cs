@@ -1,34 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Autofac;
 using Autofac.Core;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Slalom.Stacks.Communication;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
+using IComponentContext = Slalom.Stacks.Configuration.IComponentContext;
 
 #pragma warning disable 618
 
-namespace Slalom.Stacks.Configuration
+namespace Slalom.Stacks
 {
     /// <summary>
     /// Builds and maintains a runtime by managing dependencies and configuration.
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    public class ApplicationContainer : IDisposable
+    public partial class ApplicationContainer : IDisposable
     {
         private readonly IPropertySelector _selector = new AllUnsetPropertySelector();
 
+        /// <summary>
+        /// Resolves a component from the container.
+        /// </summary>
+        /// <param name="type">The type of component to resolve.</param>
+        /// <returns>The resolved component.</returns>
         public object Resolve(Type type)
         {
             return this.RootContainer.Resolve(type);
         }
+
+        partial void Initialize();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationContainer"/> class.
@@ -51,13 +61,9 @@ namespace Slalom.Stacks.Configuration
             builder.RegisterModule(new ConfigurationModule { Assemblies = assemblies.ToArray() });
 
             this.RootContainer = builder.Build();
-        }
 
-        /// <summary>
-        /// Gets the configured <see cref="IMessageBus"/> instance.
-        /// </summary>
-        /// <value>The configured <see cref="IMessageBus"/> instance.</value>
-        public IMessageBus Bus => this.Resolve<IMessageBus>();
+            this.Initialize();
+        }
 
         /// <summary>
         /// Gets the configured <see cref="IDomainFacade"/> instance.
@@ -81,43 +87,7 @@ namespace Slalom.Stacks.Configuration
         /// Gets the root <see cref="IContainer"/>.
         /// </summary>
         /// <value>The root <see cref="IContainer"/>.</value>
-        public IContainer RootContainer { get; }
-
-        /// <summary>
-        /// Builds a configuration object of the specified type using the specified section of the current configuration.
-        /// </summary>
-        /// <typeparam name="T">The type of configuration object</typeparam>
-        /// <param name="section">The section.</param>
-        public void Configure<T>(string section) where T : class, new()
-        {
-            var builder = new ContainerBuilder();
-
-            builder.Register(c =>
-            {
-                var options = Activator.CreateInstance<T>();
-                c.Resolve<IConfiguration>().GetSection(section).Bind(options);
-                return options;
-            });
-
-            builder.Update(this.RootContainer.ComponentRegistry);
-        }
-
-        /// <summary>
-        /// Builds a configuration object of the specified type using current configuration.
-        /// </summary>
-        /// <typeparam name="T">The type of configuration object</typeparam>
-        public void Configure<T>() where T : class, new()
-        {
-            var builder = new ContainerBuilder();
-            builder.Register(c =>
-            {
-                var options = Activator.CreateInstance<T>();
-                c.Resolve<IConfiguration>().Bind(options);
-                return options;
-            });
-
-            builder.Update(this.RootContainer.ComponentRegistry);
-        }
+        internal IContainer RootContainer { get; }
 
         /// <summary>
         /// Gets the current <see cref="ExecutionContext"/> instance.

@@ -44,26 +44,12 @@ namespace Slalom.Stacks.Communication
         {
             base.Load(builder);
 
-            builder.Register(c => new CommandCoordinator(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<IEventPublisher>()))
-                   .As<ICommandCoordinator>().SingleInstance();
-
-            builder.Register(c => new MessageBus(c.Resolve<IExecutionContextResolver>(), c.Resolve<ICommandCoordinator>()))
-                   .As<IMessageBus>().SingleInstance();
-
-            builder.Register(c => new EventPublisher(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<ILogger>()))
-                   .As<IEventPublisher>().SingleInstance();
+            builder.Register(c => new NullActorSystem())
+                   .AsImplementedInterfaces();
 
             builder.RegisterGeneric(typeof(CommandValidator<>))
                    .AsSelf();
             
-            builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ICommandHandler<,>)))
-                   .As(instance =>
-                   {
-                       var interfaces = instance.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(ICommandHandler<,>));
-                       return interfaces.Select(e => typeof(ICommandHandler<,>).MakeGenericType(e.GetGenericArguments()[0], e.GetGenericArguments()[1]));
-                   });
-
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandleEvent<>)))
                    .As(instance =>

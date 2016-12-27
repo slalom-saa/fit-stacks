@@ -27,26 +27,5 @@ namespace Slalom.Stacks.Configuration
             }
             return value;
         }
-
-        /// <summary>
-        /// Sets the configuration source to use appsettings.json, user secrets and environment variables.
-        /// </summary>
-        /// <param name="instance">The container instance.</param>
-        /// <returns>Returns the container instance for method chaining.</returns>
-        public static ApplicationContainer UseDeveloperSettings(this ApplicationContainer instance)
-        {
-            Argument.NotNull(instance, nameof(instance));
-
-            instance.Register(c =>
-            {
-                var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", true, true)
-                    .AddUserSecrets()
-                    .AddEnvironmentVariables();
-                return builder.Build();
-            });
-            return instance;
-        }
     }
 }
