@@ -30,19 +30,9 @@ namespace Slalom.Stacks.ConsoleClient
             try
             {
                 var watch = new Stopwatch();
-                var count = 1000;
+                var count = 10000;
                 using (var container = new ApplicationContainer(typeof(Item)))
                 {
-
-
-
-                    var enumerable = container.Resolve<IDiscoverTypes>().Find<ISearchResult>();
-                    var result = enumerable
-                                .Where(x => !x.IsAbstract && !x.IsInterface).ToList();
-
-
-
-
                     watch.Start();
 
                     var tasks = new List<Task>(count);
