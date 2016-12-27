@@ -1,4 +1,6 @@
 using Akka.Actor;
+using Slalom.Stacks.Actors.Imp.Messages;
+using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.Actors
 {
@@ -13,7 +15,14 @@ namespace Slalom.Stacks.Actors
 
             this.Receive<UseCaseExecutionSucceededMessage>(e =>
             {
-                //Console.WriteLine("Audit success.");
+                if (e.Result is IEvent)
+                {
+                    Context.System.EventStream.Publish(e);
+                }
+            });
+
+            this.Receive<UseCaseExecutionFailedMessage>(e =>
+            {
             });
         }
     }

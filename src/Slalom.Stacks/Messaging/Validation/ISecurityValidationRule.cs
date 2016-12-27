@@ -1,7 +1,7 @@
 ﻿using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Communication.Validation
+namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
     /// Defines a contract for security validation rules.

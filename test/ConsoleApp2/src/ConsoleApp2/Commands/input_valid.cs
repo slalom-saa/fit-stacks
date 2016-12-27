@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Stacks.Communication.Validation;
+using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 

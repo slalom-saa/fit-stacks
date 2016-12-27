@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Communication.Validation
+namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
     /// Validates a command using input, security and business rules.

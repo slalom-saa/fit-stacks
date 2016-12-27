@@ -6,7 +6,7 @@ using Akka.Actor;
 using Akka.DI.AutoFac;
 using Autofac;
 using Slalom.Stacks.Actors;
-using Slalom.Stacks.Communication;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Reflection;
 using Module = Autofac.Module;
 
@@ -24,6 +24,7 @@ namespace Slalom.Stacks
             new AutoFacDependencyResolver(container, _system);
 
             _commands = system.ActorOf<CommandCoordinationActor>("commands");
+
             system.ActorOf<DiscoverTypesActor>("discover-types");
         }
 

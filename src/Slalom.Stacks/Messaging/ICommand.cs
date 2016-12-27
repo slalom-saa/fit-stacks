@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Slalom.Stacks.Communication
+namespace Slalom.Stacks.Messaging
 {
     /// <summary>
     /// An imperative message to perform an action.

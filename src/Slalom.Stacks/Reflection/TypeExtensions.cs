@@ -62,7 +62,14 @@ namespace Slalom.Stacks.Reflection
         /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
         public static Type[] SafelyGetTypes<T>(this IEnumerable<Assembly> assemblies)
         {
-            return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => (typeof(T).IsAssignableFrom(e))).ToArray();
+            if (typeof(T).GetTypeInfo().IsGenericTypeDefinition)
+            {
+                return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => e.GetBaseAndContractTypes().Any(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == typeof(T))).ToArray();
+            }
+            else
+            {
+                return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => (typeof(T).IsAssignableFrom(e))).ToArray();
+            }
         }
 
         /// <summary>

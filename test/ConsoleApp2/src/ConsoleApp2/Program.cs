@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Slalom.Stacks.Actors;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Search;
+using Slalom.Stacks.Reflection;
 
 namespace Slalom.Stacks
 {
@@ -32,7 +33,7 @@ namespace Slalom.Stacks
                     container.RegisterModule(new ActorModule(typeof(Program)));
 
                     var watch = new Stopwatch();
-                    var count = 100000;
+                    var count = 1000 * 2;
 
 
                     var result = await container.SendAsync(new AddProcedureCommand("s"));

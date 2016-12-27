@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Stacks.Communication;
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Test.Domain;
@@ -24,7 +24,7 @@ namespace Slalom.Stacks.Test.Search
             var index = 0;
             var size = 1000;
 
-            var set = this.Domain.OpenQuery<Item>();
+            var set = (await this.Domain.FindAsync<Item>(e => true)).AsQueryable();
 
             var working = set.Take(size).ToList();
             while (working.Any())

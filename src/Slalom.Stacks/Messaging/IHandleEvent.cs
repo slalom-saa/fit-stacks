@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Slalom.Stacks.Runtime;
 
-namespace Slalom.Stacks.Communication
+namespace Slalom.Stacks.Messaging
 {
     /// <summary>
     /// Handles events of the specified type.

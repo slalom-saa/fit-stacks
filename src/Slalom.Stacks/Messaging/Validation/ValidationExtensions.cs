@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Communication.Validation
+namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
     /// Extends validation classes with additional methods.

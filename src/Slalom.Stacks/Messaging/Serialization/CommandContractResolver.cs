@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Slalom.Stacks.Serialization;
 
-namespace Slalom.Stacks.Communication.Serialization
+namespace Slalom.Stacks.Messaging.Serialization
 {
     /// <summary>
     /// A JSON Contract Resolver for <see cref="Command"/> instances.

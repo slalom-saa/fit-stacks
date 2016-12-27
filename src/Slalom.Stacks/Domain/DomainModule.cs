@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using Autofac;
 using Slalom.Stacks.Caching;
-using Slalom.Stacks.Communication;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Reflection;
 using IComponentContext = Autofac.IComponentContext;

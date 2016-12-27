@@ -4,7 +4,7 @@ using Akka.DI.Core;
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Actors.Imp.Messages;
-using Slalom.Stacks.Communication;
+using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.Actors
 {

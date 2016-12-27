@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Slalom.Stacks.Caching;
@@ -65,7 +66,7 @@ namespace Slalom.Stacks.Domain
         /// <summary>
         /// Finds the instance with the specified identifier.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the t entity.</typeparam>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
         public Task<TEntity> FindAsync<TEntity>(string id) where TEntity : IAggregateRoot
@@ -82,16 +83,18 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <summary>
-        /// Opens a query that can be used to filter and project.
+        /// Finds instances with the specified expression.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>Returns an IQueryable that can be used to execute queries.</returns>
-        public IQueryable<TEntity> OpenQuery<TEntity>() where TEntity : IAggregateRoot
+        /// <param name="expression">The expression to filter with.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<IEnumerable<TEntity>> FindAsync<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : IAggregateRoot
         {
             _cacheLock.EnterReadLock();
             try
             {
-                return _instances.OfType<TEntity>().AsQueryable();
+                var function = expression.Compile();
+                return Task.FromResult(_instances.OfType<TEntity>().Where(function));
             }
             finally
             {

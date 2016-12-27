@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Akka.Actor;
-using Slalom.Stacks.Communication;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Actors

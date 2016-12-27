@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Communication.Validation
+namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
-    /// Represents an input validation rule set that should be run as a single unit.
+    /// Performs security validation on a command.
     /// </summary>
-    /// <typeparam name="TCommand">The type of command.</typeparam>
-    public abstract class InputValidationRule<TCommand> : IInputValidationRule<TCommand> where TCommand : ICommand
+    /// <typeparam name="TCommand">The command type.</typeparam>
+    public abstract class SecurityValidationRule<TCommand> : ISecurityValidationRule<TCommand> where TCommand : ICommand
     {
         /// <summary>
         /// Gets the execution context.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Akka.Actor;
-using Slalom.Stacks.Communication;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Actors.Imp.Messages

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Newtonsoft.Json;
-using Slalom.Stacks.Communication;
-using Slalom.Stacks.Communication.Serialization;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Validation;
 

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Communication.Validation
+namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
     /// A rule that checks to make sure the current user is in a specific role.
     /// </summary>
     /// <typeparam name="TCommand">The type of the command to validate.</typeparam>
-    /// <seealso cref="Slalom.Stacks.Communication.Validation.SecurityValidationRule{TCommand}" />
+    /// <seealso cref="SecurityValidationRule{TCommand}" />
     public class InRoleSecurityRule<TCommand> : SecurityValidationRule<TCommand> where TCommand : ICommand
     {
         private readonly ValidationError _error;

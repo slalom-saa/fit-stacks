@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using Akka.Actor;
-using Slalom.Stacks.Communication.Validation;
+using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;

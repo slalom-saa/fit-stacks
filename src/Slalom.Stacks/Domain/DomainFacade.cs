@@ -2,9 +2,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Slalom.Stacks.Caching;
-using Slalom.Stacks.Communication;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Validation;
 
@@ -106,23 +106,6 @@ namespace Slalom.Stacks.Domain
         public Task AddAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
             return this.AddAsync(instances.ToArray());
-        }
-
-        /// <summary>
-        /// Creates a query that can be used to search.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
-        /// <returns>An IQueryable&lt;TAggregateRoot&gt; that can be used to filter and project.</returns>
-        public IQueryable<TAggregateRoot> OpenQuery<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
-        {
-            var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
-
-            if (repository == null)
-            {
-                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
-            }
-
-            return repository.OpenQuery();
         }
 
         /// <summary>
@@ -290,6 +273,24 @@ namespace Slalom.Stacks.Domain
         public Task UpdateAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
             return this.UpdateAsync(instances.ToArray());
+        }
+
+        /// <summary>
+        /// Finds instances with the specified expression.
+        /// </summary>
+        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
+        /// <param name="expression">The expression to filter with.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<IEnumerable<TAggregateRoot>> FindAsync<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot
+        {
+            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+
+            if (repository == null)
+            {
+                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
+            }
+
+            return repository.FindAsync(expression);
         }
     }
 }

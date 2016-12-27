@@ -35,8 +35,20 @@ namespace Slalom.Stacks.Actors
 
         public void HandleGetTypes(Type search)
         {
-            var target = _cache.GetOrAdd(search, t => _assemblies.Value.SafelyGetTypes().Where(x => x.IsAssignableFrom(search)).ToList());
+            var target = _cache.GetOrAdd(search, t => _assemblies.Value.SafelyGetTypes().Where(Predicate).ToList());
             this.Sender.Tell(target);
+        }
+
+        private static bool Predicate(Type search)
+        {
+            if (search.IsGenericTypeDefinition)
+            {
+                return search.GetBaseAndContractTypes().Any(e => e.IsGenericType && e.GetGenericTypeDefinition() == search);
+            }
+            else
+            {
+                return search.IsAssignableFrom(search);
+            }
         }
     }
 }

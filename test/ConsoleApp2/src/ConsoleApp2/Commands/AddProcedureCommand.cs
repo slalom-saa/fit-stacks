@@ -1,4 +1,4 @@
-using Slalom.Stacks.Communication;
+using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks
 {

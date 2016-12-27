@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Linq;
 using Slalom.Stacks.Utilities.NewId;
 
-namespace Slalom.Stacks.Communication
+namespace Slalom.Stacks.Messaging
 {
     /// <summary>
     /// An imperative message to perform an action.  It can either request to change state, which returns an event message, 

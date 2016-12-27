@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
 
-namespace Slalom.Stacks.Communication
+namespace Slalom.Stacks.Messaging
 {
     /// <summary>
     /// An atomic packet of data that is transmitted through a message channel.

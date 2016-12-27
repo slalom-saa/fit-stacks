@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Akka.Actor;
 using Akka.DI.Core;
 using Slalom.Stacks.Actors.Imp.Messages;
+using Slalom.Stacks.Domain;
 
 namespace Slalom.Stacks.Actors
 {
@@ -23,6 +24,7 @@ namespace Slalom.Stacks.Actors
             if (target == null)
             {
                 var types = await Context.ActorSelection("/user/discover-types").Ask<IEnumerable<Type>>(typeof(UseCaseActor<,>));
+                
                 // TODO: find the correct base type
                 var current = types.FirstOrDefault(e => e.BaseType?.GetGenericArguments().FirstOrDefault() == type);
 

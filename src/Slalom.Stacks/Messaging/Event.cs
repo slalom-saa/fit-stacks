@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Slalom.Stacks.Utilities.NewId;
 
-namespace Slalom.Stacks.Communication
+namespace Slalom.Stacks.Messaging
 {
     /// <summary>
     /// An event that is raised when state changes within a particular domain.

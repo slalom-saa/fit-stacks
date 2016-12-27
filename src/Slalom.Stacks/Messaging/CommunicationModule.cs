@@ -1,17 +1,13 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Autofac;
-using System.Linq;
-using Slalom.Stacks.Communication.Validation;
-using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Logging;
+using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
-using IComponentContext = Autofac.IComponentContext;
 using Module = Autofac.Module;
 
-namespace Slalom.Stacks.Communication
+namespace Slalom.Stacks.Messaging
 {
     /// <summary>
     /// An Autofac module to configure the communication dependencies.

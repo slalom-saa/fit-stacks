@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Domain
@@ -54,13 +55,6 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
         Task AddAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
-
-        /// <summary>
-        /// Opens a query that can be used to filter and project.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
-        /// <returns>An IQueryable&lt;TAggregateRoot&gt; that can be used to filter and project.</returns>
-        IQueryable<TAggregateRoot> OpenQuery<TAggregateRoot>() where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Finds the instance with the specified identifier.
@@ -145,5 +139,13 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
         Task UpdateAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
+
+        /// <summary>
+        /// Finds instances with the specified expression.
+        /// </summary>
+        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
+        /// <param name="expression">The expression to filter with.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task<IEnumerable<TAggregateRoot>> FindAsync<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot;
     }
 }

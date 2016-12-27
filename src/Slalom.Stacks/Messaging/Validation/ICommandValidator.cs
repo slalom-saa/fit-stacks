@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Communication.Validation
+namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
     /// Validates commands using input, security and business rules.
