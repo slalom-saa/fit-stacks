@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "Akka": "1.1.2",
+    "Akka.DI.AutoFac": "1.0.8",
+    "Akka.DI.Core": "1.1.2",
+    "Akka.Serialization.Wire": "1.1.2.30-beta",
+    "Slalom.Stacks": "1.2.34",
+    "System.Linq": "4.3.0",
+    "System.Linq.Parallel": "4.0.1"
+  },
+
+  "frameworks": {
+    "net461": {
+      "dependencies": {
+      },
+      "imports": "dnxcore50"
+    }
+  }
+}
