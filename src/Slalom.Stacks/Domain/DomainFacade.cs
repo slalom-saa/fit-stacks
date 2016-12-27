@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,6 +40,8 @@ namespace Slalom.Stacks.Domain
             _events = events;
         }
 
+        private readonly ConcurrentDictionary<Type, object> _instances = new ConcurrentDictionary<Type, object>();
+
         /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
         /// item already exists.
@@ -61,16 +64,21 @@ namespace Slalom.Stacks.Domain
                 return;
             }
 
-            var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
+            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
             if (repository == null)
             {
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
+            //if (repository == null)
+            //{
+            //    throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
+            //}
+
             await repository.AddAsync(instances);
 
-            await _cacheManager.AddAsync(instances);
+            //await _cacheManager.AddAsync(instances);
         }
 
         /// <summary>
@@ -129,17 +137,17 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="System.ArgumentNullException"></exception>
         public async Task<TAggregateRoot> FindAsync<TAggregateRoot>(string id) where TAggregateRoot : IAggregateRoot
         {
-            var repository = _componentContext.Resolve<IRepository<TAggregateRoot>>();
-
-            if (repository == null)
-            {
-                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
-            }
-
             var target = await _cacheManager.FindAsync<TAggregateRoot>(id);
             if (target != null)
             {
                 return target;
+            }
+
+            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+
+            if (repository == null)
+            {
+                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
             target = await repository.FindAsync(id);

@@ -25,6 +25,11 @@ namespace Slalom.Stacks.Configuration
     {
         private readonly IPropertySelector _selector = new AllUnsetPropertySelector();
 
+        public object Resolve(Type type)
+        {
+            return this.RootContainer.Resolve(type);
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationContainer"/> class.
         /// </summary>
@@ -76,7 +81,7 @@ namespace Slalom.Stacks.Configuration
         /// Gets the root <see cref="IContainer"/>.
         /// </summary>
         /// <value>The root <see cref="IContainer"/>.</value>
-        internal IContainer RootContainer { get; }
+        public IContainer RootContainer { get; }
 
         /// <summary>
         /// Builds a configuration object of the specified type using the specified section of the current configuration.

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Slalom.Stacks.Caching;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Domain
 {
@@ -13,7 +16,7 @@ namespace Slalom.Stacks.Domain
     public class InMemoryEntityContext : IEntityContext
     {
         private List<IAggregateRoot> _instances = new List<IAggregateRoot>();
-        
+        private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Adds the specified instances.
@@ -23,18 +26,19 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task AddAsync<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
         {
-            while (true)
+            Argument.NotNull(instances, nameof(instances));
+
+            _cacheLock.EnterWriteLock();
+            try
             {
-                var original = Interlocked.CompareExchange(ref _instances, null, null);
-
-                var copy = original.ToList();
-                copy.AddRange(instances.Cast<IAggregateRoot>());
-
-                var result = Interlocked.CompareExchange(ref _instances, copy, original);
-                if (result == original)
+                foreach (var instance in instances)
                 {
-                    break;
+                    _instances.Add(instance);
                 }
+            }
+            finally
+            {
+                _cacheLock.ExitWriteLock();
             }
             return Task.FromResult(0);
         }
@@ -46,22 +50,14 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task ClearAsync<TEntity>() where TEntity : IAggregateRoot
         {
-            while (true)
+            _cacheLock.EnterWriteLock();
+            try
             {
-                var original = Interlocked.CompareExchange(ref _instances, null, null);
-
-                var copy = original.ToList();
-
-                foreach (var item in copy.OfType<TEntity>().ToList())
-                {
-                    copy.Remove(item);
-                }
-
-                var result = Interlocked.CompareExchange(ref _instances, copy, original);
-                if (result == original)
-                {
-                    break;
-                }
+                _instances.RemoveAll(e => e is TEntity);
+            }
+            finally
+            {
+                _cacheLock.ExitWriteLock();
             }
             return Task.FromResult(0);
         }
@@ -74,7 +70,15 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task<TEntity> FindAsync<TEntity>(string id) where TEntity : IAggregateRoot
         {
-            return Task.FromResult(_instances.OfType<TEntity>().FirstOrDefault(e => e.Id == id));
+            _cacheLock.EnterReadLock();
+            try
+            {
+                return Task.FromResult((TEntity)_instances.Find(e => e.Id == id));
+            }
+            finally
+            {
+                _cacheLock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -84,7 +88,15 @@ namespace Slalom.Stacks.Domain
         /// <returns>Returns an IQueryable that can be used to execute queries.</returns>
         public IQueryable<TEntity> OpenQuery<TEntity>() where TEntity : IAggregateRoot
         {
-            return _instances.OfType<TEntity>().AsQueryable();
+            _cacheLock.EnterReadLock();
+            try
+            {
+                return _instances.OfType<TEntity>().AsQueryable();
+            }
+            finally
+            {
+                _cacheLock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -95,21 +107,15 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task RemoveAsync<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
         {
-            while (true)
+            _cacheLock.EnterWriteLock();
+            try
             {
-                var original = Interlocked.CompareExchange(ref _instances, null, null);
-
-                var copy = original.ToList();
-                foreach (var item in instances)
-                {
-                    copy.Remove(item);
-                }
-
-                var result = Interlocked.CompareExchange(ref _instances, copy, original);
-                if (result == original)
-                {
-                    break;
-                }
+                var ids = instances.Select(e => e.Id).ToList();
+                _instances.RemoveAll(e => ids.Contains(e.Id));
+            }
+            finally
+            {
+                _cacheLock.ExitWriteLock();
             }
             return Task.FromResult(0);
         }

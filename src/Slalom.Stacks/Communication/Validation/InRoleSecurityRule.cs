@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -32,13 +33,12 @@ namespace Slalom.Stacks.Communication.Validation
         /// </summary>
         /// <param name="instance">The instance to validate.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        protected override Task<ValidationError> Validate(TCommand instance)
+        protected override IEnumerable<ValidationError> Validate(TCommand instance)
         {
             if (!this.Context.User?.HasClaim(ClaimTypes.Role, _role) ?? true)
             {
-                return Task.FromResult(_error);
+                yield return _error;
             }
-            return null;
         }
     }
 }

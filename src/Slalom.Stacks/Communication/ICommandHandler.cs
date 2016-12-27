@@ -24,4 +24,15 @@ namespace Slalom.Stacks.Communication
         /// <returns>A task for asynchronous programming.</returns>
         Task<TResult> HandleAsync(TCommand command);
     }
+
+    public interface ICommandHandler
+    {
+        /// <summary>
+        /// Gets or sets the current <seealso cref="ExecutionContext"/>.
+        /// </summary>
+        /// <value>The current <seealso cref="ExecutionContext"/>.</value>
+        ExecutionContext Context { get; set; }
+
+        Task<ICommandResult> HandleAsync(ICommand command);
+    }
 }

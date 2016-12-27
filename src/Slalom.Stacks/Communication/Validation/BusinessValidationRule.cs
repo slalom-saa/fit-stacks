@@ -41,20 +41,14 @@ namespace Slalom.Stacks.Communication.Validation
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        public async Task<IEnumerable<ValidationError>> Validate(TCommand instance, ExecutionContext context)
+        public IEnumerable<ValidationError> Validate(TCommand instance, ExecutionContext context)
         {
             Argument.NotNull(instance, nameof(instance));
             Argument.NotNull(context, nameof(context));
 
             this.Context = context;
 
-            var result = await this.Validate(instance);
-
-            if (result != null)
-            {
-                return new[] { result };
-            }
-            return new ValidationError[0];
+            return this.Validate(instance);
         }
 
         /// <summary>
@@ -63,6 +57,6 @@ namespace Slalom.Stacks.Communication.Validation
         /// <param name="instance">The instance to validate.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        protected abstract Task<ValidationError> Validate(TCommand instance);
+        protected abstract IEnumerable<ValidationError> Validate(TCommand instance);
     }
 }

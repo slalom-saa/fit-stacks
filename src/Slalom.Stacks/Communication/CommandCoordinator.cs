@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -21,7 +22,6 @@ namespace Slalom.Stacks.Communication
     {
         private readonly IComponentContext _componentContext;
         private readonly IEventPublisher _eventPublisher;
-        private readonly ICommandValidator _validator;
         private readonly ILogger _logger;
 
         /// <summary>
@@ -29,21 +29,19 @@ namespace Slalom.Stacks.Communication
         /// </summary>
         /// <param name="componentContext">The configured <see cref="IComponentContext"/> instance.</param>
         /// <param name="eventPublisher">The configured <see cref="IEventPublisher"/> instance.</param>
-        /// <param name="validator">The configured <see cref="ICommandValidator"/> instance.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="componentContext"/> argument is null.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="eventPublisher"/> argument is null.</exception>
-        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="validator"/> argument is null.</exception>
-        public CommandCoordinator(IComponentContext componentContext, IEventPublisher eventPublisher, ICommandValidator validator)
+        public CommandCoordinator(IComponentContext componentContext, IEventPublisher eventPublisher)
         {
             Argument.NotNull(componentContext, nameof(componentContext));
             Argument.NotNull(eventPublisher, nameof(eventPublisher));
-            Argument.NotNull(validator, nameof(validator));
 
             _componentContext = componentContext;
             _eventPublisher = eventPublisher;
-            _validator = validator;
             _logger = _componentContext.Resolve<ILogger>();
         }
+
+        private readonly ConcurrentDictionary<Type, ICommandValidator> _validators = new ConcurrentDictionary<Type, ICommandValidator>();
 
         /// <summary>
         /// Handles the command, progressing it through the stages of the pipeline.
@@ -66,13 +64,15 @@ namespace Slalom.Stacks.Communication
 
             try
             {
+                var validator = _validators.GetOrAdd(command.GetType(), key => (ICommandValidator)_componentContext.Resolve(typeof(CommandValidator<>).MakeGenericType(command.GetType())));
+
                 // Validate the command
-                result.AddValidationErrors(await _validator.Validate(command, context));
+                result.AddValidationErrors(await validator.Validate(command, context));
 
                 if (!result.ValidationErrors?.Any() ?? false)
                 {
                     // Execute the handler
-                    result.Value = await this.ExecuteHandler<TResult>(command, context);
+                    result.Value = (TResult)await this.ExecuteHandler<TResult>(command, context);
 
                     var value = result.Value as IEvent;
                     if (value != null)
@@ -148,6 +148,7 @@ namespace Slalom.Stacks.Communication
             }
         }
 
+
         /// <summary>
         /// The command execution stage of the pipeline.
         /// </summary>
@@ -157,9 +158,9 @@ namespace Slalom.Stacks.Communication
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="command"/> argument is null.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        protected virtual async Task<TResult> ExecuteHandler<TResult>(ICommand command, ExecutionContext context)
+        protected virtual async Task<ICommandResult> ExecuteHandler<TResult>(ICommand command, ExecutionContext context)
         {
-            var handler = (dynamic)_componentContext.Resolve(typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult)));
+            var handler = (ICommandHandler)_componentContext.Resolve(typeof(ICommandHandler<,>).MakeGenericType(command.GetType(), typeof(TResult)));
 
             if (handler == null)
             {
@@ -168,7 +169,7 @@ namespace Slalom.Stacks.Communication
 
             handler.Context = context;
 
-            return await handler.HandleAsync((dynamic)command);
+            return await handler.HandleAsync(command);
         }
 
         /// <summary>
@@ -230,20 +231,6 @@ namespace Slalom.Stacks.Communication
             {
                 await _eventPublisher.PublishAsync(item, context);
             }
-        }
-
-        /// <summary>
-        /// The validation stage of the pipeline.
-        /// </summary>
-        /// <typeparam name="TResult">The return type of the command.</typeparam>
-        /// <param name="command">The command.</param>
-        /// <param name="context">The context.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
-        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context" /> argument is null.</exception>
-        protected Task<IEnumerable<ValidationError>> ValidateCommand<TResult>(Command<TResult> command, ExecutionContext context)
-        {
-            return _validator.Validate(command, context);
         }
     }
 }

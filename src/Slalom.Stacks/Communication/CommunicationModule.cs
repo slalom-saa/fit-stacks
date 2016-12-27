@@ -44,15 +44,18 @@ namespace Slalom.Stacks.Communication
         {
             base.Load(builder);
 
-            builder.Register(c => new CommandValidator(new ComponentContext(c.Resolve<IComponentContext>())))
-                   .As<ICommandValidator>().SingleInstance();
-            builder.Register(c => new CommandCoordinator(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<IEventPublisher>(), c.Resolve<ICommandValidator>()))
+            builder.Register(c => new CommandCoordinator(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<IEventPublisher>()))
                    .As<ICommandCoordinator>().SingleInstance();
+
             builder.Register(c => new MessageBus(c.Resolve<IExecutionContextResolver>(), c.Resolve<ICommandCoordinator>()))
                    .As<IMessageBus>().SingleInstance();
+
             builder.Register(c => new EventPublisher(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<ILogger>()))
                    .As<IEventPublisher>().SingleInstance();
 
+            builder.RegisterGeneric(typeof(CommandValidator<>))
+                   .AsSelf();
+            
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ICommandHandler<,>)))
                    .As(instance =>
@@ -72,6 +75,11 @@ namespace Slalom.Stacks.Communication
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>)))
                    .As(instance => instance.GetBaseAndContractTypes());
+
+
+            builder.RegisterAssemblyTypes(this.Assemblies)
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IInputValidationRule<>)))
+                   .AsImplementedInterfaces();
         }
     }
 }
