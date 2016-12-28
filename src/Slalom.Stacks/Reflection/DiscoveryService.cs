@@ -44,6 +44,15 @@ namespace Slalom.Stacks.Reflection
             return Cache.GetOrAdd(typeof(TType), t => _assemblies.Value.SafelyGetTypes<TType>().ToList());
         }
 
+        /// <summary>
+        /// Finds available types that are assignable to the specified type.
+        /// </summary>
+        /// <returns>All available types that are assignable to the specified type.</returns>
+        public IEnumerable<Type> Find(Type type)
+        {
+            return Cache.GetOrAdd(type, t => _assemblies.Value.SafelyGetTypes(type).ToList());
+        }
+
         private void CreateAssemblyFactory(ILogger logger)
         {
             _assemblies = new Lazy<List<Assembly>>(() =>

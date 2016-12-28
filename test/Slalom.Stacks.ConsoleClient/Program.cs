@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Domain;
+using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Actors;
+using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
+using Slalom.Stacks.Test.Commands.AddItem;
 using Slalom.Stacks.Test.Domain;
 using Slalom.Stacks.Test.Search;
+using Slalom.Stacks.Validation;
 
 // ReSharper disable AccessToDisposedClosure
 
@@ -29,15 +37,15 @@ namespace Slalom.Stacks.ConsoleClient
             try
             {
                 var watch = new Stopwatch();
-                var count = 100000;
-                using (var container = new ApplicationContainer(typeof(Item)))
+                var count = 1000 * 100;
+                using (var container = new ApplicationContainer(typeof(Item), this))
                 {
                     watch.Start();
 
                     var tasks = new List<Task>(count);
                     Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
                     {
-                        //tasks.Add(container.Bus.SendAsync(new AddItemCommand(DateTime.Now.Ticks.ToString())));
+                        tasks.Add(container.SendAsync(new AddItemCommand("asdf")));
                     });
                     await Task.WhenAll(tasks);
 
@@ -45,7 +53,7 @@ namespace Slalom.Stacks.ConsoleClient
 
                     var searchResultCount = container.Search.OpenQuery<ItemSearchResult>().Count();
                     var entityCount = (await container.Domain.FindAsync<Item>(e => true)).Count();
-                    if (entityCount != count)
+                    if (entityCount != count || searchResultCount != count)
                     {
                         throw new Exception($"The execution did not have the expected results. {searchResultCount} search results and {entityCount} entities out of {count}.");
                     }

@@ -1,5 +1,5 @@
 {
-  "version": "1.2.41-*",
+  "version": "1.2.43-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks", "blocks" ],
@@ -36,7 +36,8 @@
     "System.Diagnostics.Process": "4.3.0",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
     "Autofac.Extensions.DependencyInjection": "4.0.0",
-    "System.Linq.Expressions": "4.3.0"
+    "System.Linq.Expressions": "4.3.0",
+    "System.Linq": "4.3.0"
   },
 
   "buildOptions": {

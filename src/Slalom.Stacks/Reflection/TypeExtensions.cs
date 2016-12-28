@@ -62,13 +62,24 @@ namespace Slalom.Stacks.Reflection
         /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
         public static Type[] SafelyGetTypes<T>(this IEnumerable<Assembly> assemblies)
         {
-            if (typeof(T).GetTypeInfo().IsGenericTypeDefinition)
+            return SafelyGetTypes(assemblies, typeof(T));
+        }
+
+        /// <summary>
+        /// Safely gets all types when some referenced assemblies may not be available.
+        /// </summary>
+        /// <param name="assemblies">The instance.</param>
+        /// <param name="type">The parent type.</param>
+        /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
+        public static Type[] SafelyGetTypes(this IEnumerable<Assembly> assemblies, Type type)
+        {
+            if (type.GetTypeInfo().IsGenericTypeDefinition)
             {
-                return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => e.GetBaseAndContractTypes().Any(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == typeof(T))).ToArray();
+                return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => e.GetBaseAndContractTypes().Any(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == type)).ToArray();
             }
             else
             {
-                return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => (typeof(T).IsAssignableFrom(e))).ToArray();
+                return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => (type.IsAssignableFrom(e))).ToArray();
             }
         }
 

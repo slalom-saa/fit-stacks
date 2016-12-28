@@ -4,13 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Akka.Actor;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Actors.Imp.Messages
 {
-    public class ExecuteUseCaseMessage : CommandMessage
+    public class UseCaseExecuted : ExecuteStepMessage
     {
-        public ExecuteUseCaseMessage(ICommand command, IActorRef caller)
-            : base(command, caller)
+        public UseCaseExecuted(ExecuteUseCase message)
+            : base(message)
         {
         }
     }

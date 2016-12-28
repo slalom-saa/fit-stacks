@@ -28,12 +28,10 @@ namespace Slalom.Stacks
             {
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
-                    //   new AutoFacDependencyResolver(container.RootContainer, system);
-
                     container.RegisterModule(new ActorModule(typeof(Program)));
 
                     var watch = new Stopwatch();
-                    var count = 1000 * 2;
+                    var count = 1000 * 50;
 
 
                     var result = await container.SendAsync(new AddProcedureCommand("s"));

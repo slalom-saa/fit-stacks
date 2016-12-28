@@ -6,31 +6,32 @@ using Akka.Actor;
 using Akka.DI.Core;
 using Slalom.Stacks.Actors.Imp.Messages;
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Reflection;
 
 namespace Slalom.Stacks.Actors
 {
-    public class UseCaseCoordinationActor : ReceiveActor
+    public class UseCaseActorCoordinator : ReceiveActor
     {
-        public UseCaseCoordinationActor()
+        private readonly IDiscoverTypes _types;
+
+        public UseCaseActorCoordinator(IDiscoverTypes types)
         {
-            this.ReceiveAsync<ExecuteUseCaseMessage>(e => this.HandleExecute(e));
-            this.ReceiveAsync<ValidateExternalRulesMessage>(e => this.HandleExecute(e));
+            _types = types;
+            this.Receive<ExecuteUseCase>(e => this.HandleExecute(e));
         }
 
-        public async Task HandleExecute(CommandMessage message)
+        public void HandleExecute(ExecuteUseCase message)
         {
             var type = message.Command.GetType();
             ICanTell target = Context.GetChildren().FirstOrDefault(e => e.Path.Name == type.Name);
             if (target == null)
             {
-                var types = await Context.ActorSelection("/user/discover-types").Ask<IEnumerable<Type>>(typeof(UseCaseActor<,>));
-                
-                // TODO: find the correct base type
+                var types = _types.Find(typeof(UseCaseActor<,>));
                 var current = types.FirstOrDefault(e => e.BaseType?.GetGenericArguments().FirstOrDefault() == type);
 
                 target = Context.ActorOf(Context.DI().Props(current), type.Name);
             }
-            target.Tell(new ExecuteUseCaseMessage(message.Command, message.Caller), this.Sender);
+            target.Tell(message, this.Sender);
         }
     }
 }

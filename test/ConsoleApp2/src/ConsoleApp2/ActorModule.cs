@@ -4,15 +4,17 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Akka.Actor;
 using Akka.DI.AutoFac;
+using Akka.DI.Core;
 using Autofac;
 using Slalom.Stacks.Actors;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Reflection;
+using CommandExecuted = Slalom.Stacks.Messaging.CommandExecuted;
 using Module = Autofac.Module;
 
 namespace Slalom.Stacks
 {
-    public class AkkaAdapter : IActorSystem, IDisposable
+    public class AkkaAdapter : IUseCaseCoordinator, IDisposable
     {
         private readonly ActorSystem _system;
         private IActorRef _commands;
@@ -21,26 +23,21 @@ namespace Slalom.Stacks
         {
             _system = system;
 
-            new AutoFacDependencyResolver(container, _system);
+            var props = new AutoFacDependencyResolver(container, _system);
 
-            _commands = system.ActorOf<CommandCoordinationActor>("commands");
-
-            system.ActorOf<DiscoverTypesActor>("discover-types");
-        }
-
-        public Task<object> Ask(object message, TimeSpan? timeout = null)
-        {
-            return _commands.Ask(message, timeout);
-        }
-
-        public void Tell(object message)
-        {
-            throw new NotImplementedException();
+            _commands = system.ActorOf(system.DI().Props<UseCaseCoordinator>(), "commands");
         }
 
         public void Dispose()
         {
             _system?.Dispose();
+        }
+
+        public Task<CommandExecuted> SendAsync(ICommand command, TimeSpan? timeout = null)
+        {
+            var result = _commands.Ask<CommandExecuted>(command, timeout);
+
+            return result;
         }
     }
 

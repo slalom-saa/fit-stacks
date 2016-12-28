@@ -45,7 +45,7 @@ namespace Slalom.Stacks.Actors
 
         protected UseCaseActor()
         {
-            this.ReceiveAsync<ExecuteUseCaseMessage>(this.HandleExecute);
+            this.ReceiveAsync<ExecuteUseCase>(this.HandleExecute);
         }
 
         protected override void PreStart()
@@ -62,19 +62,17 @@ namespace Slalom.Stacks.Actors
             this.Sender.Tell("");
         }
 
-        private async Task HandleExecute(ExecuteUseCaseMessage message)
+        private async Task HandleExecute(ExecuteUseCase message)
         {
             var errors = this.Validate((TCommand)message.Command).ToList();
             errors.AddRange(await this.ValidateAsync((TCommand)message.Command));
-            if (errors.Any())
-            {
-                this.Sender.Tell(new UseCaseExecutionFailedMessage(message.Command, message.Caller, errors));
-            }
-            else
+            message.Result.AddValidationErrors(errors);
+            if (!message.Result.ValidationErrors.Any())
             {
                 var target = await this.ExecuteAsync((TCommand)message.Command);
-                this.Sender.Tell(new UseCaseExecutionSucceededMessage(message.Command, message.Caller, target));
+                message.Result.AddResponse(target);
             }
+            this.Sender.Tell(new UseCaseExecuted(message));
         }
 
         public virtual Task<TResult> ExecuteAsync(TCommand command)
