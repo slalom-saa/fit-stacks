@@ -41,10 +41,11 @@ namespace Slalom.Stacks
                     watch.Start();
 
                     var tasks = new List<Task>(count);
-                    for (int i = 0; i < count; i++)
+                    Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
                     {
                         tasks.Add(container.SendAsync(new AddProcedureCommand("s")));
-                    }
+
+                    });
                     await Task.WhenAll(tasks);
 
                     //var result = await container.SendAsync(new AddProcedureCommand("s"));

@@ -6,6 +6,8 @@ using Slalom.Stacks.Actors;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Validation;
 using Akka.DI.Core;
+using Slalom.Stacks.Messaging.Actors;
+using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks
 {
@@ -28,22 +30,27 @@ namespace Slalom.Stacks
             _domain = domain;
         }
 
-        public override async Task<ProcedureAddedEvent> ExecuteAsync(AddProcedureCommand command)
+        public override ProcedureAddedEvent Execute(AddProcedureCommand command, ExecutionContext context)
         {
-            var target = new Procedure(command.Name);
-
-            await _domain.AddAsync(target);
-
-            return new ProcedureAddedEvent(target.Name);
+            return new ProcedureAddedEvent(command.Name);
         }
 
-        public override IEnumerable<ValidationError> Validate(AddProcedureCommand command)
-        {
-            var target = _domain.FindAsync<Procedure>(e => e.Name == command.Name).Result;
-            if (target != null)
-            {
-                yield return "The thing already exists.";
-            }
-        }
+        //public override async Task<ProcedureAddedEvent> ExecuteAsync(AddProcedureCommand command)
+        //{
+        //    var target = new Procedure(command.Name);
+
+        //    await _domain.AddAsync(target);
+
+        //    return new ProcedureAddedEvent(target.Name);
+        //}
+
+        //public override IEnumerable<ValidationError> Validate(AddProcedureCommand command)
+        //{
+        //    var target = _domain.FindAsync<Procedure>(e => e.Name == command.Name).Result;
+        //    if (target != null)
+        //    {
+        //        yield return "The thing already exists.";
+        //    }
+        //}
     }
 }

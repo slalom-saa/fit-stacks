@@ -8,6 +8,8 @@ using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Validation;
 using Akka.DI.Core;
+using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Messaging.Actors;
 
 namespace Slalom.Stacks.Actors
 {
@@ -39,12 +41,13 @@ namespace Slalom.Stacks.Actors
         }
     }
 
-    public abstract class UseCaseActor<TCommand, TResult> : ReceiveActor where TCommand : ICommand
+    public abstract class UseCaseExecutionActor<TCommand, TResult> : ReceiveActor where TCommand : ICommand
     {
         private IActorRef _domain;
 
-        protected UseCaseActor(Slalom.Stacks.Messaging.Actors.UseCaseActor<TCommand, TResult> target)
+        protected UseCaseExecutionActor(IComponentContext context)
         {
+            Console.WriteLine(context);
             this.ReceiveAsync<ExecuteUseCase>(this.HandleExecute);
         }
 

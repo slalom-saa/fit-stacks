@@ -9,6 +9,7 @@ using Akka.Routing;
 using Autofac;
 using Slalom.Stacks.Actors;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Actors;
 using Slalom.Stacks.Reflection;
 using Module = Autofac.Module;
 
@@ -65,7 +66,10 @@ namespace Slalom.Stacks
 
             builder.RegisterAssemblyTypes(_assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(UseCaseActor<,>)))
-                   .As(e => e.BaseType);
+                   .As(e => e.GetBaseAndContractTypes());
+
+            builder.RegisterGeneric(typeof(UseCaseExecutionActor<,>))
+                   .AsSelf();
         }
     }
 }

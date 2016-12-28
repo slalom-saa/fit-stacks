@@ -42,6 +42,8 @@ namespace Slalom.Stacks.Actors
 
             var result = await _validation.Ask<ExecuteUseCase>(message);
 
+            await _execution.Ask(message);
+
             this.Sender.Tell(result.Result);
         }
 
