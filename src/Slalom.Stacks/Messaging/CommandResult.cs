@@ -7,15 +7,15 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
 {
-    public class CommandExecuted
+    public class CommandResult
     {
         private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandExecuted"/> class.
+        /// Initializes a new instance of the <see cref="CommandResult"/> class.
         /// </summary>
         /// <param name="context">The current context.</param>
-        public CommandExecuted(ExecutionContext context)
+        public CommandResult(ExecutionContext context)
         {
             this.CorrelationId = context.CorrelationId;
             this.Started = DateTimeOffset.UtcNow;

@@ -40,9 +40,9 @@ namespace Slalom.Stacks.Actors
 
             var message = new ExecuteUseCase(command, context);
 
-            //var result = await _validation.Ask<ExecuteUseCase>(message);
+            var result = await _validation.Ask<ExecuteUseCase>(message);
 
-            this.Sender.Tell(message.Result);
+            this.Sender.Tell(result.Result);
         }
 
         protected override void PreStart()

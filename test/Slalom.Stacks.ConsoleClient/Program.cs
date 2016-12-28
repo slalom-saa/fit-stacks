@@ -8,6 +8,7 @@ using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Actors;
+using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
@@ -23,6 +24,14 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient
 {
+    //public class ConsoleAuditStore : IAuditStore
+    //{
+    //    public Task AppendAsync(AuditEntry audit)
+    //    {
+    //        return Console.Out.WriteLineAsync(audit.ToString());
+    //    }
+    //}
+
     public class Program
     {
         public static void Main(string[] args)
@@ -37,17 +46,19 @@ namespace Slalom.Stacks.ConsoleClient
             try
             {
                 var watch = new Stopwatch();
-                var count = 1000 * 100;
+                var count = 100000;
                 using (var container = new ApplicationContainer(typeof(Item), this))
                 {
                     watch.Start();
 
-                    var tasks = new List<Task>(count);
+                    var tasks = new List<Task<CommandResult>>(count);
                     Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
                     {
                         tasks.Add(container.SendAsync(new AddItemCommand("asdf")));
                     });
                     await Task.WhenAll(tasks);
+
+                    Console.WriteLine(JsonConvert.SerializeObject(tasks.First().Result, Formatting.Indented));
 
                     watch.Stop();
 

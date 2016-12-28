@@ -76,7 +76,10 @@ namespace Slalom.Stacks.Configuration
             builder.RegisterModule(new DomainModule(this.Assemblies));
             builder.RegisterModule(new CommunicationModule(this.Assemblies));
             builder.RegisterModule(new SearchModule(this.Assemblies));
-            builder.RegisterModule(new CachingModule());
+
+
+            builder.RegisterModule(new NullLoggingModule());
+            builder.RegisterModule(new NullCachingModule());
 
             builder.Register(c => new ComponentContext(c.Resolve<Autofac.IComponentContext>()))
                    .As<IComponentContext>();

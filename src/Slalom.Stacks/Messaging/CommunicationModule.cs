@@ -4,6 +4,7 @@ using System.Reflection;
 using Autofac;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Messaging.Actors;
+using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Validation;
@@ -44,14 +45,12 @@ namespace Slalom.Stacks.Messaging
             base.Load(builder);
 
             builder.Register(c => new UseCaseCoordinator(c.Resolve<IComponentContext>()))
-                   .AsImplementedInterfaces();
+                   .As<IUseCaseCoordinator>();
 
             builder.Register(c => new EventPublisher(c.Resolve<IComponentContext>()))
-                   .AsImplementedInterfaces()
-                   .AsSelf();
+                   .As<IEventPublisher>();
 
-            builder.RegisterGeneric(typeof(CommandValidator<>))
-                   .AsSelf();
+            builder.RegisterGeneric(typeof(CommandValidator<>));
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandleEvent<>)))
@@ -73,6 +72,14 @@ namespace Slalom.Stacks.Messaging
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(UseCaseActor<,>)))
                    .As(instance => instance.GetBaseAndContractTypes())
                    .AsSelf();
+
+            builder.RegisterAssemblyTypes(this.Assemblies)
+                   .Where(e => typeof(IAuditStore).IsAssignableFrom(e))
+                   .As<IAuditStore>();
+
+            builder.RegisterAssemblyTypes(this.Assemblies)
+                   .Where(e => typeof(IAuditStore).IsAssignableFrom(e))
+                   .As<ILogStore>();
         }
     }
 }

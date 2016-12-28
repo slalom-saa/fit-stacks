@@ -10,7 +10,7 @@ namespace Slalom.Stacks.Messaging.Validation
     /// <summary>
     /// Validates a command using input, security and business rules.
     /// </summary>
-    public class CommandValidator<TCommand> : ICommandValidator where TCommand : ICommand
+    internal class CommandValidator<TCommand> : ICommandValidator where TCommand : ICommand
     {
         private readonly IEnumerable<IInputValidationRule<TCommand>> _rules;
 

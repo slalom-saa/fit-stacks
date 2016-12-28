@@ -15,7 +15,7 @@ namespace Slalom.Stacks
             _commands = new Lazy<IUseCaseCoordinator>(() => this.RootContainer.Resolve<IUseCaseCoordinator>());
         }
 
-        public Task<CommandExecuted> SendAsync(ICommand command, TimeSpan? timeout = null)
+        public Task<CommandResult> SendAsync(ICommand command, TimeSpan? timeout = null)
         {
             return _commands.Value.SendAsync(command, timeout);
         }

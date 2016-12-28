@@ -39,12 +39,11 @@ namespace Slalom.Stacks
 
         public override IEnumerable<ValidationError> Validate(AddProcedureCommand command)
         {
-            //var target = _domain.FindAsync<Procedure>(e => e.Name == command.Name).Result;
-            //if (target != null)
-            //{
-            //    yield return "The thing already exists.";
-            //}
-            yield break;
+            var target = _domain.FindAsync<Procedure>(e => e.Name == command.Name).Result;
+            if (target != null)
+            {
+                yield return "The thing already exists.";
+            }
         }
     }
 }

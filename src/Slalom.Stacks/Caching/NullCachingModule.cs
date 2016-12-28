@@ -7,7 +7,7 @@ namespace Slalom.Stacks.Caching
     /// An Autofac module to configure the caching dependencies.
     /// </summary>
     /// <seealso cref="Autofac.Module" />
-    internal class CachingModule : Module
+    internal class NullCachingModule : Module
     {
         /// <summary>
         /// Override to add registrations to the container.
