@@ -9,7 +9,7 @@
     "Akka.DI.AutoFac": "1.0.8",
     "Akka.DI.Core": "1.1.2",
     "Akka.Serialization.Wire": "1.1.2.30-beta",
-    "Slalom.Stacks": "1.2.44",
+    "Slalom.Stacks": "1.2.45",
     "System.Linq": "4.3.0",
     "System.Linq.Parallel": "4.0.1"
   },

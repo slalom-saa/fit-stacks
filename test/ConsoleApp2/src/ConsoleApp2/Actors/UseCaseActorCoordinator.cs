@@ -21,20 +21,21 @@ namespace Slalom.Stacks.Actors
         {
             _types = types;
             _context = context;
+
             this.ReceiveAsync<ExecuteUseCase>(this.HandleExecute);
         }
 
         public async Task HandleExecute(ExecuteUseCase message)
         {
-            var type = message.Command.GetType();
-            var types = _types.Find(typeof(UseCaseActor<,>));
-            var current = types.FirstOrDefault(e => e.BaseType?.GetGenericArguments().FirstOrDefault() == type);
+            //var type = message.Command.GetType();
+            //var types = _types.Find(typeof(UseCaseActor<,>));
+            //var current = types.FirstOrDefault(e => e.BaseType?.GetGenericArguments().FirstOrDefault() == type);
 
-            dynamic handler = _context.Resolve(current);
+            //dynamic handler = _context.Resolve(current);
 
-            object response = await handler.ExecuteAsync((dynamic)message.Command, message.Context);
+            //object response = await handler.ExecuteAsync((dynamic)message.Command, message.Context);
 
-            this.Sender.Tell(response);
+            this.Sender.Tell(message);
         }
     }
 }

@@ -18,17 +18,18 @@ namespace Slalom.Stacks.Actors
         public RuleValidator(IComponentContext context)
         {
             _context = context;
+
             this.ReceiveAsync<ExecuteUseCase>(this.HandleCommandReceived);
         }
 
         public async Task HandleCommandReceived(ExecuteUseCase message)
         {
-            //var validator = _instances.GetOrAdd(message.CommandType,
-            //    key => (ICommandValidator)_context.Resolve(typeof(CommandValidator<>).MakeGenericType(message.CommandType)));
+            var validator = _instances.GetOrAdd(message.CommandType,
+                key => (ICommandValidator)_context.Resolve(typeof(CommandValidator<>).MakeGenericType(message.CommandType)));
 
-            //var results = await validator.Validate(message.Command, message.Context);;
+            var results = await validator.Validate(message.Command, message.Context); ;
 
-            //message.Result.AddValidationErrors(results);
+            message.Result.AddValidationErrors(results);
 
             this.Sender.Tell(message);
         }
