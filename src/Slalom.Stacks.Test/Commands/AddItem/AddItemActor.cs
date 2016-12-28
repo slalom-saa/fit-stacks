@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Slalom.Stacks.Communication;
 using Slalom.Stacks.Messaging.Actors;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Test.Domain;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Test.Commands.AddItem
 {
@@ -21,6 +23,11 @@ namespace Slalom.Stacks.Test.Commands.AddItem
             await this.Domain.AddAsync(target);
 
             return new ItemAddedEvent(target);
+        }
+
+        public override IEnumerable<ValidationError> Validate(AddItemCommand command, ExecutionContext context)
+        {
+            yield return "adsf";
         }
     }
 }

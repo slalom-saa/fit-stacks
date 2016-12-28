@@ -49,6 +49,15 @@ namespace Slalom.Stacks.ConsoleClient
                 var count = 100000;
                 using (var container = new ApplicationContainer(typeof(Item), this))
                 {
+                    var target = await container.SendAsync(new AddItemCommand("asdf"));
+
+                    Console.WriteLine(JsonConvert.SerializeObject(target, Formatting.Indented));
+
+
+                    return;
+
+
+
                     watch.Start();
 
                     var tasks = new List<Task<CommandResult>>(count);

@@ -8,8 +8,15 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Actors
 {
+    internal interface IUseCaseActor
+    {
+        Task<IEnumerable<ValidationError>> Validate(ICommand command, ExecutionContext context);
+    }
+
     public abstract class UseCaseActor<TCommand, TResult> where TCommand : ICommand
     {
+        private IUseCaseActor _useCaseActorImplementation;
+
         public IDomainFacade Domain { get; set; }
 
         public virtual Task<TResult> ExecuteAsync(TCommand command, ExecutionContext context)
@@ -29,7 +36,7 @@ namespace Slalom.Stacks.Messaging.Actors
 
         public virtual Task<IEnumerable<ValidationError>> ValidateAsync(TCommand command, ExecutionContext context)
         {
-            return Task.FromResult(Enumerable.Empty<ValidationError>());
+            return Task.FromResult(this.Validate(command, context));
         }
 
         public ExecutionContext Context { get; set; }

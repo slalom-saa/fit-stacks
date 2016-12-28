@@ -65,10 +65,6 @@ namespace Slalom.Stacks.Messaging
                    .As(instance => instance.GetBaseAndContractTypes());
 
             builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IInputValidationRule<>)))
-                   .AsImplementedInterfaces();
-
-            builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(UseCaseActor<,>)))
                    .As(instance => instance.GetBaseAndContractTypes())
                    .AsSelf();

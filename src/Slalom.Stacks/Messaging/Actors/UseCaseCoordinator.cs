@@ -72,7 +72,7 @@ namespace Slalom.Stacks.Communication
                 if (!result.ValidationErrors.Any())
                 {
                     // execute the handler
-                    await this.ExecuteHandler(command, result, context);
+                    await this.ExecuteUseCase(command, result, context);
 
                     // add the response to the context if it was an event
                     var value = result.Response as IEvent;
@@ -149,7 +149,7 @@ namespace Slalom.Stacks.Communication
         /// <exception cref="System.InvalidOperationException"></exception>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context" /> argument is null.</exception>
-        protected virtual async Task ExecuteHandler(ICommand command, CommandResult result, ExecutionContext context)
+        protected virtual async Task ExecuteUseCase(ICommand command, CommandResult result, ExecutionContext context)
         {
             var handler = (dynamic)_handlers.GetOrAdd(command.GetType(), key =>
             {
@@ -164,9 +164,15 @@ namespace Slalom.Stacks.Communication
                 throw new InvalidOperationException($"An actor could not be found for the specified command: {command.CommandName}.");
             }
 
-            object response = await handler.ExecuteAsync((dynamic)command, context);
+            IEnumerable<ValidationError> errors = await handler.ValidateAsync((dynamic)command, context);
 
-            result.AddResponse(response);
+            result.AddValidationErrors(errors);
+            if (!result.ValidationErrors.Any())
+            {
+                object response = await handler.ExecuteAsync((dynamic)command, context);
+
+                result.AddResponse(response);
+            }
         }
 
         /// <summary>
