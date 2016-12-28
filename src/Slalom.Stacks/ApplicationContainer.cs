@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Autofac;
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
+using System.Linq;
+using Autofac.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
@@ -26,18 +24,6 @@ namespace Slalom.Stacks
     public partial class ApplicationContainer : IDisposable
     {
         private readonly IPropertySelector _selector = new AllUnsetPropertySelector();
-
-        /// <summary>
-        /// Resolves a component from the container.
-        /// </summary>
-        /// <param name="type">The type of component to resolve.</param>
-        /// <returns>The resolved component.</returns>
-        public object Resolve(Type type)
-        {
-            return this.RootContainer.Resolve(type);
-        }
-
-        partial void Initialize();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationContainer"/> class.
@@ -196,6 +182,16 @@ namespace Slalom.Stacks
         /// <summary>
         /// Resolves a component from the container.
         /// </summary>
+        /// <param name="type">The type of component to resolve.</param>
+        /// <returns>The resolved component.</returns>
+        public object Resolve(Type type)
+        {
+            return this.RootContainer.Resolve(type);
+        }
+
+        /// <summary>
+        /// Resolves a component from the container.
+        /// </summary>
         /// <typeparam name="T">The type to resolve.</typeparam>
         /// <returns>T.</returns>
         public T Resolve<T>(Action<T> setup = null)
@@ -241,6 +237,8 @@ namespace Slalom.Stacks
 
             return target;
         }
+
+        partial void Initialize();
 
         #region IDisposable Implementation
 

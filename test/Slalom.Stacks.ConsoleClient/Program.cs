@@ -14,6 +14,7 @@ using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Test.Commands.AddItem;
+using Slalom.Stacks.Test.Commands.SearchItems;
 using Slalom.Stacks.Test.Domain;
 using Slalom.Stacks.Test.Search;
 using Slalom.Stacks.Validation;
@@ -49,15 +50,6 @@ namespace Slalom.Stacks.ConsoleClient
                 var count = 100000;
                 using (var container = new ApplicationContainer(typeof(Item), this))
                 {
-                    var target = await container.SendAsync(new AddItemCommand("asdf"));
-
-                    Console.WriteLine(JsonConvert.SerializeObject(target, Formatting.Indented));
-
-
-                    return;
-
-
-
                     watch.Start();
 
                     var tasks = new List<Task<CommandResult>>(count);
@@ -67,11 +59,9 @@ namespace Slalom.Stacks.ConsoleClient
                     });
                     await Task.WhenAll(tasks);
 
-                    Console.WriteLine(JsonConvert.SerializeObject(tasks.First().Result, Formatting.Indented));
-
                     watch.Stop();
 
-                    var searchResultCount = container.Search.OpenQuery<ItemSearchResult>().Count();
+                    var searchResultCount = ((IQueryable<ItemSearchResult>)(await container.SendAsync(new SearchItemsCommand())).Response).Count();
                     var entityCount = (await container.Domain.FindAsync<Item>(e => true)).Count();
                     if (entityCount != count || searchResultCount != count)
                     {

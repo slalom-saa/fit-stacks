@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,6 +33,8 @@ namespace Slalom.Stacks.Messaging
             _logger = _componentContext.Resolve<ILogger>();
         }
 
+        private readonly ConcurrentDictionary<Type, IEnumerable> _handers = new ConcurrentDictionary<Type, IEnumerable>();
+
         /// <summary>
         /// Publishes the specified event.
         /// </summary>
@@ -45,11 +49,11 @@ namespace Slalom.Stacks.Messaging
             Argument.NotNull(instance, nameof(instance));
             Argument.NotNull(context, nameof(context));
 
-            var target = (IEnumerable<dynamic>)_componentContext.ResolveAll(typeof(IHandleEvent<>).MakeGenericType(instance.GetType()));
+            var target = _handers.GetOrAdd(instance.GetType(), (IEnumerable)_componentContext.ResolveAll(typeof(IHandleEvent<>).MakeGenericType(instance.GetType())));
 
             try
             {
-                foreach (var item in target)
+                foreach (dynamic item in target)
                 {
                     await (Task)item.Handle((dynamic)instance, context);
                 }

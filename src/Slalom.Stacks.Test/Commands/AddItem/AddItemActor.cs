@@ -9,9 +9,9 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Test.Commands.AddItem
 {
-    public class AddItemActor : UseCaseActor<AddItemCommand, ItemAddedEvent>
+    public class AddItemActor : UseCaseActor<AddItemCommand, AddItemEvent>
     {
-        public override async Task<ItemAddedEvent> ExecuteAsync(AddItemCommand command, ExecutionContext context)
+        public override async Task<AddItemEvent> ExecuteAsync(AddItemCommand command, ExecutionContext context)
         {
             if (command.Text == "error")
             {
@@ -22,12 +22,7 @@ namespace Slalom.Stacks.Test.Commands.AddItem
 
             await this.Domain.AddAsync(target);
 
-            return new ItemAddedEvent(target);
-        }
-
-        public override IEnumerable<ValidationError> Validate(AddItemCommand command, ExecutionContext context)
-        {
-            yield return "adsf";
+            return new AddItemEvent(target);
         }
     }
 }

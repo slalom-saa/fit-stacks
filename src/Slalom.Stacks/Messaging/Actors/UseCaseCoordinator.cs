@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
@@ -13,6 +14,7 @@ using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
+using ExecutionContext = Slalom.Stacks.Runtime.ExecutionContext;
 
 namespace Slalom.Stacks.Communication
 {
@@ -29,7 +31,7 @@ namespace Slalom.Stacks.Communication
         private readonly Lazy<IEventPublisher> _publisher;
         private readonly Lazy<IEnumerable<IAuditStore>> _audits;
         private readonly Lazy<IEnumerable<ILogStore>> _logs;
-        private readonly ConcurrentDictionary<Type, ICommandValidator> _validators = new ConcurrentDictionary<Type, ICommandValidator>();
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UseCaseCoordinator"/> class.
@@ -233,6 +235,9 @@ namespace Slalom.Stacks.Communication
             }
         }
 
+        private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
+        private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
+
         /// <summary>
         /// The validation stage of the pipeline.
         /// </summary>
@@ -244,7 +249,23 @@ namespace Slalom.Stacks.Communication
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context" /> argument is null.</exception>
         protected async Task ValidateCommand(ICommand command, CommandResult result, ExecutionContext context)
         {
-            var target = _validators.GetOrAdd(command.GetType(), (ICommandValidator)_context.Resolve(typeof(CommandValidator<>).MakeGenericType(command.GetType())));
+            ICommandValidator target;
+            if (!_validators.TryGetValue(command.GetType(), out target))
+            {
+                _cacheLock.EnterWriteLock();
+                try
+                {
+                    if (!_validators.TryGetValue(command.GetType(), out target))
+                    {
+                        target = (ICommandValidator)_context.Resolve(typeof(CommandValidator<>).MakeGenericType(command.GetType()));
+                        _validators.Add(command.GetType(), target);
+                    }
+                }
+                finally
+                {
+                    _cacheLock.ExitWriteLock();
+                }
+            }
 
             var errors = await target.Validate(command, context);
 

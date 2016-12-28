@@ -4,20 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Search;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Actors
 {
-    internal interface IUseCaseActor
-    {
-        Task<IEnumerable<ValidationError>> Validate(ICommand command, ExecutionContext context);
-    }
-
     public abstract class UseCaseActor<TCommand, TResult> where TCommand : ICommand
     {
-        private IUseCaseActor _useCaseActorImplementation;
-
         public IDomainFacade Domain { get; set; }
+
+        public ISearchFacade Search { get; set; }
 
         public virtual Task<TResult> ExecuteAsync(TCommand command, ExecutionContext context)
         {

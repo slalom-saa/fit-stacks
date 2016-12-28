@@ -5,13 +5,14 @@ using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
+using Slalom.Stacks.Test.Commands.AddItem;
 using Slalom.Stacks.Test.Domain;
 
 namespace Slalom.Stacks.Test.Search
 {
-    public class ItemSearchIndex : SearchIndexer<ItemSearchResult>, IHandleEvent<ItemAddedEvent>
+    public class ItemSearchIndexer : SearchIndexer<ItemSearchResult>, IHandleEvent<AddItemEvent>
     {
-        public ItemSearchIndex(ISearchContext context)
+        public ItemSearchIndexer(ISearchContext context)
             : base(context)
         {
         }
@@ -20,10 +21,9 @@ namespace Slalom.Stacks.Test.Search
 
         public override async Task RebuildIndexAsync()
         {
-          
         }
 
-        public async Task Handle(ItemAddedEvent instance, ExecutionContext context)
+        public async Task Handle(AddItemEvent instance, ExecutionContext context)
         {
             await this.AddAsync(new[] { new ItemSearchResult
             {
