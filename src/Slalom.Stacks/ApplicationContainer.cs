@@ -31,7 +31,7 @@ namespace Slalom.Stacks
         /// <param name="markers">Either a type to be used for assembly scanning, or an instance of the type.</param>
         public ApplicationContainer(params object[] markers)
         {
-            var assemblies = markers.Select(e =>
+            this.Assemblies = markers.Select(e =>
             {
                 var type = e as Type;
                 if (type != null)
@@ -43,7 +43,7 @@ namespace Slalom.Stacks
 
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new ConfigurationModule { Assemblies = assemblies.ToArray() });
+            builder.RegisterModule(new ConfigurationModule { Assemblies = this.Assemblies.ToArray() });
 
             this.RootContainer = builder.Build();
 
@@ -240,10 +240,16 @@ namespace Slalom.Stacks
 
         partial void Initialize();
 
+        /// <summary>
+        /// Gets the assemblies.
+        /// </summary>
+        /// <value>The assemblies.</value>
+        public IEnumerable<Assembly> Assemblies { get; }
+
         #region IDisposable Implementation
 
         bool _disposed;
-
+        
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>

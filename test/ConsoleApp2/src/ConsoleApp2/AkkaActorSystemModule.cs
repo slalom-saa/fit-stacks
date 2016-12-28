@@ -15,23 +15,27 @@ using Module = Autofac.Module;
 
 namespace Slalom.Stacks
 {
-    public class AkkaAdapter : IUseCaseCoordinator, IDisposable
+    public static class ConfigurationExtensions
     {
-        private readonly ActorSystem _system;
-        private IActorRef _commands;
-
-        public AkkaAdapter(ActorSystem system, ILifetimeScope container)
+        public static ApplicationContainer UseAkka(this ApplicationContainer container)
         {
-            _system = system;
+            container.RegisterModule(new AkkaActorSystemModule(container.Assemblies.ToArray()));
 
-            var props = new AutoFacDependencyResolver(container, _system);
-
-            _commands = system.ActorOf(system.DI().Props<UseCaseCoordinator>().WithRouter(new RoundRobinPool(5)), "commands");
+            return container;
         }
+    }
 
-        public void Dispose()
+
+    public class AkkaUseCaseCaseCoordinator : IUseCaseCoordinator
+    {
+        private IActorRef _commands;
+        private AutoFacDependencyResolver _resolver;
+
+        public AkkaUseCaseCaseCoordinator(ActorSystem system, ILifetimeScope container)
         {
-            _system?.Dispose();
+            _resolver = new AutoFacDependencyResolver(container, system);
+
+            _commands = system.ActorOf(system.DI().Props<UseCaseExecutionCoordinator>().WithRouter(new RoundRobinPool(5)), "commands");
         }
 
         public Task<CommandResult> SendAsync(ICommand command, TimeSpan? timeout = null)
@@ -42,20 +46,23 @@ namespace Slalom.Stacks
         }
     }
 
-    public class ActorModule : Module
+    public class AkkaActorSystemModule : Module
     {
         private Assembly[] _assemblies;
 
-        public ActorModule(params Type[] markers)
+        public AkkaActorSystemModule(Assembly[] assemblies)
         {
-            _assemblies = markers.Select(e => e.Assembly).ToArray();
+            _assemblies = assemblies;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
 
-            builder.Register(c => new AkkaAdapter(ActorSystem.Create("Patolus"), c.Resolve<ILifetimeScope>()))
+            builder.Register(c => ActorSystem.Create("Patolus"))
+                   .AsSelf();
+
+            builder.Register(c => new AkkaUseCaseCaseCoordinator(c.Resolve<ActorSystem>(), c.Resolve<ILifetimeScope>()))
                    .AsSelf()
                    .AsImplementedInterfaces()
                    .SingleInstance();
@@ -67,9 +74,6 @@ namespace Slalom.Stacks
             builder.RegisterAssemblyTypes(_assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(UseCaseActor<,>)))
                    .As(e => e.GetBaseAndContractTypes());
-
-            builder.RegisterGeneric(typeof(UseCaseExecutionActor<,>))
-                   .AsSelf();
         }
     }
 }

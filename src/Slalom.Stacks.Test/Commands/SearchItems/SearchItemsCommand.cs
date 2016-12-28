@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Actors;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Test.Search;

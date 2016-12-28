@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Actors;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;

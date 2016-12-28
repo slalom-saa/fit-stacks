@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using Akka.Actor;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Slalom.Stacks.Configuration;
@@ -16,29 +17,26 @@ using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 using ExecutionContext = Slalom.Stacks.Runtime.ExecutionContext;
 
-namespace Slalom.Stacks.Communication
+namespace Slalom.Stacks.Actors
 {
-    /// <summary>
-    /// Supervises the execution and completion of commands.  Returns a result containing the returned value if the command is successful; 
-    /// otherwise, returns information about why the execution was not successful.
-    /// </summary>
-    /// <seealso cref="IUseCaseCoordinator" />
-    public class UseCaseCoordinator : IUseCaseCoordinator
+    public class UseCaseExecutionCoordinator : ReceiveActor
     {
+        private readonly Lazy<IEnumerable<IAuditStore>> _audits;
+
+        private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
         private readonly IComponentContext _context;
         private readonly ConcurrentDictionary<Type, object> _handlers = new ConcurrentDictionary<Type, object>();
         private readonly Lazy<ILogger> _logger;
-        private readonly Lazy<IEventPublisher> _publisher;
-        private readonly Lazy<IEnumerable<IAuditStore>> _audits;
         private readonly Lazy<IEnumerable<ILogStore>> _logs;
-
+        private readonly Lazy<IEventPublisher> _publisher;
+        private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UseCaseCoordinator"/> class.
+        /// Initializes a new instance of the <see cref="UseCaseExecutionCoordinator"/> class.
         /// </summary>
         /// <param name="context">The configured <see cref="IComponentContext"/> instance.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        public UseCaseCoordinator(IComponentContext context)
+        public UseCaseExecutionCoordinator(IComponentContext context)
         {
             Argument.NotNull(context, nameof(context));
 
@@ -47,6 +45,13 @@ namespace Slalom.Stacks.Communication
             _publisher = new Lazy<IEventPublisher>(() => _context.Resolve<IEventPublisher>());
             _audits = new Lazy<IEnumerable<IAuditStore>>(() => _context.ResolveAll<IAuditStore>());
             _logs = new Lazy<IEnumerable<ILogStore>>(() => _context.ResolveAll<ILogStore>());
+
+            this.ReceiveAsync<ICommand>(async e =>
+            {
+                var result = await this.SendAsync(e);
+
+                this.Sender.Tell(result);
+            });
         }
 
         /// <summary>
@@ -100,45 +105,6 @@ namespace Slalom.Stacks.Communication
             await this.Log(command, result, context);
 
             return result;
-        }
-
-        /// <summary>
-        /// The audit stage of the pipeline.
-        /// </summary>
-        /// <param name="command">The executed command.</param>
-        /// <param name="result">The result.</param>
-        /// <param name="context">The execution context.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        protected virtual Task Log(ICommand command, CommandResult result, ExecutionContext context)
-        {
-            var tasks = _logs.Value.Select(e => e.AppendAsync(new LogEntry(command, result, context))).ToList();
-
-            // Add additional audits and diagnostic messages if the result was unsuccessful.
-            if (!result.IsSuccessful)
-            {
-                if (result.RaisedException != null)
-                {
-                    _logger.Value.Verbose(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@Context}", command, context);
-                }
-                else if (result.ValidationErrors?.Any() ?? false)
-                {
-                    _logger.Value.Verbose("Execution completed with validation errors while executing " + command.CommandName + ". {@Command} {@ValidationErrors} {@Context}", command, result.ValidationErrors, context);
-                }
-                else
-                {
-                    _logger.Value.Verbose("Execution completed unsuccessfully while executing " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
-                }
-            }
-            else
-            {
-                if (result.Response is IEvent)
-                {
-                    tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(result.Response as IEvent, context))));
-                }
-                _logger.Value.Verbose("Successfully completed " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
-            }
-
-            return Task.WhenAll(tasks);
         }
 
         /// <summary>
@@ -222,6 +188,45 @@ namespace Slalom.Stacks.Communication
         }
 
         /// <summary>
+        /// The audit stage of the pipeline.
+        /// </summary>
+        /// <param name="command">The executed command.</param>
+        /// <param name="result">The result.</param>
+        /// <param name="context">The execution context.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        protected virtual Task Log(ICommand command, CommandResult result, ExecutionContext context)
+        {
+            var tasks = _logs.Value.Select(e => e.AppendAsync(new LogEntry(command, result, context))).ToList();
+
+            // Add additional audits and diagnostic messages if the result was unsuccessful.
+            if (!result.IsSuccessful)
+            {
+                if (result.RaisedException != null)
+                {
+                    _logger.Value.Verbose(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@Context}", command, context);
+                }
+                else if (result.ValidationErrors?.Any() ?? false)
+                {
+                    _logger.Value.Verbose("Execution completed with validation errors while executing " + command.CommandName + ". {@Command} {@ValidationErrors} {@Context}", command, result.ValidationErrors, context);
+                }
+                else
+                {
+                    _logger.Value.Verbose("Execution completed unsuccessfully while executing " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
+                }
+            }
+            else
+            {
+                if (result.Response is IEvent)
+                {
+                    tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(result.Response as IEvent, context))));
+                }
+                _logger.Value.Verbose("Successfully completed " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
+            }
+
+            return Task.WhenAll(tasks);
+        }
+
+        /// <summary>
         /// The event publishing stage of the pipeline.
         /// </summary>
         /// <param name="context">The current execution context.</param>
@@ -234,9 +239,6 @@ namespace Slalom.Stacks.Communication
                 await _publisher.Value.PublishAsync(item, context);
             }
         }
-
-        private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
-        private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
 
         /// <summary>
         /// The validation stage of the pipeline.

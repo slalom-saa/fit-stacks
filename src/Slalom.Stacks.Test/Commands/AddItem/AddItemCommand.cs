@@ -1,4 +1,3 @@
-using Slalom.Stacks.Communication;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Test.Domain;

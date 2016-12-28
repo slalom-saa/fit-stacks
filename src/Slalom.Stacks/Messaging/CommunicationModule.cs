@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using Autofac;
-using Slalom.Stacks.Communication;
-using Slalom.Stacks.Messaging.Actors;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;

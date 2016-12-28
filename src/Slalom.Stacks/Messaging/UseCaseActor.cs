@@ -7,10 +7,14 @@ using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Messaging.Actors
+namespace Slalom.Stacks.Messaging
 {
     public abstract class UseCaseActor<TCommand, TResult> where TCommand : ICommand
     {
+        public IDomainFacade Domain { get; set; }
+
+        public ISearchFacade Search { get; set; }
+
         public virtual Task<TResult> ExecuteAsync(TCommand command, ExecutionContext context)
         {
             return Task.FromResult(this.Execute(command, context));

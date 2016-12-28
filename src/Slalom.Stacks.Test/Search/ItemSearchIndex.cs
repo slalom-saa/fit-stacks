@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Stacks.Communication;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Runtime;

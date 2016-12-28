@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Slalom.Stacks.Communication;
 using Slalom.Stacks.Domain;
-using Slalom.Stacks.Messaging.Actors;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Test.Domain;
 using Slalom.Stacks.Validation;

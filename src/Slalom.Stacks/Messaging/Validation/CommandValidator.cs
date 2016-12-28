@@ -12,13 +12,13 @@ namespace Slalom.Stacks.Messaging.Validation
     /// </summary>
     public class CommandValidator<TCommand> : ICommandValidator where TCommand : ICommand
     {
-        private readonly IEnumerable<IInputValidationRule<TCommand>> _rules;
+        private readonly IEnumerable<IValidationRule<TCommand, ExecutionContext>> _rules;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandValidator{TCommand}"/> class.
         /// </summary>
         /// <param name="rules">The rules for the command.</param>
-        public CommandValidator(IEnumerable<IInputValidationRule<TCommand>> rules)
+        public CommandValidator(IEnumerable<IValidationRule<TCommand, ExecutionContext>> rules)
         {
             Argument.NotNull(rules, nameof(rules));
 
@@ -40,23 +40,23 @@ namespace Slalom.Stacks.Messaging.Validation
 
             var instance = (TCommand)command;
 
-            var input = this.CheckInputRules(instance, context);
+            var input = this.CheckInputRules(instance, context).ToList();
             if (input.Any())
             {
                 return input.WithType(ValidationErrorType.Input);
             }
 
-            //var security = (await this.CheckSecurityRules(instance, context)).ToList();
-            //if (security.Any())
-            //{
-            //    return security.WithType(ValidationErrorType.Security);
-            //}
+            var security = this.CheckSecurityRules(instance, context).ToList();
+            if (security.Any())
+            {
+                return security.WithType(ValidationErrorType.Security);
+            }
 
-            //var business = (await this.CheckBusinessRules(instance, context)).ToList();
-            //if (business.Any())
-            //{
-            //    return business.WithType(ValidationErrorType.Business);
-            //}
+            var business = this.CheckBusinessRules(instance, context).ToList();
+            if (business.Any())
+            {
+                return business.WithType(ValidationErrorType.Business);
+            }
 
             return Enumerable.Empty<ValidationError>();
         }
@@ -71,14 +71,14 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual IEnumerable<ValidationError> CheckBusinessRules(TCommand command, ExecutionContext context)
         {
-            //foreach (var rule in _rules.OfType<IBusinessValidationRule<TCommand>>())
-            //{
-            //    var result = (await rule.Validate(command, context)).ToList();
-            //    if (result.Any())
-            //    {
-            //        return result;
-            //    }
-            //}
+            foreach (var rule in _rules.OfType<IBusinessValidationRule<TCommand>>())
+            {
+                var result = (rule.Validate(command, context)).ToList();
+                if (result.Any())
+                {
+                    return result;
+                }
+            }
             return Enumerable.Empty<ValidationError>();
         }
 
@@ -108,16 +108,16 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context" /> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        protected virtual async Task<IEnumerable<ValidationError>> CheckSecurityRules(TCommand command, ExecutionContext context)
+        protected virtual IEnumerable<ValidationError> CheckSecurityRules(TCommand command, ExecutionContext context)
         {
-            //foreach (var rule in _rules.OfType<ISecurityValidationRule<TCommand>>())
-            //{
-            //    var result = (await rule.Validate(command, context)).ToList();
-            //    if (result.Any())
-            //    {
-            //        return result;
-            //    }
-            //}
+            foreach (var rule in _rules.OfType<ISecurityValidationRule<TCommand>>())
+            {
+                var result = (rule.Validate(command, context)).ToList();
+                if (result.Any())
+                {
+                    return result;
+                }
+            }
             return Enumerable.Empty<ValidationError>();
         }
     }

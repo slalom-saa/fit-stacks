@@ -9,8 +9,13 @@ using Akka.DI.Core;
 using Newtonsoft.Json;
 using Slalom.Stacks.Actors;
 using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Test.Commands.AddItem;
+using Slalom.Stacks.Test.Commands.SearchItems;
+using Slalom.Stacks.Test.Domain;
+using Slalom.Stacks.Test.Search;
 
 namespace Slalom.Stacks
 {
@@ -18,48 +23,43 @@ namespace Slalom.Stacks
     {
         public static void Main(string[] args)
         {
-            Program.Start();
+            new Program().Start();
+            Console.WriteLine("Running application.  Press any key to halt...");
             Console.ReadLine();
         }
 
-        public static async void Start()
+        public async void Start()
         {
             try
             {
-                using (var container = new ApplicationContainer(typeof(Program)))
+                var watch = new Stopwatch();
+                var count = 100000;
+                using (var container = new ApplicationContainer(typeof(Item), this))
                 {
-                    container.RegisterModule(new ActorModule(typeof(Program)));
-
-                    var watch = new Stopwatch();
-                    var count = 1000 * 100;
-
-
-                    var result = await container.SendAsync(new AddProcedureCommand("s"));
-
-                    Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+                    container.UseAkka();
 
                     watch.Start();
 
-                    var tasks = new List<Task>(count);
+                    var tasks = new List<Task<CommandResult>>(count);
                     Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
                     {
-                        tasks.Add(container.SendAsync(new AddProcedureCommand("s")));
-
+                        tasks.Add(container.SendAsync(new AddItemCommand("asdf")));
                     });
                     await Task.WhenAll(tasks);
 
-                    //var result = await container.SendAsync(new AddProcedureCommand("s"));
-
-                    //Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-
                     watch.Stop();
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Execution for {count:N0} items completed successfully in {watch.Elapsed} - {Math.Ceiling(count / watch.Elapsed.TotalSeconds):N0} per second.  Press any key to exit...");
-                    Console.ResetColor();
-
-                    Console.ReadLine();
+                    var searchResultCount = ((IQueryable<ItemSearchResult>)(await container.SendAsync(new SearchItemsCommand())).Response).Count();
+                    var entityCount = (await container.Domain.FindAsync<Item>(e => true)).Count();
+                    if (entityCount != count || searchResultCount != count)
+                    {
+                        throw new Exception($"The execution did not have the expected results. {searchResultCount} search results and {entityCount} entities out of {count}.");
+                    }
                 }
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Execution for {count:N0} items completed successfully in {watch.Elapsed} - {Math.Ceiling(count / watch.Elapsed.TotalSeconds):N0} per second.  Press any key to exit...");
+                Console.ResetColor();
             }
             catch (Exception exception)
             {
