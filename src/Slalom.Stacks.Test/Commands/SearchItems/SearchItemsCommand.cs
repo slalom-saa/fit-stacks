@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Actors;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Search;
 using Slalom.Stacks.Test.Search;
 
 namespace Slalom.Stacks.Test.Commands.SearchItems
@@ -15,9 +16,16 @@ namespace Slalom.Stacks.Test.Commands.SearchItems
 
     public class SearchItemsActor : UseCaseActor<SearchItemsCommand, IQueryable<ItemSearchResult>>
     {
+        private readonly ISearchFacade _search;
+
+        public SearchItemsActor(ISearchFacade search)
+        {
+            _search = search;
+        }
+
         public override IQueryable<ItemSearchResult> Execute(SearchItemsCommand command, ExecutionContext context)
         {
-            return this.Search.OpenQuery<ItemSearchResult>();
+            return _search.OpenQuery<ItemSearchResult>();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Actors
 
         public ExecutionContext Context => this.ExecutionMessage.Context;
 
-        public CommandExecuted Result => this.ExecutionMessage.Result;
+        public CommandResult Result => this.ExecutionMessage.Result;
     }
 
     public class ValidateRules : ExecuteStepMessage

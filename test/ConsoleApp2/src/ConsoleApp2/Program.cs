@@ -31,7 +31,7 @@ namespace Slalom.Stacks
                     container.RegisterModule(new ActorModule(typeof(Program)));
 
                     var watch = new Stopwatch();
-                    var count = 1000 * 50;
+                    var count = 1000 * 100;
 
 
                     var result = await container.SendAsync(new AddProcedureCommand("s"));
@@ -41,11 +41,10 @@ namespace Slalom.Stacks
                     watch.Start();
 
                     var tasks = new List<Task>(count);
-                    Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
+                    for (int i = 0; i < count; i++)
                     {
                         tasks.Add(container.SendAsync(new AddProcedureCommand("s")));
-
-                    });
+                    }
                     await Task.WhenAll(tasks);
 
                     //var result = await container.SendAsync(new AddProcedureCommand("s"));

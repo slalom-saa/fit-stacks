@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Akka.Actor;
 using Akka.DI.AutoFac;
 using Akka.DI.Core;
+using Akka.Routing;
 using Autofac;
 using Slalom.Stacks.Actors;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Reflection;
-using CommandExecuted = Slalom.Stacks.Messaging.CommandExecuted;
 using Module = Autofac.Module;
 
 namespace Slalom.Stacks
@@ -25,7 +25,7 @@ namespace Slalom.Stacks
 
             var props = new AutoFacDependencyResolver(container, _system);
 
-            _commands = system.ActorOf(system.DI().Props<UseCaseCoordinator>(), "commands");
+            _commands = system.ActorOf(system.DI().Props<UseCaseCoordinator>().WithRouter(new RoundRobinPool(5)), "commands");
         }
 
         public void Dispose()
@@ -33,9 +33,9 @@ namespace Slalom.Stacks
             _system?.Dispose();
         }
 
-        public Task<CommandExecuted> SendAsync(ICommand command, TimeSpan? timeout = null)
+        public Task<CommandResult> SendAsync(ICommand command, TimeSpan? timeout = null)
         {
-            var result = _commands.Ask<CommandExecuted>(command, timeout);
+            var result = _commands.Ask<CommandResult>(command, timeout);
 
             return result;
         }

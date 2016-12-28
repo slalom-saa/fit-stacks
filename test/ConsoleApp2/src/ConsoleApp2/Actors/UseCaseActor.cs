@@ -43,7 +43,7 @@ namespace Slalom.Stacks.Actors
     {
         private IActorRef _domain;
 
-        protected UseCaseActor()
+        protected UseCaseActor(Slalom.Stacks.Messaging.Actors.UseCaseActor<TCommand, TResult> target)
         {
             this.ReceiveAsync<ExecuteUseCase>(this.HandleExecute);
         }

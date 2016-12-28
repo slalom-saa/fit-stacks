@@ -11,10 +11,6 @@ namespace Slalom.Stacks.Messaging.Actors
 {
     public abstract class UseCaseActor<TCommand, TResult> where TCommand : ICommand
     {
-        public IDomainFacade Domain { get; set; }
-
-        public ISearchFacade Search { get; set; }
-
         public virtual Task<TResult> ExecuteAsync(TCommand command, ExecutionContext context)
         {
             return Task.FromResult(this.Execute(command, context));
@@ -34,7 +30,5 @@ namespace Slalom.Stacks.Messaging.Actors
         {
             return Task.FromResult(this.Validate(command, context));
         }
-
-        public ExecutionContext Context { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Slalom.Stacks.Actors
 
         public ExecutionContext Context { get; }
 
-        public CommandExecuted Result { get; }
+        public CommandResult Result { get; }
 
         public Type CommandType => _commandType ?? (_commandType = this.Command.GetType());
 
@@ -21,7 +21,7 @@ namespace Slalom.Stacks.Actors
         {
             this.Command = command;
             this.Context = context;
-            this.Result = new CommandExecuted(context);
+            this.Result = new CommandResult(context);
         }
     }
 }
