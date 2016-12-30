@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.50-*",
+  "version": "1.2.51-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks", "test" ],
@@ -31,7 +31,7 @@
     ],
     "postcompile": [
       "dotnet pack --no-build --configuration %compile:Configuration%",
-      "xcopy .\\bin\\debug\\*.nupkg c:\\nuget\\ /y"
+      "xcopy .\\bin\\%compile:Configuration%\\*.nupkg c:\\nuget\\ /y"
     ]
   }
 }

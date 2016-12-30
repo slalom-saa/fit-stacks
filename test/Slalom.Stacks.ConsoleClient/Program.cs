@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Test.Commands.AddItem;
-using Slalom.Stacks.Test.Commands.SearchItems;
-using Slalom.Stacks.Test.Domain;
-using Slalom.Stacks.Test.Search;
+using Slalom.Stacks.Test.Examples.Actors.Items.Add;
+using Slalom.Stacks.Test.Examples.Actors.Items.Search;
+using Slalom.Stacks.Test.Examples.Domain;
+using Slalom.Stacks.Test.Examples.Search;
 
 // ReSharper disable AccessToDisposedClosure
 
