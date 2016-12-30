@@ -57,6 +57,13 @@ namespace Slalom.Stacks.Domain
         Task AddAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
+        /// Clears all instances of the specified type.
+        /// </summary>
+        /// <typeparam name="TAggregateRoot">The type of instance.</typeparam>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task ClearAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot;
+
+        /// <summary>
         /// Finds the instance with the specified identifier.
         /// </summary>
         /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
@@ -65,11 +72,19 @@ namespace Slalom.Stacks.Domain
         Task<TAggregateRoot> FindAsync<TAggregateRoot>(string id) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
-        /// Clears all instances of the specified type.
+        /// Finds instances with the specified expression.
         /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of instance.</typeparam>
+        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
+        /// <param name="expression">The expression to filter with.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task ClearAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot;
+        Task<IEnumerable<TAggregateRoot>> FindAsync<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot;
+
+        /// <summary>
+        /// Finds all instances of the specified type.
+        /// </summary>
+        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task<IEnumerable<TAggregateRoot>> FindAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Removes the specified instances.
@@ -139,13 +154,5 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
         Task UpdateAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
-
-        /// <summary>
-        /// Finds instances with the specified expression.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
-        /// <param name="expression">The expression to filter with.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        Task<IEnumerable<TAggregateRoot>> FindAsync<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot;
     }
 }

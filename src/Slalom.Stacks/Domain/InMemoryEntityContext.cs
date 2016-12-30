@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Slalom.Stacks.Caching;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Domain
@@ -16,8 +14,8 @@ namespace Slalom.Stacks.Domain
     /// <seealso cref="Slalom.Stacks.Domain.IEntityContext" />
     public class InMemoryEntityContext : IEntityContext
     {
-        private List<IAggregateRoot> _instances = new List<IAggregateRoot>();
         private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
+        private readonly List<IAggregateRoot> _instances = new List<IAggregateRoot>();
 
         /// <summary>
         /// Adds the specified instances.
@@ -95,6 +93,24 @@ namespace Slalom.Stacks.Domain
             {
                 var function = expression.Compile();
                 return Task.FromResult(_instances.OfType<TEntity>().Where(function));
+            }
+            finally
+            {
+                _cacheLock.ExitReadLock();
+            }
+        }
+
+        /// <summary>
+        /// Finds all instances of the specified type.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<IEnumerable<TEntity>> FindAsync<TEntity>() where TEntity : IAggregateRoot
+        {
+            _cacheLock.EnterReadLock();
+            try
+            {
+                return Task.FromResult(_instances.OfType<TEntity>().ToList().AsEnumerable());
             }
             finally
             {

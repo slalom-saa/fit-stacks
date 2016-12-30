@@ -36,6 +36,21 @@ namespace Slalom.Stacks.Domain
         Task<TEntity> FindAsync<TEntity>(string id) where TEntity : IAggregateRoot;
 
         /// <summary>
+        /// Finds the instance with the specified identifier.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="expression">The expression to filter with.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task<IEnumerable<TEntity>> FindAsync<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : IAggregateRoot;
+
+        /// <summary>
+        /// Finds all instances of the specified type.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task<IEnumerable<TEntity>> FindAsync<TEntity>() where TEntity : IAggregateRoot;
+
+        /// <summary>
         /// Removes the specified instances.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
@@ -52,13 +67,5 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances" /> argument is null.</exception>
         Task UpdateAsync<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot;
-
-        /// <summary>
-        /// Finds the instance with the specified identifier.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="expression">The expression to filter with.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        Task<IEnumerable<TEntity>> FindAsync<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : IAggregateRoot;
     }
 }

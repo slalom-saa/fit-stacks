@@ -44,7 +44,7 @@ namespace Slalom.Stacks.ConsoleClient
                     watch.Stop();
 
                     var searchResultCount = ((IQueryable<ItemSearchResult>)(await container.SendAsync(new SearchItemsCommand())).Response).Count();
-                    var entityCount = (await container.Domain.FindAsync<Item>(e => true)).Count();
+                    var entityCount = (await container.Domain.FindAsync<Item>()).Count();
                     if (entityCount != count || searchResultCount != count)
                     {
                         throw new Exception($"The execution did not have the expected results. {searchResultCount} search results and {entityCount} entities out of {count}.");

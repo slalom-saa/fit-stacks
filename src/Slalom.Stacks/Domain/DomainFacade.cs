@@ -171,6 +171,24 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <summary>
+        /// Finds all instances of the specified type.
+        /// </summary>
+        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
+        /// <returns>A task for asynchronous programming.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public Task<IEnumerable<TAggregateRoot>> FindAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
+        {
+            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+
+            if (repository == null)
+            {
+                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
+            }
+
+            return repository.FindAsync();
+        }
+
+        /// <summary>
         /// Removes the specified instances.
         /// </summary>
         /// <typeparam name="TAggregateRoot">The type of instance to remove.</typeparam>

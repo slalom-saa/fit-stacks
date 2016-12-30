@@ -18,12 +18,6 @@ namespace Slalom.Stacks.Domain
         private readonly IEntityContext _context;
 
         /// <summary>
-        /// Gets or sets the configured logger.
-        /// </summary>
-        /// <value>The configured logger.</value>
-        public ILogger Logger { get; set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Repository{TRoot}" /> class.
         /// </summary>
         /// <param name="context">The configured context.</param>
@@ -35,29 +29,10 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <summary>
-        /// Clears all instances.
+        /// Gets or sets the configured logger.
         /// </summary>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task ClearAsync()
-        {
-            this.Logger.Verbose($"Clearing all items of type {typeof(TRoot)} using {_context.GetType()}.");
-
-            return _context.ClearAsync<TRoot>();
-        }
-
-        /// <summary>
-        /// Removes the specified instances.
-        /// </summary>
-        /// <param name="instances">The instances to remove.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task RemoveAsync(TRoot[] instances)
-        {
-            Argument.NotNull(instances, nameof(instances));
-
-            this.Logger.Verbose($"Removing {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
-
-            return _context.RemoveAsync(instances);
-        }
+        /// <value>The configured logger.</value>
+        public ILogger Logger { get; set; }
 
         /// <summary>
         /// Adds the specified instances.
@@ -74,17 +49,14 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <summary>
-        /// Updates the specified instances.
+        /// Clears all instances.
         /// </summary>
-        /// <param name="instances">The instances to update.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task UpdateAsync(TRoot[] instances)
+        public Task ClearAsync()
         {
-            Argument.NotNull(instances, nameof(instances));
+            this.Logger.Verbose($"Clearing all items of type {typeof(TRoot)} using {_context.GetType()}.");
 
-            this.Logger.Verbose($"Updating {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
-
-            return _context.UpdateAsync(instances);
+            return _context.ClearAsync<TRoot>();
         }
 
         /// <summary>
@@ -111,6 +83,45 @@ namespace Slalom.Stacks.Domain
             this.Logger.Verbose($"Finding item of type {typeof(TRoot)} with ID {id} using {_context.GetType()}.");
 
             return _context.FindAsync<TRoot>(id);
+        }
+
+        /// <summary>
+        /// Finds all instances.
+        /// </summary>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<IEnumerable<TRoot>> FindAsync()
+        {
+            this.Logger.Verbose($"Finding all items of type {typeof(TRoot)} using {_context.GetType()}.");
+
+            return _context.FindAsync<TRoot>();
+        }
+
+        /// <summary>
+        /// Removes the specified instances.
+        /// </summary>
+        /// <param name="instances">The instances to remove.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task RemoveAsync(TRoot[] instances)
+        {
+            Argument.NotNull(instances, nameof(instances));
+
+            this.Logger.Verbose($"Removing {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
+
+            return _context.RemoveAsync(instances);
+        }
+
+        /// <summary>
+        /// Updates the specified instances.
+        /// </summary>
+        /// <param name="instances">The instances to update.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task UpdateAsync(TRoot[] instances)
+        {
+            Argument.NotNull(instances, nameof(instances));
+
+            this.Logger.Verbose($"Updating {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
+
+            return _context.UpdateAsync(instances);
         }
     }
 }
