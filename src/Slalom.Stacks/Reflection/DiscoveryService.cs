@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Reflection
     {
         private static readonly ConcurrentDictionary<Type, List<Type>> Cache = new ConcurrentDictionary<Type, List<Type>>();
 
-        private static readonly string[] _ignores = { "Libuv", "Microsoft.", "NETStandard" };
+        private static readonly string[] _ignores = { "Libuv", "Microsoft.", "NETStandard", "runtime", "xunit" };
         private readonly ILogger _logger;
         private Lazy<List<Assembly>> _assemblies;
 
@@ -64,12 +64,7 @@ namespace Slalom.Stacks.Reflection
                 {
                     try
                     {
-                        if (compilationLibrary.Name.StartsWith("runtime"))
-                        {
-                            continue;
-                        }
-
-                        if (_ignores.Any(e=>compilationLibrary.Name.StartsWith(e)))
+                        if (_ignores.Any(e => compilationLibrary.Name.StartsWith(e)))
                         {
                             continue;
                         }

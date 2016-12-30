@@ -18,6 +18,8 @@ namespace Slalom.Stacks.Messaging
     public class EventPublisher : IEventPublisher
     {
         private readonly IComponentContext _componentContext;
+
+        private readonly ConcurrentDictionary<Type, IEnumerable<object>> _handers = new ConcurrentDictionary<Type, IEnumerable<object>>();
         private readonly ILogger _logger;
 
         /// <summary>
@@ -33,8 +35,6 @@ namespace Slalom.Stacks.Messaging
             _logger = _componentContext.Resolve<ILogger>();
         }
 
-        private readonly ConcurrentDictionary<Type, IEnumerable> _handers = new ConcurrentDictionary<Type, IEnumerable>();
-
         /// <summary>
         /// Publishes the specified event.
         /// </summary>
@@ -44,24 +44,14 @@ namespace Slalom.Stacks.Messaging
         /// <returns>Returns a task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception> 
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception> 
-        public async Task PublishAsync<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent
+        public Task PublishAsync<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent
         {
             Argument.NotNull(instance, nameof(instance));
             Argument.NotNull(context, nameof(context));
 
-            var target = _handers.GetOrAdd(instance.GetType(), (IEnumerable)_componentContext.ResolveAll(typeof(IHandleEvent<>).MakeGenericType(instance.GetType())));
+            var target = _handers.GetOrAdd(instance.GetType(), key => _componentContext.ResolveAll(typeof(IHandleEvent<>).MakeGenericType(instance.GetType())).Union(_componentContext.ResolveAll(typeof(IHandleEvent))));
 
-            try
-            {
-                foreach (dynamic item in target)
-                {
-                    await (Task)item.Handle((dynamic)instance, context);
-                }
-            }
-            catch (Exception exception)
-            {
-                _logger.Error(exception, "An unhandled exception was raised while handling " + instance.EventName + ": {@Event} {@Context}", instance, context);
-            }
+            return Task.WhenAll(target.Select(e => (Task)((dynamic)e).HandleAsync((dynamic)instance, context)));
         }
     }
 }

@@ -1,8 +1,7 @@
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Serialization;
-using Slalom.Stacks.Test.Domain;
 
-namespace Slalom.Stacks.Test.Commands.AddItem
+namespace Slalom.Stacks.Test.Examples.Actors.Items.Add
 {
     public class AddItemCommand : Command
     {

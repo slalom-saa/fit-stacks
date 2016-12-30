@@ -56,7 +56,12 @@ namespace Slalom.Stacks.Messaging
                    {
                        var interfaces = instance.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(IHandleEvent<>));
                        return interfaces.Select(e => typeof(IHandleEvent<>).MakeGenericType(e.GetGenericArguments()[0]));
-                   });
+                   }).SingleInstance();
+
+            builder.RegisterAssemblyTypes(this.Assemblies)
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandleEvent)))
+                   .AsImplementedInterfaces()
+                   .SingleInstance();
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>)))

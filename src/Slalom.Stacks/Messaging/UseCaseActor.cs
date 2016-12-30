@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Runtime;
@@ -34,5 +33,7 @@ namespace Slalom.Stacks.Messaging
         {
             return Task.FromResult(this.Validate(command, context));
         }
+
+        public ExecutionContext Context { get; set; }
     }
 }
