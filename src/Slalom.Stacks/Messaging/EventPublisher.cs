@@ -44,14 +44,17 @@ namespace Slalom.Stacks.Messaging
         /// <returns>Returns a task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception> 
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception> 
-        public Task PublishAsync<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent
+        public async Task PublishAsync<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent
         {
             Argument.NotNull(instance, nameof(instance));
             Argument.NotNull(context, nameof(context));
 
             var target = _handers.GetOrAdd(instance.GetType(), key => _componentContext.ResolveAll(typeof(IHandleEvent<>).MakeGenericType(instance.GetType())).Union(_componentContext.ResolveAll(typeof(IHandleEvent))));
 
-            return Task.WhenAll(target.Select(e => (Task)((dynamic)e).HandleAsync((dynamic)instance, context)));
+            foreach (var handler in target)
+            {
+                await (Task)((dynamic)handler).HandleAsync((dynamic)instance, context);
+            }
         }
     }
 }
