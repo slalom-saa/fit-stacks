@@ -3,20 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Logging;
-using Slalom.Stacks.Messaging.Validation;
-using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Runtime;
-using Slalom.Stacks.Search;
 using Slalom.Stacks.Test.Commands.AddItem;
 using Slalom.Stacks.Test.Commands.SearchItems;
 using Slalom.Stacks.Test.Domain;
 using Slalom.Stacks.Test.Search;
-using Slalom.Stacks.Validation;
 
 // ReSharper disable AccessToDisposedClosure
 
@@ -24,19 +15,6 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient
 {
-    //public class ConsoleAuditStore : IAuditStore
-    //{
-    //    public Task AppendAsync(AuditEntry audit)
-    //    {
-    //        return Console.Out.WriteLineAsync(audit.ToString());
-    //    }
-    //}
-
-    public class Product : Entity, IAggregateRoot
-    {
-        public string Name { get; set; }
-    }
-
     public class Program
     {
         public static void Main(string[] args)

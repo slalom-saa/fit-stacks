@@ -19,17 +19,5 @@ namespace Slalom.Stacks
         {
             return _commands.Value.SendAsync(command, timeout);
         }
-
-        //public async Task<TResult> SendAsync<TResult>(ICommand command, TimeSpan? timeout = null)
-        //{
-        //    var result = await _actors.Value.Ask(command, timeout);
-
-        //    return (TResult)result;
-        //}
-
-        //public Task<object> SendAsync(ICommand command, TimeSpan? timeout = null)
-        //{
-        //    return _actors.Value.Ask(command, timeout);
-        //}
     }
 }
