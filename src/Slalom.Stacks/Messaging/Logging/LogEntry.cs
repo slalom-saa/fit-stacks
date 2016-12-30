@@ -47,7 +47,7 @@ namespace Slalom.Stacks.Messaging.Logging
             this.UserHostAddress = context.UserHostAddress;
             this.ThreadId = context.ThreadId;
             this.CorrelationId = context.CorrelationId;
-            this.RaisedException = result.RaisedException?.ToString();
+            this.RaisedException = result.RaisedException;
             this.Elapsed = result.Elapsed;
             this.Started = result.Started;
             this.Completed = result.Completed;
@@ -129,7 +129,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Gets or sets the raised exception.
         /// </summary>
         /// <value>The raised exception.</value>
-        public string RaisedException { get; set; }
+        public Exception RaisedException { get; set; }
 
         /// <summary>
         /// Gets or sets the session identifier.
