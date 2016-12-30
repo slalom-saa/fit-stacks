@@ -7,8 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
-using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Actors;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
@@ -16,7 +14,7 @@ using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 using ExecutionContext = Slalom.Stacks.Runtime.ExecutionContext;
 
-namespace Slalom.Stacks.Communication
+namespace Slalom.Stacks.Messaging
 {
     /// <summary>
     /// Supervises the execution and completion of commands.  Returns a result containing the returned value if the command is successful; 
@@ -25,13 +23,15 @@ namespace Slalom.Stacks.Communication
     /// <seealso cref="IUseCaseCoordinator" />
     public class UseCaseCoordinator : IUseCaseCoordinator
     {
+        private readonly Lazy<IEnumerable<IAuditStore>> _audits;
+
+        private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
         private readonly IComponentContext _context;
         private readonly ConcurrentDictionary<Type, object> _handlers = new ConcurrentDictionary<Type, object>();
         private readonly Lazy<ILogger> _logger;
-        private readonly Lazy<IEventPublisher> _publisher;
-        private readonly Lazy<IEnumerable<IAuditStore>> _audits;
         private readonly Lazy<IEnumerable<ILogStore>> _logs;
-
+        private readonly Lazy<IEventPublisher> _publisher;
+        private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UseCaseCoordinator"/> class.
@@ -118,7 +118,7 @@ namespace Slalom.Stacks.Communication
             {
                 if (result.RaisedException != null)
                 {
-                    _logger.Value.Verbose(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@Context}", command, context);
+                    _logger.Value.Error(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@Context}", command, context);
                 }
                 else if (result.ValidationErrors?.Any() ?? false)
                 {
@@ -231,12 +231,16 @@ namespace Slalom.Stacks.Communication
         {
             foreach (var item in context.RaisedEvents)
             {
-                await _publisher.Value.PublishAsync(item, context);
+                try
+                {
+                    await _publisher.Value.PublishAsync(item, context);
+                }
+                catch (Exception exception)
+                {
+                    _logger.Value.Error(exception, "An unhandled exception was raised while handling " + item.EventName + ": {@Event} {@Context}", item, context);
+                }
             }
         }
-
-        private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
-        private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
 
         /// <summary>
         /// The validation stage of the pipeline.

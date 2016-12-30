@@ -1,7 +1,7 @@
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Test.Domain;
+using Slalom.Stacks.Test.Examples.Domain;
 
-namespace Slalom.Stacks.Test.Commands.AddItem
+namespace Slalom.Stacks.Test.Examples.Actors.Items.Add
 {
     public class AddItemEvent : Event
     {

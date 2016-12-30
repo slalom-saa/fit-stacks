@@ -7,16 +7,15 @@ using Newtonsoft.Json;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Actors;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
-using Slalom.Stacks.Test.Commands.AddItem;
-using Slalom.Stacks.Test.Commands.SearchItems;
-using Slalom.Stacks.Test.Domain;
-using Slalom.Stacks.Test.Search;
+using Slalom.Stacks.Test.Examples.Actors.Items.Add;
+using Slalom.Stacks.Test.Examples.Actors.Items.Search;
+using Slalom.Stacks.Test.Examples.Domain;
+using Slalom.Stacks.Test.Examples.Search;
 using Slalom.Stacks.Validation;
 
 // ReSharper disable AccessToDisposedClosure
@@ -47,7 +46,7 @@ namespace Slalom.Stacks.ConsoleClient
             try
             {
                 var watch = new Stopwatch();
-                var count = 100000;
+                var count = 1000;
                 using (var container = new ApplicationContainer(typeof(Item), this))
                 {
                     watch.Start();
@@ -58,6 +57,10 @@ namespace Slalom.Stacks.ConsoleClient
                         tasks.Add(container.SendAsync(new AddItemCommand("asdf")));
                     });
                     await Task.WhenAll(tasks);
+
+                    var failed = tasks.Where(e => !e.Result.IsSuccessful).ToList();
+
+                    Console.WriteLine(JsonConvert.SerializeObject(failed, Formatting.Indented));
 
                     watch.Stop();
 

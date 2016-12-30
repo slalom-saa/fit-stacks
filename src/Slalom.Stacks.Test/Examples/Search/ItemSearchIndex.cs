@@ -1,14 +1,11 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Slalom.Stacks.Communication;
+﻿using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
-using Slalom.Stacks.Test.Commands.AddItem;
-using Slalom.Stacks.Test.Domain;
+using Slalom.Stacks.Test.Examples.Actors.Items.Add;
 
-namespace Slalom.Stacks.Test.Search
+namespace Slalom.Stacks.Test.Examples.Search
 {
     public class ItemSearchIndexer : SearchIndexer<ItemSearchResult>, IHandleEvent<AddItemEvent>
     {
@@ -23,7 +20,7 @@ namespace Slalom.Stacks.Test.Search
         {
         }
 
-        public async Task Handle(AddItemEvent instance, ExecutionContext context)
+        public async Task HandleAsync(AddItemEvent instance, ExecutionContext context)
         {
             await this.AddAsync(new[] { new ItemSearchResult
             {
