@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Reflection
     {
         private static readonly ConcurrentDictionary<Type, List<Type>> Cache = new ConcurrentDictionary<Type, List<Type>>();
 
-        private static readonly string[] _ignores = { "Libuv", "Microsoft.", "NETStandard" };
+        private static readonly string[] _ignores = { "Libuv", "Microsoft.", "NETStandard", "runtime", "xunit" };
         private readonly ILogger _logger;
         private Lazy<List<Assembly>> _assemblies;
 
@@ -44,6 +44,15 @@ namespace Slalom.Stacks.Reflection
             return Cache.GetOrAdd(typeof(TType), t => _assemblies.Value.SafelyGetTypes<TType>().ToList());
         }
 
+        /// <summary>
+        /// Finds available types that are assignable to the specified type.
+        /// </summary>
+        /// <returns>All available types that are assignable to the specified type.</returns>
+        public IEnumerable<Type> Find(Type type)
+        {
+            return Cache.GetOrAdd(type, t => _assemblies.Value.SafelyGetTypes(type).ToList());
+        }
+
         private void CreateAssemblyFactory(ILogger logger)
         {
             _assemblies = new Lazy<List<Assembly>>(() =>
@@ -55,12 +64,7 @@ namespace Slalom.Stacks.Reflection
                 {
                     try
                     {
-                        if (compilationLibrary.Name.StartsWith("runtime"))
-                        {
-                            continue;
-                        }
-
-                        if (_ignores.Any(e=>compilationLibrary.Name.StartsWith(e)))
+                        if (_ignores.Any(e => compilationLibrary.Name.StartsWith(e)))
                         {
                             continue;
                         }

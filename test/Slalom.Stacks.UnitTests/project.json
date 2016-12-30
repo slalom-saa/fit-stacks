@@ -16,6 +16,9 @@
     "Slalom.Stacks": {
       "target": "project"
     },
+    "Slalom.Stacks.Test": {
+      "target": "project"
+    },
     "Microsoft.DotNet.InternalAbstractions": "1.0.0"
     },
   "testRunner": "xunit",

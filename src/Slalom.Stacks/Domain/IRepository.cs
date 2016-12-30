@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Domain
@@ -32,12 +34,6 @@ namespace Slalom.Stacks.Domain
         Task<TRoot> FindAsync(string id);
 
         /// <summary>
-        /// Opens a query that can be used to filter and project.
-        /// </summary>
-        /// <returns>Returns an IQueryable that can be used to execute queries.</returns>
-        IQueryable<TRoot> OpenQuery();
-
-        /// <summary>
         /// Removes the specified instances.
         /// </summary>
         /// <param name="instances">The instances to remove.</param>
@@ -51,5 +47,12 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to update.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         Task UpdateAsync(TRoot[] instances);
+
+        /// <summary>
+        /// Finds instances with the specified expression.
+        /// </summary>
+        /// <param name="expression">The expression to filter with.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task<IEnumerable<TRoot>> FindAsync(Expression<Func<TRoot, bool>> expression);
     }
 }

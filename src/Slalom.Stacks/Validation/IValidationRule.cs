@@ -20,6 +20,6 @@ namespace Slalom.Stacks.Validation
         /// <returns>Returns all found validation errors.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        Task<IEnumerable<ValidationError>> Validate(TValue instance, TContext context);
+        IEnumerable<ValidationError> Validate(TValue instance, TContext context);
     }
 }

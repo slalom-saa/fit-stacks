@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Search
 {
@@ -13,7 +14,8 @@ namespace Slalom.Stacks.Search
     /// <seealso cref="Slalom.Stacks.Search.ISearchContext" />
     public class InMemorySearchContext : ISearchContext
     {
-        private List<ISearchResult> _instances = new List<ISearchResult>();
+        private readonly List<ISearchResult> _instances = new List<ISearchResult>();
+        private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
@@ -26,20 +28,20 @@ namespace Slalom.Stacks.Search
         /// and have a small set, then you can use the update method.</remarks>
         public Task AddAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
-            while (true)
+            Argument.NotNull(instances, nameof(instances));
+
+            _cacheLock.EnterWriteLock();
+            try
             {
-                var original = Interlocked.CompareExchange(ref _instances, null, null);
-
-                var copy = original.ToList();
-                copy.AddRange(instances);
-
-                var result = Interlocked.CompareExchange(ref _instances, copy, original);
-                if (result == original)
+                foreach (var instance in instances)
                 {
-                    break;
+                    _instances.Add(instance);
                 }
             }
-
+            finally
+            {
+                _cacheLock.ExitWriteLock();
+            }
             return Task.FromResult(0);
         }
 
@@ -50,18 +52,14 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         public Task ClearAsync<TSearchResult>() where TSearchResult : class, ISearchResult
         {
-            while (true)
+            _cacheLock.EnterWriteLock();
+            try
             {
-                var original = Interlocked.CompareExchange(ref _instances, null, null);
-
-                var copy = original.ToList();
-                copy.Clear();
-
-                var result = Interlocked.CompareExchange(ref _instances, copy, original);
-                if (result == original)
-                {
-                    break;
-                }
+                _instances.RemoveAll(e => e is TSearchResult);
+            }
+            finally
+            {
+                _cacheLock.ExitWriteLock();
             }
             return Task.FromResult(0);
         }
@@ -73,7 +71,15 @@ namespace Slalom.Stacks.Search
         /// <returns>An IQueryable&lt;TAggregateRoot&gt; that can be used to filter and project.</returns>
         public IQueryable<TSearchResult> OpenQuery<TSearchResult>() where TSearchResult : class, ISearchResult
         {
-            return _instances.OfType<TSearchResult>().AsQueryable();
+            _cacheLock.EnterReadLock();
+            try
+            {
+                return _instances.OfType<TSearchResult>().AsQueryable();
+            }
+            finally
+            {
+                _cacheLock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -84,21 +90,15 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         public Task RemoveAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
-            while (true)
+            _cacheLock.EnterWriteLock();
+            try
             {
-                var original = Interlocked.CompareExchange(ref _instances, null, null);
-
-                var copy = original.ToList();
-                foreach (var item in instances)
-                {
-                    copy.Remove(item);
-                }
-
-                var result = Interlocked.CompareExchange(ref _instances, copy, original);
-                if (result == original)
-                {
-                    break;
-                }
+                var ids = instances.Select(e => e.Id).ToList();
+                _instances.RemoveAll(e => ids.Contains(e.Id));
+            }
+            finally
+            {
+                _cacheLock.ExitWriteLock();
             }
             return Task.FromResult(0);
         }
@@ -111,22 +111,14 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         public Task RemoveAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate) where TSearchResult : class, ISearchResult
         {
-            while (true)
+            _cacheLock.EnterWriteLock();
+            try
             {
-                var original = Interlocked.CompareExchange(ref _instances, null, null);
-
-                var copy = original.ToList();
-                var target = copy.OfType<TSearchResult>().Where(e => predicate.Compile()(e));
-                foreach (var item in target)
-                {
-                    copy.Remove(item);
-                }
-
-                var result = Interlocked.CompareExchange(ref _instances, copy, original);
-                if (result == original)
-                {
-                    break;
-                }
+                _instances.RemoveAll(e => predicate.Compile()((TSearchResult)e));
+            }
+            finally
+            {
+                _cacheLock.ExitWriteLock();
             }
             return Task.FromResult(0);
         }
@@ -139,7 +131,15 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         public Task<TSearchResult> FindAsync<TSearchResult>(int id) where TSearchResult : class, ISearchResult
         {
-            return Task.FromResult(_instances.OfType<TSearchResult>().FirstOrDefault(e => e.Id == id));
+            _cacheLock.EnterReadLock();
+            try
+            {
+                return Task.FromResult((TSearchResult)_instances.Find(e => e.Id == id));
+            }
+            finally
+            {
+                _cacheLock.ExitReadLock();
+            }
         }
 
         /// <summary>

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Slalom.Stacks.Configuration
 {
     /// <summary>
-    /// Context that contains current components from the container.
+    /// Context that registers and resolves components.
     /// </summary>
     public interface IComponentContext
     {

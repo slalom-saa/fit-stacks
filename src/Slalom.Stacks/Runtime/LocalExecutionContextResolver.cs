@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
+using Slalom.Stacks.Utilities.NewId;
 using Slalom.Stacks.Validation;
 
 #if !core
@@ -22,19 +23,8 @@ namespace Slalom.Stacks.Runtime
     {
         private const string Key = "CorrelationId";
 
-        private static Guid session = Guid.NewGuid();
+        private static string session = NewId.NextId();
         private readonly IConfiguration _configuration;
-        private readonly LocalExecutionContext _context;
-
-#if core
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LocalExecutionContextResolver"/> class.
-        /// </summary>
-        public LocalExecutionContextResolver()
-        {
-            _context = new LocalExecutionContext();
-        }
-#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalExecutionContextResolver"/> class.
@@ -44,43 +34,40 @@ namespace Slalom.Stacks.Runtime
             _configuration = configuration;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LocalExecutionContextResolver"/> class.
-        /// </summary>
-        /// <param name="context">The context to return.</param>
-        public LocalExecutionContextResolver(LocalExecutionContext context)
-        {
-            Argument.NotNull(context, nameof(context));
-
-            _context = context;
-        }
-
-        private static string _localIpAddress = GetLocalIPAddress();
+        private static string _localIpAddress;
 
 #if !core
-        private Guid GetCorrelationId()
+        private string GetCorrelationId()
         {
             if (CallContext.GetData(Key) == null)
             {
-                var id = Guid.NewGuid();
+                var id = NewId.NextId();
                 CallContext.SetData(Key, id);
             }
-            return new Guid(CallContext.GetData(Key).ToString());
+            return CallContext.GetData(Key).ToString();
         }
 
         private static string GetLocalIPAddress()
         {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
+            if (_localIpAddress == null)
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (var ip in host.AddressList)
                 {
-                    return ip.ToString();
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        _localIpAddress = ip.ToString();
+                    }
                 }
             }
-            throw new Exception("Local IP Address Not Found!");
+            return _localIpAddress;
         }
 #else
+        private string GetCorrelationId()
+        {
+            return NewId.NextId();
+        }
+
         private static string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntryAsync(Dns.GetHostName()).Result;
@@ -98,11 +85,7 @@ namespace Slalom.Stacks.Runtime
         private ClaimsPrincipal GetWindowsClaimsPrincipal()
         {
             var target = WindowsIdentity.GetCurrent();
-            if (target != null)
-            {
-                return new ClaimsPrincipal(target);
-            }
-            return null;
+            return new ClaimsPrincipal(target);
         }
 
         /// <summary>
@@ -111,13 +94,13 @@ namespace Slalom.Stacks.Runtime
         /// <exception cref="System.NotImplementedException"></exception>
         public ExecutionContext Resolve()
         {
-            return _context ?? new LocalExecutionContext(_configuration?["Application"],
-                _configuration?["Environment"], _localIpAddress,
+            return new ExecutionContext(_configuration?["Application"],
+                _configuration?["Environment"],
                 "",
-                Guid.NewGuid().ToString(),
-                session.ToString(),
+                this.GetCorrelationId(),
+                session,
                 this.GetWindowsClaimsPrincipal(),
-                _localIpAddress,
+                GetLocalIPAddress(),
                 Environment.MachineName,
                 Environment.CurrentManagedThreadId);
         }
