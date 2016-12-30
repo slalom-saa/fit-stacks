@@ -3,10 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using Microsoft.Extensions.DependencyModel;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Validation;
+using Microsoft.Extensions.DependencyModel;
 
 namespace Slalom.Stacks.Reflection
 {
@@ -16,8 +15,10 @@ namespace Slalom.Stacks.Reflection
     /// <seealso cref="Slalom.Stacks.Reflection.IDiscoverTypes" />
     public class DiscoveryService : IDiscoverTypes
     {
-        private readonly ILogger _logger;
         private static readonly ConcurrentDictionary<Type, List<Type>> Cache = new ConcurrentDictionary<Type, List<Type>>();
+
+        private static readonly string[] _ignores = { "Libuv", "Microsoft.", "NETStandard", "runtime", "xunit" };
+        private readonly ILogger _logger;
         private Lazy<List<Assembly>> _assemblies;
 
         /// <summary>
@@ -43,17 +44,31 @@ namespace Slalom.Stacks.Reflection
             return Cache.GetOrAdd(typeof(TType), t => _assemblies.Value.SafelyGetTypes<TType>().ToList());
         }
 
+        /// <summary>
+        /// Finds available types that are assignable to the specified type.
+        /// </summary>
+        /// <returns>All available types that are assignable to the specified type.</returns>
+        public IEnumerable<Type> Find(Type type)
+        {
+            return Cache.GetOrAdd(type, t => _assemblies.Value.SafelyGetTypes(type).ToList());
+        }
+
         private void CreateAssemblyFactory(ILogger logger)
         {
             _assemblies = new Lazy<List<Assembly>>(() =>
             {
                 var assemblies = new List<Assembly>();
-
+#if core
                 var dependencies = DependencyContext.Default;
                 foreach (var compilationLibrary in dependencies.RuntimeLibraries)
                 {
                     try
                     {
+                        if (_ignores.Any(e => compilationLibrary.Name.StartsWith(e)))
+                        {
+                            continue;
+                        }
+
                         var assemblyName = new AssemblyName(compilationLibrary.Name);
 
                         var assembly = Assembly.Load(assemblyName);
@@ -62,9 +77,12 @@ namespace Slalom.Stacks.Reflection
                     }
                     catch
                     {
-                        logger.Debug("Type Discovery: Could not load library {name}.", compilationLibrary.Name);
+                        logger?.Debug("Type Discovery: Could not load library {name}.", compilationLibrary.Name);
                     }
                 }
+#else
+                assemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies());
+#endif
 
                 return assemblies;
             });

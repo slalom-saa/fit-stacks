@@ -21,14 +21,10 @@ namespace Slalom.Stacks.Domain
         /// <param name="assemblies">The assemblies.</param>
         public DomainModule(params Assembly[] assemblies)
         {
-            this.Assemblies = assemblies;
+            this._assemblies = assemblies;
         }
 
-        /// <summary>
-        /// Gets or sets the assemblies used for discovery.
-        /// </summary>
-        /// <value>The assemblies used for discovery.</value>
-        public Assembly[] Assemblies { get; set; }
+        private Assembly[] _assemblies;
 
         /// <summary>
         /// Override to add registrations to the container.
@@ -45,13 +41,12 @@ namespace Slalom.Stacks.Domain
                    .SingleInstance();
 
             builder.Register(e => new InMemoryEntityContext())
-                   .AsImplementedInterfaces()
-                   .AsSelf()
+                   .As<IEntityContext>()
                    .SingleInstance();
 
             builder.RegisterGeneric(typeof(Repository<>))
                    .As(typeof(IRepository<>))
-                   .InstancePerDependency();
+                   .SingleInstance();
         }
     }
 }

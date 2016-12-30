@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Newtonsoft.Json;
-using Slalom.Stacks.Communication;
-using Slalom.Stacks.Communication.Serialization;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Validation;
 
@@ -40,7 +39,6 @@ namespace Slalom.Stacks.Runtime
         /// </summary>
         /// <param name="applicationName">The mame of the application.</param>
         /// <param name="environment">The current environment. (Development, Quality Assurance, Production)</param>
-        /// <param name="host">The host.</param>
         /// <param name="path">The execution path.</param>
         /// <param name="correlationId">The correlation identifier.</param>
         /// <param name="sessionId">The session identifier.</param>
@@ -48,7 +46,7 @@ namespace Slalom.Stacks.Runtime
         /// <param name="userHostAddress">The user host address.</param>
         /// <param name="machineName">The name of the machine.</param>
         /// <param name="threadId">The current thread identifier.</param>
-        public ExecutionContext(string applicationName, string environment, string host, string path, string correlationId, string sessionId, ClaimsPrincipal user, string userHostAddress, string machineName, int threadId)
+        public ExecutionContext(string applicationName, string environment, string path, string correlationId, string sessionId, ClaimsPrincipal user, string userHostAddress, string machineName, int threadId)
         {
             this.Path = path;
             this.CorrelationId = correlationId;
@@ -57,7 +55,6 @@ namespace Slalom.Stacks.Runtime
             this.UserHostAddress = userHostAddress;
             this.MachineName = machineName;
             this.Environment = environment;
-            this.Host = host;
             this.ApplicationName = applicationName;
             this.ThreadId = threadId;
         }
@@ -79,12 +76,6 @@ namespace Slalom.Stacks.Runtime
         /// </summary>
         /// <value>The name of the environment.</value>
         public string Environment { get; }
-
-        /// <summary>
-        /// Gets the host IP address.
-        /// </summary>
-        /// <value>The host IP address.</value>
-        public string Host { get; }
 
         /// <summary>
         /// Gets the name of the machine.

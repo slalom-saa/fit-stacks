@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Validation;
@@ -58,17 +60,6 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <summary>
-        /// Opens a query that can be used to filter and project.
-        /// </summary>
-        /// <returns>Returns an IQueryable that can be used to execute queries.</returns>
-        public IQueryable<TRoot> OpenQuery()
-        {
-            this.Logger.Verbose($"Opening a query for items of type {typeof(TRoot)} using {_context.GetType()}.");
-
-            return _context.OpenQuery<TRoot>();
-        }
-
-        /// <summary>
         /// Adds the specified instances.
         /// </summary>
         /// <param name="instances">The instances to update.</param>
@@ -94,6 +85,20 @@ namespace Slalom.Stacks.Domain
             this.Logger.Verbose($"Updating {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
 
             return _context.UpdateAsync(instances);
+        }
+
+        /// <summary>
+        /// Finds instances with the specified expression.
+        /// </summary>
+        /// <param name="expression">The expression to filter with.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<IEnumerable<TRoot>> FindAsync(Expression<Func<TRoot, bool>> expression)
+        {
+            Argument.NotNull(expression, nameof(expression));
+
+            this.Logger.Verbose($"Finding items of type {typeof(TRoot)} using {_context.GetType()}.");
+
+            return _context.FindAsync(expression);
         }
 
         /// <summary>

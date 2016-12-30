@@ -39,8 +39,12 @@ namespace Slalom.Stacks.Search
         /// </summary>
         /// <param name="instances">The instances to add immediately.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public virtual Task AddAsync(TSearchResult[] instances)
+        public virtual Task AddAsync(params TSearchResult[] instances)
         {
+            Argument.NotNull(instances, nameof(instances));
+
+            this.Logger.Verbose($"Adding {instances.Count()} items of type {typeof(TSearchResult)} using {_context.GetType()}.");
+
             return _context.AddAsync(instances);
         }
 
@@ -62,6 +66,7 @@ namespace Slalom.Stacks.Search
         public virtual IQueryable<TSearchResult> OpenQuery()
         {
             this.Logger.Verbose($"Opening a query for type {typeof(TSearchResult)} using {_context.GetType()}.");
+
             return _context.OpenQuery<TSearchResult>();
         }
 
@@ -82,7 +87,7 @@ namespace Slalom.Stacks.Search
         /// </summary>
         /// <param name="instances">The instances to remove.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public virtual Task RemoveAsync(TSearchResult[] instances)
+        public virtual Task RemoveAsync(params TSearchResult[] instances)
         {
             Argument.NotNull(instances, nameof(instances));
 
@@ -120,7 +125,7 @@ namespace Slalom.Stacks.Search
         /// </summary>
         /// <param name="instances">The instances to update immediately.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public virtual Task UpdateAsync(TSearchResult[] instances)
+        public virtual Task UpdateAsync(params TSearchResult[] instances)
         {
             Argument.NotNull(instances, nameof(instances));
 
@@ -135,7 +140,7 @@ namespace Slalom.Stacks.Search
         /// <param name="predicate">The predicate to match.</param>
         /// <param name="expression">The update to make.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <exception cref="System.NotSupportedException"></exception>
         public virtual Task UpdateAsync(Expression<Func<TSearchResult, bool>> predicate, Expression<Func<TSearchResult, TSearchResult>> expression)
         {
             throw new NotSupportedException();

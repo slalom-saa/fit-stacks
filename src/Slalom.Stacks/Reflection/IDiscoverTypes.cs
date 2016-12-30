@@ -16,5 +16,11 @@ namespace Slalom.Stacks.Reflection
         /// <typeparam name="TType">The type's base class or interface.</typeparam>
         /// <returns>Returns all types in the context.</returns>
         IEnumerable<Type> Find<TType>();
+
+        /// <summary>
+        /// Finds available types that are assignable to the specified type.
+        /// </summary>
+        /// <returns>All available types that are assignable to the specified type.</returns>
+        IEnumerable<Type> Find(Type type);
     }
 }

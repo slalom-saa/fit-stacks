@@ -1,5 +1,5 @@
 {
-  "version": "1.2.1-*",
+  "version": "1.2.51-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks", "blocks" ],
@@ -33,7 +33,11 @@
     "System.Net.NameResolution": "4.3.0",
     "System.Security.Principal.Windows": "4.3.0",
     "System.Net.NetworkInformation": "4.1.0",
-    "System.Diagnostics.Process": "4.3.0"
+    "System.Diagnostics.Process": "4.3.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
+    "Autofac.Extensions.DependencyInjection": "4.0.0",
+    "System.Linq.Expressions": "4.3.0",
+    "System.Linq": "4.3.0"
   },
 
   "buildOptions": {
@@ -61,7 +65,7 @@
     ],
     "postcompile": [
       "dotnet pack --no-build --configuration %compile:Configuration%",
-      "xcopy .\\bin\\debug\\*.nupkg c:\\nuget\\ /y"
+      "xcopy .\\bin\\%compile:Configuration%\\*.nupkg c:\\nuget\\ /y"
     ]
   }
 }

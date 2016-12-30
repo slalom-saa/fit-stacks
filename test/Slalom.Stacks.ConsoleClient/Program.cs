@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Test.Commands.AddItem;
-using Slalom.Stacks.Test.Domain;
-using Slalom.Stacks.Test.Search;
+using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Test.Examples.Actors.Items.Add;
+using Slalom.Stacks.Test.Examples.Actors.Items.Search;
+using Slalom.Stacks.Test.Examples.Domain;
+using Slalom.Stacks.Test.Examples.Search;
 
 // ReSharper disable AccessToDisposedClosure
 
@@ -28,24 +29,23 @@ namespace Slalom.Stacks.ConsoleClient
             try
             {
                 var watch = new Stopwatch();
-                var count = 1000;
-                using (var container = new ApplicationContainer(typeof(Item)))
+                var count = 100000;
+                using (var container = new ApplicationContainer(typeof(Item), this))
                 {
-
                     watch.Start();
 
-                    var tasks = new List<Task>(count);
+                    var tasks = new List<Task<CommandResult>>(count);
                     Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
                     {
-                        tasks.Add(container.Bus.SendAsync(new AddItemCommand(DateTime.Now.Ticks.ToString())));
+                        tasks.Add(container.SendAsync(new AddItemCommand("asdf")));
                     });
                     await Task.WhenAll(tasks);
 
                     watch.Stop();
 
-                    var searchResultCount = container.Search.OpenQuery<ItemSearchResult>().Count();
-                    var entityCount = container.Domain.OpenQuery<Item>().Count();
-                    if (searchResultCount != count || entityCount != count)
+                    var searchResultCount = ((IQueryable<ItemSearchResult>)(await container.SendAsync(new SearchItemsCommand())).Response).Count();
+                    var entityCount = (await container.Domain.FindAsync<Item>(e => true)).Count();
+                    if (entityCount != count || searchResultCount != count)
                     {
                         throw new Exception($"The execution did not have the expected results. {searchResultCount} search results and {entityCount} entities out of {count}.");
                     }

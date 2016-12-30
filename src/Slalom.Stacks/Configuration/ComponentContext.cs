@@ -41,7 +41,7 @@ namespace Slalom.Stacks.Configuration
 
             if (!_context.TryResolve(type, out instance))
             {
-                if (!type.GetTypeInfo().IsAbstract && !type.GetTypeInfo().IsInterface)
+                if (!type.GetTypeInfo().IsAbstract && !type.GetTypeInfo().IsInterface && type.GetConstructors().Any(e => !e.GetParameters().Any()))
                 {
                     instance = Activator.CreateInstance(type);
                 }
@@ -100,7 +100,7 @@ namespace Slalom.Stacks.Configuration
         /// <exception>Thrown when the <paramref name="type"/> argument is null.</exception>
         public IEnumerable<object> ResolveAll(Type type)
         {
-            var target = (IEnumerable<object>)_context.Resolve(typeof(IEnumerable<>).MakeGenericType(type));
+            var target = ((IEnumerable<object>)_context.Resolve(typeof(IEnumerable<>).MakeGenericType(type))).ToList();
 
             foreach (var instance in target)
             {
