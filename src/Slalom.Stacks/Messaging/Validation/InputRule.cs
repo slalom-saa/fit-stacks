@@ -9,7 +9,7 @@ namespace Slalom.Stacks.Messaging.Validation
     /// Represents an input validation rule set that should be run as a single unit.
     /// </summary>
     /// <typeparam name="TCommand">The type of command.</typeparam>
-    public abstract class InputValidationRule<TCommand> : IInputValidationRule<TCommand> where TCommand : ICommand
+    public abstract class InputRule<TCommand> : IInputValidationRule<TCommand> where TCommand : ICommand
     {
         /// <summary>
         /// Gets the execution context.

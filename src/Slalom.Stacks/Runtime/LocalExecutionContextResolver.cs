@@ -70,23 +70,20 @@ namespace Slalom.Stacks.Runtime
 
         private static string GetLocalIPAddress()
         {
-            var host = Dns.GetHostEntryAsync(Dns.GetHostName()).Result;
-            foreach (var ip in host.AddressList)
+            if (_localIpAddress == null)
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                var host = Dns.GetHostEntryAsync(Dns.GetHostName()).Result;
+                foreach (var ip in host.AddressList)
                 {
-                    return ip.ToString();
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        _localIpAddress = ip.ToString();
+                    }
                 }
             }
-            throw new Exception("Local IP Address Not Found!");
+            return _localIpAddress;
         }
 #endif
-
-        private ClaimsPrincipal GetWindowsClaimsPrincipal()
-        {
-            var target = WindowsIdentity.GetCurrent();
-            return new ClaimsPrincipal(target);
-        }
 
         /// <summary>
         /// Resolves the current execution context.
@@ -99,7 +96,7 @@ namespace Slalom.Stacks.Runtime
                 "",
                 this.GetCorrelationId(),
                 session,
-                this.GetWindowsClaimsPrincipal(),
+                ClaimsPrincipal.Current,
                 GetLocalIPAddress(),
                 Environment.MachineName,
                 Environment.CurrentManagedThreadId);

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
@@ -65,7 +66,8 @@ namespace Slalom.Stacks.Messaging
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>)))
-                   .As(instance => instance.GetBaseAndContractTypes());
+                   .As(instance => instance.GetBaseAndContractTypes())
+                   .PropertiesAutowired(new AllUnsetPropertySelector());
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(UseCaseActor<,>)))

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Logging
 {
@@ -34,10 +36,7 @@ namespace Slalom.Stacks.Messaging.Logging
             this.CommandName = command.CommandName;
             this.CommandId = command.Id;
             this.TimeStamp = command.TimeStamp;
-            if (result.ValidationErrors.Any())
-            {
-                this.ValidationErrors = JsonConvert.SerializeObject(result.ValidationErrors);
-            }
+            this.ValidationErrors = result.ValidationErrors?.ToArray();
             this.MachineName = context.MachineName;
             this.Environment = context.Environment;
             this.ApplicationName = context.ApplicationName;
@@ -171,6 +170,6 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Gets or sets the validation errors.
         /// </summary>
         /// <value>The validation errors.</value>
-        public string ValidationErrors { get; set; }
+        public IEnumerable<ValidationError> ValidationErrors { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.2.58-*",
+  "version": "1.2.59-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks", "test" ],
@@ -9,7 +9,8 @@
   "dependencies": {
     "Slalom.Stacks": {
       "target": "project"
-    }
+    },
+    "System.Threading.Tasks.Parallel": "4.0.1"
   },
 
   "frameworks": {
