@@ -18,7 +18,7 @@ namespace Slalom.Stacks.UnitTests
         {
             using (var container = new UnitTestContainer())
             {
-                var result = await container.SendAsync(new AddItemCommand("adsf"));
+                var result = await container.Commands.SendAsync(new AddItemCommand("adsf"));
 
                 result.IsSuccessful.ShouldBeTrue("The use case execution was not successful.");
 
@@ -35,7 +35,7 @@ namespace Slalom.Stacks.UnitTests
         {
             using (var container = new UnitTestContainer())
             {
-                var result = await container.SendAsync(new AddItemCommand(null));
+                var result = await container.Commands.SendAsync(new AddItemCommand(null));
 
                 result.IsSuccessful.ShouldBeFalse();
 
@@ -48,7 +48,7 @@ namespace Slalom.Stacks.UnitTests
         {
             using (var container = new UnitTestContainer())
             {
-                var result = await container.SendAsync(new AddItemCommand(""));
+                var result = await container.Commands.SendAsync(new AddItemCommand(""));
 
                 result.IsSuccessful.ShouldBeFalse();
 
@@ -61,7 +61,7 @@ namespace Slalom.Stacks.UnitTests
         {
             using (var container = new UnitTestContainer())
             {
-                var result = await container.SendAsync(new AddItemCommand("ss"));
+                var result = await container.Commands.SendAsync(new AddItemCommand("ss"));
 
                 result.IsSuccessful.ShouldBeTrue();
 
@@ -76,7 +76,7 @@ namespace Slalom.Stacks.UnitTests
             {
                 await container.Domain.AddAsync(Item.Create("A"));
 
-                var result = await container.SendAsync(new AddItemCommand("A"));
+                var result = await container.Commands.SendAsync(new AddItemCommand("A"));
 
                 result.IsSuccessful.ShouldBeFalse();
             }

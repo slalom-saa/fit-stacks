@@ -15,6 +15,7 @@ namespace Slalom.Stacks.Search
     public class InMemorySearchContext : ISearchContext
     {
         private readonly List<ISearchResult> _instances = new List<ISearchResult>();
+        private int _index = 0;
         private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
 
         /// <summary>
@@ -35,6 +36,7 @@ namespace Slalom.Stacks.Search
             {
                 foreach (var instance in instances)
                 {
+                    instance.Id = _index++;
                     _instances.Add(instance);
                 }
             }

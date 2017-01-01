@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging.Logging;
@@ -20,25 +21,25 @@ namespace Slalom.Stacks.Messaging
     /// Supervises the execution and completion of commands.  Returns a result containing the returned value if the command is successful; 
     /// otherwise, returns information about why the execution was not successful.
     /// </summary>
-    /// <seealso cref="IUseCaseCoordinator" />
-    public class UseCaseCoordinator : IUseCaseCoordinator
+    /// <seealso cref="ICommandCoordinator" />
+    public class CommandCoordinator : ICommandCoordinator
     {
         private readonly Lazy<IEnumerable<IAuditStore>> _audits;
 
         private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
         private readonly IComponentContext _context;
-        private readonly ConcurrentDictionary<Type, object> _handlers = new ConcurrentDictionary<Type, object>();
+        private readonly ConcurrentDictionary<Type, IEnumerable<object>> _handlers = new ConcurrentDictionary<Type, IEnumerable<object>>();
         private readonly Lazy<ILogger> _logger;
         private readonly Lazy<IEnumerable<ILogStore>> _logs;
         private readonly Lazy<IEventPublisher> _publisher;
         private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UseCaseCoordinator"/> class.
+        /// Initializes a new instance of the <see cref="CommandCoordinator"/> class.
         /// </summary>
         /// <param name="context">The configured <see cref="IComponentContext"/> instance.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        public UseCaseCoordinator(IComponentContext context)
+        public CommandCoordinator(IComponentContext context)
         {
             Argument.NotNull(context, nameof(context));
 
@@ -56,7 +57,20 @@ namespace Slalom.Stacks.Messaging
         /// <param name="timeout">The timeout period.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
-        public async Task<CommandResult> SendAsync(ICommand command, TimeSpan? timeout = null)
+        public Task<CommandResult> SendAsync(ICommand command, TimeSpan? timeout = null)
+        {
+            return this.SendAsync(null, command, timeout);
+        }
+
+        /// <summary>
+        /// Handles the command, progressing it through the stages of the pipeline.
+        /// </summary>
+        /// <param name="command">The command to handle.</param>
+        /// <param name="path"></param>
+        /// <param name="timeout">The timeout period.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
+        public async Task<CommandResult> SendAsync(string path, ICommand command, TimeSpan? timeout = null)
         {
             Argument.NotNull(command, nameof(command));
 
@@ -74,7 +88,7 @@ namespace Slalom.Stacks.Messaging
                 if (!result.ValidationErrors.Any())
                 {
                     // execute the handler
-                    await this.ExecuteUseCase(command, result, context);
+                    await this.ExecuteUseCase(command, path, result, context);
 
                     // add the response to the context if it was an event
                     var value = result.Response as IEvent;
@@ -113,7 +127,6 @@ namespace Slalom.Stacks.Messaging
         {
             var tasks = _logs.Value.Select(e => e.AppendAsync(new LogEntry(command, result, context))).ToList();
 
-            // Add additional audits and diagnostic messages if the result was unsuccessful.
             if (!result.IsSuccessful)
             {
                 if (result.RaisedException != null)
@@ -145,25 +158,37 @@ namespace Slalom.Stacks.Messaging
         /// The command execution stage of the pipeline.
         /// </summary>
         /// <param name="command">The command to execute.</param>
+        /// <param name="path">The path.</param>
         /// <param name="result">The result.</param>
         /// <param name="context">The current execution context.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.InvalidOperationException"></exception>
+        /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
-        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context" /> argument is null.</exception>
-        protected virtual async Task ExecuteUseCase(ICommand command, CommandResult result, ExecutionContext context)
+        protected virtual async Task ExecuteUseCase(ICommand command, string path, CommandResult result, ExecutionContext context)
         {
-            var handler = (dynamic)_handlers.GetOrAdd(command.GetType(), key =>
+            var handlers = _handlers.GetOrAdd(command.GetType(), key =>
             {
                 var actors = _context.Resolve<IDiscoverTypes>().Find(typeof(UseCaseActor<,>));
-                var type = actors.FirstOrDefault(e => e.GetTypeInfo().BaseType.GetTypeInfo().IsGenericType && e.GetTypeInfo().BaseType.GetGenericArguments().FirstOrDefault() == command.GetType());
+                var target = actors.Where(e => e.GetTypeInfo().BaseType.GetTypeInfo().IsGenericType && e.GetTypeInfo().BaseType.GetGenericArguments().FirstOrDefault() == command.GetType());
 
-                return _context.Resolve(type);
-            });
+                return target.Select(e => _context.Resolve(e));
+            }).ToList();
 
-            if (handler == null)
+            if (!handlers.Any())
             {
                 throw new InvalidOperationException($"An actor could not be found for the specified command: {command.CommandName}.");
+            }
+
+            dynamic handler = null;
+
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                handler = handlers.FirstOrDefault();
+            }
+            else
+            {
+                handler = handlers.FirstOrDefault(e => e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path));
             }
 
             IEnumerable<ValidationError> errors = await handler.ValidateAsync((dynamic)command, context);
@@ -274,6 +299,25 @@ namespace Slalom.Stacks.Messaging
             var errors = await target.Validate(command, context);
 
             result.AddValidationErrors(errors);
+        }
+
+        public Task<CommandResult> SendAsync(string path, string command, TimeSpan? timeout = null)
+        {
+            var actors = _context.Resolve<IDiscoverTypes>().Find(typeof(UseCaseActor<,>)).Where(e => e.GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path)).ToList();
+            if (actors.Count() > 1)
+            {
+                throw new InvalidOperationException($"More than one actor has been configured for the path {path}.");
+            }
+            if (actors.Count == 0)
+            {
+                throw new InvalidOperationException($"No actor has been configured for the path {path}.");
+            }
+
+            var commandType = actors.First().GetTypeInfo().BaseType.GetGenericArguments()[0];
+
+            var instance = (ICommand)JsonConvert.DeserializeObject(!string.IsNullOrWhiteSpace(command) ? command : "{}", commandType);
+
+            return this.SendAsync(path, instance, timeout);
         }
     }
 }
