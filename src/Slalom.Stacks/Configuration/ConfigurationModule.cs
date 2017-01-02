@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Autofac;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Caching;
 using Slalom.Stacks.Domain;
@@ -12,7 +11,6 @@ using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
-using Slalom.Stacks.Validation;
 using Module = Autofac.Module;
 
 namespace Slalom.Stacks.Configuration
@@ -23,33 +21,16 @@ namespace Slalom.Stacks.Configuration
     /// <seealso cref="Autofac.Module" />
     internal class ConfigurationModule : Module
     {
+        private readonly Assembly[] _assemblies;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationModule"/> class.
         /// </summary>
-        /// <param name="indicators">Any indicators as types or instances for assembly scanning.</param>
-        public ConfigurationModule(params object[] indicators)
+        /// <param name="assemblies">The assemblies.</param>
+        public ConfigurationModule(Assembly[] assemblies)
         {
-            var target = new List<Assembly>();
-            foreach (var instance in indicators)
-            {
-                var type = instance as Type;
-                if (type != null)
-                {
-                    target.Add(type.GetTypeInfo().Assembly);
-                }
-                else
-                {
-                    target.Add(instance.GetType().GetTypeInfo().Assembly);
-                }
-            }
-            this.Assemblies = target.ToArray();
+            _assemblies = assemblies;
         }
-
-        /// <summary>
-        /// Gets or sets the assemblies used for discovery.
-        /// </summary>
-        /// <value>The assemblies used for discovery.</value>
-        public Assembly[] Assemblies { get; set; }
 
         /// <summary>
         /// Override to add registrations to the container.
@@ -71,12 +52,11 @@ namespace Slalom.Stacks.Configuration
                    .SingleInstance();
 
             builder.Register<ILogger>(c => new NullLogger())
-                .SingleInstance();
+                   .SingleInstance();
 
-            builder.RegisterModule(new DomainModule(this.Assemblies));
-            builder.RegisterModule(new CommunicationModule(this.Assemblies));
-            builder.RegisterModule(new SearchModule(this.Assemblies));
-
+            builder.RegisterModule(new DomainModule(_assemblies));
+            builder.RegisterModule(new MessagingModule(_assemblies));
+            builder.RegisterModule(new SearchModule(_assemblies));
 
             builder.RegisterModule(new NullLoggingModule());
             builder.RegisterModule(new NullCachingModule());
@@ -86,14 +66,13 @@ namespace Slalom.Stacks.Configuration
 
 #if !NET461
             builder.Register(c => new LocalExecutionContextResolver(c.Resolve<IConfiguration>()))
-                .As<IExecutionContextResolver>()
-                .SingleInstance();
+                   .As<IExecutionContextResolver>()
+                   .SingleInstance();
 #else
             builder.Register(c => new LocalExecutionContextResolver(c.Resolve<IConfiguration>()))
                 .As<IExecutionContextResolver>()
                 .SingleInstance();
 #endif
-
 
             builder.Register(c => new DiscoveryService(c.Resolve<ILogger>()))
                    .As<IDiscoverTypes>()

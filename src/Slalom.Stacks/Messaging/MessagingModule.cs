@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
@@ -15,13 +16,13 @@ namespace Slalom.Stacks.Messaging
     /// An Autofac module to configure the communication dependencies.
     /// </summary>
     /// <seealso cref="Autofac.Module" />
-    internal class CommunicationModule : Module
+    internal class MessagingModule : Module
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommunicationModule"/> class.
+        /// Initializes a new instance of the <see cref="MessagingModule"/> class.
         /// </summary>
         /// <param name="assemblies">The assemblies used to probe.</param>
-        public CommunicationModule(Assembly[] assemblies)
+        public MessagingModule(Assembly[] assemblies)
         {
             this.Assemblies = assemblies;
         }
@@ -42,8 +43,8 @@ namespace Slalom.Stacks.Messaging
         {
             base.Load(builder);
 
-            builder.Register(c => new UseCaseCoordinator(c.Resolve<IComponentContext>()))
-                   .As<IUseCaseCoordinator>();
+            builder.Register(c => new CommandCoordinator(c.Resolve<IComponentContext>()))
+                   .As<ICommandCoordinator>();
 
             builder.Register(c => new EventPublisher(c.Resolve<IComponentContext>()))
                    .As<IEventPublisher>();
@@ -65,7 +66,8 @@ namespace Slalom.Stacks.Messaging
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>)))
-                   .As(instance => instance.GetBaseAndContractTypes());
+                   .As(instance => instance.GetBaseAndContractTypes())
+                   .PropertiesAutowired(new AllUnsetPropertySelector());
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(UseCaseActor<,>)))

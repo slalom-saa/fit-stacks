@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Slalom.Stacks.Validation;
 
+#pragma warning disable 1998
+
 namespace Slalom.Stacks.Domain
 {
     /// <summary>
@@ -86,13 +88,16 @@ namespace Slalom.Stacks.Domain
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="expression">The expression to filter with.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<IEnumerable<TEntity>> FindAsync<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : IAggregateRoot
+        public async Task<IEnumerable<TEntity>> FindAsync<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : IAggregateRoot
         {
             _cacheLock.EnterReadLock();
             try
             {
                 var function = expression.Compile();
-                return Task.FromResult(_instances.OfType<TEntity>().Where(function));
+
+                var result = _instances.OfType<TEntity>().Where(function).ToList();
+
+                return result;
             }
             finally
             {
@@ -105,12 +110,14 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<IEnumerable<TEntity>> FindAsync<TEntity>() where TEntity : IAggregateRoot
+        public async Task<IEnumerable<TEntity>> FindAsync<TEntity>() where TEntity : IAggregateRoot
         {
             _cacheLock.EnterReadLock();
             try
             {
-                return Task.FromResult(_instances.OfType<TEntity>().ToList().AsEnumerable());
+                var result = _instances.OfType<TEntity>().ToList();
+
+                return result;
             }
             finally
             {

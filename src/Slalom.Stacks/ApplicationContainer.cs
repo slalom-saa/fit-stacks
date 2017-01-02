@@ -39,16 +39,22 @@ namespace Slalom.Stacks
                     return type.GetTypeInfo().Assembly;
                 }
                 return e.GetType().GetTypeInfo().Assembly;
-            });
+            }).Distinct().ToArray();
 
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new ConfigurationModule { Assemblies = this.Assemblies.ToArray() });
+            builder.RegisterModule(new ConfigurationModule(this.Assemblies));
 
             this.RootContainer = builder.Build();
 
             this.Initialize();
         }
+
+        /// <summary>
+        /// Gets the assemblies that the container uses for services.
+        /// </summary>
+        /// <value>The assemblies that the container uses for services.</value>
+        public Assembly[] Assemblies { get; }
 
         /// <summary>
         /// Gets the configured <see cref="IDomainFacade"/> instance.
@@ -228,7 +234,7 @@ namespace Slalom.Stacks
         /// <returns>The resolved instances.</returns>
         public IEnumerable<T> ResolveAll<T>()
         {
-            var target = this.RootContainer.Resolve<IEnumerable<T>>();
+            var target = this.RootContainer.Resolve<IEnumerable<T>>().ToList();
 
             foreach (var instance in target)
             {
@@ -240,16 +246,10 @@ namespace Slalom.Stacks
 
         partial void Initialize();
 
-        /// <summary>
-        /// Gets the assemblies.
-        /// </summary>
-        /// <value>The assemblies.</value>
-        public IEnumerable<Assembly> Assemblies { get; }
-
         #region IDisposable Implementation
 
         bool _disposed;
-        
+
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>

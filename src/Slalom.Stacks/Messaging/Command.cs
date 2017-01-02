@@ -1,4 +1,5 @@
 ﻿using System;
+using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Messaging
@@ -16,6 +17,25 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The identifier.</value>
         public string Id { get; } = NewId.NextId();
+
+        /// <summary>
+        /// Gets the current execution context.
+        /// </summary>
+        /// <value>The current execution context.</value>
+        public ExecutionContext Context { get; private set; }
+
+        /// <summary>
+        /// Sets the current execution context.
+        /// </summary>
+        /// <param name="context">The current execution context.</param>
+        public void SetExecutionContext(ExecutionContext context)
+        {
+            if (this.Context != null)
+            {
+                throw new InvalidOperationException("The execution context has already been set and cannot be reset.");
+            }
+            this.Context = context;
+        }
 
         /// <summary>
         /// Gets the message time stamp.

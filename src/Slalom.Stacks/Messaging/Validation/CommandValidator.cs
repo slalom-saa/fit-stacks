@@ -93,7 +93,7 @@ namespace Slalom.Stacks.Messaging.Validation
         protected virtual IEnumerable<ValidationError> CheckInputRules(TCommand command, ExecutionContext context)
         {
             var target = new List<ValidationError>();
-            foreach (var rule in _rules)
+            foreach (var rule in _rules.OfType<IInputValidationRule<TCommand>>())
             {
                 target.AddRange(rule.Validate(command, context));
             }

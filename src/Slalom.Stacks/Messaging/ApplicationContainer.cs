@@ -8,16 +8,14 @@ namespace Slalom.Stacks
 {
     public partial class ApplicationContainer
     {
-        private Lazy<IUseCaseCoordinator> _commands;
+        private Lazy<ICommandCoordinator> _commands;
 
         partial void Initialize()
         {
-            _commands = new Lazy<IUseCaseCoordinator>(() => this.RootContainer.Resolve<IUseCaseCoordinator>());
+            _commands = new Lazy<ICommandCoordinator>(() => this.RootContainer.Resolve<ICommandCoordinator>());
         }
 
-        public Task<CommandResult> SendAsync(ICommand command, TimeSpan? timeout = null)
-        {
-            return _commands.Value.SendAsync(command, timeout);
-        }
+        public ICommandCoordinator Commands => _commands.Value;
+
     }
 }

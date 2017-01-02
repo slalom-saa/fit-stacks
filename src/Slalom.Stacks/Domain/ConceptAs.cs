@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using Slalom.Stacks.Domain.Serialization;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Domain
@@ -9,6 +11,7 @@ namespace Slalom.Stacks.Domain
     /// A <see href="http://bit.ly/2dViCg3">Value Object</see> that can also be represented by another type.
     /// </summary>
     /// <typeparam name="TValue">The type that can be interchangeably used with this concept.</typeparam>
+    [JsonConverter(typeof(ConceptConverter))]
     public abstract class ConceptAs<TValue> : IEquatable<ConceptAs<TValue>>, IValidate
     {
         /// <summary>

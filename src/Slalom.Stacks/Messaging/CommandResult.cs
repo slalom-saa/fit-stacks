@@ -12,12 +12,12 @@ namespace Slalom.Stacks.Messaging
         private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandResult"/> class.
+        /// Initializes a new instance of the <see cref="CommandResult" /> class.
         /// </summary>
-        /// <param name="context">The current context.</param>
-        public CommandResult(ExecutionContext context)
+        /// <param name="command">The command being executed.</param>
+        public CommandResult(ICommand command)
         {
-            this.CorrelationId = context.CorrelationId;
+            this.CorrelationId = command.Context.CorrelationId;
             this.Started = DateTimeOffset.UtcNow;
         }
 
