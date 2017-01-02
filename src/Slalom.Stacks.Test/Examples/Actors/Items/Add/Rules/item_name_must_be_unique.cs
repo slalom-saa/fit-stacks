@@ -17,7 +17,6 @@ namespace Slalom.Stacks.Test.Examples.Actors.Items.Add.Rules
             {
                 yield return "The item name must be unique.";
             }
-            yield break;
         }
     }
 }

@@ -25,8 +25,7 @@ namespace Slalom.Stacks.Messaging
     public class CommandCoordinator : ICommandCoordinator
     {
         private readonly Lazy<IEnumerable<IAuditStore>> _audits;
-
-        private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
+        private readonly ReaderWriterLockSlim _validatorsLock = new ReaderWriterLockSlim();
         private readonly IComponentContext _context;
         private readonly ConcurrentDictionary<Type, IEnumerable<object>> _handlers = new ConcurrentDictionary<Type, IEnumerable<object>>();
         private readonly Lazy<ILogger> _logger;
@@ -76,9 +75,12 @@ namespace Slalom.Stacks.Messaging
 
             _logger.Value.Verbose("Starting execution for " + command.CommandName + ". {@Command}", command);
 
-            // Create the result
+            // set the context
             var context = _context.Resolve<IExecutionContextResolver>().Resolve();
-            var result = new CommandResult(context);
+            command.SetExecutionContext(context);
+
+            // create the result
+            var result = new CommandResult(command);
 
             try
             {
@@ -88,7 +90,7 @@ namespace Slalom.Stacks.Messaging
                 if (!result.ValidationErrors.Any())
                 {
                     // execute the handler
-                    await this.ExecuteUseCase(command, path, result, context);
+                    await this.ExecuteHandler(command, path, result, context);
 
                     // add the response to the context if it was an event
                     var value = result.Response as IEvent;
@@ -165,41 +167,26 @@ namespace Slalom.Stacks.Messaging
         /// <exception cref="System.InvalidOperationException"></exception>
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
-        protected virtual async Task ExecuteUseCase(ICommand command, string path, CommandResult result, ExecutionContext context)
+        protected virtual async Task ExecuteHandler(ICommand command, string path, CommandResult result, ExecutionContext context)
         {
-            var handlers = _handlers.GetOrAdd(command.GetType(), key =>
-            {
-                var actors = _context.Resolve<IDiscoverTypes>().Find(typeof(UseCaseActor<,>));
-                var target = actors.Where(e => e.GetTypeInfo().BaseType.GetTypeInfo().IsGenericType && e.GetTypeInfo().BaseType.GetGenericArguments().FirstOrDefault() == command.GetType());
-
-                return target.Select(e => _context.Resolve(e));
-            }).ToList();
-
-            if (!handlers.Any())
-            {
-                throw new InvalidOperationException($"An actor could not be found for the specified command: {command.CommandName}.");
-            }
-
-            dynamic handler = null;
-
+            var handlers = _context.ResolveAll(typeof(IHandle<>).MakeGenericType(command.GetType())).ToList();
+            IHandle handler;
             if (String.IsNullOrWhiteSpace(path))
             {
-                handler = handlers.FirstOrDefault();
+                handler = (IHandle)handlers.FirstOrDefault(e => !e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any());
+                if (handler == null)
+                {
+                    handler = (IHandle)handlers.FirstOrDefault();
+                }
             }
             else
             {
-                handler = handlers.FirstOrDefault(e => e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path));
+                handler = (IHandle)handlers.FirstOrDefault(e => e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path));
             }
 
-            IEnumerable<ValidationError> errors = await handler.ValidateAsync((dynamic)command, context);
+            var response = await handler.HandleAsync(command);
 
-            result.AddValidationErrors(errors);
-            if (!result.ValidationErrors.Any())
-            {
-                object response = await handler.ExecuteAsync((dynamic)command, context);
-
-                result.AddResponse(response);
-            }
+            result.AddResponse(response);
         }
 
         /// <summary>
@@ -281,7 +268,7 @@ namespace Slalom.Stacks.Messaging
             ICommandValidator target;
             if (!_validators.TryGetValue(command.GetType(), out target))
             {
-                _cacheLock.EnterWriteLock();
+                _validatorsLock.EnterWriteLock();
                 try
                 {
                     if (!_validators.TryGetValue(command.GetType(), out target))
@@ -292,7 +279,7 @@ namespace Slalom.Stacks.Messaging
                 }
                 finally
                 {
-                    _cacheLock.ExitWriteLock();
+                    _validatorsLock.ExitWriteLock();
                 }
             }
 
@@ -303,7 +290,7 @@ namespace Slalom.Stacks.Messaging
 
         public Task<CommandResult> SendAsync(string path, string command, TimeSpan? timeout = null)
         {
-            var actors = _context.Resolve<IDiscoverTypes>().Find(typeof(UseCaseActor<,>)).Where(e => e.GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path)).ToList();
+            var actors = _context.Resolve<IDiscoverTypes>().Find(typeof(IHandle<>)).Where(e => e.GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path)).ToList();
             if (actors.Count() > 1)
             {
                 throw new InvalidOperationException($"More than one actor has been configured for the path {path}.");

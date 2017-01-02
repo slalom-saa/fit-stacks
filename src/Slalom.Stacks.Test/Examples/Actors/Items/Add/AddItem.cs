@@ -12,7 +12,7 @@ namespace Slalom.Stacks.Test.Examples.Actors.Items.Add
     [Path("items/add")]
     public class AddItem : UseCaseActor<AddItemCommand, AddItemEvent>
     {
-        public override async Task<AddItemEvent> ExecuteAsync(AddItemCommand command, ExecutionContext context)
+        public override async Task<AddItemEvent> ExecuteAsync(AddItemCommand command)
         {
             if (command.Text == "error")
             {

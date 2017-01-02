@@ -15,12 +15,11 @@ namespace Slalom.Stacks.Test.Examples
 {
     public class ExampleRunner
     {
-        public async Task Start()
+        public async Task Start(int count = 2000)
         {
             try
             {
                 var watch = new Stopwatch();
-                var count = 2000;
                 using (var container = new ApplicationContainer(this))
                 {
                     ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator") }));
