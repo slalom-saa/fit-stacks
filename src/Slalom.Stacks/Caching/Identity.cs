@@ -5,7 +5,7 @@ namespace Slalom.Stacks.Caching
 {
     internal static class Identity
     {
-        public static object GetIdentity(object instance)
+        public static string GetIdentity(object instance)
         {
             var entity = instance as IAggregateRoot;
             if (entity != null)
@@ -15,9 +15,9 @@ namespace Slalom.Stacks.Caching
             var result = instance as ISearchResult;
             if (result != null)
             {
-                return result.Id;
+                return result.Id.ToString();
             }
-            return instance.GetHashCode();
+            return instance.GetHashCode().ToString();
         }
     }
 }

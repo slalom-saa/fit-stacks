@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Validation;
@@ -16,12 +18,6 @@ namespace Slalom.Stacks.Domain
         private readonly IEntityContext _context;
 
         /// <summary>
-        /// Gets or sets the configured logger.
-        /// </summary>
-        /// <value>The configured logger.</value>
-        public ILogger Logger { get; set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Repository{TRoot}" /> class.
         /// </summary>
         /// <param name="context">The configured context.</param>
@@ -33,6 +29,26 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <summary>
+        /// Gets or sets the configured logger.
+        /// </summary>
+        /// <value>The configured logger.</value>
+        public ILogger Logger { get; set; }
+
+        /// <summary>
+        /// Adds the specified instances.
+        /// </summary>
+        /// <param name="instances">The instances to update.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task AddAsync(TRoot[] instances)
+        {
+            Argument.NotNull(instances, nameof(instances));
+
+            this.Logger.Verbose($"Adding {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
+
+            return _context.AddAsync(instances);
+        }
+
+        /// <summary>
         /// Clears all instances.
         /// </summary>
         /// <returns>A task for asynchronous programming.</returns>
@@ -41,6 +57,43 @@ namespace Slalom.Stacks.Domain
             this.Logger.Verbose($"Clearing all items of type {typeof(TRoot)} using {_context.GetType()}.");
 
             return _context.ClearAsync<TRoot>();
+        }
+
+        /// <summary>
+        /// Finds instances with the specified expression.
+        /// </summary>
+        /// <param name="expression">The expression to filter with.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<IEnumerable<TRoot>> FindAsync(Expression<Func<TRoot, bool>> expression)
+        {
+            Argument.NotNull(expression, nameof(expression));
+
+            this.Logger.Verbose($"Finding items of type {typeof(TRoot)} using {_context.GetType()}.");
+
+            return _context.FindAsync(expression);
+        }
+
+        /// <summary>
+        /// Finds the instance with the specified identifier.
+        /// </summary>
+        /// <param name="id">The instance identifier.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<TRoot> FindAsync(string id)
+        {
+            this.Logger.Verbose($"Finding item of type {typeof(TRoot)} with ID {id} using {_context.GetType()}.");
+
+            return _context.FindAsync<TRoot>(id);
+        }
+
+        /// <summary>
+        /// Finds all instances.
+        /// </summary>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<IEnumerable<TRoot>> FindAsync()
+        {
+            this.Logger.Verbose($"Finding all items of type {typeof(TRoot)} using {_context.GetType()}.");
+
+            return _context.FindAsync<TRoot>();
         }
 
         /// <summary>
@@ -58,31 +111,6 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <summary>
-        /// Opens a query that can be used to filter and project.
-        /// </summary>
-        /// <returns>Returns an IQueryable that can be used to execute queries.</returns>
-        public IQueryable<TRoot> OpenQuery()
-        {
-            this.Logger.Verbose($"Opening a query for items of type {typeof(TRoot)} using {_context.GetType()}.");
-
-            return _context.OpenQuery<TRoot>();
-        }
-
-        /// <summary>
-        /// Adds the specified instances.
-        /// </summary>
-        /// <param name="instances">The instances to update.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task AddAsync(TRoot[] instances)
-        {
-            Argument.NotNull(instances, nameof(instances));
-
-            this.Logger.Verbose($"Adding {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
-
-            return _context.AddAsync(instances);
-        }
-
-        /// <summary>
         /// Updates the specified instances.
         /// </summary>
         /// <param name="instances">The instances to update.</param>
@@ -94,18 +122,6 @@ namespace Slalom.Stacks.Domain
             this.Logger.Verbose($"Updating {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
 
             return _context.UpdateAsync(instances);
-        }
-
-        /// <summary>
-        /// Finds the instance with the specified identifier.
-        /// </summary>
-        /// <param name="id">The instance identifier.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task<TRoot> FindAsync(string id)
-        {
-            this.Logger.Verbose($"Finding item of type {typeof(TRoot)} with ID {id} using {_context.GetType()}.");
-
-            return _context.FindAsync<TRoot>(id);
         }
     }
 }

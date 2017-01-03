@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Slalom.Stacks.Communication;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Caching
@@ -9,7 +9,7 @@ namespace Slalom.Stacks.Caching
     /// <summary>
     /// A message containing information about what was changed in the cache.
     /// </summary>
-    /// <seealso cref="Slalom.Stacks.Communication.IMessage" />
+    /// <seealso cref="IMessage" />
     public class CacheUpdatedMessage : IMessage
     {
         /// <summary>

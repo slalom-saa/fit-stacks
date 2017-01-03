@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Caching
@@ -14,7 +17,8 @@ namespace Slalom.Stacks.Caching
     public class LocalCacheManager : ICacheManager
     {
         private readonly ICacheConnector _connector;
-        private readonly ConcurrentDictionary<string, object> _instances = new ConcurrentDictionary<string, object>();
+        private List<object> _instances = new List<object>();
+        private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalCacheManager"/> class.
@@ -43,9 +47,17 @@ namespace Slalom.Stacks.Caching
         {
             Argument.NotNull(instances, nameof(instances));
 
-            foreach (var instance in instances)
+            _cacheLock.EnterWriteLock();
+            try
             {
-                _instances.AddOrUpdate(Identity.GetIdentity(instance).ToString(), instance, (id, current) => instance);
+                foreach (var instance in instances)
+                {
+                    _instances.Add(instance);
+                }
+            }
+            finally
+            {
+                _cacheLock.ExitWriteLock();
             }
             return Task.FromResult(0);
         }
@@ -69,12 +81,15 @@ namespace Slalom.Stacks.Caching
         /// <returns>Returns a task for asynchronous programming.</returns>
         public virtual Task<TItem> FindAsync<TItem>(string id)
         {
-            object target;
-            if (_instances.TryGetValue(id, out target))
+            _cacheLock.EnterReadLock();
+            try
             {
-                return Task.FromResult((TItem)target);
+                return Task.FromResult((TItem)_instances.Find(e => Identity.GetIdentity(e) == id));
             }
-            return Task.FromResult(default(TItem));
+            finally
+            {
+                _cacheLock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -82,15 +97,18 @@ namespace Slalom.Stacks.Caching
         /// </summary>
         /// <param name="keys">The keys to remove.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public virtual async Task RemoveAsync(params string[] keys)
+        public virtual Task RemoveAsync(params string[] keys)
         {
-            foreach (var key in keys)
+            _cacheLock.EnterWriteLock();
+            try
             {
-                object instance;
-                _instances.TryRemove(key, out instance);
+                _instances.RemoveAll(e => keys.Contains(Identity.GetIdentity(e)));
             }
-
-            await _connector.PublishChangesAsync(keys);
+            finally
+            {
+                _cacheLock.ExitWriteLock();
+            }
+            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -99,17 +117,19 @@ namespace Slalom.Stacks.Caching
         /// <typeparam name="TItem">The type of items to remove.</typeparam>
         /// <param name="instances">The instances to remove.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        public virtual async Task RemoveAsync<TItem>(params TItem[] instances)
+        public virtual Task RemoveAsync<TItem>(params TItem[] instances)
         {
-            Argument.NotNull(instances, nameof(instances));
-
-            var target = _instances.Where(e => instances.Select(x => Identity.GetIdentity(x)).Contains(e.Key));
-            foreach (var item in target)
+            _cacheLock.EnterWriteLock();
+            try
             {
-                object instance;
-                _instances.TryRemove(item.Key, out instance);
+                var ids = instances.Select(e => Identity.GetIdentity(e)).ToList();
+                _instances.RemoveAll(e => ids.Contains(Identity.GetIdentity(e)));
             }
-            await _connector.PublishChangesAsync(instances.Select(e => Identity.GetIdentity(e).ToString()));
+            finally
+            {
+                _cacheLock.ExitWriteLock();
+            }
+            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -122,11 +142,9 @@ namespace Slalom.Stacks.Caching
         {
             Argument.NotNull(instances, nameof(instances));
 
-            foreach (var instance in instances)
-            {
-                _instances.AddOrUpdate(Identity.GetIdentity(instance).ToString(), instance, (key, current) => instance);
-            }
-            await _connector.PublishChangesAsync(instances.Select(e => Identity.GetIdentity(e).ToString()));
+            await this.RemoveAsync(instances);
+
+            await this.AddAsync(instances);
         }
     }
 }
