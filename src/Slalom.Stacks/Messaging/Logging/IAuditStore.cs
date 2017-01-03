@@ -14,6 +14,6 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <param name="audit">The audit entry to append.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task AppendAsync(AuditEntry audit);
+        Task AppendAsync(IEvent @event, ExecutionContext context);
     }
 }

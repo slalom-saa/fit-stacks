@@ -10,9 +10,15 @@ namespace Slalom.Stacks.Messaging
     public interface ICommand : IMessage
     {
         /// <summary>
-        /// Gets the name of the command.
+        /// Gets the command type.
         /// </summary>
-        /// <value>The name of the command.</value>
+        /// <value>The command type.</value>
+        Type Type { get; }
+
+        /// <summary>
+        /// Gets the command name.
+        /// </summary>
+        /// <value>The command name.</value>
         string CommandName { get; }
 
         /// <summary>

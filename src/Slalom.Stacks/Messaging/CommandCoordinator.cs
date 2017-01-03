@@ -73,7 +73,7 @@ namespace Slalom.Stacks.Messaging
         {
             Argument.NotNull(command, nameof(command));
 
-            _logger.Value.Verbose("Starting execution for " + command.CommandName + ". {@Command}", command);
+            _logger.Value.Verbose("Starting execution for " + command.Type + ". {@Command}", command);
 
             // set the context
             var context = _context.Resolve<IExecutionContextResolver>().Resolve();
@@ -127,7 +127,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual Task Log(ICommand command, CommandResult result, ExecutionContext context)
         {
-            var tasks = _logs.Value.Select(e => e.AppendAsync(new LogEntry(command, result, context))).ToList();
+            var tasks = _logs.Value.Select(e => e.AppendAsync(command, result)).ToList();
 
             if (!result.IsSuccessful)
             {

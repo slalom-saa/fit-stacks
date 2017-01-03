@@ -12,11 +12,14 @@ namespace Slalom.Stacks.Messaging
     /// <seealso href="http://bit.ly/2d01rc7">Reactive Messaging Patterns with the Actor Model: Applications and Integration in Scala and Akka</seealso>
     public abstract class Command : ICommand
     {
+        private string _commandName;
+        private Type _type;
+
         /// <summary>
         /// Gets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        public string Id { get; } = NewId.NextId();
+        string IMessage.Id { get; } = NewId.NextId();
 
         /// <summary>
         /// Gets the current execution context.
@@ -25,29 +28,22 @@ namespace Slalom.Stacks.Messaging
         public ExecutionContext Context { get; private set; }
 
         /// <summary>
-        /// Sets the current execution context.
-        /// </summary>
-        /// <param name="context">The current execution context.</param>
-        public void SetExecutionContext(ExecutionContext context)
-        {
-            if (this.Context != null)
-            {
-                throw new InvalidOperationException("The execution context has already been set and cannot be reset.");
-            }
-            this.Context = context;
-        }
-
-        /// <summary>
         /// Gets the message time stamp.
         /// </summary>
         /// <value>The message time stamp.</value>
-        public DateTimeOffset TimeStamp { get; } = DateTimeOffset.Now;
+        DateTimeOffset IMessage.TimeStamp { get; } = DateTimeOffset.Now;
 
         /// <summary>
-        /// Gets the name of the command.
+        /// Gets the command type.
         /// </summary>
-        /// <value>The name of the command.</value>
-        public virtual string CommandName => this.GetType().Name;
+        /// <value>The command type.</value>
+        Type ICommand.Type => _type ?? (_type = this.GetType());
+
+        /// <summary>
+        /// Gets the command name.
+        /// </summary>
+        /// <value>The command name.</value>
+        string ICommand.CommandName => _commandName ?? (_commandName = this.GetType().Name);
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
@@ -80,7 +76,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public override int GetHashCode()
         {
-            return this.Id.GetHashCode();
+            return ((IMessage)this).Id.GetHashCode();
         }
 
         /// <summary>
@@ -90,7 +86,20 @@ namespace Slalom.Stacks.Messaging
         /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
         protected bool Equals(Command other)
         {
-            return this.Id.Equals(other.Id);
+            return ((IMessage)this).Id.Equals(((IMessage)other).Id);
+        }
+
+        /// <summary>
+        /// Sets the current execution context.
+        /// </summary>
+        /// <param name="context">The current execution context.</param>
+        void ICommand.SetExecutionContext(ExecutionContext context)
+        {
+            if (this.Context != null)
+            {
+                throw new InvalidOperationException("The execution context has already been set and cannot be reset.");
+            }
+            this.Context = context;
         }
     }
 }

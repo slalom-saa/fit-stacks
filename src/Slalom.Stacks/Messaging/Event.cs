@@ -13,19 +13,19 @@ namespace Slalom.Stacks.Messaging
         /// Gets the event ID.
         /// </summary>
         /// <value>The event ID.</value>
-        public string Id { get; private set; } = NewId.NextId();
+        string IMessage.Id { get; } = NewId.NextId();
 
         /// <summary>
         /// Gets the name of the event.
         /// </summary>
         /// <value>The name of the event.</value>
-        public virtual string EventName => this.GetType().Name;
+        string IEvent.EventName => this.GetType().Name;
 
         /// <summary>
         /// Gets the time stamp of when the event was created.
         /// </summary>
         /// <value>The time stamp of when the event was created.</value>
-        public DateTimeOffset TimeStamp { get; } = DateTime.Now;
+        DateTimeOffset IMessage.TimeStamp { get; } = DateTime.Now;
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
@@ -56,7 +56,7 @@ namespace Slalom.Stacks.Messaging
         [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
         public override int GetHashCode()
         {
-            return this.Id.GetHashCode();
+            return ((IMessage)this).Id.GetHashCode();
         }
 
         /// <summary>
@@ -66,16 +66,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
         protected bool Equals(Event other)
         {
-            return other != null && this.Id.Equals(other.Id);
-        }
-
-        /// <summary>
-        /// Gets the event body payload that will be forwarded.
-        /// </summary>
-        /// <returns>Returns the event body payload that will be forwarded.</returns>
-        public virtual object GetPayload()
-        {
-            return this;    
+            return ((IMessage)this).Id.Equals(((IMessage)other).Id);
         }
     }
 }

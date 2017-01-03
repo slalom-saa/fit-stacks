@@ -18,20 +18,20 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <param name="command">The command.</param>
         /// <param name="result">The result.</param>
-        /// <param name="context">The context.</param>
-        public LogEntry(ICommand command, CommandResult result, ExecutionContext context)
+        public LogEntry(ICommand command, CommandResult result)
         {
             try
             {
                 this.Payload = JsonConvert.SerializeObject(command, new JsonSerializerSettings
                 {
-                    ContractResolver = new EventContractResolver()
+                    ContractResolver = new CommandContractResolver()
                 });
             }
             catch
             {
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
+            var context = command.Context;
             this.IsSuccessful = result.IsSuccessful;
             this.CommandName = command.CommandName;
             this.CommandId = command.Id;

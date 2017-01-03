@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Slalom.Stacks.Test.Examples;
 
 namespace Slalom.Stacks.ConsoleClient
