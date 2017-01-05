@@ -25,7 +25,7 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.Payload = JsonConvert.SerializeObject(command, new JsonSerializerSettings
                 {
-                    ContractResolver = new EventContractResolver()
+                    ContractResolver = new CommandContractResolver()
                 });
             }
             catch
@@ -43,7 +43,7 @@ namespace Slalom.Stacks.Messaging.Logging
             this.SessionId = context.SessionId;
             this.UserName = context.User?.Identity?.Name;
             this.Path = context.Path;
-            this.UserHostAddress = context.UserHostAddress;
+            this.SourceAddress = context.SourceAddress;
             this.ThreadId = context.ThreadId;
             this.CorrelationId = context.CorrelationId;
             this.RaisedException = result.RaisedException;
@@ -158,7 +158,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Gets or sets the user host address.
         /// </summary>
         /// <value>The user host address.</value>
-        public string UserHostAddress { get; set; }
+        public string SourceAddress { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the user.

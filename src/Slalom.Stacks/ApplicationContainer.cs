@@ -38,6 +38,11 @@ namespace Slalom.Stacks
                 {
                     return type.GetTypeInfo().Assembly;
                 }
+                var assembly = e as Assembly;
+                if (assembly != null)
+                {
+                    return assembly;
+                }
                 return e.GetType().GetTypeInfo().Assembly;
             }).Distinct().ToArray();
 
