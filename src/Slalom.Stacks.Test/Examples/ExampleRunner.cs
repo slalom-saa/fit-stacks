@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyModel;
 using Newtonsoft.Json;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Test.Examples.Actors.Items.Add;
@@ -15,51 +18,71 @@ namespace Slalom.Stacks.Test.Examples
 {
     public class ExampleRunner
     {
-        public async Task Start(int count = 2000)
+        private readonly object[] _indicators;
+        private Action<ApplicationContainer> _configuration;
+
+        public ExampleRunner(params object[] indicators)
         {
-            try
+            _indicators = indicators.Union(new object[] { typeof(ExampleRunner) }).ToArray();
+        }
+
+        public ExampleRunner With(Action<ApplicationContainer> configuration)
+        {
+            _configuration = configuration;
+            return this;
+        }
+
+        public void Start(int count = 2000)
+        {
+            Task.Run(async () =>
             {
-                var watch = new Stopwatch();
-                using (var container = new ApplicationContainer(this))
+                try
                 {
-                    ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator") }));
-
-                    watch.Start();
-
-                    var tasks = new List<Task<CommandResult>>(count);
-                    Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
+                    var dependencies = DependencyContext.Default;
+                    var watch = new Stopwatch();
+                    using (var container = new ApplicationContainer(_indicators))
                     {
-                        tasks.Add(container.Commands.SendAsync(new AddItemCommand(e.ToString())));
-                    });
-                    await Task.WhenAll(tasks);
+                        _configuration?.Invoke(container);
 
-                    watch.Stop();
+                        ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator") }));
 
-                    var failed = tasks.Where(e => !e.Result.IsSuccessful).Select(e => e.Result).ToList();
-                    if (failed.Any())
-                    {
-                        throw new Exception($"{failed.Count()} of the results were not successful. The first was \n"
-                            + JsonConvert.SerializeObject(failed.First(), Formatting.Indented));
+                        watch.Start();
+
+                        var tasks = new List<Task<CommandResult>>(count);
+                        Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
+                        {
+                            tasks.Add(container.Commands.SendAsync(new AddItemCommand(e.ToString())));
+                        });
+                        await Task.WhenAll(tasks);
+
+                        watch.Stop();
+
+                        var failed = tasks.Where(e => !e.Result.IsSuccessful).Select(e => e.Result).ToList();
+                        if (failed.Any())
+                        {
+                            throw new Exception($"{failed.Count()} of the results were not successful. The first was \n"
+                                + JsonConvert.SerializeObject(failed.First(), Formatting.Indented));
+                        }
+
+                        var searchResultCount = ((IQueryable<ItemSearchResult>)(await container.Commands.SendAsync(new SearchItemsCommand())).Response).Count();
+                        var entityCount = (await container.Domain.FindAsync<Item>()).Count();
+                        if (entityCount != count || searchResultCount != count)
+                        {
+                            throw new Exception($"The execution did not have the expected results. {searchResultCount} search results and {entityCount} entities out of {count}.");
+                        }
                     }
 
-                    var searchResultCount = ((IQueryable<ItemSearchResult>)(await container.Commands.SendAsync(new SearchItemsCommand())).Response).Count();
-                    var entityCount = (await container.Domain.FindAsync<Item>()).Count();
-                    if (entityCount != count || searchResultCount != count)
-                    {
-                        throw new Exception($"The execution did not have the expected results. {searchResultCount} search results and {entityCount} entities out of {count}.");
-                    }
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"Execution for {count:N0} items completed successfully in {watch.Elapsed} - {Math.Ceiling(count / watch.Elapsed.TotalSeconds):N0} per second.  Press any key to exit...");
+                    Console.ResetColor();
                 }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Execution for {count:N0} items completed successfully in {watch.Elapsed} - {Math.Ceiling(count / watch.Elapsed.TotalSeconds):N0} per second.  Press any key to exit...");
-                Console.ResetColor();
-            }
-            catch (Exception exception)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(exception);
-                Console.ResetColor();
-            }
+                catch (Exception exception)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(exception);
+                    Console.ResetColor();
+                }
+            });
         }
     }
 }

@@ -43,16 +43,16 @@ namespace Slalom.Stacks.Runtime
         /// <param name="correlationId">The correlation identifier.</param>
         /// <param name="sessionId">The session identifier.</param>
         /// <param name="user">The current user.</param>
-        /// <param name="userHostAddress">The user host address.</param>
+        /// <param name="sourceAddress">The user host address.</param>
         /// <param name="machineName">The name of the machine.</param>
         /// <param name="threadId">The current thread identifier.</param>
-        public ExecutionContext(string applicationName, string environment, string path, string correlationId, string sessionId, ClaimsPrincipal user, string userHostAddress, string machineName, int threadId)
+        public ExecutionContext(string applicationName, string environment, string path, string correlationId, string sessionId, ClaimsPrincipal user, string sourceAddress, string machineName, int threadId)
         {
             this.Path = path;
             this.CorrelationId = correlationId;
             this.SessionId = sessionId;
             this.User = user;
-            this.UserHostAddress = userHostAddress;
+            this.SourceAddress = sourceAddress;
             this.MachineName = machineName;
             this.Environment = environment;
             this.ApplicationName = applicationName;
@@ -118,7 +118,7 @@ namespace Slalom.Stacks.Runtime
         /// Gets the calling IP address.
         /// </summary>
         /// <value>The calling IP address.</value>
-        public string UserHostAddress { get; }
+        public string SourceAddress { get; }
 
         /// <summary>
         /// Adds an additional raised event to the context that will be published on successful completion.

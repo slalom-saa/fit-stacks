@@ -42,10 +42,17 @@ namespace Slalom.Stacks.Messaging.Logging
             this.SessionId = context.SessionId;
             this.UserName = context.User?.Identity?.Name;
             this.Path = context.Path;
-            this.UserHostAddress = context.UserHostAddress;
+            this.SourceAddress = context.SourceAddress;
             this.ThreadId = context.ThreadId;
             this.CorrelationId = context.CorrelationId;
+            this.EventTypeId = instance.EventTypeId;
         }
+
+        /// <summary>
+        /// Gets the event type identifier used to classify the event.
+        /// </summary>
+        /// <value>The event type identifier used to classify the event.</value>
+        public int EventTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the application.
@@ -123,7 +130,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Gets or sets the user host address.
         /// </summary>
         /// <value>The user host address.</value>
-        public string UserHostAddress { get; set; }
+        public string SourceAddress { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the user.

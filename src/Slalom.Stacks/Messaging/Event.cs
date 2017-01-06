@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Utilities.NewId;
 
@@ -12,6 +14,18 @@ namespace Slalom.Stacks.Messaging
     {
         private ExecutionContext _context;
 
+        private readonly Lazy<EventAttribute> _attribute;
+        private TypeInfo _type;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Event"/> class.
+        /// </summary>
+        protected Event()
+        {
+            _type = this.GetType().GetTypeInfo();
+            _attribute = new Lazy<EventAttribute>(() => _type.GetCustomAttributes<EventAttribute>().FirstOrDefault());
+        }
+
         /// <summary>
         /// Gets the event ID.
         /// </summary>
@@ -22,7 +36,13 @@ namespace Slalom.Stacks.Messaging
         /// Gets the name of the event.
         /// </summary>
         /// <value>The name of the event.</value>
-        string IEvent.EventName => this.GetType().Name;
+        string IEvent.EventName => this.GetEventName();
+
+        /// <summary>
+        /// Gets the event identifier that is used to classify the event.
+        /// </summary>
+        /// <value>The event identifier that is used to classify the event.</value>
+        int IEvent.EventTypeId => this.GetEventTypeId();
 
         ExecutionContext IEvent.Context => _context;
 
@@ -31,6 +51,16 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The time stamp of when the event was created.</value>
         DateTimeOffset IMessage.TimeStamp { get; } = DateTime.Now;
+
+        private string GetEventName()
+        {
+            return _attribute.Value?.Name ?? _type.Name;
+        }
+
+        private int GetEventTypeId()
+        {
+            return _attribute.Value?.EventId ?? -1;
+        }
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.

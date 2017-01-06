@@ -4,13 +4,14 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Slalom.Stacks.Serialization;
+using Slalom.Stacks.Reflection;
 
 namespace Slalom.Stacks.Messaging.Serialization
 {
     /// <summary>
     /// A JSON Contract Resolver for <see cref="Command"/> instances.
     /// </summary>
-    public class CommandContractResolver : SecureJsonContractResolver
+    public class CommandContractResolver : BaseContractResolver
     {
         /// <summary>
         /// Creates a <see cref="T:Newtonsoft.Json.Serialization.JsonProperty" /> for the given <see cref="T:System.Reflection.MemberInfo" />.
@@ -21,18 +22,13 @@ namespace Slalom.Stacks.Messaging.Serialization
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var prop = base.CreateProperty(member, memberSerialization);
-            if ((member as PropertyInfo).GetCustomAttributes<IgnoreAttribute>().Any())
-            {
-                prop.Ignored = true;
-                return prop;
-            }
             var declaringType = (member as PropertyInfo)?.DeclaringType;
-            if ((declaringType?.GetTypeInfo().IsGenericType ?? false) && (declaringType.GetGenericTypeDefinition() == typeof(Command) || declaringType == typeof(ICommand)))
+            if (declaringType == typeof(Command))
             {
                 prop.Ignored = true;
                 return prop;
             }
-            return base.CreateProperty(member, memberSerialization);
+            return prop;
         }
     }
 }

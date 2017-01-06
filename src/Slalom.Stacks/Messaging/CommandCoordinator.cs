@@ -182,6 +182,10 @@ namespace Slalom.Stacks.Messaging
             else
             {
                 handler = (IHandle)handlers.FirstOrDefault(e => e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path));
+                if (handler == null && handlers.Count() == 1)
+                {
+                    handler = (IHandle)handlers.FirstOrDefault();
+                }
             }
 
             var response = await handler.HandleAsync(command);
