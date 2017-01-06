@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Messaging
@@ -9,6 +10,8 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     public abstract class Event : IEvent
     {
+        private ExecutionContext _context;
+
         /// <summary>
         /// Gets the event ID.
         /// </summary>
@@ -20,6 +23,8 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The name of the event.</value>
         string IEvent.EventName => this.GetType().Name;
+
+        ExecutionContext IEvent.Context => _context;
 
         /// <summary>
         /// Gets the time stamp of when the event was created.
@@ -67,6 +72,11 @@ namespace Slalom.Stacks.Messaging
         protected bool Equals(Event other)
         {
             return ((IMessage)this).Id.Equals(((IMessage)other).Id);
+        }
+
+        void IEvent.SetExecutionContext(ExecutionContext context)
+        {
+            _context = context;
         }
     }
 }

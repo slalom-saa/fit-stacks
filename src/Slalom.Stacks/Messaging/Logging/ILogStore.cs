@@ -14,9 +14,8 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <summary>
         /// Appends an audit with the specified execution elements.
         /// </summary>
-        /// <param name="command">The command that was executed.</param>
-        /// <param name="result">The command result.</param>
+        /// <param name="entry">The log entry to append.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task AppendAsync(ICommand command, CommandResult result);
+        Task AppendAsync(LogEntry entry);
     }
 }

@@ -127,7 +127,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual Task Log(ICommand command, CommandResult result, ExecutionContext context)
         {
-            var tasks = _logs.Value.Select(e => e.AppendAsync(command, result)).ToList();
+            var tasks = _logs.Value.Select(e => e.AppendAsync(new LogEntry(command, result))).ToList();
 
             if (!result.IsSuccessful)
             {
@@ -148,7 +148,7 @@ namespace Slalom.Stacks.Messaging
             {
                 if (result.Response is IEvent)
                 {
-                    tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(result.Response as IEvent, context))));
+                    tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(result.Response as IEvent))));
                 }
                 _logger.Value.Verbose("Successfully completed " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
             }
@@ -185,6 +185,11 @@ namespace Slalom.Stacks.Messaging
             }
 
             var response = await handler.HandleAsync(command);
+
+            if (response is IEvent)
+            {
+                ((IEvent)response).SetExecutionContext(context);
+            }
 
             result.AddResponse(response);
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -12,5 +13,9 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The name of the event.</value>
         string EventName { get; }
+
+        ExecutionContext Context { get; }
+
+        void SetExecutionContext(ExecutionContext context);
     }
 }
