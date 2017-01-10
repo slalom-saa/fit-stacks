@@ -1,11 +1,11 @@
 {
-  "version": "1.2.83-*",
+  "version": "1.2.87-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks", "blocks" ],
     "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
     "requireLicenseAcceptance": true,
-    "summary": "The core library for Slalom Stacks.",
+    "summary": "The core library for Stacks.",
     "files": {
       "include": [ "Tools", "Lib" ]
     } 

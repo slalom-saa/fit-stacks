@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
@@ -27,12 +29,6 @@ namespace Slalom.Stacks.Messaging.Validation
         public IDomainFacade Domain { get; set; }
 
         /// <summary>
-        /// Gets the configured <see cref="ISearchFacade"/> instance.
-        /// </summary>
-        /// <value>The configured <see cref="ISearchFacade"/> instance.</value>
-        public ISearchFacade Search { get; set; }
-
-        /// <summary>
         /// Validates the specified command instance.
         /// </summary>
         /// <param name="instance">The instance to validate.</param>
@@ -56,6 +52,17 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <param name="instance">The instance to validate.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        protected abstract IEnumerable<ValidationError> Validate(TCommand instance);
+        protected IEnumerable<ValidationError> Validate(TCommand instance)
+        {
+            var result = this.ValidateAsync(instance).Result;
+            if (result == null)
+            {
+                return Enumerable.Empty<ValidationError>();
+            }
+            return new[] { result };
+        }
+
+
+        public abstract Task<ValidationError> ValidateAsync(TCommand instance);
     }
 }

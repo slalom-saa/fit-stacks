@@ -29,7 +29,7 @@ namespace Slalom.Stacks.Messaging
         private readonly IComponentContext _context;
         private readonly ConcurrentDictionary<Type, IEnumerable<object>> _handlers = new ConcurrentDictionary<Type, IEnumerable<object>>();
         private readonly Lazy<ILogger> _logger;
-        private readonly Lazy<IEnumerable<ILogStore>> _logs;
+        private readonly Lazy<IEnumerable<IRequestStore>> _logs;
         private readonly Lazy<IEventPublisher> _publisher;
         private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
 
@@ -46,7 +46,7 @@ namespace Slalom.Stacks.Messaging
             _logger = new Lazy<ILogger>(() => _context.Resolve<ILogger>());
             _publisher = new Lazy<IEventPublisher>(() => _context.Resolve<IEventPublisher>());
             _audits = new Lazy<IEnumerable<IAuditStore>>(() => _context.ResolveAll<IAuditStore>());
-            _logs = new Lazy<IEnumerable<ILogStore>>(() => _context.ResolveAll<ILogStore>());
+            _logs = new Lazy<IEnumerable<IRequestStore>>(() => _context.ResolveAll<IRequestStore>());
         }
 
         /// <summary>
@@ -73,10 +73,13 @@ namespace Slalom.Stacks.Messaging
         {
             Argument.NotNull(command, nameof(command));
 
-            _logger.Value.Verbose("Starting execution for " + command.Type + ". {@Command}", command);
+            _logger.Value.Verbose("Starting execution for " + command.Type + " at \"{Path}\". {@Command}", path, command);
+
+            // get the context
+            var context = _context.Resolve<IExecutionContextResolver>().Resolve();
+            context.SetPath(path);
 
             // set the context
-            var context = _context.Resolve<IExecutionContextResolver>().Resolve();
             command.SetExecutionContext(context);
 
             // create the result
@@ -127,7 +130,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual Task Log(ICommand command, CommandResult result, ExecutionContext context)
         {
-            var tasks = _logs.Value.Select(e => e.AppendAsync(new LogEntry(command, result))).ToList();
+            var tasks = _logs.Value.Select(e => e.AppendAsync(new RequestEntry(command, result))).ToList();
 
             if (!result.IsSuccessful)
             {
@@ -190,10 +193,7 @@ namespace Slalom.Stacks.Messaging
 
             var response = await handler.HandleAsync(command);
 
-            if (response is IEvent)
-            {
-                ((IEvent)response).SetExecutionContext(context);
-            }
+            (response as IEvent)?.SetExecutionContext(context);
 
             result.AddResponse(response);
         }

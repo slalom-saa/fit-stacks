@@ -16,8 +16,6 @@
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <ItemGroup>
-    <DnxInvisibleCompile Include="Messaging\Logging\AuditEntry.cs" />
-    <DnxInvisibleCompile Include="Messaging\Logging\LogEntry.cs" />
     <DnxInvisibleCompile Include="Runtime\WebExecutionContextResolver.cs" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />

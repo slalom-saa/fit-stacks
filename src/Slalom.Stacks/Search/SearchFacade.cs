@@ -47,7 +47,7 @@ namespace Slalom.Stacks.Search
                 return Task.FromResult(0);
             }
 
-            var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
 
             if (store == null)
             {
@@ -64,7 +64,7 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         public Task ClearAsync<TSearchResult>() where TSearchResult : class, ISearchResult
         {
-            var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
 
             if (store == null)
             {
@@ -90,7 +90,7 @@ namespace Slalom.Stacks.Search
                 return Task.FromResult(0);
             }
 
-            var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
             if (store == null)
             {
                 throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
@@ -109,7 +109,7 @@ namespace Slalom.Stacks.Search
         {
             Argument.NotNull(predicate, nameof(predicate));
 
-            var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
             if (store == null)
             {
                 throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
@@ -124,7 +124,7 @@ namespace Slalom.Stacks.Search
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
         public IQueryable<TSearchResult> OpenQuery<TSearchResult>() where TSearchResult : class, ISearchResult
         {
-            var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
             if (store == null)
             {
                 throw new InvalidOperationException($"No search indexer has been registered for type {typeof(TSearchResult)}.");
@@ -140,7 +140,7 @@ namespace Slalom.Stacks.Search
         /// <returns>Returns the instance with the specified identifier.</returns>
         public Task<TSearchResult> FindAsync<TSearchResult>(int id) where TSearchResult : class, ISearchResult
         {
-            var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
             if (store == null)
             {
                 throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
@@ -156,7 +156,7 @@ namespace Slalom.Stacks.Search
         /// <exception cref="NotImplementedException"></exception>
         public Task RebuildIndexAsync<TSearchResult>() where TSearchResult : class, ISearchResult
         {
-            var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
             if (store == null)
             {
                 throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
@@ -183,7 +183,7 @@ namespace Slalom.Stacks.Search
                 return Task.FromResult(0);
             }
 
-            var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
             if (store == null)
             {
                 throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
@@ -205,7 +205,7 @@ namespace Slalom.Stacks.Search
             Argument.NotNull(predicate, nameof(predicate));
             Argument.NotNull(expression, nameof(expression));
 
-            var store = _componentContext.Resolve<ISearchIndexer<TSearchResult>>();
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
             if (store == null)
             {
                 throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");

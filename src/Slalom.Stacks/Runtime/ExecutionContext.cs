@@ -84,10 +84,15 @@ namespace Slalom.Stacks.Runtime
         public string MachineName { get; }
 
         /// <summary>
-        /// Gets or sets the path.
+        /// Gets the path.
         /// </summary>
         /// <value>The path.</value>
-        public string Path { get; }
+        public string Path { get; private set; }
+
+        internal void SetPath(string path)
+        {
+            Path = path;
+        }
 
         /// <summary>
         /// Gets the additional events that were raised during execution.

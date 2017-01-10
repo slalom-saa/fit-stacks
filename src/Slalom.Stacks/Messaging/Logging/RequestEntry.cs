@@ -9,16 +9,16 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Logging
 {
     /// <summary>
-    /// Represents a log entry - something that tracks the request at the application level.
+    /// Represents a request log entry - something that tracks the request at the application level.
     /// </summary>
-    public class LogEntry
+    public class RequestEntry
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LogEntry"/> class.
+        /// Initializes a new instance of the <see cref="RequestEntry"/> class.
         /// </summary>
         /// <param name="command">The command.</param>
         /// <param name="result">The result.</param>
-        public LogEntry(ICommand command, CommandResult result)
+        public RequestEntry(ICommand command, CommandResult result)
         {
             try
             {

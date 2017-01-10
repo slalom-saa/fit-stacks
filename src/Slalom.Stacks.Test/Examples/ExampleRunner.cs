@@ -44,14 +44,14 @@ namespace Slalom.Stacks.Test.Examples
                     {
                         _configuration?.Invoke(container);
 
-                        ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator") }));
+                        ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator"), new Claim(ClaimTypes.Name, "user@example.com") }));
 
                         watch.Start();
 
                         var tasks = new List<Task<CommandResult>>(count);
-                        Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = 4 }, e =>
+                        Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, e =>
                         {
-                            tasks.Add(container.Commands.SendAsync(new AddItemCommand(e.ToString())));
+                            tasks.Add(container.Commands.SendAsync("items/add", new AddItemCommand(e.ToString())));
                         });
                         await Task.WhenAll(tasks);
 

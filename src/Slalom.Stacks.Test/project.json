@@ -1,10 +1,10 @@
 ﻿{
-  "version": "1.2.83-*",
+  "version": "1.2.87-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks", "test" ],
     "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
-    "summary": "A library with common test classes Slalom.Stacks."
+    "summary": "A library with common test classes for Stacks."
   },
   "dependencies": {
     "Slalom.Stacks": {

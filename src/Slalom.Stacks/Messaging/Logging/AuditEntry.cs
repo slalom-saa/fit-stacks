@@ -8,7 +8,7 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Logging
 {
     /// <summary>
-    /// Represents an audit, or information about an event that changed state.
+    /// Represents an audit log entry, or information about an event that changed state.
     /// </summary>
     public class AuditEntry
     {

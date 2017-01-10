@@ -8,7 +8,7 @@ namespace Slalom.Stacks.Search
     /// <summary>
     /// Manages a search index with methods to immediately add an item to the index.
     /// </summary>
-    public interface ISearchIndexer<TSearchResult> : IRebuildSearchIndex where TSearchResult : class, ISearchResult
+    public interface ISearchIndex<TSearchResult> : IRebuildSearchIndex where TSearchResult : class, ISearchResult
     {
         /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the

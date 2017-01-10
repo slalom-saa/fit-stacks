@@ -7,9 +7,9 @@ using Slalom.Stacks.Test.Examples.Actors.Items.Add;
 
 namespace Slalom.Stacks.Test.Examples.Search
 {
-    public class ItemSearchIndexer : SearchIndexer<ItemSearchResult>, IHandleEvent<AddItemEvent>
+    public class ItemSearchIndex : SearchIndex<ItemSearchResult>, IHandleEvent<AddItemEvent>
     {
-        public ItemSearchIndexer(ISearchContext context)
+        public ItemSearchIndex(ISearchContext context)
             : base(context)
         {
         }
