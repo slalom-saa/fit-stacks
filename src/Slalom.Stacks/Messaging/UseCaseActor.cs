@@ -21,17 +21,17 @@ namespace Slalom.Stacks.Messaging
 
         public virtual TResult Execute(TCommand command)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException($"The execution methods for the {this.GetType().Name} use case actor have not been implemented.");
         }
 
-        public virtual IEnumerable<ValidationError> Validate(TCommand command, ExecutionContext context)
+        public virtual IEnumerable<ValidationError> Validate(TCommand command)
         {
             yield break;
         }
 
-        public virtual Task<IEnumerable<ValidationError>> ValidateAsync(TCommand command, ExecutionContext context)
+        public virtual Task<IEnumerable<ValidationError>> ValidateAsync(TCommand command)
         {
-            return Task.FromResult(this.Validate(command, context));
+            return Task.FromResult(this.Validate(command));
         }
 
         async Task<object> IHandle.HandleAsync(object instance)

@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Test.Examples.Search
         {
         }
 
-        public async Task HandleAsync(AddItemEvent instance, ExecutionContext context)
+        public async Task HandleAsync(AddItemEvent instance)
         {
             await this.AddAsync(new[] { new ItemSearchResult
             {

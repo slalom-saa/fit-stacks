@@ -44,7 +44,7 @@ namespace Slalom.Stacks.Messaging
         /// <value>The event identifier that is used to classify the event.</value>
         int IEvent.EventTypeId => this.GetEventTypeId();
 
-        ExecutionContext IEvent.Context => _context;
+        public ExecutionContext Context => _context;
 
         /// <summary>
         /// Gets the time stamp of when the event was created.
