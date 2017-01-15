@@ -12,7 +12,7 @@ namespace Slalom.Stacks.Serialization
     /// A JSON Contract Resolver that ignores sensitive members.
     /// </summary>
     /// <seealso cref="Newtonsoft.Json.Serialization.DefaultContractResolver" />
-    public class BaseContractResolver : DefaultContractResolver
+    public class BaseContractResolver : CamelCasePropertyNamesContractResolver
     {
         /// <summary>
         /// Creates a <see cref="T:Newtonsoft.Json.Serialization.JsonProperty" /> for the given <see cref="T:System.Reflection.MemberInfo" />.
