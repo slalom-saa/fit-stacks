@@ -176,11 +176,8 @@ namespace Slalom.Stacks.Messaging
             IHandle handler;
             if (String.IsNullOrWhiteSpace(path))
             {
-                handler = (IHandle)handlers.FirstOrDefault(e => !e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any());
-                if (handler == null)
-                {
-                    handler = (IHandle)handlers.FirstOrDefault();
-                }
+                handler = (IHandle)handlers.FirstOrDefault(e => !e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any()) ??
+                          (IHandle)handlers.FirstOrDefault();
             }
             else
             {
@@ -189,6 +186,10 @@ namespace Slalom.Stacks.Messaging
                 {
                     handler = (IHandle)handlers.FirstOrDefault();
                 }
+            }
+            if (handler == null)
+            {
+                throw new InvalidOperationException($"The actor could be found for {command.CommandName} at {path}.");
             }
 
             var response = await handler.HandleAsync(command);
