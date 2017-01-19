@@ -27,6 +27,14 @@ namespace Slalom.Stacks.Search
         Task ClearAsync();
 
         /// <summary>
+        /// Finds the instance with the specified identifier.
+        /// </summary>
+        /// <param name="id">The instance identifier.</param>
+        /// <returns>Returns the instance with the specified identifier.</returns>
+        /// <exception cref="System.NotSupportedException">Thrown when an unsupported type is used.</exception>
+        Task<TSearchResult> FindAsync(int id);
+
+        /// <summary>
         /// Removes the specified instances.
         /// </summary>
         /// <param name="instances">The instances to remove.</param>
@@ -43,16 +51,9 @@ namespace Slalom.Stacks.Search
         /// <summary>
         /// Opens a query that can be used to filter and project.
         /// </summary>
+        /// <param name="text">The text to use for search.</param>
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
-        IQueryable<TSearchResult> OpenQuery();
-
-        /// <summary>
-        /// Finds the instance with the specified identifier.
-        /// </summary>
-        /// <param name="id">The instance identifier.</param>
-        /// <returns>Returns the instance with the specified identifier.</returns>
-        /// <exception cref="System.NotSupportedException">Thrown when an unsupported type is used.</exception>
-        Task<TSearchResult> FindAsync(int id);
+        IQueryable<TSearchResult> Search(string text = null);
 
         /// <summary>
         /// Updates the specified instances. Update is similar to Add, but Add skips a check to see if the

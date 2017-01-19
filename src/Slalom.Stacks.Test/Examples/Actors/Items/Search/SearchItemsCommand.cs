@@ -5,5 +5,15 @@ namespace Slalom.Stacks.Test.Examples.Actors.Items.Search
 {
     public class SearchItemsCommand : Command
     {
+        public SearchItemsCommand()
+        {
+        }
+
+        public SearchItemsCommand(string text)
+        {
+            this.Text = text;
+        }
+
+        public string Text { get; }
     }
 }

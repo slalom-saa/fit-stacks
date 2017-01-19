@@ -69,12 +69,13 @@ namespace Slalom.Stacks.Search
         /// <summary>
         /// Opens a query that can be used to filter and project.
         /// </summary>
+        /// <param name="text">The text to use for search.</param>
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
-        public virtual IQueryable<TSearchResult> OpenQuery()
+        public virtual IQueryable<TSearchResult> Search(string text = null)
         {
             this.Logger.Verbose($"Opening a query for type {typeof(TSearchResult)} using {_context.GetType()}.");
 
-            return _context.OpenQuery<TSearchResult>();
+            return _context.Search<TSearchResult>(text);
         }
 
         /// <summary>

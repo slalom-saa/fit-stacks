@@ -8,5 +8,7 @@ namespace Slalom.Stacks.Test.Examples.Search
         public int Id { get; set; }
 
         public string Text { get; set; }
+
+        public bool Crawled { get; set; }
     }
 }

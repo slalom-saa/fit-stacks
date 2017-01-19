@@ -65,7 +65,7 @@ namespace Slalom.Stacks.UnitTests
 
                 result.IsSuccessful.ShouldBeTrue();
 
-                container.Search.OpenQuery<ItemSearchResult>().Count().ShouldBe(1);
+                container.Search.Search<ItemSearchResult>().Count().ShouldBe(1);
             }
         }
 

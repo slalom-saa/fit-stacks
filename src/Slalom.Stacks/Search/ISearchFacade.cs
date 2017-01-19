@@ -35,8 +35,9 @@ namespace Slalom.Stacks.Search
         /// Creates a query that can be used to search.
         /// </summary>
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
+        /// <param name="text">The text to use for search.</param>
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
-        IQueryable<TSearchResult> OpenQuery<TSearchResult>() where TSearchResult : class, ISearchResult;
+        IQueryable<TSearchResult> Search<TSearchResult>(string text = null) where TSearchResult : class, ISearchResult;
 
         /// <summary>
         /// Removes the specified instances.

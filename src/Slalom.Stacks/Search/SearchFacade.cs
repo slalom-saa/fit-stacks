@@ -75,6 +75,38 @@ namespace Slalom.Stacks.Search
         }
 
         /// <summary>
+        /// Finds the instance with the specified identifier.
+        /// </summary>
+        /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
+        /// <param name="id">The instance identifier.</param>
+        /// <returns>Returns the instance with the specified identifier.</returns>
+        public Task<TSearchResult> FindAsync<TSearchResult>(int id) where TSearchResult : class, ISearchResult
+        {
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
+            return store.FindAsync(id);
+        }
+
+        /// <summary>
+        /// Rebuilds the index of the specified search result type.
+        /// </summary>
+        /// <typeparam name="TSearchResult">The type of search result.</typeparam>
+        /// <returns>A task for asynchronous programming.</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Task RebuildIndexAsync<TSearchResult>() where TSearchResult : class, ISearchResult
+        {
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
+            return store.RebuildIndexAsync();
+        }
+
+        /// <summary>
         /// Removes the specified instances.
         /// </summary>
         /// <typeparam name="TSearchResult">The type of instance to remove.</typeparam>
@@ -121,47 +153,17 @@ namespace Slalom.Stacks.Search
         /// Creates a query that can be used to search.
         /// </summary>
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
+        /// <param name="text">The text to use for search.</param>
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
-        public IQueryable<TSearchResult> OpenQuery<TSearchResult>() where TSearchResult : class, ISearchResult
+        /// <exception cref="System.InvalidOperationException"></exception>
+        public IQueryable<TSearchResult> Search<TSearchResult>(string text = null) where TSearchResult : class, ISearchResult
         {
             var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
             if (store == null)
             {
                 throw new InvalidOperationException($"No search indexer has been registered for type {typeof(TSearchResult)}.");
             }
-            return store.OpenQuery();
-        }
-
-        /// <summary>
-        /// Finds the instance with the specified identifier.
-        /// </summary>
-        /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
-        /// <param name="id">The instance identifier.</param>
-        /// <returns>Returns the instance with the specified identifier.</returns>
-        public Task<TSearchResult> FindAsync<TSearchResult>(int id) where TSearchResult : class, ISearchResult
-        {
-            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
-            if (store == null)
-            {
-                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
-            }
-            return store.FindAsync(id);
-        }
-
-        /// <summary>
-        /// Rebuilds the index of the specified search result type.
-        /// </summary>
-        /// <typeparam name="TSearchResult">The type of search result.</typeparam>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public Task RebuildIndexAsync<TSearchResult>() where TSearchResult : class, ISearchResult
-        {
-            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
-            if (store == null)
-            {
-                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
-            }
-            return store.RebuildIndexAsync();
+            return store.Search(text);
         }
 
         /// <summary>
