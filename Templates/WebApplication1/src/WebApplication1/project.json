@@ -1,0 +1,70 @@
+{
+  "runtimes": {
+    "win10-x64": ""
+  },
+  "dependencies": {
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.Logging": "1.1.0",
+    "Microsoft.Extensions.Logging.Console": "1.1.0",
+    "Microsoft.Extensions.Logging.Debug": "1.1.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
+    "Microsoft.AspNetCore.Mvc": "1.1.0",
+    "Microsoft.AspNetCore.Routing": "1.1.0",
+    "System.Reflection.Extensions": "4.3.0",
+    "Slalom.Stacks.Logging.SqlServer": "1.2.11",
+    "Slalom.Stacks.Data.MongoDb": "1.2.3",
+    "Slalom.Stacks": "1.2.91"
+  },
+
+  "tools": {
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.1.0-preview4-final"
+  },
+
+  "frameworks": {
+    //"netcoreapp1.0": {
+    //  "imports": [
+    //    "dotnet5.6",
+    //    "portable-net45+win8"
+    //  ],
+    //  "dependencies": {
+    //    "Microsoft.NETCore.App": {
+    //      "version": "1.1.0"
+    //      //"type": "platform"
+    //    }
+    //  }
+    //}
+    "net461": {
+      "dependencies": {
+      },
+      "imports": "dnxcore50"
+    }
+  },
+
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true
+  },
+
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  },
+
+  "publishOptions": {
+    "include": [
+      "wwwroot",
+      "**/*.cshtml",
+      "appsettings.json",
+      "web.config"
+    ]
+  },
+
+  "scripts": {
+    "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
+  }
+}

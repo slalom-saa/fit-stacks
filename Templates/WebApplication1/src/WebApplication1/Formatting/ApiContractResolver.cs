@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Serialization;
 
-namespace Slalom.Stacks.Serialization
+namespace WebApplication1.Formatting
 {
-    /// <summary>
-    /// A JSON Contract Resolver that ignores sensitive members.
-    /// </summary>
-    /// <seealso cref="Newtonsoft.Json.Serialization.DefaultContractResolver" />
-    public class BaseContractResolver : CamelCasePropertyNamesContractResolver
+    public class ApiContractResolver : CamelCasePropertyNamesContractResolver
     {
         /// <summary>
         /// Creates a <see cref="T:Newtonsoft.Json.Serialization.JsonProperty" /> for the given <see cref="T:System.Reflection.MemberInfo" />.
@@ -23,14 +18,18 @@ namespace Slalom.Stacks.Serialization
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var prop = base.CreateProperty(member, memberSerialization);
-            if ((member as PropertyInfo).GetCustomAttributes<IgnoreAttribute>().Any())
+            var propertyInfo = member as PropertyInfo;
+            if (propertyInfo?.GetCustomAttributes<IgnoreAttribute>().Any() ?? false)
             {
                 prop.Ignored = true;
-                return prop;
             }
-            if ((member as PropertyInfo)?.GetCustomAttributes<SecureAttribute>().Any() ?? false)
+            else if (propertyInfo?.GetCustomAttributes<SecureAttribute>().Any() ?? false)
             {
-                prop.Converter = new SecureJsonConverter();
+                prop.Converter = new SecureJsonConverter();                
+            }           
+            else if (typeof(IEvent).IsAssignableFrom(propertyInfo.DeclaringType) && propertyInfo.DeclaringType == typeof(Event))
+            {
+                prop.Ignored = true;
             }
             return prop;
         }

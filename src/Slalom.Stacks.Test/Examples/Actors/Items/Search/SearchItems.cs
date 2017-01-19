@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Test.Examples.Search;
 
 namespace Slalom.Stacks.Test.Examples.Actors.Items.Search
@@ -9,7 +8,7 @@ namespace Slalom.Stacks.Test.Examples.Actors.Items.Search
     {
         public override IQueryable<ItemSearchResult> Execute(SearchItemsCommand command)
         {
-            return this.Search.OpenQuery<ItemSearchResult>();
+            return this.Search.Search<ItemSearchResult>(command.Text);
         }
     }
 }

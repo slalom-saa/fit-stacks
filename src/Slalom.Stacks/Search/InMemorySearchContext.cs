@@ -69,9 +69,10 @@ namespace Slalom.Stacks.Search
         /// <summary>
         /// Opens a query that can be used to filter and project.
         /// </summary>
+        /// <param name="text">The text to use for search.</param>
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
         /// <returns>An IQueryable&lt;TAggregateRoot&gt; that can be used to filter and project.</returns>
-        public IQueryable<TSearchResult> OpenQuery<TSearchResult>() where TSearchResult : class, ISearchResult
+        public IQueryable<TSearchResult> Search<TSearchResult>(string text = null) where TSearchResult : class, ISearchResult
         {
             _cacheLock.EnterReadLock();
             try
