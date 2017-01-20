@@ -189,7 +189,7 @@ namespace Slalom.Stacks.Messaging
             }
             if (handler == null)
             {
-                throw new InvalidOperationException($"The actor could be found for {command.CommandName} at {path}.");
+                throw new InvalidOperationException($"The actor could be found for {command.CommandName} at \"{path}\".");
             }
 
             var response = await handler.HandleAsync(command);

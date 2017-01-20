@@ -12,7 +12,15 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public static void Main(string[] args)
         {
-            new ExampleRunner().Start();
+            using (var container = new ApplicationContainer(typeof(AddItemCommand)))
+            {
+                var result = container.Commands.SendAsync(new AddItemCommand(null)).Result;
+
+                Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            }
+
+
+            //new ExampleRunner().Start();
             Console.WriteLine("Running application.  Press any key to halt...");
             Console.ReadKey();
         }
