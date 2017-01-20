@@ -13,11 +13,12 @@ namespace Slalom.Stacks.Messaging.Logging
     public class AuditEntry
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuditEntry"/> class.
+        /// Initializes a new instance of the <see cref="AuditEntry" /> class.
         /// </summary>
         /// <param name="instance">The event.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        public AuditEntry(IEvent instance)
+        /// <param name="context">The current context.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
+        public AuditEntry(IEvent instance, ExecutionContext context)
         {
             Argument.NotNull(instance, nameof(instance));
 
@@ -32,7 +33,6 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
-            var context = instance.Context;
             this.EventName = instance.EventName;
             this.EventId = instance.Id;
             this.TimeStamp = instance.TimeStamp;

@@ -32,9 +32,9 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <param name="command">The command to validate.</param>
         /// <param name="context">The current execution context.</param>
         /// <returns>The <see cref="ValidationError">messages</see> returned from validation routines.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command"/> argument is null.</exception>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        public async Task<IEnumerable<ValidationError>> Validate(ICommand command, ExecutionContext context)
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context" /> argument is null.</exception>
+        public Task<IEnumerable<ValidationError>> Validate(ICommand command, ExecutionContext context)
         {
             Argument.NotNull(command, nameof(command));
             Argument.NotNull(context, nameof(context));
@@ -44,22 +44,22 @@ namespace Slalom.Stacks.Messaging.Validation
             var input = this.CheckInputRules(instance, context).ToList();
             if (input.Any())
             {
-                return input.WithType(ValidationErrorType.Input);
+                return Task.FromResult(input.WithType(ValidationErrorType.Input));
             }
 
             var security = this.CheckSecurityRules(instance, context).ToList();
             if (security.Any())
             {
-                return security.WithType(ValidationErrorType.Security);
+                return Task.FromResult(security.WithType(ValidationErrorType.Security));
             }
 
             var business = this.CheckBusinessRules(instance, context).ToList();
             if (business.Any())
             {
-                return business.WithType(ValidationErrorType.Business);
+                return Task.FromResult(business.WithType(ValidationErrorType.Business));
             }
 
-            return Enumerable.Empty<ValidationError>();
+            return Task.FromResult(Enumerable.Empty<ValidationError>());
         }
 
         /// <summary>

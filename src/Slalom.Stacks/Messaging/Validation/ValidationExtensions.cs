@@ -21,7 +21,14 @@ namespace Slalom.Stacks.Messaging.Validation
         {
             Argument.NotNull(instance, nameof(instance));
 
-            return instance.Select(e => e.WithType(type));
+            var instances = instance as ValidationError[] ?? instance.ToArray();
+
+            foreach (var item in instances.Where(e=>e.ErrorType == ValidationErrorType.None))
+            {
+                item.WithType(type);
+            }
+
+            return instances;
         }
     }
 }

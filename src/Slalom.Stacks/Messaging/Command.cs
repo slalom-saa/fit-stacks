@@ -22,12 +22,6 @@ namespace Slalom.Stacks.Messaging
         string IMessage.Id { get; } = NewId.NextId();
 
         /// <summary>
-        /// Gets the current execution context.
-        /// </summary>
-        /// <value>The current execution context.</value>
-        public ExecutionContext Context { get; private set; }
-
-        /// <summary>
         /// Gets the message time stamp.
         /// </summary>
         /// <value>The message time stamp.</value>
@@ -87,19 +81,6 @@ namespace Slalom.Stacks.Messaging
         protected bool Equals(Command other)
         {
             return ((IMessage)this).Id.Equals(((IMessage)other).Id);
-        }
-
-        /// <summary>
-        /// Sets the current execution context.
-        /// </summary>
-        /// <param name="context">The current execution context.</param>
-        void ICommand.SetExecutionContext(ExecutionContext context)
-        {
-            if (this.Context != null)
-            {
-                throw new InvalidOperationException("The execution context has already been set and cannot be reset.");
-            }
-            this.Context = context;
         }
     }
 }

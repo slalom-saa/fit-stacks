@@ -79,11 +79,8 @@ namespace Slalom.Stacks.Messaging
             var context = _context.Resolve<IExecutionContextResolver>().Resolve();
             context.SetPath(path);
 
-            // set the context
-            command.SetExecutionContext(context);
-
             // create the result
-            var result = new CommandResult(command);
+            var result = new CommandResult(context);
 
             try
             {
@@ -130,7 +127,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual Task Log(ICommand command, CommandResult result, ExecutionContext context)
         {
-            var tasks = _logs.Value.Select(e => e.AppendAsync(new RequestEntry(command, result))).ToList();
+            var tasks = _logs.Value.Select(e => e.AppendAsync(new RequestEntry(command, result, context))).ToList();
 
             if (!result.IsSuccessful)
             {
@@ -144,14 +141,14 @@ namespace Slalom.Stacks.Messaging
                 }
                 else
                 {
-                    _logger.Value.Verbose("Execution completed unsuccessfully while executing " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
+                    _logger.Value.Error("Execution completed unsuccessfully while executing " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
                 }
             }
             else
             {
                 if (result.Response is IEvent)
                 {
-                    tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(result.Response as IEvent))));
+                    tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(result.Response as IEvent, context))));
                 }
                 _logger.Value.Verbose("Successfully completed " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
             }
@@ -193,8 +190,6 @@ namespace Slalom.Stacks.Messaging
             }
 
             var response = await handler.HandleAsync(command);
-
-            (response as IEvent)?.SetExecutionContext(context);
 
             result.AddResponse(response);
         }
