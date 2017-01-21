@@ -146,11 +146,11 @@ namespace Slalom.Stacks.Messaging
             }
             else
             {
-                if (result.Response is IEvent)
-                {
-                    tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(result.Response as IEvent, context))));
-                }
                 _logger.Value.Verbose("Successfully completed " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
+            }
+            foreach (var instance in context.RaisedEvents)
+            {
+                tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(instance, context))));
             }
 
             return Task.WhenAll(tasks);
@@ -188,6 +188,8 @@ namespace Slalom.Stacks.Messaging
             {
                 throw new InvalidOperationException($"The actor could be found for {command.CommandName} at \"{path}\".");
             }
+
+            handler.SetContext(context);
 
             var response = await handler.HandleAsync(command);
 

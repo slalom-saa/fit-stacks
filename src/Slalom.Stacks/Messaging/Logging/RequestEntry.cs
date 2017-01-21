@@ -34,8 +34,8 @@ namespace Slalom.Stacks.Messaging.Logging
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
             this.IsSuccessful = result.IsSuccessful;
-            this.CommandName = command.CommandName;
-            this.CommandId = command.Id;
+            this.RequestName = command.CommandName;
+            this.RequestId = command.Id;
             this.TimeStamp = command.TimeStamp;
             this.ValidationErrors = result.ValidationErrors?.ToArray();
             this.MachineName = context.MachineName;
@@ -58,18 +58,6 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <value>The name of the application.</value>
         public string ApplicationName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the command identifier.
-        /// </summary>
-        /// <value>The command identifier.</value>
-        public string CommandId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the command.
-        /// </summary>
-        /// <value>The name of the command.</value>
-        public string CommandName { get; set; }
 
         /// <summary>
         /// Gets or sets the completed date and time.
@@ -132,10 +120,28 @@ namespace Slalom.Stacks.Messaging.Logging
         public Exception RaisedException { get; set; }
 
         /// <summary>
+        /// Gets or sets the request identifier.
+        /// </summary>
+        /// <value>The request identifier.</value>
+        public string RequestId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the request.
+        /// </summary>
+        /// <value>The name of the request.</value>
+        public string RequestName { get; set; }
+
+        /// <summary>
         /// Gets or sets the session identifier.
         /// </summary>
         /// <value>The session identifier.</value>
         public string SessionId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user host address.
+        /// </summary>
+        /// <value>The user host address.</value>
+        public string SourceAddress { get; set; }
 
         /// <summary>
         /// Gets or sets the started date and time.
@@ -154,12 +160,6 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <value>The the message stamp.</value>
         public DateTimeOffset? TimeStamp { get; set; }
-
-        /// <summary>
-        /// Gets or sets the user host address.
-        /// </summary>
-        /// <value>The user host address.</value>
-        public string SourceAddress { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the user.

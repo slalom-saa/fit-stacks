@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Validation;
 
@@ -15,6 +16,12 @@ namespace Slalom.Stacks.Messaging
     /// <seealso cref="Slalom.Stacks.Messaging.IHandle{TCommand}" />
     public abstract class UseCaseActor<TCommand, TResult> : IHandle<TCommand> where TCommand : ICommand
     {
+        /// <summary>
+        /// Gets the current <see cref="ExecutionContext"/>.
+        /// </summary>
+        /// <value>The current <see cref="ExecutionContext"/>.</value>
+        public ExecutionContext Context { get; private set; }
+
         /// <summary>
         /// Gets the configured <see cref="IDomainFacade"/>.
         /// </summary>
@@ -45,6 +52,15 @@ namespace Slalom.Stacks.Messaging
         public virtual Task<TResult> ExecuteAsync(TCommand command)
         {
             return Task.FromResult(this.Execute(command));
+        }
+
+        /// <summary>
+        /// Sets the current <see cref="ExecutionContext"/>.
+        /// </summary>
+        /// <param name="context">The current <see cref="ExecutionContext"/>.</param>
+        void IHandle.SetContext(ExecutionContext context)
+        {
+            this.Context = context;
         }
 
         /// <summary>
