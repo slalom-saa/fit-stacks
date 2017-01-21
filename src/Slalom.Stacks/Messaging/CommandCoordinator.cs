@@ -29,7 +29,7 @@ namespace Slalom.Stacks.Messaging
         private readonly IComponentContext _context;
         private readonly ConcurrentDictionary<Type, IEnumerable<object>> _handlers = new ConcurrentDictionary<Type, IEnumerable<object>>();
         private readonly Lazy<ILogger> _logger;
-        private readonly Lazy<IEnumerable<ILogStore>> _logs;
+        private readonly Lazy<IEnumerable<IRequestStore>> _logs;
         private readonly Lazy<IEventPublisher> _publisher;
         private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
 
@@ -46,7 +46,7 @@ namespace Slalom.Stacks.Messaging
             _logger = new Lazy<ILogger>(() => _context.Resolve<ILogger>());
             _publisher = new Lazy<IEventPublisher>(() => _context.Resolve<IEventPublisher>());
             _audits = new Lazy<IEnumerable<IAuditStore>>(() => _context.ResolveAll<IAuditStore>());
-            _logs = new Lazy<IEnumerable<ILogStore>>(() => _context.ResolveAll<ILogStore>());
+            _logs = new Lazy<IEnumerable<IRequestStore>>(() => _context.ResolveAll<IRequestStore>());
         }
 
         /// <summary>
@@ -73,14 +73,14 @@ namespace Slalom.Stacks.Messaging
         {
             Argument.NotNull(command, nameof(command));
 
-            _logger.Value.Verbose("Starting execution for " + command.CommandName + ". {@Command}", command);
+            _logger.Value.Verbose("Starting execution for " + command.Type + " at \"{Path}\". {@Command}", path, command);
 
-            // set the context
+            // get the context
             var context = _context.Resolve<IExecutionContextResolver>().Resolve();
-            command.SetExecutionContext(context);
+            context.SetPath(path);
 
             // create the result
-            var result = new CommandResult(command);
+            var result = new CommandResult(context);
 
             try
             {
@@ -127,7 +127,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual Task Log(ICommand command, CommandResult result, ExecutionContext context)
         {
-            var tasks = _logs.Value.Select(e => e.AppendAsync(new LogEntry(command, result, context))).ToList();
+            var tasks = _logs.Value.Select(e => e.AppendAsync(new RequestEntry(command, result, context))).ToList();
 
             if (!result.IsSuccessful)
             {
@@ -141,16 +141,16 @@ namespace Slalom.Stacks.Messaging
                 }
                 else
                 {
-                    _logger.Value.Verbose("Execution completed unsuccessfully while executing " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
+                    _logger.Value.Error("Execution completed unsuccessfully while executing " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
                 }
             }
             else
             {
-                if (result.Response is IEvent)
-                {
-                    tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(result.Response as IEvent, context))));
-                }
                 _logger.Value.Verbose("Successfully completed " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
+            }
+            foreach (var instance in context.RaisedEvents)
+            {
+                tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(instance, context))));
             }
 
             return Task.WhenAll(tasks);
@@ -173,16 +173,23 @@ namespace Slalom.Stacks.Messaging
             IHandle handler;
             if (String.IsNullOrWhiteSpace(path))
             {
-                handler = (IHandle)handlers.FirstOrDefault(e => !e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any());
-                if (handler == null)
-                {
-                    handler = (IHandle)handlers.FirstOrDefault();
-                }
+                handler = (IHandle)handlers.FirstOrDefault(e => !e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any()) ??
+                          (IHandle)handlers.FirstOrDefault();
             }
             else
             {
                 handler = (IHandle)handlers.FirstOrDefault(e => e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path));
+                if (handler == null && handlers.Count() == 1)
+                {
+                    handler = (IHandle)handlers.FirstOrDefault();
+                }
             }
+            if (handler == null)
+            {
+                throw new InvalidOperationException($"The actor could be found for {command.CommandName} at \"{path}\".");
+            }
+
+            handler.SetContext(context);
 
             var response = await handler.HandleAsync(command);
 

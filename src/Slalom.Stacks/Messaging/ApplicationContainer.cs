@@ -12,7 +12,7 @@ namespace Slalom.Stacks
 
         partial void Initialize()
         {
-            _commands = new Lazy<ICommandCoordinator>(() => this.RootContainer.Resolve<ICommandCoordinator>());
+            _commands = new Lazy<ICommandCoordinator>(() => this.Container.Resolve<ICommandCoordinator>());
         }
 
         public ICommandCoordinator Commands => _commands.Value;

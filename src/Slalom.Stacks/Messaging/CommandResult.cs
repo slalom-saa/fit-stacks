@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Slalom.Stacks.Runtime;
-using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
@@ -14,10 +13,10 @@ namespace Slalom.Stacks.Messaging
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandResult" /> class.
         /// </summary>
-        /// <param name="command">The command being executed.</param>
-        public CommandResult(ICommand command)
+        /// <param name="context">The context.</param>
+        public CommandResult(ExecutionContext context)
         {
-            this.CorrelationId = command.Context.CorrelationId;
+            this.CorrelationId = context.CorrelationId;
             this.Started = DateTimeOffset.UtcNow;
         }
 
@@ -28,22 +27,16 @@ namespace Slalom.Stacks.Messaging
         public DateTimeOffset? Completed { get; private set; }
 
         /// <summary>
+        /// Gets the correlation identifier.
+        /// </summary>
+        /// <value>The correlation identifier.</value>
+        public string CorrelationId { get; private set; }
+
+        /// <summary>
         /// Gets the time elapsed.
         /// </summary>
         /// <value>The time elapsed.</value>
         public TimeSpan? Elapsed => this.Completed - this.Started;
-
-        /// <summary>
-        /// Gets or sets the date and time started.
-        /// </summary>
-        /// <value>The date and time started.</value>
-        public DateTimeOffset Started { get; private set; }
-
-        /// <summary>
-        /// Gets the correlation identifier for the request.
-        /// </summary>
-        /// <value>The correlation identifier for the request.</value>
-        public string CorrelationId { get; private set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the execution was successful.
@@ -56,6 +49,14 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The raised exception.</value>
         public Exception RaisedException { get; private set; }
+
+        public object Response { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the date and time started.
+        /// </summary>
+        /// <value>The date and time started.</value>
+        public DateTimeOffset Started { get; private set; }
 
         /// <summary>
         /// Gets any validation errors that were raised.
@@ -70,6 +71,11 @@ namespace Slalom.Stacks.Messaging
         public void AddException(Exception exception)
         {
             this.RaisedException = exception;
+        }
+
+        public void AddResponse(object o)
+        {
+            this.Response = o;
         }
 
         /// <summary>
@@ -87,13 +93,6 @@ namespace Slalom.Stacks.Messaging
         public void Complete()
         {
             this.Completed = DateTimeOffset.UtcNow;
-        }
-
-        public object Response { get; private set; }
-
-        public void AddResponse(object o)
-        {
-            Response = o;
         }
     }
 }

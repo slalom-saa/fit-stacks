@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Reflection
     {
         private static readonly ConcurrentDictionary<Type, List<Type>> Cache = new ConcurrentDictionary<Type, List<Type>>();
 
-        private static readonly string[] _ignores = { "Libuv", "Microsoft.", "NETStandard", "runtime", "xunit" };
+        private static readonly string[] Ignores = { "Libuv", "Microsoft.", "NETStandard", "runtime", "xunit" };
         private readonly ILogger _logger;
         private Lazy<List<Assembly>> _assemblies;
 
@@ -64,7 +64,7 @@ namespace Slalom.Stacks.Reflection
                 {
                     try
                     {
-                        if (_ignores.Any(e => compilationLibrary.Name.StartsWith(e)))
+                        if (Ignores.Any(e => compilationLibrary.Name.StartsWith(e)))
                         {
                             continue;
                         }
@@ -77,7 +77,7 @@ namespace Slalom.Stacks.Reflection
                     }
                     catch
                     {
-                        logger?.Debug("Type Discovery: Could not load library {name}.", compilationLibrary.Name);
+                        logger?.Debug("DiscoveryService: Could not load library {name}.", compilationLibrary.Name);
                     }
                 }
 #else

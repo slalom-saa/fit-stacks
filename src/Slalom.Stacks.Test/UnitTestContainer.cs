@@ -16,7 +16,7 @@ namespace Slalom.Stacks.Test
 
         public readonly List<IEvent> RaisedEvents = new List<IEvent>(); 
 
-        public Task HandleAsync(IEvent instance, ExecutionContext context)
+        public Task HandleAsync(IEvent instance)
         {
             RaisedEvents.Add(instance);
 

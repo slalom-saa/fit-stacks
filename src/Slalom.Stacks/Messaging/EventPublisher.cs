@@ -53,7 +53,7 @@ namespace Slalom.Stacks.Messaging
 
             foreach (var handler in target)
             {
-                await (Task)((dynamic)handler).HandleAsync((dynamic)instance, context);
+                await (Task)((dynamic)handler).HandleAsync((dynamic)instance);
             }
         }
     }

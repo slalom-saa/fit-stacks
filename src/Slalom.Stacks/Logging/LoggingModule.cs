@@ -1,14 +1,15 @@
 ﻿using System;
 using Autofac;
 using Slalom.Stacks.Caching;
+using Slalom.Stacks.Configuration;
 
 namespace Slalom.Stacks.Logging
 {
     /// <summary>
-    /// An Autofac module to configure null logging dependencies.
+    /// An Autofac module to configure logging dependencies.
     /// </summary>
     /// <seealso cref="Autofac.Module" />
-    internal class NullLoggingModule : Module
+    internal class LoggingModule : Module
     {
         /// <summary>
         /// Override to add registrations to the container.
@@ -20,7 +21,7 @@ namespace Slalom.Stacks.Logging
         {
             base.Load(builder);
 
-            builder.Register(c => new NullLogger())
+            builder.Register(c => new CompositeLogger(new ComponentContext(c.Resolve<Autofac.IComponentContext>())))
                    .AsImplementedInterfaces()
                    .SingleInstance();
         }

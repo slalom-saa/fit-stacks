@@ -9,13 +9,13 @@ namespace Slalom.Stacks.Messaging.Logging
     /// Defines a contract for storing logs.  A log is a history of commands that were executed.  Diagnostic logging is done with
     /// the <see cref="ILogger"/>.
     /// </summary>
-    public interface ILogStore
+    public interface IRequestStore
     {
         /// <summary>
         /// Appends an audit with the specified execution elements.
         /// </summary>
         /// <param name="entry">The log entry to append.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task AppendAsync(LogEntry entry);
+        Task AppendAsync(RequestEntry entry);
     }
 }

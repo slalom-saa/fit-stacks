@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Slalom.Stacks.Search
 {
     /// <summary>
-    /// Provides a single access point to instances, allows for search stores to be granular and for
+    /// Provides a single access point to search indices, allows for search indices to be granular and for
     /// application/infrastructure components to access objects with minimal bloat and lifetime management;  Instead of using
     /// many dependencies, in each class, for each data access component, the facade can be used and it will resolve the
     /// dependences as needed instead of on construction.
@@ -35,8 +35,9 @@ namespace Slalom.Stacks.Search
         /// Creates a query that can be used to search.
         /// </summary>
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
+        /// <param name="text">The text to use for search.</param>
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
-        IQueryable<TSearchResult> OpenQuery<TSearchResult>() where TSearchResult : class, ISearchResult;
+        IQueryable<TSearchResult> Search<TSearchResult>(string text = null) where TSearchResult : class, ISearchResult;
 
         /// <summary>
         /// Removes the specified instances.

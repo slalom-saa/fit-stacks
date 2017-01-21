@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Validation;
 
@@ -11,16 +12,16 @@ namespace Slalom.Stacks.Search
     /// Manages a search index with methods to immediately add an item to the index.
     /// </summary>
     /// <typeparam name="TSearchResult">The type of the search result.</typeparam>
-    /// <seealso cref="Slalom.Stacks.Search.ISearchIndexer{TSearchResult}" />
-    public class SearchIndexer<TSearchResult> : ISearchIndexer<TSearchResult> where TSearchResult : class, ISearchResult
+    /// <seealso cref="ISearchIndex{TSearchResult}" />
+    public class SearchIndex<TSearchResult> : ISearchIndex<TSearchResult> where TSearchResult : class, ISearchResult
     {
         private readonly ISearchContext _context;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SearchIndexer{TSearchResult}" /> class.
+        /// Initializes a new instance of the <see cref="SearchIndex{TSearchResult}" /> class.
         /// </summary>
         /// <param name="context">The configured context.</param>
-        public SearchIndexer(ISearchContext context)
+        public SearchIndex(ISearchContext context)
         {
             Argument.NotNull(context, nameof(context));
 
@@ -28,10 +29,16 @@ namespace Slalom.Stacks.Search
         }
 
         /// <summary>
-        /// Gets or sets the configured logger.
+        /// Gets or sets the configured <see cref="ILogger"/>.
         /// </summary>
-        /// <value>The logger.</value>
+        /// <value>The configured <see cref="ILogger"/>.</value>
         public ILogger Logger { get; set; }
+
+        /// <summary>
+        /// Gets or sets the configured <see cref="IDomainFacade"/>.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade"/>.</value>
+        public IDomainFacade Domain { get; set; }
 
         /// <summary>
         /// Adds the specified instances to the index immediately. Add is similar to Update, but skips a check to see if the
@@ -62,12 +69,13 @@ namespace Slalom.Stacks.Search
         /// <summary>
         /// Opens a query that can be used to filter and project.
         /// </summary>
+        /// <param name="text">The text to use for search.</param>
         /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
-        public virtual IQueryable<TSearchResult> OpenQuery()
+        public virtual IQueryable<TSearchResult> Search(string text = null)
         {
             this.Logger.Verbose($"Opening a query for type {typeof(TSearchResult)} using {_context.GetType()}.");
 
-            return _context.OpenQuery<TSearchResult>();
+            return _context.Search<TSearchResult>(text);
         }
 
         /// <summary>

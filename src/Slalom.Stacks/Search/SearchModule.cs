@@ -50,16 +50,16 @@ namespace Slalom.Stacks.Search
                    .AsSelf()
                    .SingleInstance();
 
-            builder.RegisterGeneric(typeof(SearchIndexer<>))
-                   .As(typeof(ISearchIndexer<>))
+            builder.RegisterGeneric(typeof(SearchIndex<>))
+                   .As(typeof(ISearchIndex<>))
                    .InstancePerDependency();
 
             builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ISearchIndexer<>)))
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ISearchIndex<>)))
                    .As(instance =>
                    {
-                       var interfaces = instance.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(ISearchIndexer<>));
-                       return interfaces.Select(e => typeof(ISearchIndexer<>).MakeGenericType(e.GetGenericArguments()[0]));
+                       var interfaces = instance.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(ISearchIndex<>));
+                       return interfaces.Select(e => typeof(ISearchIndex<>).MakeGenericType(e.GetGenericArguments()[0]));
                    }).InstancePerDependency();
         }
     }

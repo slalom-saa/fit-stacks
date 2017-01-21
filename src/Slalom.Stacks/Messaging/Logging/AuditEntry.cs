@@ -3,26 +3,25 @@ using Newtonsoft.Json;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Utilities.NewId;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Logging
 {
     /// <summary>
-    /// Represents an audit, or information about an event that changed state.
+    /// Represents an audit log entry, or information about an event that changed state.
     /// </summary>
     public class AuditEntry
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuditEntry"/> class.
+        /// Initializes a new instance of the <see cref="AuditEntry" /> class.
         /// </summary>
         /// <param name="instance">The event.</param>
-        /// <param name="context">The context.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
+        /// <param name="context">The current context.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
         public AuditEntry(IEvent instance, ExecutionContext context)
         {
             Argument.NotNull(instance, nameof(instance));
-            Argument.NotNull(context, nameof(context));
 
             try
             {
@@ -44,10 +43,17 @@ namespace Slalom.Stacks.Messaging.Logging
             this.SessionId = context.SessionId;
             this.UserName = context.User?.Identity?.Name;
             this.Path = context.Path;
-            this.UserHostAddress = context.UserHostAddress;
+            this.SourceAddress = context.SourceAddress;
             this.ThreadId = context.ThreadId;
             this.CorrelationId = context.CorrelationId;
+            this.EventTypeId = instance.EventTypeId;
         }
+
+        /// <summary>
+        /// Gets the event type identifier used to classify the event.
+        /// </summary>
+        /// <value>The event type identifier used to classify the event.</value>
+        public int EventTypeId { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the application.
@@ -83,7 +89,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Gets or sets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        public int Id { get; set; }
+        public string Id { get; set; } = NewId.NextId();
 
         /// <summary>
         /// Gets or sets the name of the machine.
@@ -125,7 +131,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Gets or sets the user host address.
         /// </summary>
         /// <value>The user host address.</value>
-        public string UserHostAddress { get; set; }
+        public string SourceAddress { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the user.

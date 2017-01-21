@@ -4,28 +4,29 @@ using System.Linq;
 using Newtonsoft.Json;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Utilities.NewId;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Logging
 {
     /// <summary>
-    /// Represents a log entry - something that tracks the request at the application level.
+    /// Represents a request log entry - something that tracks the request at the application level.
     /// </summary>
-    public class LogEntry
+    public class RequestEntry
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LogEntry"/> class.
+        /// Initializes a new instance of the <see cref="RequestEntry" /> class.
         /// </summary>
         /// <param name="command">The command.</param>
         /// <param name="result">The result.</param>
         /// <param name="context">The context.</param>
-        public LogEntry(ICommand command, CommandResult result, ExecutionContext context)
+        public RequestEntry(ICommand command, CommandResult result, ExecutionContext context)
         {
             try
             {
                 this.Payload = JsonConvert.SerializeObject(command, new JsonSerializerSettings
                 {
-                    ContractResolver = new EventContractResolver()
+                    ContractResolver = new CommandContractResolver()
                 });
             }
             catch
@@ -33,8 +34,8 @@ namespace Slalom.Stacks.Messaging.Logging
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
             this.IsSuccessful = result.IsSuccessful;
-            this.CommandName = command.CommandName;
-            this.CommandId = command.Id;
+            this.RequestName = command.CommandName;
+            this.RequestId = command.Id;
             this.TimeStamp = command.TimeStamp;
             this.ValidationErrors = result.ValidationErrors?.ToArray();
             this.MachineName = context.MachineName;
@@ -43,7 +44,7 @@ namespace Slalom.Stacks.Messaging.Logging
             this.SessionId = context.SessionId;
             this.UserName = context.User?.Identity?.Name;
             this.Path = context.Path;
-            this.UserHostAddress = context.UserHostAddress;
+            this.SourceAddress = context.SourceAddress;
             this.ThreadId = context.ThreadId;
             this.CorrelationId = context.CorrelationId;
             this.RaisedException = result.RaisedException;
@@ -57,18 +58,6 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <value>The name of the application.</value>
         public string ApplicationName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the command identifier.
-        /// </summary>
-        /// <value>The command identifier.</value>
-        public string CommandId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the command.
-        /// </summary>
-        /// <value>The name of the command.</value>
-        public string CommandName { get; set; }
 
         /// <summary>
         /// Gets or sets the completed date and time.
@@ -98,7 +87,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Gets or sets the instance identifier.
         /// </summary>
         /// <value>The instance identifier.</value>
-        public int Id { get; set; }
+        public string Id { get; set; } = NewId.NextId();
 
         /// <summary>
         /// Gets or sets a value indicating whether the execution was successful.
@@ -131,10 +120,28 @@ namespace Slalom.Stacks.Messaging.Logging
         public Exception RaisedException { get; set; }
 
         /// <summary>
+        /// Gets or sets the request identifier.
+        /// </summary>
+        /// <value>The request identifier.</value>
+        public string RequestId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the request.
+        /// </summary>
+        /// <value>The name of the request.</value>
+        public string RequestName { get; set; }
+
+        /// <summary>
         /// Gets or sets the session identifier.
         /// </summary>
         /// <value>The session identifier.</value>
         public string SessionId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the user host address.
+        /// </summary>
+        /// <value>The user host address.</value>
+        public string SourceAddress { get; set; }
 
         /// <summary>
         /// Gets or sets the started date and time.
@@ -153,12 +160,6 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <value>The the message stamp.</value>
         public DateTimeOffset? TimeStamp { get; set; }
-
-        /// <summary>
-        /// Gets or sets the user host address.
-        /// </summary>
-        /// <value>The user host address.</value>
-        public string UserHostAddress { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the user.

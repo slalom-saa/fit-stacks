@@ -14,9 +14,8 @@ namespace Slalom.Stacks.Messaging
         /// Handles the specified event instance.
         /// </summary>
         /// <param name="instance">The event instance.</param>
-        /// <param name="context">The current execution context.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task HandleAsync(TEvent instance, ExecutionContext context);
+        Task HandleAsync(TEvent instance);
     }
 
     /// <summary>
@@ -29,8 +28,7 @@ namespace Slalom.Stacks.Messaging
         /// Handles the specified event instance.
         /// </summary>
         /// <param name="instance">The event instance.</param>
-        /// <param name="context">The current execution context.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task HandleAsync(IEvent instance, ExecutionContext context);
+        Task HandleAsync(IEvent instance);
     }
 }

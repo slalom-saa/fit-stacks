@@ -70,17 +70,9 @@ namespace Slalom.Stacks.Messaging
                    .PropertiesAutowired(new AllUnsetPropertySelector());
 
             builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(UseCaseActor<,>)))
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandle<>)))
                    .As(instance => instance.GetBaseAndContractTypes())
                    .AsSelf();
-
-            builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => typeof(IAuditStore).IsAssignableFrom(e))
-                   .As<IAuditStore>();
-
-            builder.RegisterAssemblyTypes(this.Assemblies)
-                   .Where(e => typeof(IAuditStore).IsAssignableFrom(e))
-                   .As<ILogStore>();
         }
     }
 }

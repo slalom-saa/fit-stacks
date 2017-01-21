@@ -7,9 +7,9 @@ using Slalom.Stacks.Test.Examples.Actors.Items.Add;
 
 namespace Slalom.Stacks.Test.Examples.Search
 {
-    public class ItemSearchIndexer : SearchIndexer<ItemSearchResult>, IHandleEvent<AddItemEvent>
+    public class ItemSearchIndex : SearchIndex<ItemSearchResult>, IHandleEvent<AddItemEvent>
     {
-        public ItemSearchIndexer(ISearchContext context)
+        public ItemSearchIndex(ISearchContext context)
             : base(context)
         {
         }
@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Test.Examples.Search
         {
         }
 
-        public async Task HandleAsync(AddItemEvent instance, ExecutionContext context)
+        public async Task HandleAsync(AddItemEvent instance)
         {
             await this.AddAsync(new[] { new ItemSearchResult
             {

@@ -38,6 +38,11 @@ namespace Slalom.Stacks
                 {
                     return type.GetTypeInfo().Assembly;
                 }
+                var assembly = e as Assembly;
+                if (assembly != null)
+                {
+                    return assembly;
+                }
                 return e.GetType().GetTypeInfo().Assembly;
             }).Distinct().ToArray();
 
@@ -45,7 +50,7 @@ namespace Slalom.Stacks
 
             builder.RegisterModule(new ConfigurationModule(this.Assemblies));
 
-            this.RootContainer = builder.Build();
+            this.Container = builder.Build();
 
             this.Initialize();
         }
@@ -78,7 +83,7 @@ namespace Slalom.Stacks
         /// Gets the root <see cref="IContainer"/>.
         /// </summary>
         /// <value>The root <see cref="IContainer"/>.</value>
-        internal IContainer RootContainer { get; }
+        public IContainer Container { get; }
 
         /// <summary>
         /// Gets the current <see cref="ExecutionContext"/> instance.
@@ -101,7 +106,7 @@ namespace Slalom.Stacks
         {
             var builder = new ContainerBuilder();
             builder.Populate(services);
-            builder.Update(this.RootContainer.ComponentRegistry);
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -115,7 +120,7 @@ namespace Slalom.Stacks
                    .AsSelf()
                    .AsImplementedInterfaces();
 
-            builder.Update(this.RootContainer.ComponentRegistry);
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -130,12 +135,33 @@ namespace Slalom.Stacks
             {
                 var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
 
-                this.RootContainer.InjectProperties(instance, _selector);
+                this.Container.InjectProperties(instance, _selector);
 
                 return instance;
             }).As<T>().AsImplementedInterfaces();
 
-            builder.Update(this.RootContainer.ComponentRegistry);
+            builder.Update(this.Container.ComponentRegistry);
+        }
+
+        /// <summary>
+        /// Appends a registered instance with the container, preserving hte default.
+        /// </summary>
+        /// <typeparam name="T">The type of instance.</typeparam>
+        /// <param name="delegate">The instance to register.</param>
+        public void Append<T>(Func<IComponentContext, T> @delegate) where T : class
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(c =>
+                   {
+                       var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
+
+                       this.Container.InjectProperties(instance, _selector);
+
+                       return instance;
+                   }).As<T>().AsImplementedInterfaces()
+                   .PreserveExistingDefaults();
+
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -149,7 +175,7 @@ namespace Slalom.Stacks
 
             builder.RegisterInstance(instance).As<T>().AsImplementedInterfaces();
 
-            builder.Update(this.RootContainer.ComponentRegistry);
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -164,12 +190,12 @@ namespace Slalom.Stacks
             {
                 var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
 
-                this.RootContainer.InjectProperties(instance, _selector);
+                this.Container.InjectProperties(instance, _selector);
 
                 return instance;
             }).As(services);
 
-            builder.Update(this.RootContainer.ComponentRegistry);
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -182,7 +208,7 @@ namespace Slalom.Stacks
 
             builder.RegisterModule((IModule)module);
 
-            builder.Update(this.RootContainer.ComponentRegistry);
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -192,7 +218,7 @@ namespace Slalom.Stacks
         /// <returns>The resolved component.</returns>
         public object Resolve(Type type)
         {
-            return this.RootContainer.Resolve(type);
+            return this.Container.Resolve(type);
         }
 
         /// <summary>
@@ -204,7 +230,7 @@ namespace Slalom.Stacks
         {
             T instance;
 
-            if (!this.RootContainer.TryResolve(out instance))
+            if (!this.Container.TryResolve(out instance))
             {
                 if (!typeof(T).GetTypeInfo().IsAbstract && !typeof(T).GetTypeInfo().IsInterface)
                 {
@@ -212,15 +238,15 @@ namespace Slalom.Stacks
 
                     builder.RegisterType(typeof(T));
 
-                    builder.Update(this.RootContainer.ComponentRegistry);
+                    builder.Update(this.Container.ComponentRegistry);
 
-                    instance = this.RootContainer.Resolve<T>();
+                    instance = this.Container.Resolve<T>();
                 }
             }
 
             if (instance != null)
             {
-                this.RootContainer.InjectProperties(instance, _selector);
+                this.Container.InjectProperties(instance, _selector);
 
                 setup?.Invoke(instance);
             }
@@ -234,11 +260,11 @@ namespace Slalom.Stacks
         /// <returns>The resolved instances.</returns>
         public IEnumerable<T> ResolveAll<T>()
         {
-            var target = this.RootContainer.Resolve<IEnumerable<T>>().ToList();
+            var target = this.Container.Resolve<IEnumerable<T>>().ToList();
 
             foreach (var instance in target)
             {
-                this.RootContainer.InjectProperties(instance, _selector);
+                this.Container.InjectProperties(instance, _selector);
             }
 
             return target;
@@ -281,7 +307,7 @@ namespace Slalom.Stacks
             if (disposing)
             {
                 // free other managed objects that implement IDisposable only
-                this.RootContainer.Dispose();
+                this.Container.Dispose();
             }
 
             // release any unmanaged objects
