@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Utilities.NewId;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Logging
@@ -98,7 +99,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Gets or sets the instance identifier.
         /// </summary>
         /// <value>The instance identifier.</value>
-        public int Id { get; set; }
+        public string Id { get; set; } = NewId.NextId();
 
         /// <summary>
         /// Gets or sets a value indicating whether the execution was successful.
