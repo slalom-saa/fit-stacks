@@ -20,17 +20,5 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The command name.</value>
         string CommandName { get; }
-
-        /// <summary>
-        /// Gets the current execution context.
-        /// </summary>
-        /// <value>The current execution context.</value>
-        ExecutionContext Context { get; }
-
-        /// <summary>
-        /// Sets the current execution context.
-        /// </summary>
-        /// <param name="context">The current execution context.</param>
-        void SetExecutionContext(ExecutionContext context);
     }
 }

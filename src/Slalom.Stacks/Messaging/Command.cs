@@ -1,5 +1,6 @@
 ﻿using System;
-using Slalom.Stacks.Runtime;
+using System.Reflection;
+using System.Linq;
 using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Messaging
@@ -12,20 +13,23 @@ namespace Slalom.Stacks.Messaging
     /// <seealso href="http://bit.ly/2d01rc7">Reactive Messaging Patterns with the Actor Model: Applications and Integration in Scala and Akka</seealso>
     public abstract class Command : ICommand
     {
-        private string _commandName;
-        private Type _type;
+        private readonly Lazy<RequestAttribute> _attribute;
+        private readonly Type _type;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Command"/> class.
+        /// </summary>
+        protected Command()
+        {
+            _type = this.GetType();
+            _attribute = new Lazy<RequestAttribute>(() => _type.GetTypeInfo().GetCustomAttributes<RequestAttribute>().FirstOrDefault());
+        }
 
         /// <summary>
         /// Gets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
         string IMessage.Id { get; } = NewId.NextId();
-
-        /// <summary>
-        /// Gets the current execution context.
-        /// </summary>
-        /// <value>The current execution context.</value>
-        public ExecutionContext Context { get; private set; }
 
         /// <summary>
         /// Gets the message time stamp.
@@ -37,13 +41,13 @@ namespace Slalom.Stacks.Messaging
         /// Gets the command type.
         /// </summary>
         /// <value>The command type.</value>
-        Type ICommand.Type => _type ?? (_type = this.GetType());
+        Type ICommand.Type => _type;
 
         /// <summary>
         /// Gets the command name.
         /// </summary>
         /// <value>The command name.</value>
-        string ICommand.CommandName => _commandName ?? (_commandName = this.GetType().Name);
+        string ICommand.CommandName => this.GetCommandName();
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
@@ -89,17 +93,9 @@ namespace Slalom.Stacks.Messaging
             return ((IMessage)this).Id.Equals(((IMessage)other).Id);
         }
 
-        /// <summary>
-        /// Sets the current execution context.
-        /// </summary>
-        /// <param name="context">The current execution context.</param>
-        void ICommand.SetExecutionContext(ExecutionContext context)
+        private string GetCommandName()
         {
-            if (this.Context != null)
-            {
-                throw new InvalidOperationException("The execution context has already been set and cannot be reset.");
-            }
-            this.Context = context;
+            return _attribute.Value?.Name ?? _type.Name;
         }
     }
 }

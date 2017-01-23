@@ -12,8 +12,6 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     public abstract class Event : IEvent
     {
-        private ExecutionContext _context;
-
         private readonly Lazy<EventAttribute> _attribute;
         private TypeInfo _type;
 
@@ -43,8 +41,6 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The event identifier that is used to classify the event.</value>
         int IEvent.EventTypeId => this.GetEventTypeId();
-
-        public ExecutionContext Context => _context;
 
         /// <summary>
         /// Gets the time stamp of when the event was created.
@@ -102,11 +98,6 @@ namespace Slalom.Stacks.Messaging
         protected bool Equals(Event other)
         {
             return ((IMessage)this).Id.Equals(((IMessage)other).Id);
-        }
-
-        void IEvent.SetExecutionContext(ExecutionContext context)
-        {
-            _context = context;
         }
     }
 }

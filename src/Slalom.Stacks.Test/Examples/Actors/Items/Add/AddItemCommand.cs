@@ -1,11 +1,13 @@
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Serialization;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Test.Examples.Actors.Items.Add
 {
     public class AddItemCommand : Command
     {
-        public string Text { get; private set; }
+        [NotNullOrWhitespace("An item must have text to be added.")]
+        public string Text { get; }
 
         public AddItemCommand(string text)
         {

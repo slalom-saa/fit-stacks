@@ -19,9 +19,5 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The event type identifier used to classify the event.</value>
         int EventTypeId { get; }
-
-        ExecutionContext Context { get; }
-
-        void SetExecutionContext(ExecutionContext context);
     }
 }

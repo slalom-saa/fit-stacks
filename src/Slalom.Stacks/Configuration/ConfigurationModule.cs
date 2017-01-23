@@ -51,28 +51,19 @@ namespace Slalom.Stacks.Configuration
                    }).As<IConfiguration>()
                    .SingleInstance();
 
-            builder.Register<ILogger>(c => new NullLogger())
-                   .SingleInstance();
-
             builder.RegisterModule(new DomainModule(_assemblies));
             builder.RegisterModule(new MessagingModule(_assemblies));
             builder.RegisterModule(new SearchModule(_assemblies));
 
-            builder.RegisterModule(new NullLoggingModule());
+            builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new NullCachingModule());
 
             builder.Register(c => new ComponentContext(c.Resolve<Autofac.IComponentContext>()))
                    .As<IComponentContext>();
 
-#if !NET461
             builder.Register(c => new LocalExecutionContextResolver(c.Resolve<IConfiguration>()))
                    .As<IExecutionContextResolver>()
                    .SingleInstance();
-#else
-            builder.Register(c => new LocalExecutionContextResolver(c.Resolve<IConfiguration>()))
-                .As<IExecutionContextResolver>()
-                .SingleInstance();
-#endif
 
             builder.Register(c => new DiscoveryService(c.Resolve<ILogger>()))
                    .As<IDiscoverTypes>()
