@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Slalom.Stacks;
 using Slalom.Stacks.Caching;
 using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Data.MongoDb;
 using Slalom.Stacks.Logging.SqlServer;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
@@ -46,9 +45,9 @@ namespace WebApplication1
             container = new ApplicationContainer(this);
             container.Populate(services);
 
-            container.UseMongoDbRepositories();
+            //container.UseMongoDbRepositories();
             container.Search.RebuildIndexAsync<ProductSearchResult>();
-            container.UseSqlServerAuditing();
+            container.UseSqlServerLogging();
 
 
             //container.UseLocalAzureConfiguration(e =>
