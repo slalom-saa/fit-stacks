@@ -4,6 +4,7 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Test.Examples.Actors.Items.Add
 {
+    [Request("Add Item")]
     public class AddItemCommand : Command
     {
         [NotNullOrWhitespace("An item must have text to be added.")]
