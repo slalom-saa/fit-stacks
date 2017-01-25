@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Shouldly;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Test;
 using Slalom.Stacks.Test.Examples.Actors.Items.Add;
 using Slalom.Stacks.Test.Examples.Domain;
@@ -11,6 +14,37 @@ using Xunit;
 
 namespace Slalom.Stacks.UnitTests
 {
+
+
+    //public class Scenario
+    //{
+    //    public class ItemEntityContext : InMemoryEntityContext
+    //    {
+    //        public ItemEntityContext()
+    //        {
+    //            this.Instances.Add(Item.Create("A"));
+    //        }
+    //    }
+    //}
+
+    public class Scenarios
+    {
+        public static Scenario StateZero => new Scenario();
+    }
+
+
+    //public class StateZeroDataScenario : Scenario
+    //{
+    //    public static Scenario AsAdmin()
+    //    {
+    //        var scenario = new StateZeroDataScenario();
+    //        scenario.WithUser("user", "Administrator")
+    //            .WithData(
+    //        return scenario;
+    //    }
+    //}
+
+
     public class SaveItemShould
     {
         [Fact]
@@ -18,6 +52,8 @@ namespace Slalom.Stacks.UnitTests
         {
             using (var container = new UnitTestContainer())
             {
+                container.UseScenario(Scenarios.StateZero.AsAdmin());
+
                 var result = await container.Commands.SendAsync(new AddItemCommand("adsf"));
 
                 result.IsSuccessful.ShouldBeTrue("The use case execution was not successful.");
@@ -35,6 +71,8 @@ namespace Slalom.Stacks.UnitTests
         {
             using (var container = new UnitTestContainer())
             {
+                container.UseScenario(Scenarios.StateZero.AsAdmin());
+
                 var result = await container.Commands.SendAsync(new AddItemCommand(null));
 
                 result.IsSuccessful.ShouldBeFalse();
