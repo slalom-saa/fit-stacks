@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Slalom.Stacks.Test
 {
@@ -47,10 +51,14 @@ namespace Slalom.Stacks.Test
     {
         public readonly List<IEvent> RaisedEvents = new List<IEvent>();
 
-        public UnitTestContainer()
+        public UnitTestContainer(object instance, [CallerMemberName] string callerName = "")
             : base(typeof(UnitTestContainer))
         {
             this.Register(this);
+
+            var method = instance.GetType().GetTypeInfo().GetMethod(callerName);
+
+            Console.WriteLine(method.GetCustomAttributes().Count());
         }
 
         public void UseScenario(Scenario scenario)

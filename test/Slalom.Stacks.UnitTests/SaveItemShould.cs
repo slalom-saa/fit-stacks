@@ -44,13 +44,22 @@ namespace Slalom.Stacks.UnitTests
     //    }
     //}
 
+    public class ScenarioAttribute : Attribute
+    {
+        public string Scenario { get; }
+
+        public ScenarioAttribute(string scenario)
+        {
+            this.Scenario = scenario;
+        }
+    }
 
     public class SaveItemShould
     {
-        [Fact]
+        [Fact, Scenario("adsf")]
         public async Task A()
         {
-            using (var container = new UnitTestContainer())
+            using (var container = new UnitTestContainer(this))
             {
                 container.UseScenario(Scenarios.StateZero.AsAdmin());
 
@@ -69,7 +78,7 @@ namespace Slalom.Stacks.UnitTests
         [Fact]
         public async Task A2()
         {
-            using (var container = new UnitTestContainer())
+            using (var container = new UnitTestContainer(this))
             {
                 container.UseScenario(Scenarios.StateZero.AsAdmin());
 
@@ -84,7 +93,7 @@ namespace Slalom.Stacks.UnitTests
         [Fact]
         public async Task A3()
         {
-            using (var container = new UnitTestContainer())
+            using (var container = new UnitTestContainer(this))
             {
                 var result = await container.Commands.SendAsync(new AddItemCommand(""));
 
@@ -97,7 +106,7 @@ namespace Slalom.Stacks.UnitTests
         [Fact]
         public async Task A4()
         {
-            using (var container = new UnitTestContainer())
+            using (var container = new UnitTestContainer(this))
             {
                 var result = await container.Commands.SendAsync(new AddItemCommand("ss"));
 
@@ -110,7 +119,7 @@ namespace Slalom.Stacks.UnitTests
         [Fact]
         public async Task A5()
         {
-            using (var container = new UnitTestContainer())
+            using (var container = new UnitTestContainer(this))
             {
                 await container.Domain.AddAsync(Item.Create("A"));
 

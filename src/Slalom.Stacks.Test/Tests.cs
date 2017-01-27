@@ -10,7 +10,7 @@ namespace Slalom.Stacks.Test
     {
         public void Do()
         {
-            using (var container = new UnitTestContainer())
+            using (var container = new UnitTestContainer(this))
             {
                 container.Domain.AddAsync(Item.Create("adf"));
             }
