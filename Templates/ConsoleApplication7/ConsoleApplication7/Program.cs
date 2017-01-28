@@ -21,11 +21,11 @@ namespace ConsoleApplication7
         {
             using (var container = new ApplicationContainer(typeof(Program)))
             {
-                container.UseSqlServerLogging();
-                container.UseMongoDbRepositories();
-                container.UseApplicationInsightsMetrics();
-                container.UseSerilogDiagnostics();
-                container.UseEntityFrameworkSearch();
+                //container.UseSqlServerLogging();
+                //container.UseMongoDbRepositories();
+                //container.UseApplicationInsightsMetrics();
+                //container.UseSerilogDiagnostics();
+                //container.UseEntityFrameworkSearch();
                 container.UseEventHubLogging(e =>
                 {
                     e.WithConnection("Endpoint=sb://slalom-stacks.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=F6T4184DOxraeZi72ZBtnqUuNX2P4kLt9xpOmNw8UaA=;")
@@ -35,7 +35,12 @@ namespace ConsoleApplication7
                 container.Commands.SendAsync(new IndexProductsCommand()).Wait();
 
                 var result = container.Commands.SendAsync(new AddProductCommand("aadfaddssfs", "")).Result;
-                result = container.Commands.SendAsync(new SearchProductsCommand("8d8d00006a6a6400af2508d4417fe3f0")).Result;
+                for (int i = 0; i < 1000; i++)
+                {
+                    result = container.Commands.SendAsync(new AddProductCommand(Guid.NewGuid().ToString(), "")).Result;
+                    result = container.Commands.SendAsync(new SearchProductsCommand("8d8d00006a6a6400af2508d4417fe3f0")).Result;
+                }
+                
 
                 Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
 
