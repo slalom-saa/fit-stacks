@@ -4,6 +4,7 @@ using Slalom.Stacks.Messaging;
 
 namespace ConsoleApplication7.Application.Actors.Products.Add
 {
+    [Path("products/add")]
     public class AddProduct : UseCaseActor<AddProductCommand, AddProductEvent>
     {
         public override async Task<AddProductEvent> ExecuteAsync(AddProductCommand command)

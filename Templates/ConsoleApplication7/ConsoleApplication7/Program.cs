@@ -26,17 +26,17 @@ namespace ConsoleApplication7
             {
                 using (var container = new ApplicationContainer(typeof(Program)))
                 {
-                    container.UseSqlServerLogging();
-                    container.UseMongoDbRepositories();
-                    //container.UseApplicationInsightsMetrics();
-                    container.UseSerilogDiagnostics();
+                    //container.UseSqlServerLogging();
+                    //container.UseMongoDbRepositories();
+                    container.UseApplicationInsightsMetrics();
+                    //container.UseSerilogDiagnostics();
                     //container.UseEntityFrameworkSearch();
-                    //container.UseEventHubLogging(e =>
-                    //{
-                    //    e.WithConnection(
-                    //            "Endpoint=sb://slalom-stacks.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=F6T4184DOxraeZi72ZBtnqUuNX2P4kLt9xpOmNw8UaA=;")
-                    //        .WithEventHubNames("events", "requests");
-                    //});
+                    container.UseEventHubLogging(e =>
+                    {
+                        e.WithConnection(
+                                "Endpoint=sb://slalom-stacks.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=F6T4184DOxraeZi72ZBtnqUuNX2P4kLt9xpOmNw8UaA=;")
+                            .WithEventHubNames("events", "requests");
+                    });
 
                     await container.Commands.SendAsync(new AddProductCommand("aadfaddssfs", ""));
                     await container.Commands.SendAsync(new IndexProductsCommand());

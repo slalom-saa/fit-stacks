@@ -106,7 +106,7 @@ namespace Slalom.Stacks.Messaging.Validation
                     {
                         if (attribute.Code == null)
                         {
-                            attribute.Code = $"{command.Type.Name}.{property.Name}";
+                            attribute.Code = $"{command.Type.Name}.{property.Name}.{attribute.GetType().Name.Replace("Attribute", "")}";
                         }
                         target.Add(attribute.ValidationError);
                     }

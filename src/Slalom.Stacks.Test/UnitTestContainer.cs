@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
@@ -11,35 +12,44 @@ namespace Slalom.Stacks.Test
 {
     public class Scenario
     {
+        public Scenario()
+        {
+            ClaimsPrincipal.ClaimsPrincipalSelector = () => User;
+        }
+
         public InMemoryEntityContext EntityContext { get; set; } = new InMemoryEntityContext();
 
         public ClaimsPrincipal User { get; set; }
 
         public Scenario WithUser(string userName, params string[] roles)
         {
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, userName) };
+            var claims = new List<Claim> {new Claim(ClaimTypes.Name, userName)};
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-            this.User = new ClaimsPrincipal(new ClaimsIdentity(claims));
+            User = new ClaimsPrincipal(new ClaimsIdentity(claims));
             return this;
         }
 
         public Scenario WithData(params IAggregateRoot[] items)
         {
-            this.EntityContext.AddAsync(items).Wait();
+            EntityContext.AddAsync(items).Wait();
 
             return this;
-        }
-
-        public Scenario()
-        {
-            ClaimsPrincipal.ClaimsPrincipalSelector = () => User;
         }
 
         public Scenario AsAdmin()
         {
-            this.WithUser("admin@admin.com", "Administrator");
+            WithUser("admin@admin.com", "Administrator");
 
             return this;
+        }
+    }
+    public class GivenAttribute : Attribute
+    {
+        public Type Name { get; }
+
+        public GivenAttribute(Type name)
+        {
+            Name = name;
         }
     }
 
@@ -47,15 +57,22 @@ namespace Slalom.Stacks.Test
     {
         public readonly List<IEvent> RaisedEvents = new List<IEvent>();
 
-        public UnitTestContainer()
+
+        public UnitTestContainer(object instance = null, [CallerMemberName] string callerName = "")
             : base(typeof(UnitTestContainer))
         {
-            this.Register(this);
-        }
+            Register(this);
 
-        public void UseScenario(Scenario scenario)
-        {
-            this.Register<IEntityContext>(scenario.EntityContext);
+            if (instance != null && callerName != null)
+            {
+                var method = instance.GetType().GetTypeInfo().GetMethod(callerName);
+                var attribute = method.GetCustomAttributes<GivenAttribute>().FirstOrDefault();
+                if (attribute != null)
+                {
+                    var scenario = (Scenario) Activator.CreateInstance(attribute.Name);
+                    this.UseScenario(scenario);
+                }
+            }
         }
 
         public Task HandleAsync(IEvent instance)
@@ -63,6 +80,22 @@ namespace Slalom.Stacks.Test
             RaisedEvents.Add(instance);
 
             return Task.FromResult(0);
+        }
+
+        public CommandResult Send(ICommand command)
+        {
+            return Commands.SendAsync(command).Result;
+        }
+
+        public void UseScenario(Scenario scenario)
+        {
+            Register<IEntityContext>(scenario.EntityContext);
+        }
+
+        public void UseScenario(Type scenario)
+        {
+            var instance = Activator.CreateInstance(scenario) as Scenario;
+            Register<IEntityContext>(instance.EntityContext);
         }
     }
 }

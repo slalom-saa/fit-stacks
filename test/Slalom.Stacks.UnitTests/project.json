@@ -4,32 +4,25 @@
     "debugType": "portable"
   },
   "dependencies": {
-    "dotnet-test-xunit": "2.2.0-preview2-build1029",
-    "Shouldly": "2.8.2",
-    "Moq": "4.6.38-alpha",
-    "Microsoft.NETCore.App": {
-      "version": "1.1.0",
-      "type": "platform"
-    },
-    "System.Runtime.Serialization.Primitives": "4.3.0",
-    "xunit": "2.2.0-beta4-build3444",
+    "FluentAssertions": "4.18.0",
     "Slalom.Stacks": {
       "target": "project"
     },
     "Slalom.Stacks.Test": {
       "target": "project"
     },
+    "xunit.runner.visualstudio": "2.0.0",
+    "xunit": "2.2.0-beta5-build3474",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Microsoft.DotNet.InternalAbstractions": "1.0.0"
-    },
+
+  },
   "testRunner": "xunit",
   "frameworks": {
-    "netcoreapp1.0": {
+    "net461": {
       "dependencies": {
       },
-      "imports": [
-        "dotnet5.4",
-        "portable-net451+win8"
-      ]
+      "imports": "dnxcore50"
     }
   }
 }
