@@ -54,14 +54,14 @@ namespace Slalom.Stacks.Runtime
         }
 #endif
 
-        private static string GetSourceIpAddress()
+        private static string GetSourceIPAddress()
         {
             if (_sourceAddress == null)
             {
                 using (var client = new HttpClient())
                 {
                     var response = client.GetAsync("http://ipinfo.io/ip").Result;
-                    _sourceAddress = response.Content.ReadAsStringAsync().Result;
+                    _sourceAddress = response.Content.ReadAsStringAsync().Result.Trim();
                 }
             }
             return _sourceAddress;
@@ -79,7 +79,7 @@ namespace Slalom.Stacks.Runtime
                 this.GetCorrelationId(),
                 session,
                 ClaimsPrincipal.Current,
-                GetSourceIpAddress(),
+                GetSourceIPAddress(),
                 Environment.MachineName,
                 Environment.CurrentManagedThreadId);
         }

@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Test.Examples.Domain;
-using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Test.Examples.Actors.Items.Add
 {

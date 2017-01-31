@@ -41,6 +41,14 @@
       <HintPath>..\packages\Autofac.Extensions.DependencyInjection.4.0.0\lib\netstandard1.1\Autofac.Extensions.DependencyInjection.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MaxMind.Db, Version=2.0.0.0, Culture=neutral, PublicKeyToken=66afa4cc5ae853ac, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaxMind.Db.2.1.3\lib\net45\MaxMind.Db.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MaxMind.GeoIP2, Version=2.6.0.0, Culture=neutral, PublicKeyToken=66afa4cc5ae853ac, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaxMind.GeoIP2.2.7.2\lib\net45\MaxMind.GeoIP2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.ApplicationInsights, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
       <Private>True</Private>
@@ -205,8 +213,8 @@
       <HintPath>..\packages\Serilog.Sinks.PeriodicBatching.2.0.0\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Slalom.Stacks, Version=1.3.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Slalom.Stacks.1.3.8\lib\net461\Slalom.Stacks.dll</HintPath>
+    <Reference Include="Slalom.Stacks, Version=1.3.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Slalom.Stacks.1.3.10\lib\net461\Slalom.Stacks.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Slalom.Stacks.Data.EntityFramework, Version=1.3.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -229,8 +237,8 @@
       <HintPath>..\packages\Slalom.Stacks.Logging.Serilog.1.3.2\lib\net461\Slalom.Stacks.Logging.Serilog.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Slalom.Stacks.Logging.SqlServer, Version=1.3.13.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Slalom.Stacks.Logging.SqlServer.1.3.13\lib\net461\Slalom.Stacks.Logging.SqlServer.dll</HintPath>
+    <Reference Include="Slalom.Stacks.Logging.SqlServer, Version=1.3.14.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Slalom.Stacks.Logging.SqlServer.1.3.14\lib\net461\Slalom.Stacks.Logging.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

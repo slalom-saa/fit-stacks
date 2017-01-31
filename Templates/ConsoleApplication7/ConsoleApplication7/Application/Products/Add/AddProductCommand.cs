@@ -12,7 +12,7 @@ namespace ConsoleApplication7.Application.Actors.Products.Add
             this.Description = description;
         }
 
-        [NotNullOrWhitespace("The product name must be specified.")]
+        [NotNullOrWhiteSpace("The product name must be specified.")]
         public string Name { get; private set; }
 
         public string Description { get; private set; }
