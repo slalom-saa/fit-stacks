@@ -46,6 +46,12 @@ namespace Slalom.Stacks.UnitTests
 
     
 
+        public ScenarioAttribute(string scenario)
+        {
+            this.Scenario = scenario;
+        }
+    }
+
     public class SaveItemShould
     {
         [Fact, Given(typeof(StateOneScenario))]
@@ -70,7 +76,7 @@ namespace Slalom.Stacks.UnitTests
         [Fact]
         public void A2()
         {
-            using (var container = new UnitTestContainer())
+            using (var container = new UnitTestContainer(this))
             {
                 container.UseScenario(Scenarios.StateZero.AsAdmin());
 
@@ -85,7 +91,7 @@ namespace Slalom.Stacks.UnitTests
         [Fact]
         public void A3()
         {
-            using (var container = new UnitTestContainer())
+            using (var container = new UnitTestContainer(this))
             {
                 var result = container.Send(new AddItemCommand(""));
 
@@ -98,7 +104,7 @@ namespace Slalom.Stacks.UnitTests
         [Fact]
         public void A4()
         {
-            using (var container = new UnitTestContainer())
+            using (var container = new UnitTestContainer(this))
             {
                 container.UseScenario(Scenarios.StateZero.AsAdmin());
 
@@ -113,7 +119,7 @@ namespace Slalom.Stacks.UnitTests
         [Fact]
         public void A5()
         {
-            using (var container = new UnitTestContainer())
+            using (var container = new UnitTestContainer(this))
             {
                 container.UseScenario(Scenarios.StateOne.AsAdmin());
 

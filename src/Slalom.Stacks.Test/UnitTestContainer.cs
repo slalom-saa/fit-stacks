@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -7,6 +9,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Slalom.Stacks.Test
 {
