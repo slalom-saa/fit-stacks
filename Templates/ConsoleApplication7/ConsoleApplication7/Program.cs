@@ -12,6 +12,8 @@ using Slalom.Stacks.Logging.ApplicationInsights;
 using Slalom.Stacks.Logging.EventHub;
 using Slalom.Stacks.Logging.Serilog;
 using Slalom.Stacks.Logging.SqlServer;
+using Slalom.Stacks.Runtime;
+using ExecutionContext = Slalom.Stacks.Runtime.ExecutionContext;
 
 namespace ConsoleApplication7
 {
@@ -21,11 +23,9 @@ namespace ConsoleApplication7
         {
             using (var container = new ApplicationContainer(typeof(Program)))
             {
-                container.UseSqlServerLogging();
-                var runner = new AdminRunner(container);
-                Task.Run(() => runner.Run());
-
-                Task.Run(() => new UserRunner(container).Run());
+                Task.Run(() => new UserRunner().Run());
+                Task.Run(() => new UserRunner("admin@stacks.com").Run());
+                Task.Run(() => new UserRunner("support@stacks.com").Run());
 
                 Console.WriteLine("Running application.  Press any key to halt...");
                 Console.ReadLine();
@@ -83,61 +83,54 @@ namespace ConsoleApplication7
         }
     }
 
-    public class AdminRunner
+    public class RunnerExecutionContextResolver : IExecutionContextResolver
     {
-        private readonly ApplicationContainer _container;
-        private Random _random;
+        private ClaimsPrincipal _user;
 
-        public AdminRunner(ApplicationContainer container)
+        public RunnerExecutionContextResolver(string userName, string role)
         {
-            _container = container;
-            _random = new Random(DateTime.Now.Millisecond);
-            
+            _user = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, role), new Claim(ClaimTypes.Name, userName) }));
         }
 
-        public void Run()
+        public ExecutionContext Resolve()
         {
-            while (true)
-            {
-                ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator"), new Claim(ClaimTypes.Name, "administrator@example.com") }));
-                if (_random.Next(2) % 2 == 0)
-                {
-                    _container.Commands.SendAsync(new AddProductCommand("Product " + _random.Next(100), "")).Wait();
-                }
-                else
-                {
-                    _container.Commands.SendAsync(new SearchProductsCommand(_random.Next(100).ToString())).Wait();
-                }
-                Thread.Sleep(1 * _random.Next(5000));
-            }
+            return new ExecutionContext("Runner", "Local", null, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), _user, "71.197.137.82", "local", Environment.CurrentManagedThreadId);
+        }
+    }
+
+    public static class RunnerRandom
+    {
+        private static readonly Random _random = new Random(DateTime.Now.Millisecond);
+        public static int Next(int max)
+        {
+            return _random.Next(max);
         }
     }
 
     public class UserRunner
     {
         private readonly ApplicationContainer _container;
-        private Random _random;
 
-        public UserRunner(ApplicationContainer container)
+        public UserRunner(string userName = "user@stacks.com", string role = "User")
         {
-            _container = container;
-            _random = new Random(DateTime.Now.Millisecond);
+            _container = new ApplicationContainer(this);
+            _container.Register<IExecutionContextResolver>(new RunnerExecutionContextResolver(userName, role));
+            _container.UseSqlServerLogging();
         }
 
         public void Run()
         {
             while (true)
             {
-                ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "User"), new Claim(ClaimTypes.Name, "user@example.com") }));
-                if (_random.Next(2) % 2 == 0)
+                if (RunnerRandom.Next(2) % 2 == 0)
                 {
-                    _container.Commands.SendAsync(new AddProductCommand("Product " + _random.Next(100), "")).Wait();
+                    _container.Commands.SendAsync(new AddProductCommand("Product " + RunnerRandom.Next(100), "")).Wait();
                 }
                 else
                 {
-                    _container.Commands.SendAsync(new SearchProductsCommand(_random.Next(100).ToString())).Wait();
+                    _container.Commands.SendAsync(new SearchProductsCommand(RunnerRandom.Next(100).ToString())).Wait();
                 }
-                Thread.Sleep(1 * _random.Next(5000));
+                Thread.Sleep(1 * RunnerRandom.Next(5000));
             }
         }
     }
