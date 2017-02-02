@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.3.10-*",
+  "version": "1.3.11-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks", "test" ],

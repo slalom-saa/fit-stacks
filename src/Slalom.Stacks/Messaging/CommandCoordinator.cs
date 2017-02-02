@@ -17,6 +17,18 @@ using ExecutionContext = Slalom.Stacks.Runtime.ExecutionContext;
 
 namespace Slalom.Stacks.Messaging
 {
+    public class ContextManager
+    {
+        [ThreadStatic]
+        private static ExecutionContext _context;
+
+        public static ExecutionContext CurrentContext
+        {
+            get { return _context; }
+            set { _context = value; }
+        }
+    }
+
     /// <summary>
     /// Supervises the execution and completion of commands.  Returns a result containing the returned value if the command is successful; 
     /// otherwise, returns information about why the execution was not successful.
@@ -29,9 +41,10 @@ namespace Slalom.Stacks.Messaging
         private readonly IComponentContext _context;
         private readonly ConcurrentDictionary<Type, IEnumerable<object>> _handlers = new ConcurrentDictionary<Type, IEnumerable<object>>();
         private readonly Lazy<ILogger> _logger;
-        private readonly Lazy<IEnumerable<IRequestStore>> _logs;
+        private readonly Lazy<IEnumerable<IRequestStore>> _requests;
         private readonly Lazy<IEventPublisher> _publisher;
         private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
+        private readonly Lazy<IExecutionContextResolver> _contextResolver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandCoordinator"/> class.
@@ -46,7 +59,8 @@ namespace Slalom.Stacks.Messaging
             _logger = new Lazy<ILogger>(() => _context.Resolve<ILogger>());
             _publisher = new Lazy<IEventPublisher>(() => _context.Resolve<IEventPublisher>());
             _audits = new Lazy<IEnumerable<IAuditStore>>(() => _context.ResolveAll<IAuditStore>());
-            _logs = new Lazy<IEnumerable<IRequestStore>>(() => _context.ResolveAll<IRequestStore>());
+            _requests = new Lazy<IEnumerable<IRequestStore>>(() => _context.ResolveAll<IRequestStore>());
+            _contextResolver = new Lazy<IExecutionContextResolver>(() => _context.Resolve<IExecutionContextResolver>());
         }
 
         /// <summary>
@@ -76,7 +90,10 @@ namespace Slalom.Stacks.Messaging
             _logger.Value.Verbose("Starting execution for " + command.Type + " at \"{Path}\". {@Command}", path, command);
 
             // get the context
-            var context = _context.Resolve<IExecutionContextResolver>().Resolve();
+            var context = _contextResolver.Value.Resolve();
+
+            ContextManager.CurrentContext = context;
+
             context.SetPath(path);
 
             // create the result
@@ -127,7 +144,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         protected virtual Task Log(ICommand command, CommandResult result, ExecutionContext context)
         {
-            var tasks = _logs.Value.Select(e => e.AppendAsync(new RequestEntry(command, result, context))).ToList();
+            var tasks = _requests.Value.Select(e => e.AppendAsync(new RequestEntry(command, result, context))).ToList();
 
             if (!result.IsSuccessful)
             {

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyModel;
 using Newtonsoft.Json;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Test.Examples.Actors.Items.Add;
 using Slalom.Stacks.Test.Examples.Actors.Items.Search;
 using Slalom.Stacks.Test.Examples.Domain;
@@ -16,6 +17,8 @@ using Slalom.Stacks.Test.Examples.Search;
 
 namespace Slalom.Stacks.Test.Examples
 {
+        
+
     public class ExampleRunner
     {
         private readonly object[] _indicators;
