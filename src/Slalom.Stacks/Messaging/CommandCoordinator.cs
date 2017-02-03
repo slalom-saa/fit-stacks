@@ -17,18 +17,6 @@ using ExecutionContext = Slalom.Stacks.Runtime.ExecutionContext;
 
 namespace Slalom.Stacks.Messaging
 {
-    public class ContextManager
-    {
-        [ThreadStatic]
-        private static ExecutionContext _context;
-
-        public static ExecutionContext CurrentContext
-        {
-            get { return _context; }
-            set { _context = value; }
-        }
-    }
-
     /// <summary>
     /// Supervises the execution and completion of commands.  Returns a result containing the returned value if the command is successful; 
     /// otherwise, returns information about why the execution was not successful.
@@ -91,8 +79,6 @@ namespace Slalom.Stacks.Messaging
 
             // get the context
             var context = _contextResolver.Value.Resolve();
-
-            ContextManager.CurrentContext = context;
 
             context.SetPath(path);
 
