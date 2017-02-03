@@ -16,10 +16,7 @@ namespace ConsoleApplication1
                 // Do the lookup
                 var response = client.CityAsync("71.197.137.82").Result;
 
-                response.
-
                 Console.WriteLine(response.Location);
-
             }
         }
     }

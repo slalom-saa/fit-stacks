@@ -58,10 +58,17 @@ namespace Slalom.Stacks.Runtime
         {
             if (_sourceAddress == null)
             {
-                using (var client = new HttpClient())
+                try
                 {
-                    var response = client.GetAsync("http://ipinfo.io/ip").Result;
-                    _sourceAddress = response.Content.ReadAsStringAsync().Result.Trim();
+                    using (var client = new HttpClient())
+                    {
+                        var response = client.GetAsync("http://ipinfo.io/ip").Result;
+                        _sourceAddress = response.Content.ReadAsStringAsync().Result.Trim();
+                    }
+                }
+                catch
+                {
+                    _sourceAddress = "127.0.0.1";
                 }
             }
             return _sourceAddress;
