@@ -12,40 +12,15 @@ using Slalom.Stacks.Test.Examples.Actors.Items.Add;
 
 namespace Slalom.Stacks.ConsoleClient
 {
-    public class Money : ValueObject<Money>
-    {
-        public int Count { get; }
-
-        public int Number { get; }
-
-        public Money(int count, int number)
-        {
-            Count = count;
-            Number = number;
-        }
-    }
-
     public class Program
     {
         public static void Main(string[] args)
         {
-            var first = new Money(1, 2);
-            var second = new Money(1, 3);
+            ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator"), new Claim(ClaimTypes.Name, "user@example.com") }));
 
-            Console.WriteLine(first == second);
-
-            //ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator"), new Claim(ClaimTypes.Name, "user@example.com") }));
-
-            //using (var container = new ApplicationContainer(typeof(AddItemCommand)))
-            //{
-            //    var result = container.Commands.SendAsync("items/add", "{}").Result;
-
-            //    Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-            //}
-
-            ////new ExampleRunner().Start();
-            //Console.WriteLine("Running application.  Press any key to halt...");
-            //Console.ReadKey();
+            new ExampleRunner().Start();
+            Console.WriteLine("Running application.  Press any key to halt...");
+            Console.ReadKey();
         }
     }
 }

@@ -41,7 +41,6 @@ namespace Slalom.Stacks.Test.Examples
             {
                 try
                 {
-                    var dependencies = DependencyContext.Default;
                     var watch = new Stopwatch();
                     using (var container = new ApplicationContainer(_indicators))
                     {

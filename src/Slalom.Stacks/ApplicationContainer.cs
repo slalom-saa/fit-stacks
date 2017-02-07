@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Autofac;
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
+using System.Linq;
+using Autofac.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
@@ -31,24 +31,28 @@ namespace Slalom.Stacks
         /// <param name="markers">Either a type to be used for assembly scanning, or an instance of the type.</param>
         public ApplicationContainer(params object[] markers)
         {
-            Assemblies = markers.Select(e =>
+            this.Assemblies = markers.Select(e =>
             {
                 var type = e as Type;
                 if (type != null)
+                {
                     return type.GetTypeInfo().Assembly;
+                }
                 var assembly = e as Assembly;
                 if (assembly != null)
+                {
                     return assembly;
+                }
                 return e.GetType().GetTypeInfo().Assembly;
             }).Distinct().ToArray();
 
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new ConfigurationModule(Assemblies));
+            builder.RegisterModule(new ConfigurationModule(this.Assemblies));
 
-            Container = builder.Build();
+            this.Container = builder.Build();
 
-            Initialize();
+            this.Initialize();
         }
 
         /// <summary>
@@ -58,36 +62,65 @@ namespace Slalom.Stacks
         public Assembly[] Assemblies { get; }
 
         /// <summary>
-        ///     Gets the configured <see cref="IDomainFacade" /> instance.
-        /// </summary>
-        /// <value>The configured <see cref="IDomainFacade" /> instance.</value>
-        public IDomainFacade Domain => Resolve<IDomainFacade>();
-
-        /// <summary>
-        ///     Gets the configured <see cref="ILogger" /> instance.
-        /// </summary>
-        /// <value>The configured <see cref="ILogger" /> instance.</value>
-        public ILogger Logger => Resolve<ILogger>();
-
-        /// <summary>
-        ///     Gets the configured <see cref="ISearchFacade" /> instance.
-        /// </summary>
-        /// <value>The configured <see cref="ISearchFacade" /> instance.</value>
-        public ISearchFacade Search => Resolve<ISearchFacade>();
-
-        /// <summary>
         ///     Gets the root <see cref="IContainer" />.
         /// </summary>
         /// <value>The root <see cref="IContainer" />.</value>
         public IContainer Container { get; }
 
         /// <summary>
-        ///     Gets the current <see cref="ExecutionContext" /> instance.
+        ///     Gets the configured <see cref="IDomainFacade" /> instance.
         /// </summary>
-        /// <value>The current <see cref="ExecutionContext" /> instance.</value>
-        public ExecutionContext GetExecutionContext()
+        /// <value>The configured <see cref="IDomainFacade" /> instance.</value>
+        public IDomainFacade Domain => this.Resolve<IDomainFacade>();
+
+        /// <summary>
+        ///     Gets the configured <see cref="ILogger" /> instance.
+        /// </summary>
+        /// <value>The configured <see cref="ILogger" /> instance.</value>
+        public ILogger Logger => this.Resolve<ILogger>();
+
+        /// <summary>
+        ///     Gets the configured <see cref="ISearchFacade" /> instance.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade" /> instance.</value>
+        public ISearchFacade Search => this.Resolve<ISearchFacade>();
+
+        /// <summary>
+        ///     Appends a registered instance with the container, preserving hte default.
+        /// </summary>
+        /// <typeparam name="T">The type of instance.</typeparam>
+        /// <param name="delegate">The instance to register.</param>
+        public void Append<T>(Func<IComponentContext, T> @delegate) where T : class
         {
-            return Resolve<IExecutionContextResolver>()?.Resolve();
+            var builder = new ContainerBuilder();
+            builder.Register(c =>
+                   {
+                       var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
+
+                       this.Container.InjectProperties(instance, _selector);
+
+                       return instance;
+                   }).As<T>().AsImplementedInterfaces()
+                   .PreserveExistingDefaults();
+
+            builder.Update(this.Container.ComponentRegistry);
+        }
+
+        /// <summary>
+        ///     Copies this instance to another application container.
+        /// </summary>
+        /// <returns>Returns the copied application container.</returns>
+        public ApplicationContainer Copy()
+        {
+            var builder = new ContainerBuilder();
+            foreach (var registration in this.Container.ComponentRegistry.Registrations)
+                builder.RegisterComponent(registration);
+            foreach (var source in this.Container.ComponentRegistry.Sources)
+                builder.RegisterSource(source);
+
+            var target = new ApplicationContainer();
+            builder.Update(target.Container);
+            return target;
         }
 
         /// <summary>
@@ -103,24 +136,7 @@ namespace Slalom.Stacks
         {
             var builder = new ContainerBuilder();
             builder.Populate(services);
-            builder.Update(Container.ComponentRegistry);
-        }
-
-        /// <summary>
-        ///     Copies this instance to another application container.
-        /// </summary>
-        /// <returns>Returns the copied application container.</returns>
-        public ApplicationContainer Copy()
-        {
-            var builder = new ContainerBuilder();
-            foreach (var registration in Container.ComponentRegistry.Registrations)
-                builder.RegisterComponent(registration);
-            foreach (var source in Container.ComponentRegistry.Sources)
-                builder.RegisterSource(source);
-
-            var target = new ApplicationContainer();
-            builder.Update(target.Container);
-            return target;
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -131,10 +147,10 @@ namespace Slalom.Stacks
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<T>()
-                .AsSelf()
-                .AsImplementedInterfaces();
+                   .AsSelf()
+                   .AsImplementedInterfaces();
 
-            builder.Update(Container.ComponentRegistry);
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -149,33 +165,12 @@ namespace Slalom.Stacks
             {
                 var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
 
-                Container.InjectProperties(instance, _selector);
+                this.Container.InjectProperties(instance, _selector);
 
                 return instance;
             }).As<T>().AsImplementedInterfaces();
 
-            builder.Update(Container.ComponentRegistry);
-        }
-
-        /// <summary>
-        ///     Appends a registered instance with the container, preserving hte default.
-        /// </summary>
-        /// <typeparam name="T">The type of instance.</typeparam>
-        /// <param name="delegate">The instance to register.</param>
-        public void Append<T>(Func<IComponentContext, T> @delegate) where T : class
-        {
-            var builder = new ContainerBuilder();
-            builder.Register(c =>
-                {
-                    var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
-
-                    Container.InjectProperties(instance, _selector);
-
-                    return instance;
-                }).As<T>().AsImplementedInterfaces()
-                .PreserveExistingDefaults();
-
-            builder.Update(Container.ComponentRegistry);
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -189,7 +184,7 @@ namespace Slalom.Stacks
 
             builder.RegisterInstance(instance).As<T>().AsImplementedInterfaces();
 
-            builder.Update(Container.ComponentRegistry);
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -204,12 +199,12 @@ namespace Slalom.Stacks
             {
                 var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
 
-                Container.InjectProperties(instance, _selector);
+                this.Container.InjectProperties(instance, _selector);
 
                 return instance;
             }).As(services);
 
-            builder.Update(Container.ComponentRegistry);
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -220,9 +215,9 @@ namespace Slalom.Stacks
         {
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule((IModule) module);
+            builder.RegisterModule((IModule)module);
 
-            builder.Update(Container.ComponentRegistry);
+            builder.Update(this.Container.ComponentRegistry);
         }
 
         /// <summary>
@@ -232,7 +227,7 @@ namespace Slalom.Stacks
         /// <returns>The resolved component.</returns>
         public object Resolve(Type type)
         {
-            return Container.Resolve(type);
+            return this.Container.Resolve(type);
         }
 
         /// <summary>
@@ -244,21 +239,21 @@ namespace Slalom.Stacks
         {
             T instance;
 
-            if (!Container.TryResolve(out instance))
+            if (!this.Container.TryResolve(out instance))
                 if (!typeof(T).GetTypeInfo().IsAbstract && !typeof(T).GetTypeInfo().IsInterface)
                 {
                     var builder = new ContainerBuilder();
 
                     builder.RegisterType(typeof(T));
 
-                    builder.Update(Container.ComponentRegistry);
+                    builder.Update(this.Container.ComponentRegistry);
 
-                    instance = Container.Resolve<T>();
+                    instance = this.Container.Resolve<T>();
                 }
 
             if (instance != null)
             {
-                Container.InjectProperties(instance, _selector);
+                this.Container.InjectProperties(instance, _selector);
 
                 setup?.Invoke(instance);
             }
@@ -272,10 +267,10 @@ namespace Slalom.Stacks
         /// <returns>The resolved instances.</returns>
         public IEnumerable<T> ResolveAll<T>()
         {
-            var target = Container.Resolve<IEnumerable<T>>().ToList();
+            var target = this.Container.Resolve<IEnumerable<T>>().ToList();
 
             foreach (var instance in target)
-                Container.InjectProperties(instance, _selector);
+                this.Container.InjectProperties(instance, _selector);
 
             return target;
         }
@@ -291,7 +286,7 @@ namespace Slalom.Stacks
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -300,7 +295,7 @@ namespace Slalom.Stacks
         /// </summary>
         ~ApplicationContainer()
         {
-            Dispose(false);
+            this.Dispose(false);
         }
 
         /// <summary>
@@ -316,7 +311,7 @@ namespace Slalom.Stacks
                 return;
 
             if (disposing)
-                Container.Dispose();
+                this.Container.Dispose();
 
             // release any unmanaged objects
             // set the object references to null

@@ -84,15 +84,16 @@ namespace Slalom.Stacks.Runtime
         public string MachineName { get; }
 
         /// <summary>
+        /// Gets a null execution context.
+        /// </summary>
+        /// <value>A null execution context.</value>
+        public static ExecutionContext Null => new NullExecutionContext();
+
+        /// <summary>
         /// Gets the path.
         /// </summary>
         /// <value>The path.</value>
         public string Path { get; private set; }
-
-        internal void SetPath(string path)
-        {
-            Path = path;
-        }
 
         /// <summary>
         /// Gets the additional events that were raised during execution.
@@ -105,6 +106,12 @@ namespace Slalom.Stacks.Runtime
         /// </summary>
         /// <value>The user's session identifier.</value>
         public string SessionId { get; }
+
+        /// <summary>
+        /// Gets the calling IP address.
+        /// </summary>
+        /// <value>The calling IP address.</value>
+        public string SourceAddress { get; }
 
         /// <summary>
         /// Gets or sets the thread identifier.
@@ -120,12 +127,6 @@ namespace Slalom.Stacks.Runtime
         public ClaimsPrincipal User { get; }
 
         /// <summary>
-        /// Gets the calling IP address.
-        /// </summary>
-        /// <value>The calling IP address.</value>
-        public string SourceAddress { get; }
-
-        /// <summary>
         /// Adds an additional raised event to the context that will be published on successful completion.
         /// </summary>
         /// <param name="instance">The event to raise.</param>
@@ -135,6 +136,11 @@ namespace Slalom.Stacks.Runtime
             Argument.NotNull(instance, nameof(instance));
 
             _raisedEvents.Add(instance);
+        }
+
+        internal void SetPath(string path)
+        {
+            this.Path = path;
         }
     }
 }
