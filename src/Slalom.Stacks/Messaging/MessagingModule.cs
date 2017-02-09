@@ -44,10 +44,12 @@ namespace Slalom.Stacks.Messaging
             base.Load(builder);
 
             builder.Register(c => new CommandCoordinator(c.Resolve<IComponentContext>()))
-                   .As<ICommandCoordinator>();
+                   .As<ICommandCoordinator>()
+                   .SingleInstance();
 
             builder.Register(c => new EventPublisher(c.Resolve<IComponentContext>()))
-                   .As<IEventPublisher>();
+                   .As<IEventPublisher>()
+                   .SingleInstance();
 
             builder.RegisterGeneric(typeof(CommandValidator<>));
 

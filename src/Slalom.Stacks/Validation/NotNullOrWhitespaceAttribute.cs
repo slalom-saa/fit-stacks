@@ -7,13 +7,13 @@ namespace Slalom.Stacks.Validation
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Validation.ValidationAttribute" />
     [AttributeUsage(AttributeTargets.Property)]
-    public class NotNullOrWhitespaceAttribute : ValidationAttribute
+    public class NotNullOrWhiteSpaceAttribute : ValidationAttribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NotNullOrWhitespaceAttribute"/> class.
+        /// Initializes a new instance of the <see cref="NotNullOrWhiteSpaceAttribute"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public NotNullOrWhitespaceAttribute(string message)
+        public NotNullOrWhiteSpaceAttribute(string message)
             : base(message)
         {
         }

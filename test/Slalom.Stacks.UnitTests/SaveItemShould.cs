@@ -1,85 +1,110 @@
 ﻿using System;
-using System.Collections.Generic;
+using FluentAssertions;
 using System.Linq;
-using System.Threading.Tasks;
-using Shouldly;
 using Slalom.Stacks.Test;
 using Slalom.Stacks.Test.Examples.Actors.Items.Add;
 using Slalom.Stacks.Test.Examples.Domain;
 using Slalom.Stacks.Test.Examples.Search;
+using Slalom.Stacks.UnitTests;
 using Xunit;
 
 namespace Slalom.Stacks.UnitTests
 {
-    public class SaveItemShould
+    public class Scenarios
     {
-        [Fact]
-        public async Task A()
+        public static Scenario StateOne => new StateOneScenario();
+
+        public static Scenario StateZero => new Scenario().AsAdmin();
+
+        public static Scenario Get(string name)
         {
-            using (var container = new UnitTestContainer())
+            if (name == "StateOne")
             {
-                var result = await container.Commands.SendAsync(new AddItemCommand("adsf"));
-
-                result.IsSuccessful.ShouldBeTrue("The use case execution was not successful.");
-
-                var target = await container.Domain.FindAsync<Item>(e => e.Text == "adsf");
-
-                target.Count().ShouldBe(1);
-
-                container.RaisedEvents.Count.ShouldBe(1);
+                return StateOne;
             }
+            if (name == "StateZero")
+            {
+                return StateZero;
+            }
+            return new Scenario();
         }
+    }
 
-        [Fact]
-        public async Task A2()
+    public class StateOneScenario : Scenario
+    {
+        public StateOneScenario()
         {
-            using (var container = new UnitTestContainer())
-            {
-                var result = await container.Commands.SendAsync(new AddItemCommand(null));
-
-                result.IsSuccessful.ShouldBeFalse();
-
-                result.ValidationErrors.ShouldContain(e => e.Message.Contains("Text"));
-            }
+            this.WithData(Item.Create("first")).AsAdmin();
         }
+    }
+}
 
-        [Fact]
-        public async Task A3()
+public class SaveItemShould
+{
+    [Fact, Given(typeof(StateOneScenario))]
+    public void A()
+    {
+        using (var container = new UnitTestContainer(this))
         {
-            using (var container = new UnitTestContainer())
-            {
-                var result = await container.Commands.SendAsync(new AddItemCommand(""));
+            var result = container.Send(new AddItemCommand("adsf"));
 
-                result.IsSuccessful.ShouldBeFalse();
+            result.IsSuccessful.Should().BeTrue("The use case execution was not successful.");
 
-                result.ValidationErrors.ShouldContain(e => e.Message.Contains("Text"));
-            }
+            var target = container.Domain.FindAsync<Item>(e => e.Text == "adsf").Result;
+
+            target.Count().Should().Be(1);
+
+            container.RaisedEvents.Count.Should().Be(1);
         }
+    }
 
-        [Fact]
-        public async Task A4()
+    [Fact]
+    public void A2()
+    {
+        using (var container = new UnitTestContainer(this))
         {
-            using (var container = new UnitTestContainer())
-            {
-                var result = await container.Commands.SendAsync(new AddItemCommand("ss"));
+            var result = container.Send(new AddItemCommand(null));
 
-                result.IsSuccessful.ShouldBeTrue();
+            result.IsSuccessful.Should().BeFalse();
 
-                container.Search.Search<ItemSearchResult>().Count().ShouldBe(1);
-            }
+            result.ValidationErrors.Should().Contain(e => e.Message.Contains("text"));
         }
+    }
 
-        [Fact]
-        public async Task A5()
+    [Fact]
+    public void A3()
+    {
+        using (var container = new UnitTestContainer(this))
         {
-            using (var container = new UnitTestContainer())
-            {
-                await container.Domain.AddAsync(Item.Create("A"));
+            var result = container.Send(new AddItemCommand(""));
 
-                var result = await container.Commands.SendAsync(new AddItemCommand("A"));
+            result.IsSuccessful.Should().BeFalse();
 
-                result.IsSuccessful.ShouldBeFalse();
-            }
+            result.ValidationErrors.Should().Contain(e => e.Message.Contains("text"));
+        }
+    }
+
+    [Fact, Given(typeof(StateOneScenario))]
+    public void A4()
+    {
+        using (var container = new UnitTestContainer(this))
+        {
+            var result = container.Send(new AddItemCommand("ss"));
+
+            result.IsSuccessful.Should().BeTrue();
+
+            container.Search.Search<ItemSearchResult>().Should().NotBeEmpty();
+        }
+    }
+
+    [Fact]
+    public void A5()
+    {
+        using (var container = new UnitTestContainer(this))
+        {
+            var result = container.Send(new AddItemCommand("first"));
+
+            result.IsSuccessful.Should().BeFalse();
         }
     }
 }

@@ -338,7 +338,7 @@ namespace Slalom.Stacks.Utilities.NewId
 
         public static string NextId()
         {
-            return NextGuid().ToString("N");
+            return NextGuid().ToString("D");
         }
 
         public static Guid NextGuid()

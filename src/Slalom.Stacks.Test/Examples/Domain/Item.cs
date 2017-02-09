@@ -2,7 +2,7 @@
 
 namespace Slalom.Stacks.Test.Examples.Domain
 {
-    public class Item : Entity, IAggregateRoot
+    public class Item : AggregateRoot
     {
         protected Item()
         {

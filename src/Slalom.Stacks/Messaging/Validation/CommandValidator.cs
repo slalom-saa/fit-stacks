@@ -104,6 +104,10 @@ namespace Slalom.Stacks.Messaging.Validation
                 {
                     if (!attribute.IsValid(property.GetValue(command)))
                     {
+                        if (attribute.Code == null)
+                        {
+                            attribute.Code = $"{command.Type.Name}.{property.Name}.{attribute.GetType().Name.Replace("Attribute", "")}";
+                        }
                         target.Add(attribute.ValidationError);
                     }
                 }

@@ -29,5 +29,10 @@ namespace WebApplication1.Domain
             this.Name = name;
             this.Description = description;
         }
+
+        public void Activate()
+        {
+            this.Expired = false;
+        }
     }
 }

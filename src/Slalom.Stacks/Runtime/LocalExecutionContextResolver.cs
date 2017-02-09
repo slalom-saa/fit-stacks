@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -34,7 +35,7 @@ namespace Slalom.Stacks.Runtime
             _configuration = configuration;
         }
 
-        private static string _localIpAddress;
+        private static string _sourceAddress;
 
 #if !core
         private string GetCorrelationId()
@@ -46,44 +47,32 @@ namespace Slalom.Stacks.Runtime
             }
             return CallContext.GetData(Key).ToString();
         }
-
-        private static string GetLocalIPAddress()
-        {
-            if (_localIpAddress == null)
-            {
-                var host = Dns.GetHostEntry(Dns.GetHostName());
-                foreach (var ip in host.AddressList)
-                {
-                    if (ip.AddressFamily == AddressFamily.InterNetwork)
-                    {
-                        _localIpAddress = ip.ToString();
-                    }
-                }
-            }
-            return _localIpAddress;
-        }
 #else
         private string GetCorrelationId()
         {
             return NewId.NextId();
         }
+#endif
 
-        private static string GetLocalIPAddress()
+        private static string GetSourceIPAddress()
         {
-            if (_localIpAddress == null)
+            if (_sourceAddress == null)
             {
-                var host = Dns.GetHostEntryAsync(Dns.GetHostName()).Result;
-                foreach (var ip in host.AddressList)
+                try
                 {
-                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    using (var client = new HttpClient())
                     {
-                        _localIpAddress = ip.ToString();
+                        var response = client.GetAsync("http://ipinfo.io/ip").Result;
+                        _sourceAddress = response.Content.ReadAsStringAsync().Result.Trim();
                     }
                 }
+                catch
+                {
+                    _sourceAddress = "127.0.0.1";
+                }
             }
-            return _localIpAddress;
+            return _sourceAddress;
         }
-#endif
 
         /// <summary>
         /// Resolves the current execution context.
@@ -97,7 +86,7 @@ namespace Slalom.Stacks.Runtime
                 this.GetCorrelationId(),
                 session,
                 ClaimsPrincipal.Current,
-                GetLocalIPAddress(),
+                GetSourceIPAddress(),
                 Environment.MachineName,
                 Environment.CurrentManagedThreadId);
         }

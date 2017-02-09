@@ -16,8 +16,8 @@ namespace Slalom.Stacks.Domain
     /// <seealso cref="Slalom.Stacks.Domain.IEntityContext" />
     public class InMemoryEntityContext : IEntityContext
     {
-        private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
-        private readonly List<IAggregateRoot> _instances = new List<IAggregateRoot>();
+        protected readonly ReaderWriterLockSlim CacheLock = new ReaderWriterLockSlim();
+        protected readonly List<IAggregateRoot> Instances = new List<IAggregateRoot>();
 
         /// <summary>
         /// Adds the specified instances.
@@ -29,17 +29,17 @@ namespace Slalom.Stacks.Domain
         {
             Argument.NotNull(instances, nameof(instances));
 
-            _cacheLock.EnterWriteLock();
+            CacheLock.EnterWriteLock();
             try
             {
                 foreach (var instance in instances)
                 {
-                    _instances.Add(instance);
+                    Instances.Add(instance);
                 }
             }
             finally
             {
-                _cacheLock.ExitWriteLock();
+                CacheLock.ExitWriteLock();
             }
             return Task.FromResult(0);
         }
@@ -51,14 +51,14 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task ClearAsync<TEntity>() where TEntity : IAggregateRoot
         {
-            _cacheLock.EnterWriteLock();
+            CacheLock.EnterWriteLock();
             try
             {
-                _instances.RemoveAll(e => e is TEntity);
+                Instances.RemoveAll(e => e is TEntity);
             }
             finally
             {
-                _cacheLock.ExitWriteLock();
+                CacheLock.ExitWriteLock();
             }
             return Task.FromResult(0);
         }
@@ -71,14 +71,14 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task<TEntity> FindAsync<TEntity>(string id) where TEntity : IAggregateRoot
         {
-            _cacheLock.EnterReadLock();
+            CacheLock.EnterReadLock();
             try
             {
-                return Task.FromResult((TEntity)_instances.Find(e => e.Id == id));
+                return Task.FromResult((TEntity)Instances.Find(e => e.Id == id));
             }
             finally
             {
-                _cacheLock.ExitReadLock();
+                CacheLock.ExitReadLock();
             }
         }
 
@@ -90,18 +90,18 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public async Task<IEnumerable<TEntity>> FindAsync<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : IAggregateRoot
         {
-            _cacheLock.EnterReadLock();
+            CacheLock.EnterReadLock();
             try
             {
                 var function = expression.Compile();
 
-                var result = _instances.OfType<TEntity>().Where(function).ToList();
+                var result = Instances.OfType<TEntity>().Where(function).ToList();
 
                 return result;
             }
             finally
             {
-                _cacheLock.ExitReadLock();
+                CacheLock.ExitReadLock();
             }
         }
 
@@ -112,16 +112,16 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public async Task<IEnumerable<TEntity>> FindAsync<TEntity>() where TEntity : IAggregateRoot
         {
-            _cacheLock.EnterReadLock();
+            CacheLock.EnterReadLock();
             try
             {
-                var result = _instances.OfType<TEntity>().ToList();
+                var result = Instances.OfType<TEntity>().ToList();
 
                 return result;
             }
             finally
             {
-                _cacheLock.ExitReadLock();
+                CacheLock.ExitReadLock();
             }
         }
 
@@ -133,15 +133,15 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task RemoveAsync<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
         {
-            _cacheLock.EnterWriteLock();
+            CacheLock.EnterWriteLock();
             try
             {
                 var ids = instances.Select(e => e.Id).ToList();
-                _instances.RemoveAll(e => ids.Contains(e.Id));
+                Instances.RemoveAll(e => ids.Contains(e.Id));
             }
             finally
             {
-                _cacheLock.ExitWriteLock();
+                CacheLock.ExitWriteLock();
             }
             return Task.FromResult(0);
         }
