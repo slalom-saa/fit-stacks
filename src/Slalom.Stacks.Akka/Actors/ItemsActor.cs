@@ -36,7 +36,7 @@ namespace Slalom.Stacks.Messaging
                     }
                     else
                     {
-                        Context.ActorOf(Context.DI().Props(typeof(AkkaUseCaseActor<>).MakeGenericType(child.Type)), name);
+                        Context.ActorOf(Context.DI().Props(typeof(AkkaHandler<>).MakeGenericType(child.Type)), name);
                     }
                 }
             }
@@ -49,7 +49,7 @@ namespace Slalom.Stacks.Messaging
     {
         protected override void PreStart()
         {
-            Context.ActorOf(Context.DI().Props<AkkaUseCaseActor<AddItemActor>>()
+            Context.ActorOf(Context.DI().Props<AkkaHandler<AddItemActor>>()
                 .WithRouter(new RoundRobinPool(5)), "add-item");
 
             base.PreStart();

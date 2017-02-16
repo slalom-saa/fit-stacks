@@ -125,7 +125,7 @@ namespace Slalom.Stacks.Messaging
                 this.Path = path;
                 if (type.IsGenericType && type.GetInterfaces().Any(e => e == typeof(IHandle)))
                 {
-                    this.Type = typeof(AkkaUseCaseActor<>).MakeGenericType(type);
+                    this.Type = typeof(AkkaHandler<>).MakeGenericType(type);
                 }
                 else
                 {

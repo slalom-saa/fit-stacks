@@ -33,7 +33,7 @@ namespace Slalom.Stacks.Messaging
             var types = _assemblies.SafelyGetTypes(typeof(IHandle));
             foreach (var type in types)
             {
-                builder.RegisterType(typeof(AkkaUseCaseActor<>).MakeGenericType(type))
+                builder.RegisterType(typeof(AkkaHandler<>).MakeGenericType(type))
                     .AsSelf();
             }
         }
