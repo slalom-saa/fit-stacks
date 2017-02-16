@@ -1,6 +1,7 @@
 using System;
 using Akka.Actor;
 using Akka.DI.Core;
+using Akka.Routing;
 using Autofac;
 
 namespace Slalom.Stacks.Messaging
@@ -35,7 +36,7 @@ namespace Slalom.Stacks.Messaging
                     }
                     else
                     {
-                        Context.ActorOf(Props.Create(() => new AkkaUseCaseActor((IHandle)this.ComponentContext.Resolve(child.Type), this.ComponentContext)), name);
+                        Context.ActorOf(Context.DI().Props(typeof(AkkaUseCaseActor<>).MakeGenericType(child.Type)), name);
                     }
                 }
             }
@@ -43,25 +44,22 @@ namespace Slalom.Stacks.Messaging
     }
 
 
-    //[Path("items")]
-    //public class ItemsActor : UseCaseSupervisionActor
-    //{
-    //    public ItemsActor()
-    //    {
-    //    }
+    [Path("items")]
+    public class ItemsActor : UseCaseSupervisionActor
+    {
+        protected override void PreStart()
+        {
+            Context.ActorOf(Context.DI().Props<AkkaUseCaseActor<AddItemActor>>()
+                .WithRouter(new RoundRobinPool(5)), "add-item");
 
-    //    protected override void PreStart()
-    //    {
-    //       // Context.ActorOf(Context.DI().Props>(), "add-item");
+            base.PreStart();
+        }
 
-    //        base.PreStart();
-    //    }
+        protected override bool AroundReceive(Receive receive, object message)
+        {
+            Console.WriteLine("...");
+            return base.AroundReceive(receive, message);
+        }
 
-    //    protected override bool AroundReceive(Receive receive, object message)
-    //    {
-    //        Console.WriteLine("...");
-    //        return base.AroundReceive(receive, message);
-    //    }
-
-    //}
+    }
 }

@@ -11,6 +11,8 @@ namespace Slalom.Stacks.Messaging
         {
             await this.Domain.AddAsync(new Item("adf"));
 
+            await Task.Delay(500);
+
             return new GoEvent();
         }
 

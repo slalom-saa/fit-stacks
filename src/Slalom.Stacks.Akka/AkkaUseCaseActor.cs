@@ -9,12 +9,12 @@ using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Messaging
 {
-    public class AkkaUseCaseActor : ReceiveActor
+    public class AkkaUseCaseActor<TUseCase> : ReceiveActor where TUseCase : IHandle
     {
-        public IHandle UseCase { get; }
+        public TUseCase UseCase { get; }
         public IComponentContext Context { get; }
 
-        public AkkaUseCaseActor(IHandle useCase, IComponentContext context)
+        public AkkaUseCaseActor(TUseCase useCase, IComponentContext context)
         {
             this.UseCase = useCase;
             this.Context = context;

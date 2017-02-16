@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Akka.Actor;
 using Akka.DI.AutoFac;
@@ -81,11 +82,17 @@ namespace Slalom.Stacks.Messaging
                 {
                     container.UseAkka("local");
 
-                    var result = await container.SendAsync("items/add-item", "{}");
-                    Console.WriteLine(result.IsSuccessful);
+                    var tasks = new List<Task>
+                    {
+                        container.SendAsync("items/add-item", "{}"),
+                        container.SendAsync("items/add-item", "{}"),
+                        container.SendAsync("items/add-item", "{}"),
+                        container.SendAsync("items/add-item", "{}"),
+                        container.SendAsync("items/add-item", "{}")
+                    };
 
-                    result = await container.SendAsync(new GoCommand());
-                    Console.WriteLine(result.IsSuccessful);
+
+                    await Task.WhenAll(tasks);
 
                     //system.ActorOf(system.DI().Props<DefaultActorSupervisor>(), "commands");
 
