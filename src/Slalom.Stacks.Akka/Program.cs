@@ -35,9 +35,6 @@ namespace Slalom.Stacks.Messaging
 
                     stack.UseAkka("local");
 
-
-
-
                     var tasks = new List<Task>
                     {
                         stack.SendAsync("items/add-item", "{}"),

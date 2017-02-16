@@ -21,7 +21,7 @@ namespace Slalom.Stacks.Messaging.Routing
             _system = system;
         }
 
-        public ActorNode RootNode { get; private set; }
+        public AkkaActorNode RootNode { get; private set; }
 
         public void Arrange(Assembly[] assemblies)
         {
@@ -38,14 +38,14 @@ namespace Slalom.Stacks.Messaging.Routing
                 }
             }
 
-            this.RootNode = new ActorNode("root");
+            this.RootNode = new AkkaActorNode("root");
             this.PopulateActorNode(this.RootNode, items);
 
             foreach (var child in this.RootNode.Nodes)
             {
                 if (child.Type == null)
                 {
-                    _system.ActorOf(_system.DI().Props<UseCaseSupervisionActor>(), child.Path);
+                    _system.ActorOf(_system.DI().Props<AkkaSupervisor>(), child.Path);
                 }
                 else
                 {
@@ -83,12 +83,12 @@ namespace Slalom.Stacks.Messaging.Routing
             return result as CommandResult;
         }
 
-        private static Type GetRequestType(ActorNode node)
+        private static Type GetRequestType(AkkaActorNode node)
         {
             return node.Type.BaseType.GetGenericArguments()[0];
         }
 
-        private void PopulateActorNode(ActorNode parent, IEnumerable<ActorMapping> paths)
+        private void PopulateActorNode(AkkaActorNode parent, IEnumerable<ActorMapping> paths)
         {
             var items = paths.Select(e => new KeyValuePair<string[], Type>(e.Path.Split('/'), e.Type)).OrderBy(e => e.Key.Length);
 

@@ -16,7 +16,7 @@ using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks
 {
-    public static class AutoFacExtensions
+    public static class StackExtensions
     {
         public static IContainer Update(this IContainer instance, Action<ContainerBuilder> configuration)
         {

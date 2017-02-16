@@ -1,24 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Slalom.Stacks.Reflection;
 
 namespace Slalom.Stacks.Messaging.Routing
 {
-    public static class TypeExtensions
+    public class AkkaActorNode
     {
-        public static Type GetRequestType(this Type type)
-        {
-            var actorType = type.GetBaseTypes().FirstOrDefault(
-                e => e.IsGenericType && e.GetGenericTypeDefinition() == typeof(UseCaseActor<,>));
-
-            return actorType != null ? actorType.GetGenericArguments()[0] : null;
-        }
-    }
-
-    public class ActorNode
-    {
-        public ActorNode(string path, Type type = null)
+        public AkkaActorNode(string path, Type type = null)
         {
             this.Path = path;
             this.Type = type;
@@ -27,7 +14,7 @@ namespace Slalom.Stacks.Messaging.Routing
            
         }
 
-        public List<ActorNode> Nodes { get; } = new List<ActorNode>();
+        public List<AkkaActorNode> Nodes { get; } = new List<AkkaActorNode>();
 
         public string Path { get; }
 
@@ -35,14 +22,14 @@ namespace Slalom.Stacks.Messaging.Routing
 
         public Type RequestType { get; }
 
-        public ActorNode Add(string path, Type type)
+        public AkkaActorNode Add(string path, Type type)
         {
-            var target = new ActorNode(path, type);
+            var target = new AkkaActorNode(path, type);
             this.Nodes.Add(target);
             return target;
         }
 
-        public ActorNode Find(string path)
+        public AkkaActorNode Find(string path)
         {
             if (this.Path == path)
             {
@@ -59,7 +46,7 @@ namespace Slalom.Stacks.Messaging.Routing
             return null;
         }
 
-        public ActorNode Find(ICommand command)
+        public AkkaActorNode Find(ICommand command)
         {
             if (this.RequestType == command.GetType())
             {
