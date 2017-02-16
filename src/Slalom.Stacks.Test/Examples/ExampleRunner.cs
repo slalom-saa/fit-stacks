@@ -22,14 +22,14 @@ namespace Slalom.Stacks.Test.Examples
     public class ExampleRunner
     {
         private readonly object[] _indicators;
-        private Action<ApplicationContainer> _configuration;
+        private Action<Stack> _configuration;
 
         public ExampleRunner(params object[] indicators)
         {
             _indicators = indicators.Union(new object[] { typeof(ExampleRunner) }).ToArray();
         }
 
-        public ExampleRunner With(Action<ApplicationContainer> configuration)
+        public ExampleRunner With(Action<Stack> configuration)
         {
             _configuration = configuration;
             return this;
@@ -42,7 +42,7 @@ namespace Slalom.Stacks.Test.Examples
                 try
                 {
                     var watch = new Stopwatch();
-                    using (var container = new ApplicationContainer(_indicators))
+                    using (var container = new Stack(_indicators))
                     {
                         _configuration?.Invoke(container);
 
@@ -53,7 +53,7 @@ namespace Slalom.Stacks.Test.Examples
                         var tasks = new List<Task<CommandResult>>(count);
                         Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, e =>
                         {
-                            tasks.Add(container.Commands.SendAsync("items/add", new AddItemCommand(e.ToString())));
+                            tasks.Add(container.SendAsync("items/add", new AddItemCommand(e.ToString())));
                         });
                         await Task.WhenAll(tasks);
 
@@ -66,7 +66,7 @@ namespace Slalom.Stacks.Test.Examples
                                 + JsonConvert.SerializeObject(failed.First(), Formatting.Indented));
                         }
 
-                        var searchResultCount = ((IQueryable<ItemSearchResult>)(await container.Commands.SendAsync(new SearchItemsCommand())).Response).Count();
+                        var searchResultCount = ((IQueryable<ItemSearchResult>)(await container.SendAsync(new SearchItemsCommand())).Response).Count();
                         var entityCount = (await container.Domain.FindAsync<Item>()).Count();
                         if (entityCount != count || searchResultCount != count)
                         {
