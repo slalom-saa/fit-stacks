@@ -50,7 +50,7 @@ public class SaveItemShould
 
             result.IsSuccessful.Should().BeTrue("The use case execution was not successful.");
 
-            var target = container.Domain.FindAsync<Item>(e => e.Text == "adsf").Result;
+            var target = container.Domain.FindAsync<Item>(e => e.Name == "adsf").Result;
 
             target.Count().Should().Be(1);
 

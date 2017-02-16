@@ -46,8 +46,8 @@ namespace Slalom.Stacks.Messaging
                    .As<ICommandCoordinator>()
                    .SingleInstance();
 
-            builder.Register(c => new EventPublisher(c.Resolve<IComponentContext>()))
-                   .As<IEventPublisher>()
+            builder.Register(c => new EventStream(c.Resolve<IComponentContext>()))
+                   .As<IEventStream>()
                    .SingleInstance();
 
             builder.RegisterGeneric(typeof(CommandValidator<>));

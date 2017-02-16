@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
@@ -31,7 +30,7 @@ namespace Slalom.Stacks.Messaging
         private readonly ConcurrentDictionary<Type, IEnumerable<object>> _handlers = new ConcurrentDictionary<Type, IEnumerable<object>>();
         private readonly Lazy<ILogger> _logger;
         private readonly Lazy<IEnumerable<IRequestStore>> _requests;
-        private readonly Lazy<IEventPublisher> _publisher;
+        private readonly Lazy<IEventStream> _publisher;
         private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
         private readonly Lazy<IExecutionContextResolver> _contextResolver;
 
@@ -46,7 +45,7 @@ namespace Slalom.Stacks.Messaging
 
             _context = context;
             _logger = new Lazy<ILogger>(() => _context.Resolve<ILogger>());
-            _publisher = new Lazy<IEventPublisher>(() => _context.Resolve<IEventPublisher>());
+            _publisher = new Lazy<IEventStream>(() => _context.Resolve<IEventStream>());
             _audits = new Lazy<IEnumerable<IAuditStore>>(() => _context.ResolveAll<IAuditStore>());
             _requests = new Lazy<IEnumerable<IRequestStore>>(() => _context.ResolveAll<IRequestStore>());
             _contextResolver = new Lazy<IExecutionContextResolver>(() => _context.Resolve<IExecutionContextResolver>());

@@ -4,10 +4,10 @@ using Slalom.Stacks.Runtime;
 namespace Slalom.Stacks.Messaging
 {
     /// <summary>
-    /// Defines an <see href="http://bit.ly/2dRwOXq">Event Publisher</see>, responsible for locating event handlers and executing multi-threaded and/or out-of-process flow.
+    /// Defines an Event Stream.
     /// </summary>
     /// <seealso cref="Event"/>
-    public interface IEventPublisher
+    public interface IEventStream
     {
         /// <summary>
         /// Publishes the specified event.

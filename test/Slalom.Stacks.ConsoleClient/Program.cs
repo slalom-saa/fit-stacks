@@ -6,33 +6,36 @@ using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Serialization;
-using Slalom.Stacks.Messaging.Validation;
-using Slalom.Stacks.Validation;
+using Slalom.Stacks.Test.Examples;
+using Slalom.Stacks.Test.Examples.Actors.Items.Add;
 
 namespace Slalom.Stacks.ConsoleClient
 {
     public class Program
     {
-        public class A : Command
-        {
-            public string Name { get; set; }
-        }
-
-        public class B : UseCaseActor<A, string>
-        {
-            public override string Execute(A command)
-            {
-                return "asdf";
-            }
-        }
-
         public static void Main(string[] args)
         {
-            using (var stack = new Stack(typeof(Program)))
+            Start();
+            Console.WriteLine("Running application.  Press any key to halt...");
+            Console.ReadKey();
+        }
+
+        public static async void Start()
+        {
+            ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator"), new Claim(ClaimTypes.Name, "user@example.com") }));
+
+            using (var container = new ApplicationContainer(typeof(AddItemCommand)))
             {
-                var result = stack.SendAsync(new A()).Result;
+                var result = await container.Commands.SendAsync("items/add", "{}");
+
+                Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+
+                result = await container.Commands.SendAsync("items/add", "{name:\"No\"}");
+
+                Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+
+                result = await container.Commands.SendAsync("items/add", "{name:\"Now\"}");
 
                 Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             }
