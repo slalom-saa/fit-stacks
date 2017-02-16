@@ -14,13 +14,13 @@
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": [
-        "dotnet54",
-        "portable-net45+win8"
-      ],
-      "buildOptions": { "define": [ "core" ] }
-    },
+    //"netcoreapp1.0": {
+    //  "imports": [
+    //    "dotnet54",
+    //    "portable-net45+win8"
+    //  ],
+    //  "buildOptions": { "define": [ "core" ] }
+    //},
     "net461": {
       "dependencies": {
       },

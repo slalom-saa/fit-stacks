@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
@@ -301,7 +302,7 @@ namespace Slalom.Stacks.Messaging
         public Task<CommandResult> SendAsync(string path, string command, TimeSpan? timeout = null)
         {
             var actors = _context.Resolve<IDiscoverTypes>().Find(typeof(IHandle<>)).Where(e => e.GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path)).ToList();
-            if (actors.Count() > 1)
+            if (actors.Count > 1)
             {
                 throw new InvalidOperationException($"More than one actor has been configured for the path {path}.");
             }
