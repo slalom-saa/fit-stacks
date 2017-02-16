@@ -12,7 +12,7 @@ namespace Slalom.Stacks.Test.Examples.Actors.Items.Add.Rules
     {
         public override async Task<ValidationError> ValidateAsync(AddItemCommand instance)
         {
-            var target = await this.Domain.FindAsync<Item>(e => e.Text == instance.Text);
+            var target = await this.Domain.FindAsync<Item>(e => e.Name == instance.Name);
             if (target.Any())
             {
                 return "The item name must be unique.";

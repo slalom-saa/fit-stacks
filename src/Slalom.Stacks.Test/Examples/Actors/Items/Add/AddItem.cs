@@ -11,12 +11,12 @@ namespace Slalom.Stacks.Test.Examples.Actors.Items.Add
     {
         public override async Task<AddItemEvent> ExecuteAsync(AddItemCommand command)
         {
-            if (command.Text == "error")
+            if (command.Name == "error")
             {
                 throw new Exception("Throwing an example error.");
             }
 
-            var target = Item.Create(command.Text);
+            var target = Item.Create(command.Name);
 
             await this.Domain.AddAsync(target);
 
