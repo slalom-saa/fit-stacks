@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using Slalom.Stacks.Configuration;
 
 namespace Slalom.Stacks.Logging

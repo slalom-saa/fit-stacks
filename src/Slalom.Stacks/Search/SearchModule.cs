@@ -45,7 +45,7 @@ namespace Slalom.Stacks.Search
                    .AsSelf()
                    .SingleInstance();
 
-            builder.Register(c => new SearchFacade(new ComponentContext(c.Resolve<IComponentContext>())))
+            builder.Register(c => new SearchFacade(c.Resolve<IComponentContext>()))
                    .AsImplementedInterfaces()
                    .AsSelf()
                    .SingleInstance();

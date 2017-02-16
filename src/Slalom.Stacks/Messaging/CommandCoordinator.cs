@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
@@ -25,16 +26,14 @@ namespace Slalom.Stacks.Messaging
     public class CommandCoordinator : ICommandCoordinator
     {
         private readonly Lazy<IEnumerable<IAuditStore>> _audits;
+        private readonly ReaderWriterLockSlim _validatorsLock = new ReaderWriterLockSlim();
         private readonly IComponentContext _context;
-        private readonly Lazy<IExecutionContextResolver> _contextResolver;
         private readonly ConcurrentDictionary<Type, IEnumerable<object>> _handlers = new ConcurrentDictionary<Type, IEnumerable<object>>();
         private readonly Lazy<ILogger> _logger;
-        private readonly Lazy<IEventPublisher> _publisher;
-
-        private readonly ConcurrentQueue<CommandQueueIem> _queue = new ConcurrentQueue<CommandQueueIem>();
         private readonly Lazy<IEnumerable<IRequestStore>> _requests;
+        private readonly Lazy<IEventPublisher> _publisher;
         private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
-        private readonly ReaderWriterLockSlim _validatorsLock = new ReaderWriterLockSlim();
+        private readonly Lazy<IExecutionContextResolver> _contextResolver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandCoordinator"/> class.
@@ -51,76 +50,6 @@ namespace Slalom.Stacks.Messaging
             _audits = new Lazy<IEnumerable<IAuditStore>>(() => _context.ResolveAll<IAuditStore>());
             _requests = new Lazy<IEnumerable<IRequestStore>>(() => _context.ResolveAll<IRequestStore>());
             _contextResolver = new Lazy<IExecutionContextResolver>(() => _context.Resolve<IExecutionContextResolver>());
-
-            this.Process();
-        }
-
-        internal class CommandQueueIem
-        {
-            public ICommand Command { get; set; }
-
-            public string Path { get; set; }
-
-            public TaskCompletionSource<CommandResult> TaskCompletionSource { get; set; }
-        }
-
-        internal async void Process()
-        {
-            while (true)
-            {
-                while (_queue.Any())
-                {
-                    CommandQueueIem target = null;
-                    if (_queue.TryDequeue(out target))
-                    {
-                        _logger.Value.Verbose("Starting execution for \"" + target.Command.Type + "\" at \"{Path}\".", target.Path, target.Command);
-
-                        // get the context
-                        var context = _contextResolver.Value.Resolve();
-
-                        context.SetPath(target.Path);
-
-                        // create the result
-                        var result = new CommandResult(context);
-
-                        try
-                        {
-                            // validate the command
-                            await this.ValidateCommand(target.Command, result, context);
-
-                            if (!result.ValidationErrors.Any())
-                            {
-                                // execute the handler
-                                await this.ExecuteHandler(target.Command, target.Path, result, context);
-
-                                // add the response to the context if it was an event
-                                var value = result.Response as IEvent;
-                                if (value != null)
-                                {
-                                    context.AddRaisedEvent(value);
-                                }
-                            }
-
-                            // publish all events
-                            await this.PublishEvents(context);
-                        }
-                        catch (Exception exception)
-                        {
-                            // handle any exceptions
-                            this.HandleException(target.Command, context, result, exception);
-                        }
-
-                        // finalize the result and mark it as complete
-                        result.Complete();
-
-                        // audit the results
-                        await this.Log(target.Command, result, context);
-
-                        target.TaskCompletionSource.TrySetResult(result);
-                    }
-                }
-                await Task.Delay(250);
-            }
         }
 
         /// <summary>
@@ -143,39 +72,92 @@ namespace Slalom.Stacks.Messaging
         /// <param name="timeout">The timeout period.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
-        public Task<CommandResult> SendAsync(string path, ICommand command, TimeSpan? timeout = null)
+        public async Task<CommandResult> SendAsync(string path, ICommand command, TimeSpan? timeout = null)
         {
             Argument.NotNull(command, nameof(command));
 
-            var result = new TaskCompletionSource<CommandResult>();
+            _logger.Value.Verbose("Starting execution for " + command.Type + " at \"{Path}\". {@Command}", path, command);
 
-            _queue.Enqueue(new CommandQueueIem
+            // get the context
+            var context = _contextResolver.Value.Resolve();
+
+            context.SetPath(path);
+
+            // create the result
+            var result = new CommandResult(context);
+
+            try
             {
-                Path = path,
-                Command = command,
-                TaskCompletionSource = result
-            });
+                // validate the command
+                await this.ValidateCommand(command, result, context);
 
-            return result.Task;
+                if (!result.ValidationErrors.Any())
+                {
+                    // execute the handler
+                    await this.ExecuteHandler(command, path, result, context);
+
+                    // add the response to the context if it was an event
+                    var value = result.Response as IEvent;
+                    if (value != null)
+                    {
+                        context.AddRaisedEvent(value);
+                    }
+                }
+
+                // publish all events
+                await this.PublishEvents(context);
+            }
+            catch (Exception exception)
+            {
+                // handle any exceptions
+                this.HandleException(command, context, result, exception);
+            }
+
+            // finalize the result and mark it as complete
+            result.Complete();
+
+            // audit the results
+            await this.Log(command, result, context);
+
+            return result;
         }
 
-        public Task<CommandResult> SendAsync(string path, string command, TimeSpan? timeout = null)
+        /// <summary>
+        /// The audit stage of the pipeline.
+        /// </summary>
+        /// <param name="command">The executed command.</param>
+        /// <param name="result">The result.</param>
+        /// <param name="context">The execution context.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        protected virtual Task Log(ICommand command, CommandResult result, ExecutionContext context)
         {
-            var actors = _context.Resolve<IDiscoverTypes>().Find(typeof(IHandle<>)).Where(e => e.GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path)).ToList();
-            if (actors.Count() > 1)
+            var tasks = _requests.Value.Select(e => e.AppendAsync(new RequestEntry(command, result, context))).ToList();
+
+            if (!result.IsSuccessful)
             {
-                throw new InvalidOperationException($"More than one actor has been configured for the path \"{path}\".");
+                if (result.RaisedException != null)
+                {
+                    _logger.Value.Error(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@Context}", command, context);
+                }
+                else if (result.ValidationErrors?.Any() ?? false)
+                {
+                    _logger.Value.Verbose("Execution completed with validation errors while executing " + command.CommandName + ". {@Command} {@ValidationErrors} {@Context}", command, result.ValidationErrors, context);
+                }
+                else
+                {
+                    _logger.Value.Error("Execution completed unsuccessfully while executing " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
+                }
             }
-            if (actors.Count == 0)
+            else
             {
-                throw new InvalidOperationException($"No actor has been configured for the path \"{path}\".");
+                _logger.Value.Verbose("Successfully completed " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
+            }
+            foreach (var instance in context.RaisedEvents)
+            {
+                tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(instance, context))));
             }
 
-            var commandType = actors.First().GetTypeInfo().BaseType.GetGenericArguments()[0];
-
-            var instance = (ICommand)JsonConvert.DeserializeObject(!string.IsNullOrWhiteSpace(command) ? command : "{}", commandType);
-
-            return this.SendAsync(path, instance, timeout);
+            return Task.WhenAll(tasks);
         }
 
         /// <summary>
@@ -193,7 +175,7 @@ namespace Slalom.Stacks.Messaging
         {
             var handlers = _context.ResolveAll(typeof(IHandle<>).MakeGenericType(command.GetType())).ToList();
             IHandle handler;
-            if (string.IsNullOrWhiteSpace(path))
+            if (String.IsNullOrWhiteSpace(path))
             {
                 handler = (IHandle)handlers.FirstOrDefault(e => !e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any()) ??
                           (IHandle)handlers.FirstOrDefault();
@@ -208,7 +190,7 @@ namespace Slalom.Stacks.Messaging
             }
             if (handler == null)
             {
-                throw new InvalidOperationException($"The actor could be found for \"{command.CommandName}\" at \"{path}\".");
+                throw new InvalidOperationException($"The actor could be found for {command.CommandName} at \"{path}\".");
             }
 
             handler.SetContext(context);
@@ -263,44 +245,6 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <summary>
-        /// The audit stage of the pipeline.
-        /// </summary>
-        /// <param name="command">The executed command.</param>
-        /// <param name="result">The result.</param>
-        /// <param name="context">The execution context.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        protected virtual Task Log(ICommand command, CommandResult result, ExecutionContext context)
-        {
-            var tasks = _requests.Value.Select(e => e.AppendAsync(new RequestEntry(command, result, context))).ToList();
-
-            if (!result.IsSuccessful)
-            {
-                if (result.RaisedException != null)
-                {
-                    _logger.Value.Error(result.RaisedException, "An unhandled exception was raised while executing \"" + command.CommandName + "\".", command, context);
-                }
-                else if (result.ValidationErrors?.Any() ?? false)
-                {
-                    _logger.Value.Verbose("Execution completed with validation errors while executing \"" + command.CommandName + "\".", command, result.ValidationErrors, context);
-                }
-                else
-                {
-                    _logger.Value.Error("Execution completed unsuccessfully while executing \"" + command.CommandName + "\".", command, result, context);
-                }
-            }
-            else
-            {
-                _logger.Value.Verbose("Successfully completed \"" + command.CommandName + "\".", command, result, context);
-            }
-            foreach (var instance in context.RaisedEvents)
-            {
-                tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(instance, context))));
-            }
-
-            return Task.WhenAll(tasks);
-        }
-
-        /// <summary>
         /// The event publishing stage of the pipeline.
         /// </summary>
         /// <param name="context">The current execution context.</param>
@@ -316,7 +260,7 @@ namespace Slalom.Stacks.Messaging
                 }
                 catch (Exception exception)
                 {
-                    _logger.Value.Error(exception, "An unhandled exception was raised while handling \"" + item.EventName + "\".", item, context);
+                    _logger.Value.Error(exception, "An unhandled exception was raised while handling " + item.EventName + ": {@Event} {@Context}", item, context);
                 }
             }
         }
@@ -353,6 +297,25 @@ namespace Slalom.Stacks.Messaging
             var errors = await target.Validate(command, context);
 
             result.AddValidationErrors(errors);
+        }
+
+        public Task<CommandResult> SendAsync(string path, string command, TimeSpan? timeout = null)
+        {
+            var actors = _context.Resolve<IDiscoverTypes>().Find(typeof(IHandle<>)).Where(e => e.GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path)).ToList();
+            if (actors.Count() > 1)
+            {
+                throw new InvalidOperationException($"More than one actor has been configured for the path {path}.");
+            }
+            if (actors.Count == 0)
+            {
+                throw new InvalidOperationException($"No actor has been configured for the path {path}.");
+            }
+
+            var commandType = actors.First().GetTypeInfo().BaseType.GetGenericArguments()[0];
+
+            var instance = (ICommand)JsonConvert.DeserializeObject(!string.IsNullOrWhiteSpace(command) ? command : "{}", commandType);
+
+            return this.SendAsync(path, instance, timeout);
         }
     }
 }

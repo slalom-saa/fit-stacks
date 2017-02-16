@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Autofac;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Validation;
 

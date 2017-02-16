@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Runtime;
