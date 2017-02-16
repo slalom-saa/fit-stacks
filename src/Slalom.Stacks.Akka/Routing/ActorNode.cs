@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Slalom.Stacks.Reflection;
 
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Messaging.Routing
 {
     public static class TypeExtensions
     {
@@ -20,10 +20,10 @@ namespace Slalom.Stacks.Messaging
     {
         public ActorNode(string path, Type type = null)
         {
-            Path = path;
-            Type = type;
+            this.Path = path;
+            this.Type = type;
             
-            RequestType = type.GetRequestType();
+            this.RequestType = type.GetRequestType();
            
         }
 
@@ -38,17 +38,17 @@ namespace Slalom.Stacks.Messaging
         public ActorNode Add(string path, Type type)
         {
             var target = new ActorNode(path, type);
-            Nodes.Add(target);
+            this.Nodes.Add(target);
             return target;
         }
 
         public ActorNode Find(string path)
         {
-            if (Path == path)
+            if (this.Path == path)
             {
                 return this;
             }
-            foreach (var node in Nodes)
+            foreach (var node in this.Nodes)
             {
                 var result = node.Find(path);
                 if (result != null)
@@ -61,11 +61,11 @@ namespace Slalom.Stacks.Messaging
 
         public ActorNode Find(ICommand command)
         {
-            if (RequestType == command.GetType())
+            if (this.RequestType == command.GetType())
             {
                 return this;
             }
-            foreach (var node in Nodes)
+            foreach (var node in this.Nodes)
             {
                 var result = node.Find(command);
                 if (result != null)

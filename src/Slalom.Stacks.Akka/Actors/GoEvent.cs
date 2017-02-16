@@ -1,4 +1,4 @@
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Messaging.Actors
 {
     public class GoEvent : Event
     {

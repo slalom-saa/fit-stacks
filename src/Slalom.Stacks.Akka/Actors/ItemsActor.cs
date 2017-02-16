@@ -3,12 +3,13 @@ using Akka.Actor;
 using Akka.DI.Core;
 using Akka.Routing;
 using Autofac;
+using Slalom.Stacks.Messaging.Routing;
 
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Messaging.Actors
 {
     public class UseCaseSupervisionActor : ReceiveActor
     {
-        public ActorNetwork ActorNetwork { get; set; }
+        public AkkaRouter UseCaseRouter { get; set; }
         public IComponentContext ComponentContext { get; set; }
 
         public string Path
@@ -24,7 +25,7 @@ namespace Slalom.Stacks.Messaging
         {
             base.PreStart();
 
-            var node = ActorNetwork.RootNode.Find(this.Path);
+            var node = this.UseCaseRouter.RootNode.Find(this.Path);
             foreach (var child in node.Nodes)
             {
                 var name = child.Path.Substring(child.Path.LastIndexOf('/') + 1);

@@ -26,6 +26,14 @@ namespace Slalom.Stacks
             return instance;
         }
 
+        public static Stack Use(this Stack instance, Action<ContainerBuilder> configuration)
+        {
+            var builder = new ContainerBuilder();
+            configuration.Invoke(builder);
+            builder.Update(instance.Container.ComponentRegistry);
+            return instance;
+        }
+
         public static IEnumerable<T> ResolveAll<T>(this IComponentContext context)
         {
             return context.Resolve<IEnumerable<T>>();
@@ -126,7 +134,7 @@ namespace Slalom.Stacks
     //    public void Append<T>(Func<IComponentContext, T> @delegate) where T : class
     //    {
     //        var builder = new ContainerBuilder();
-    //        builder.Register(c =>
+    //        builder.Use(c =>
     //               {
     //                   var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
 
@@ -176,7 +184,7 @@ namespace Slalom.Stacks
     //    ///     Registers a component with the container.
     //    /// </summary>
     //    /// <typeparam name="T">The type to register.</typeparam>
-    //    public void Register<T>()
+    //    public void Use<T>()
     //    {
     //        var builder = new ContainerBuilder();
     //        builder.RegisterType<T>()
@@ -191,10 +199,10 @@ namespace Slalom.Stacks
     //    /// </summary>
     //    /// <typeparam name="T">The type of instance.</typeparam>
     //    /// <param name="delegate">The instance to register.</param>
-    //    public void Register<T>(Func<IComponentContext, T> @delegate) where T : class
+    //    public void Use<T>(Func<IComponentContext, T> @delegate) where T : class
     //    {
     //        var builder = new ContainerBuilder();
-    //        builder.Register(c =>
+    //        builder.Use(c =>
     //        {
     //            var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
 
@@ -211,7 +219,7 @@ namespace Slalom.Stacks
     //    /// </summary>
     //    /// <typeparam name="T">The type of instance.</typeparam>
     //    /// <param name="instance">The instance to register.</param>
-    //    public void Register<T>(T instance) where T : class
+    //    public void Use<T>(T instance) where T : class
     //    {
     //        var builder = new ContainerBuilder();
 
@@ -225,10 +233,10 @@ namespace Slalom.Stacks
     //    /// </summary>
     //    /// <param name="delegate">The delegate.</param>
     //    /// <param name="services">The services.</param>
-    //    public void Register(Func<IComponentContext, object> @delegate, params Type[] services)
+    //    public void Use(Func<IComponentContext, object> @delegate, params Type[] services)
     //    {
     //        var builder = new ContainerBuilder();
-    //        builder.Register(c =>
+    //        builder.Use(c =>
     //        {
     //            var instance = @delegate.Invoke(c.Resolve<IComponentContext>());
 

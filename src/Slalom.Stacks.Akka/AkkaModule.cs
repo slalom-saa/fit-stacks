@@ -4,6 +4,7 @@ using System.Reflection;
 using Akka.Actor;
 using Autofac;
 using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Messaging.Routing;
 using Slalom.Stacks.Reflection;
 using Module = Autofac.Module;
 

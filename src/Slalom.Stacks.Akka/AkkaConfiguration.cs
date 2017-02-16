@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using Akka.DI.AutoFac;
 using Autofac;
+using Slalom.Stacks.Messaging.Routing;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -16,13 +17,13 @@ namespace Slalom.Stacks.Messaging
 
                 builder.Register(c => system).AsSelf().SingleInstance();
 
-                builder.Register(c => new ActorNetwork(system, c.Resolve<IComponentContext>()))
+                builder.Register(c => new AkkaRouter(system, c.Resolve<IComponentContext>()))
                     .OnActivated(c =>
                     {
                         c.Instance.Arrange(instance.Assemblies);
                     }).SingleInstance().AsSelf().AutoActivate();
 
-                builder.Register(c => new AkkaCommandCoordinator(c.Resolve<ActorNetwork>()))
+                builder.Register(c => new AkkaCommandCoordinator(c.Resolve<AkkaRouter>()))
                     .AsImplementedInterfaces();
 
             });

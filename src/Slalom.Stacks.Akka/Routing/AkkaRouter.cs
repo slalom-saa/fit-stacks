@@ -7,15 +7,16 @@ using Akka.Actor;
 using Akka.DI.Core;
 using Autofac;
 using Newtonsoft.Json;
+using Slalom.Stacks.Messaging.Actors;
 using Slalom.Stacks.Reflection;
 
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Messaging.Routing
 {
-    public class ActorNetwork
+    public class AkkaRouter
     {
         private readonly ActorSystem _system;
 
-        public ActorNetwork(ActorSystem system, IComponentContext context)
+        public AkkaRouter(ActorSystem system, IComponentContext context)
         {
             _system = system;
         }
@@ -25,7 +26,7 @@ namespace Slalom.Stacks.Messaging
         public void Arrange(Assembly[] assemblies)
         {
             var items = new List<ActorMapping>();
-            var actors = assemblies.SafelyGetTypes(typeof(UseCaseActor<,>))
+            var actors = assemblies.SafelyGetTypes(typeof(IHandle))
                 .Union(assemblies.SafelyGetTypes(typeof(ActorBase)));
 
             foreach (var actor in actors)

@@ -256,7 +256,7 @@ namespace Slalom.Stacks.Messaging
             {
                 try
                 {
-                    await _publisher.Value.PublishAsync(item, context);
+                    _publisher.Value.Publish(item, context);
                 }
                 catch (Exception exception)
                 {

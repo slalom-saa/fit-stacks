@@ -1,13 +1,13 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Messaging.Routing
 {
     public class AkkaCommandCoordinator : ICommandCoordinator
     {
-        private readonly ActorNetwork _network;
+        private readonly AkkaRouter _network;
 
-        public AkkaCommandCoordinator(ActorNetwork network)
+        public AkkaCommandCoordinator(AkkaRouter network)
         {
             _network = network;
         }

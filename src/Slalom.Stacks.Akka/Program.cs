@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Slalom.Stacks.Search;
 using System.Threading.Tasks;
+using Akka.Actor;
 using Newtonsoft.Json;
 using Slalom.Stacks.Configuration;
 using Autofac;
+using Slalom.Stacks.Messaging.Actors;
+using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -19,27 +22,29 @@ namespace Slalom.Stacks.Messaging
         }
 
 
-
         private static async Task Start()
         {
             try
             {
-                using (var container = new Stack(typeof(Program)))
+                using (var stack = new Stack(typeof(Program)))
                 {
-                    container.Container.Update(builder =>
+                    stack.Use(builder =>
                     {
                         builder.RegisterInstance(new Logger()).AsImplementedInterfaces();
                     });
 
-                    container.UseAkka("local");
+                    stack.UseAkka("local");
+
+
+
 
                     var tasks = new List<Task>
                     {
-                        container.SendAsync("items/add-item", "{}"),
-                        container.SendAsync("items/add-item", "{}"),
-                        container.SendAsync("items/add-item", "{}"),
-                        container.SendAsync("items/add-item", "{}"),
-                        container.SendAsync("items/add-item", "{}")
+                        stack.SendAsync("items/add-item", "{}"),
+                        stack.SendAsync("items/add-item", "{}"),
+                        stack.SendAsync("items/add-item", "{}"),
+                        stack.SendAsync("items/add-item", "{}"),
+                        stack.SendAsync("items/add-item", "{}")
                     };
 
 
@@ -51,7 +56,7 @@ namespace Slalom.Stacks.Messaging
 
                     //Console.WriteLine(result);
 
-                    Console.WriteLine((await container.Domain.FindAsync<Item>()).Count());
+                    Console.WriteLine((await stack.Domain.FindAsync<Item>()).Count());
 
                 }
 

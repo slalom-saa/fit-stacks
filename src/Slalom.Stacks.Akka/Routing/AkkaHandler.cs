@@ -4,31 +4,29 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Akka.Actor;
-using Akka.Event;
 using Autofac;
-using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Messaging.Routing
 {
-    public class AkkaHandler<TUseCase> : ReceiveActor where TUseCase : IHandle
+    public class AkkaHandler<THandler> : ReceiveActor where THandler : IHandle
     {
-        private Lazy<ILogger> _logger;
-        private Lazy<IEventStream> _publisher;
-        private Lazy<IEnumerable<IAuditStore>> _audits;
-        private Lazy<IEnumerable<IRequestStore>> _requests;
-        private Lazy<IExecutionContextResolver> _contextResolver;
-        public TUseCase UseCase { get; }
-        public IComponentContext Context { get; }
+        private readonly Lazy<ILogger> _logger;
+        private readonly Lazy<IEventStream> _publisher;
+        private readonly Lazy<IEnumerable<IAuditStore>> _audits;
+        private readonly Lazy<IEnumerable<IRequestStore>> _requests;
+        private readonly Lazy<IExecutionContextResolver> _contextResolver;
+        public THandler Hanlder { get; }
+        public IComponentContext ComponentContext { get; }
 
-        public AkkaHandler(TUseCase useCase, IComponentContext context)
+        public AkkaHandler(THandler hanlder, IComponentContext context)
         {
-            this.UseCase = useCase;
-            this.Context = context;
+            this.Hanlder = hanlder;
+            this.ComponentContext = context;
 
             _logger = new Lazy<ILogger>(context.Resolve<ILogger>);
             _publisher = new Lazy<IEventStream>(context.Resolve<IEventStream>);
@@ -40,7 +38,7 @@ namespace Slalom.Stacks.Messaging
 
             this.Receive<IEvent>(e =>
             {
-
+                Console.WriteLine("____");
             });
         }
 
@@ -55,7 +53,7 @@ namespace Slalom.Stacks.Messaging
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context" /> argument is null.</exception>
         protected async Task ValidateCommand(ICommand command, CommandResult result, ExecutionContext context)
         {
-            var target = (ICommandValidator)this.Context.Resolve(typeof(CommandValidator<>).MakeGenericType(command.GetType()));
+            var target = (ICommandValidator)this.ComponentContext.Resolve(typeof(CommandValidator<>).MakeGenericType(command.GetType()));
 
             var errors = await target.Validate(command, context);
 
@@ -79,7 +77,7 @@ namespace Slalom.Stacks.Messaging
                 if (!result.ValidationErrors.Any())
                 {
                     // execute the handler
-                    var response = await this.UseCase.HandleAsync(command);
+                    var response = await this.Hanlder.HandleAsync(command);
                     result.AddResponse(response);
 
                     // add the response to the context if it was an event
@@ -91,7 +89,7 @@ namespace Slalom.Stacks.Messaging
                 }
 
                 // publish all events
-                await this.PublishEvents(context);
+                this.PublishEvents(context);
             }
             catch (Exception exception)
             {
@@ -106,6 +104,11 @@ namespace Slalom.Stacks.Messaging
             await this.Log(command, result, context);
 
             this.Sender.Tell(result);
+
+            if (result.Response is IEvent)
+            {
+                Context.Dispatcher.EventStream.Publish(result.Response);
+            }
         }
 
         /// <summary>
@@ -123,20 +126,20 @@ namespace Slalom.Stacks.Messaging
             {
                 if (result.RaisedException != null)
                 {
-                    _logger.Value.Error(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@Context}", command, context);
+                    _logger.Value.Error(result.RaisedException, "An unhandled exception was raised while executing " + command.CommandName + ". {@Command} {@ComponentContext}", command, context);
                 }
                 else if (result.ValidationErrors?.Any() ?? false)
                 {
-                    _logger.Value.Verbose("Execution completed with validation errors while executing " + command.CommandName + ". {@Command} {@ValidationErrors} {@Context}", command, result.ValidationErrors, context);
+                    _logger.Value.Verbose("Execution completed with validation errors while executing " + command.CommandName + ". {@Command} {@ValidationErrors} {@ComponentContext}", command, result.ValidationErrors, context);
                 }
                 else
                 {
-                    _logger.Value.Error("Execution completed unsuccessfully while executing " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
+                    _logger.Value.Error("Execution completed unsuccessfully while executing " + command.CommandName + ". {@Command} {@Result} {@ComponentContext}", command, result, context);
                 }
             }
             else
             {
-                _logger.Value.Verbose("Successfully completed " + command.CommandName + ". {@Command} {@Result} {@Context}", command, result, context);
+                _logger.Value.Verbose("Successfully completed " + command.CommandName + ". {@Command} {@Result} {@ComponentContext}", command, result, context);
             }
             foreach (var instance in context.RaisedEvents)
             {
@@ -196,17 +199,17 @@ namespace Slalom.Stacks.Messaging
         /// <param name="context">The current execution context.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        protected virtual async Task PublishEvents(ExecutionContext context)
+        protected virtual void PublishEvents(ExecutionContext context)
         {
             foreach (var item in context.RaisedEvents)
             {
                 try
                 {
-                    await _publisher.Value.PublishAsync(item, context);
+                    _publisher.Value.Publish(item, context);
                 }
                 catch (Exception exception)
                 {
-                    _logger.Value.Error(exception, "An unhandled exception was raised while handling " + item.EventName + ": {@Event} {@Context}", item, context);
+                    _logger.Value.Error(exception, "An unhandled exception was raised while handling " + item.EventName + ": {@Event} {@ComponentContext}", item, context);
                 }
             }
         }

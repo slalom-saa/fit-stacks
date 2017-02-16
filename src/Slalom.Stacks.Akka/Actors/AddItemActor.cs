@@ -1,8 +1,6 @@
-using System;
 using System.Threading.Tasks;
-using Akka.Event;
 
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Messaging.Actors
 {
     [Path("items/add-item")]
     public class AddItemActor : UseCaseActor<GoCommand, GoEvent>
