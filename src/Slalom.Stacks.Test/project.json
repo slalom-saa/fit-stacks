@@ -1,26 +1,26 @@
 ﻿{
-  "version": "1.3.21-*",
+  "version": "1.3.22-*",
   "authors": [ "Slalom Architect Academy" ],
   "packOptions": {
     "tags": [ "slalom", "stacks", "test" ],
     "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
-    "summary": "A library with common test classes for Stacks."
+    "summary": "A test library for Stacks."
   },
   "dependencies": {
     "Slalom.Stacks": {
       "target": "project"
     },
-    "System.Threading.Tasks.Parallel": "4.0.0"
+    "System.Threading.Tasks.Parallel": "4.0.1"
   },
 
   "frameworks": {
-    //"netcoreapp1.0": {
-    //  "imports": [
-    //    "dotnet54",
-    //    "portable-net45+win8"
-    //  ],
-    //  "buildOptions": { "define": [ "core" ] }
-    //},
+    "netcoreapp1.0": {
+      "imports": [
+        "dotnet54",
+        "portable-net45+win8"
+      ],
+      "buildOptions": { "define": [ "core" ] }
+    },
     "net461": {
       "dependencies": {
       },
