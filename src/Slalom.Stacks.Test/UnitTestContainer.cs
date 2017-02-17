@@ -66,7 +66,10 @@ namespace Slalom.Stacks.Test
         public UnitTestContainer(object instance = null, [CallerMemberName] string callerName = "")
             : base(typeof(UnitTestContainer))
         {
-            //this.Container.(this);
+            this.Container.Update(builder =>
+            {
+                builder.RegisterInstance(this).As<IHandleEvent>();
+            });
 
             if (instance != null && callerName != null)
             {

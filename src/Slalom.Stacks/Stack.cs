@@ -7,6 +7,7 @@ using Autofac;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks
 {
@@ -30,6 +31,8 @@ namespace Slalom.Stacks
         }
 
         public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
+
+        public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
 
         public Stack(params object[] markers)
         {
