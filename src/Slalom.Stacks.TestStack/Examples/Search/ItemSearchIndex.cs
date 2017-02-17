@@ -13,8 +13,9 @@ namespace Slalom.Stacks.TestStack.Examples.Search
         {
         }
 
-        public override async Task RebuildIndexAsync()
+        public override Task RebuildIndexAsync()
         {
+            return Task.FromResult(0);
         }
 
         public async Task HandleAsync(AddItemEvent instance)

@@ -9,6 +9,9 @@ namespace Slalom.Stacks.Configuration
     /// <seealso cref="Autofac.Core.IPropertySelector" />
     public class AllUnsetPropertySelector : IPropertySelector
     {
+        /// <summary>
+        /// The shared instance of the selector.
+        /// </summary>
         public static readonly IPropertySelector Instance = new AllUnsetPropertySelector();
 
         /// <summary>

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Autofac;
+using System.Linq;
+using System.Threading.Tasks;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
@@ -11,29 +10,16 @@ using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks
 {
+    /// <summary>
+    /// The host and main entry point to the stack.
+    /// </summary>
+    /// <seealso cref="System.IDisposable" />
     public class Stack : IDisposable
     {
-        internal IContainer Container { get; }
-
-        public Task<CommandResult> SendAsync(ICommand command, TimeSpan? timeout = null)
-        {
-            return this.Container.Resolve<ICommandCoordinator>().SendAsync(command, timeout);
-        }
-
-        public Task<CommandResult> SendAsync(string path, ICommand command, TimeSpan? timeout = null)
-        {
-            return this.Container.Resolve<ICommandCoordinator>().SendAsync(path, command, timeout);
-        }
-
-        public Task<CommandResult> SendAsync(string path, string command, TimeSpan? timeout = null)
-        {
-            return this.Container.Resolve<ICommandCoordinator>().SendAsync(path, command, timeout);
-        }
-
-        public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
-
-        public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Stack"/> class.
+        /// </summary>
+        /// <param name="markers">Item markers used to identify assemblies.</param>
         public Stack(params object[] markers)
         {
             this.Assemblies = markers.Select(e =>
@@ -58,8 +44,60 @@ namespace Slalom.Stacks
             this.Container = builder.Build();
         }
 
+        /// <summary>
+        /// Gets the assemblies that are used for loading components.
+        /// </summary>
+        /// <value>The assemblies that are used for loading components.</value>
         public Assembly[] Assemblies { get; }
 
+        /// <summary>
+        /// Gets the configured <see cref="IDomainFacade"/>.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade"/>.</value>
+        public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
+
+        /// <summary>
+        /// Gets the configured <see cref="ISearchFacade"/>.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade"/>.</value>
+        public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
+
+        internal IContainer Container { get; }
+
+        /// <summary>
+        /// Sends the specified command with the specified timeout.
+        /// </summary>
+        /// <param name="command">The command to send.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<CommandResult> SendAsync(ICommand command, TimeSpan? timeout = null)
+        {
+            return this.Container.Resolve<ICommandCoordinator>().SendAsync(command, timeout);
+        }
+
+        /// <summary>
+        /// Sends the specified command with the specified timeout.
+        /// </summary>
+        /// <param name="path">The request path.</param>
+        /// <param name="command">The command to send.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<CommandResult> SendAsync(string path, ICommand command, TimeSpan? timeout = null)
+        {
+            return this.Container.Resolve<ICommandCoordinator>().SendAsync(path, command, timeout);
+        }
+
+        /// <summary>
+        /// Sends the specified command with the specified timeout.
+        /// </summary>
+        /// <param name="path">The request path.</param>
+        /// <param name="command">The command to send.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<CommandResult> SendAsync(string path, string command, TimeSpan? timeout = null)
+        {
+            return this.Container.Resolve<ICommandCoordinator>().SendAsync(path, command, timeout);
+        }
 
         #region IDisposable Implementation
 
@@ -75,7 +113,7 @@ namespace Slalom.Stacks
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="AuditStore"/> class.
+        /// Finalizes an instance of the <see cref="Stack"/> class.
         /// </summary>
         ~Stack()
         {
@@ -107,6 +145,5 @@ namespace Slalom.Stacks
         }
 
         #endregion
-
     }
 }

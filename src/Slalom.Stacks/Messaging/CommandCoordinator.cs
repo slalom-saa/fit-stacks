@@ -105,7 +105,7 @@ namespace Slalom.Stacks.Messaging
                 }
 
                 // publish all events
-                await this.PublishEvents(context);
+                this.PublishEvents(context);
             }
             catch (Exception exception)
             {
@@ -248,10 +248,11 @@ namespace Slalom.Stacks.Messaging
         /// The event publishing stage of the pipeline.
         /// </summary>
         /// <param name="context">The current execution context.</param>
-        /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        protected virtual async Task PublishEvents(ExecutionContext context)
+        protected virtual void PublishEvents(ExecutionContext context)
         {
+            Argument.NotNull(context, nameof(context));
+
             foreach (var item in context.RaisedEvents)
             {
                 try
@@ -260,7 +261,7 @@ namespace Slalom.Stacks.Messaging
                 }
                 catch (Exception exception)
                 {
-                    _logger.Value.Error(exception, "An unhandled exception was raised while handling " + item.EventName + ": {@Event} {@Context}", item, context);
+                    _logger.Value.Error(exception, "An unhandled exception was raised while raising " + item.EventName + ": {@Event} {@Context}", item, context);
                 }
             }
         }

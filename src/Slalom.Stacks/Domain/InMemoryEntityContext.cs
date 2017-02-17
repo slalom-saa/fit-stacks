@@ -16,7 +16,14 @@ namespace Slalom.Stacks.Domain
     /// <seealso cref="Slalom.Stacks.Domain.IEntityContext" />
     public class InMemoryEntityContext : IEntityContext
     {
+        /// <summary>
+        /// The lock for the instances.
+        /// </summary>
         protected readonly ReaderWriterLockSlim CacheLock = new ReaderWriterLockSlim();
+
+        /// <summary>
+        /// The in-memory items.
+        /// </summary>
         protected readonly List<IAggregateRoot> Instances = new List<IAggregateRoot>();
 
         /// <summary>
