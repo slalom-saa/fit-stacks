@@ -7,7 +7,6 @@ using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Validation;
-using IComponentContext = Slalom.Stacks.Configuration.IComponentContext;
 using Module = Autofac.Module;
 
 namespace Slalom.Stacks.Messaging
@@ -47,8 +46,8 @@ namespace Slalom.Stacks.Messaging
                    .As<ICommandCoordinator>()
                    .SingleInstance();
 
-            builder.Register(c => new EventPublisher(c.Resolve<IComponentContext>()))
-                   .As<IEventPublisher>()
+            builder.Register(c => new EventStream(c.Resolve<IComponentContext>()))
+                   .As<IEventStream>()
                    .SingleInstance();
 
             builder.RegisterGeneric(typeof(CommandValidator<>));
@@ -69,12 +68,13 @@ namespace Slalom.Stacks.Messaging
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>)))
                    .As(instance => instance.GetBaseAndContractTypes())
-                   .PropertiesAutowired(new AllUnsetPropertySelector());
+                   .PropertiesAutowired(AllUnsetPropertySelector.Instance);
 
             builder.RegisterAssemblyTypes(this.Assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandle<>)))
                    .As(instance => instance.GetBaseAndContractTypes())
-                   .AsSelf();
+                   .AsSelf()
+                   .PropertiesAutowired(AllUnsetPropertySelector.Instance);
         }
     }
 }

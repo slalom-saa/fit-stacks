@@ -24,7 +24,7 @@ namespace Slalom.Stacks.Test.Examples.Search
         {
             await this.AddAsync(new[] { new ItemSearchResult
             {
-                Text = instance.Item.Text
+                Text = instance.Item.Name
             }});
         }
     }

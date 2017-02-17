@@ -11,6 +11,7 @@ using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Autofac;
 
 namespace Slalom.Stacks.Test
 {
@@ -27,7 +28,7 @@ namespace Slalom.Stacks.Test
 
         public Scenario WithUser(string userName, params string[] roles)
         {
-            var claims = new List<Claim> {new Claim(ClaimTypes.Name, userName)};
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, userName) };
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
             User = new ClaimsPrincipal(new ClaimsIdentity(claims));
             return this;
@@ -57,7 +58,7 @@ namespace Slalom.Stacks.Test
         }
     }
 
-    public class UnitTestContainer : ApplicationContainer, IHandleEvent
+    public class UnitTestContainer : Stack, IHandleEvent
     {
         public readonly List<IEvent> RaisedEvents = new List<IEvent>();
 
@@ -65,7 +66,10 @@ namespace Slalom.Stacks.Test
         public UnitTestContainer(object instance = null, [CallerMemberName] string callerName = "")
             : base(typeof(UnitTestContainer))
         {
-            Register(this);
+            this.Container.Update(builder =>
+            {
+                builder.RegisterInstance(this).As<IHandleEvent>();
+            });
 
             if (instance != null && callerName != null)
             {
@@ -73,7 +77,7 @@ namespace Slalom.Stacks.Test
                 var attribute = method.GetCustomAttributes<GivenAttribute>().FirstOrDefault();
                 if (attribute != null)
                 {
-                    var scenario = (Scenario) Activator.CreateInstance(attribute.Name);
+                    var scenario = (Scenario)Activator.CreateInstance(attribute.Name);
                     this.UseScenario(scenario);
                 }
             }
@@ -88,18 +92,24 @@ namespace Slalom.Stacks.Test
 
         public CommandResult Send(ICommand command)
         {
-            return Commands.SendAsync(command).Result;
+            return SendAsync(command).Result;
         }
 
         public void UseScenario(Scenario scenario)
         {
-            Register<IEntityContext>(scenario.EntityContext);
+            this.Container.Update(builder =>
+            {
+                builder.RegisterInstance(scenario.EntityContext).As<IEntityContext>();
+            });
         }
 
         public void UseScenario(Type scenario)
         {
-            var instance = Activator.CreateInstance(scenario) as Scenario;
-            Register<IEntityContext>(instance.EntityContext);
+            this.Container.Update(builder =>
+            {
+                var instance = Activator.CreateInstance(scenario) as Scenario;
+                builder.RegisterInstance(instance.EntityContext).As<IEntityContext>();
+            });
         }
     }
 }

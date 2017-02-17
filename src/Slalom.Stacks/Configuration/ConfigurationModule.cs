@@ -59,9 +59,6 @@ namespace Slalom.Stacks.Configuration
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new NullCachingModule());
 
-            builder.Register(c => new ComponentContext(c.Resolve<Autofac.IComponentContext>()))
-                   .As<IComponentContext>();
-
             builder.Register(c => new LocalExecutionContextResolver(c.Resolve<IConfiguration>()))
                    .As<IExecutionContextResolver>()
                    .SingleInstance();

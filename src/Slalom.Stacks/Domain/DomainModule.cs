@@ -36,7 +36,7 @@ namespace Slalom.Stacks.Domain
         {
             base.Load(builder);
 
-            builder.Register(c => new DomainFacade(new ComponentContext(c.Resolve<IComponentContext>()), c.Resolve<ICacheManager>()))
+            builder.Register(c => new DomainFacade(c.Resolve<IComponentContext>(), c.Resolve<ICacheManager>()))
                    .As<IDomainFacade>()
                    .SingleInstance();
 
@@ -46,6 +46,7 @@ namespace Slalom.Stacks.Domain
 
             builder.RegisterGeneric(typeof(Repository<>))
                    .As(typeof(IRepository<>))
+                   .PropertiesAutowired(AllUnsetPropertySelector.Instance)
                    .SingleInstance();
         }
     }

@@ -4,10 +4,10 @@ using Slalom.Stacks.Runtime;
 namespace Slalom.Stacks.Messaging
 {
     /// <summary>
-    /// Defines an <see href="http://bit.ly/2dRwOXq">Event Publisher</see>, responsible for locating event handlers and executing multi-threaded and/or out-of-process flow.
+    /// Defines an Event Stream.
     /// </summary>
     /// <seealso cref="Event"/>
-    public interface IEventPublisher
+    public interface IEventStream
     {
         /// <summary>
         /// Publishes the specified event.
@@ -15,7 +15,6 @@ namespace Slalom.Stacks.Messaging
         /// <typeparam name="TEvent">The type of event.</typeparam>
         /// <param name="instance">The event to publish.</param>
         /// <param name="context">The current context.</param>
-        /// <returns>Returns a task for asynchronous programming.</returns>
-        Task PublishAsync<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent;
+        void Publish<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent;
     }
 }

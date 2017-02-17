@@ -7,12 +7,12 @@ namespace Slalom.Stacks.Test.Examples.Actors.Items.Add
     [Request("Add Item")]
     public class AddItemCommand : Command
     {
-        [NotNullOrWhiteSpace("An item must have text to be added.")]
-        public string Text { get; }
+        [NotNullOrWhiteSpace("An item must have a name to be added.")]
+        public string Name { get; }
 
-        public AddItemCommand(string text)
+        public AddItemCommand(string name)
         {
-            this.Text = text;
+            this.Name = name;
         }
     }
 }
