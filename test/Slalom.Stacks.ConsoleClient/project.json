@@ -11,7 +11,7 @@
     "Slalom.Stacks": {
       "target": "project"
     },
-    "Slalom.Stacks.Test": {
+    "Slalom.Stacks.TestStack": {
       "target": "project"
     }
   },

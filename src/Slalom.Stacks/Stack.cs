@@ -13,7 +13,7 @@ namespace Slalom.Stacks
 {
     public class Stack : IDisposable
     {
-        public IContainer Container { get; }
+        internal IContainer Container { get; }
 
         public Task<CommandResult> SendAsync(ICommand command, TimeSpan? timeout = null)
         {

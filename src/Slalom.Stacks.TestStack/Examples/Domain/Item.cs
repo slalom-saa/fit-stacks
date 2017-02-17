@@ -2,7 +2,7 @@
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Test.Examples.Domain
+namespace Slalom.Stacks.TestStack.Examples.Domain
 {
     public class ItemName : ConceptAs<string>
     {

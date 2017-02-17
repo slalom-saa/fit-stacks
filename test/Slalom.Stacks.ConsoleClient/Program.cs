@@ -7,8 +7,7 @@ using Newtonsoft.Json;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging.Serialization;
-using Slalom.Stacks.Test.Examples;
-using Slalom.Stacks.Test.Examples.Actors.Items.Add;
+using Slalom.Stacks.TestStack.Examples.Actors.Items.Add;
 
 namespace Slalom.Stacks.ConsoleClient
 {
