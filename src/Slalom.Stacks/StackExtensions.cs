@@ -1,48 +1,86 @@
 ﻿using System;
 using System.Collections.Generic;
-using Autofac;
 using System.Linq;
+using Autofac;
 using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Validation;
 
 #pragma warning disable 618
 
 namespace Slalom.Stacks
 {
+    /// <summary>
+    /// Extensions for <see cref="Stack" /> instances.
+    /// </summary>
     public static class StackExtensions
     {
-        public static IEnumerable<T> ResolveAll<T>(this IComponentContext context)
+        /// <summary>
+        /// Resolves all instance of the specified type from the container.
+        /// </summary>
+        /// <returns>The resolved instances.</returns>
+        /// <exception>Thrown when the <paramref name="instance" /> argument is null.</exception>
+        public static IEnumerable<T> ResolveAll<T>(this IComponentContext instance)
         {
-            return context.Resolve<IEnumerable<T>>();
+            Argument.NotNull(instance, nameof(instance));
+
+            return instance.Resolve<IEnumerable<T>>();
         }
 
         /// <summary>
         /// Resolves all instance of the specified type from the container.
         /// </summary>
+        /// <param name="instance">The instance.</param>
         /// <param name="type">The type to resolve.</param>
         /// <returns>The resolved instances.</returns>
-        /// <exception>Thrown when the <paramref name="type"/> argument is null.</exception>
-        public static IEnumerable<object> ResolveAll(this IComponentContext context, Type type)
+        /// <exception>Thrown when the <paramref name="instance" /> argument is null.</exception>
+        /// <exception>Thrown when the <paramref name="type" /> argument is null.</exception>
+        public static IEnumerable<object> ResolveAll(this IComponentContext instance, Type type)
         {
-            var target = ((IEnumerable<object>)context.Resolve(typeof(IEnumerable<>).MakeGenericType(type))).ToList();
+            Argument.NotNull(instance, nameof(instance));
+            Argument.NotNull(type, nameof(type));
 
-            foreach (var instance in target)
+            var target = ((IEnumerable<object>) instance.Resolve(typeof(IEnumerable<>).MakeGenericType(type))).ToList();
+
+            foreach (var item in target)
             {
-                context.InjectProperties(instance, AllUnsetPropertySelector.Instance);
+                instance.InjectProperties(item, AllUnsetPropertySelector.Instance);
             }
 
             return target;
         }
 
+        /// <summary>
+        /// Updates the container with the specified builder configuration.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="configuration">The configuration routine.</param>
+        /// <returns>The current instance for method chaining.</returns>
+        /// <exception>Thrown when the <paramref name="instance" /> argument is null.</exception>
+        /// <exception>Thrown when the <paramref name="configuration" /> argument is null.</exception>
         public static IContainer Update(this IContainer instance, Action<ContainerBuilder> configuration)
         {
+            Argument.NotNull(instance, nameof(instance));
+            Argument.NotNull(configuration, nameof(configuration));
+
             var builder = new ContainerBuilder();
             configuration.Invoke(builder);
             builder.Update(instance.ComponentRegistry);
             return instance;
         }
 
+        /// <summary>
+        /// Tells the stack to use the specified builder configuration.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="configuration">The configuration routine.</param>
+        /// <returns>The current instance for method chaining.</returns>
+        /// <exception>Thrown when the <paramref name="instance" /> argument is null.</exception>
+        /// <exception>Thrown when the <paramref name="configuration" /> argument is null.</exception>
         public static Stack Use(this Stack instance, Action<ContainerBuilder> configuration)
         {
+            Argument.NotNull(instance, nameof(instance));
+            Argument.NotNull(configuration, nameof(configuration));
+
             var builder = new ContainerBuilder();
             configuration.Invoke(builder);
             builder.Update(instance.Container.ComponentRegistry);

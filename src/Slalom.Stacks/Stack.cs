@@ -62,7 +62,10 @@ namespace Slalom.Stacks
         /// <value>The configured <see cref="ISearchFacade"/>.</value>
         public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
 
-        internal IContainer Container { get; }
+        /// <summary>
+        /// Gets the configured <see cref="IContainer"/>.
+        /// </summary>
+        public IContainer Container { get; }
 
         /// <summary>
         /// Sends the specified command with the specified timeout.

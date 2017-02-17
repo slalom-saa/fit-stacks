@@ -300,6 +300,13 @@ namespace Slalom.Stacks.Messaging
             result.AddValidationErrors(errors);
         }
 
+        /// <summary>
+        /// Sends the specified command with the specified timeout.
+        /// </summary>
+        /// <param name="path">The request path.</param>
+        /// <param name="command">The command to send.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
         public Task<CommandResult> SendAsync(string path, string command, TimeSpan? timeout = null)
         {
             var actors = _context.Resolve<IDiscoverTypes>().Find(typeof(IHandle<>)).Where(e => e.GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path)).ToList();

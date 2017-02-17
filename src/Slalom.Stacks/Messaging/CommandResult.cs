@@ -6,6 +6,10 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
 {
+    /// <summary>
+    /// The result of command execution.  Contains information about the execution and the response from
+    /// the actor.
+    /// </summary>
     public class CommandResult
     {
         private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
@@ -50,6 +54,9 @@ namespace Slalom.Stacks.Messaging
         /// <value>The raised exception.</value>
         public Exception RaisedException { get; private set; }
 
+        /// <summary>
+        /// Gets the actor response.
+        /// </summary>
         public object Response { get; private set; }
 
         /// <summary>
@@ -73,9 +80,13 @@ namespace Slalom.Stacks.Messaging
             this.RaisedException = exception;
         }
 
-        public void AddResponse(object o)
+        /// <summary>
+        /// Adds the specified response.
+        /// </summary>
+        /// <param name="response">The response to add.</param>
+        public void AddResponse(object response)
         {
-            this.Response = o;
+            this.Response = response;
         }
 
         /// <summary>

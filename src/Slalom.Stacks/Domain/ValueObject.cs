@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Domain
 {
+    public class Money : ValueObject<Money>
+    {
+    }
+
     public abstract class ValueObject<T> : IEquatable<T> where T : ValueObject<T>
     {
         static IList<FieldInfo> _fields = new List<FieldInfo>();
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -20,6 +25,7 @@ namespace Slalom.Stacks.Domain
             return Equals(other);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             var fields = GetFields().Select(field => field.GetValue(this)).Where(value => value != null).ToList();
@@ -40,6 +46,7 @@ namespace Slalom.Stacks.Domain
             }
         }
 
+        /// <inheritdoc />
         public virtual bool Equals(T other)
         {
             if (other == null)
