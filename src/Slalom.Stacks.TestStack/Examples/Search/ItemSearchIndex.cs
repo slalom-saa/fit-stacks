@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
-using Slalom.Stacks.Test.Examples.Actors.Items.Add;
+using Slalom.Stacks.TestStack.Examples.Actors.Items.Add;
 
-namespace Slalom.Stacks.Test.Examples.Search
+namespace Slalom.Stacks.TestStack.Examples.Search
 {
     public class ItemSearchIndex : SearchIndex<ItemSearchResult>, IHandleEvent<AddItemEvent>
     {

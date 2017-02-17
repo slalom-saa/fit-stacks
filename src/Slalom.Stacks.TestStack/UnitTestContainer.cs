@@ -1,25 +1,21 @@
 ﻿using System;
-using System.Reflection;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Autofac;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using Autofac;
+using System.Linq;
 
-namespace Slalom.Stacks.Test
+namespace Slalom.Stacks.TestStack
 {
     public class Scenario
     {
         public Scenario()
         {
-            ClaimsPrincipal.ClaimsPrincipalSelector = () => User;
+            ClaimsPrincipal.ClaimsPrincipalSelector = () => this.User;
         }
 
         public InMemoryEntityContext EntityContext { get; set; } = new InMemoryEntityContext();
@@ -30,20 +26,20 @@ namespace Slalom.Stacks.Test
         {
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, userName) };
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-            User = new ClaimsPrincipal(new ClaimsIdentity(claims));
+            this.User = new ClaimsPrincipal(new ClaimsIdentity(claims));
             return this;
         }
 
         public Scenario WithData(params IAggregateRoot[] items)
         {
-            EntityContext.AddAsync(items).Wait();
+            this.EntityContext.AddAsync(items).Wait();
 
             return this;
         }
 
         public Scenario AsAdmin()
         {
-            WithUser("admin@admin.com", "Administrator");
+            this.WithUser("admin@admin.com", "Administrator");
 
             return this;
         }
@@ -54,7 +50,7 @@ namespace Slalom.Stacks.Test
 
         public GivenAttribute(Type name)
         {
-            Name = name;
+            this.Name = name;
         }
     }
 
@@ -66,7 +62,7 @@ namespace Slalom.Stacks.Test
         public UnitTestContainer(object instance = null, [CallerMemberName] string callerName = "")
             : base(typeof(UnitTestContainer))
         {
-            this.Container.Update(builder =>
+            this.Use(builder =>
             {
                 builder.RegisterInstance(this).As<IHandleEvent>();
             });

@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyModel;
-using Newtonsoft.Json;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Runtime;
-using Slalom.Stacks.Test.Examples.Actors.Items.Add;
-using Slalom.Stacks.Test.Examples.Actors.Items.Search;
-using Slalom.Stacks.Test.Examples.Domain;
-using Slalom.Stacks.Test.Examples.Search;
+using Slalom.Stacks.TestStack.Examples.Actors.Items.Add;
+using Slalom.Stacks.TestStack.Examples.Actors.Items.Search;
+using Slalom.Stacks.TestStack.Examples.Domain;
+using Slalom.Stacks.TestStack.Examples.Search;
+using System.Linq;
+using Newtonsoft.Json;
 
-namespace Slalom.Stacks.Test.Examples
+namespace Slalom.Stacks.TestStack.Examples
 {
         
 

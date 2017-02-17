@@ -1,10 +1,10 @@
 ﻿using System;
 using FluentAssertions;
 using System.Linq;
-using Slalom.Stacks.Test;
-using Slalom.Stacks.Test.Examples.Actors.Items.Add;
-using Slalom.Stacks.Test.Examples.Domain;
-using Slalom.Stacks.Test.Examples.Search;
+using Slalom.Stacks.TestStack;
+using Slalom.Stacks.TestStack.Examples.Actors.Items.Add;
+using Slalom.Stacks.TestStack.Examples.Domain;
+using Slalom.Stacks.TestStack.Examples.Search;
 using Slalom.Stacks.UnitTests;
 using Xunit;
 

@@ -1,10 +1,9 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Test.Examples.Domain;
+using Slalom.Stacks.TestStack.Examples.Domain;
 
-namespace Slalom.Stacks.Test.Examples.Actors.Items.Add
+namespace Slalom.Stacks.TestStack.Examples.Actors.Items.Add
 {
     [Path("items/add")]
     public class AddItem : UseCaseActor<AddItemCommand, AddItemEvent>

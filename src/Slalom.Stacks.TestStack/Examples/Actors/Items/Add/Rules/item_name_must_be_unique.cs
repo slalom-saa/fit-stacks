@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Messaging.Validation;
-using Slalom.Stacks.Test.Examples.Domain;
+using Slalom.Stacks.TestStack.Examples.Domain;
 using Slalom.Stacks.Validation;
+using System.Linq;
 
-namespace Slalom.Stacks.Test.Examples.Actors.Items.Add.Rules
+namespace Slalom.Stacks.TestStack.Examples.Actors.Items.Add.Rules
 {
     public class item_name_must_be_unique : BusinessRule<AddItemCommand>
     {

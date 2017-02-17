@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Slalom.Stacks.Test.Examples.Domain;
+using Slalom.Stacks.TestStack.Examples.Domain;
 
-namespace Slalom.Stacks.Test
+namespace Slalom.Stacks.TestStack
 {
     public class Tests
     {

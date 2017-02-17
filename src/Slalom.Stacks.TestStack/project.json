@@ -4,7 +4,7 @@
   "packOptions": {
     "tags": [ "slalom", "stacks", "test" ],
     "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
-    "summary": "A test library for Stacks."
+    "summary": "A core test library for Stacks."
   },
   "dependencies": {
     "Slalom.Stacks": {
@@ -12,15 +12,7 @@
     },
     "System.Threading.Tasks.Parallel": "4.0.1"
   },
-
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": [
-        "dotnet54",
-        "portable-net45+win8"
-      ],
-      "buildOptions": { "define": [ "core" ] }
-    },
     "net461": {
       "dependencies": {
       },
