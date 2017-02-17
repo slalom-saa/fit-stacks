@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Runtime
         {
             base.Load(builder);
 
-            //builder.Register(c => new ExecutionContextManager(c.Resolve<IExecutionContextResolver>()))
+            //builder.Use(c => new ExecutionContextManager(c.Resolve<IExecutionContextResolver>()))
             //       .SingleInstance()
             //       .OnActivated(e =>
             //       {

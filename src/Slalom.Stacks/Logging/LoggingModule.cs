@@ -21,7 +21,7 @@ namespace Slalom.Stacks.Logging
         {
             base.Load(builder);
 
-            builder.Register(c => new CompositeLogger(new ComponentContext(c.Resolve<Autofac.IComponentContext>())))
+            builder.Register(c => new CompositeLogger(c.Resolve<Autofac.IComponentContext>()))
                    .AsImplementedInterfaces()
                    .SingleInstance();
         }

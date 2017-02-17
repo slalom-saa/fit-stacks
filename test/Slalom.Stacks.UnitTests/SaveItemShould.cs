@@ -67,7 +67,7 @@ public class SaveItemShould
 
             result.IsSuccessful.Should().BeFalse();
 
-            result.ValidationErrors.Should().Contain(e => e.Message.Contains("text"));
+            result.ValidationErrors.Should().Contain(e => e.Message.Contains("name"));
         }
     }
 
@@ -80,7 +80,7 @@ public class SaveItemShould
 
             result.IsSuccessful.Should().BeFalse();
 
-            result.ValidationErrors.Should().Contain(e => e.Message.Contains("text"));
+            result.ValidationErrors.Should().Contain(e => e.Message.Contains("name"));
         }
     }
 
@@ -89,7 +89,7 @@ public class SaveItemShould
     {
         using (var container = new UnitTestContainer(this))
         {
-            var result = container.Send(new AddItemCommand("ss"));
+            var result = container.Send(new AddItemCommand("ssss"));
 
             result.IsSuccessful.Should().BeTrue();
 

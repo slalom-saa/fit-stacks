@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Runtime;
@@ -41,7 +42,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>Returns a task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception> 
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception> 
-        public async Task PublishAsync<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent
+        public void Publish<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent
         {
             Argument.NotNull(instance, nameof(instance));
             Argument.NotNull(context, nameof(context));
@@ -50,7 +51,7 @@ namespace Slalom.Stacks.Messaging
 
             foreach (var handler in target)
             {
-                await (Task)((dynamic)handler).HandleAsync((dynamic)instance);
+                ((Task) ((dynamic) handler).HandleAsync((dynamic) instance)).Wait();
             }
         }
     }

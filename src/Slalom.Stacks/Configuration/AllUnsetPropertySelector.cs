@@ -9,6 +9,8 @@ namespace Slalom.Stacks.Configuration
     /// <seealso cref="Autofac.Core.IPropertySelector" />
     public class AllUnsetPropertySelector : IPropertySelector
     {
+        public static readonly IPropertySelector Instance = new AllUnsetPropertySelector();
+
         /// <summary>
         /// Provides filtering to determine if property should be injected
         /// </summary>

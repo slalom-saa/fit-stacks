@@ -25,17 +25,17 @@ namespace Slalom.Stacks.ConsoleClient
         {
             ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator"), new Claim(ClaimTypes.Name, "user@example.com") }));
 
-            using (var container = new ApplicationContainer(typeof(AddItemCommand)))
+            using (var container = new Stack(typeof(AddItemCommand)))
             {
-                var result = await container.Commands.SendAsync("items/add", "{}");
+                var result = await container.SendAsync("items/add", "{}");
 
                 Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
 
-                result = await container.Commands.SendAsync("items/add", "{name:\"No\"}");
+                result = await container.SendAsync("items/add", "{name:\"No\"}");
 
                 Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
 
-                result = await container.Commands.SendAsync("items/add", "{name:\"Now\"}");
+                result = await container.SendAsync("items/add", "{name:\"Now\"}");
 
                 Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             }

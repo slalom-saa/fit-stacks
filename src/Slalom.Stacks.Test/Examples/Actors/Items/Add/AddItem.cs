@@ -20,8 +20,6 @@ namespace Slalom.Stacks.Test.Examples.Actors.Items.Add
 
             await this.Domain.AddAsync(target);
 
-            await Task.Delay(5);
-
             return new AddItemEvent(target);
         }
     }
