@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Domain;
@@ -11,56 +10,13 @@ using System.Linq;
 
 namespace Slalom.Stacks.TestStack
 {
-    public class Scenario
-    {
-        public Scenario()
-        {
-            ClaimsPrincipal.ClaimsPrincipalSelector = () => this.User;
-        }
-
-        public InMemoryEntityContext EntityContext { get; set; } = new InMemoryEntityContext();
-
-        public ClaimsPrincipal User { get; set; }
-
-        public Scenario WithUser(string userName, params string[] roles)
-        {
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, userName) };
-            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-            this.User = new ClaimsPrincipal(new ClaimsIdentity(claims));
-            return this;
-        }
-
-        public Scenario WithData(params IAggregateRoot[] items)
-        {
-            this.EntityContext.AddAsync(items).Wait();
-
-            return this;
-        }
-
-        public Scenario AsAdmin()
-        {
-            this.WithUser("admin@admin.com", "Administrator");
-
-            return this;
-        }
-    }
-    public class GivenAttribute : Attribute
-    {
-        public Type Name { get; }
-
-        public GivenAttribute(Type name)
-        {
-            this.Name = name;
-        }
-    }
-
-    public class UnitTestContainer : Stack, IHandleEvent
+    public class TestStack : Stack, IHandleEvent
     {
         public readonly List<IEvent> RaisedEvents = new List<IEvent>();
 
 
-        public UnitTestContainer(object instance = null, [CallerMemberName] string callerName = "")
-            : base(typeof(UnitTestContainer))
+        public TestStack(object instance = null, [CallerMemberName] string callerName = "")
+            : base(typeof(TestStack))
         {
             this.Use(builder =>
             {
@@ -93,7 +49,7 @@ namespace Slalom.Stacks.TestStack
 
         public void UseScenario(Scenario scenario)
         {
-            this.Container.Update(builder =>
+            this.Use(builder =>
             {
                 builder.RegisterInstance(scenario.EntityContext).As<IEntityContext>();
             });
@@ -101,7 +57,7 @@ namespace Slalom.Stacks.TestStack
 
         public void UseScenario(Type scenario)
         {
-            this.Container.Update(builder =>
+            this.Use(builder =>
             {
                 var instance = Activator.CreateInstance(scenario) as Scenario;
                 builder.RegisterInstance(instance.EntityContext).As<IEntityContext>();

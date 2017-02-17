@@ -44,7 +44,7 @@ public class SaveItemShould
     [Fact, Given(typeof(StateOneScenario))]
     public void A()
     {
-        using (var container = new UnitTestContainer(this))
+        using (var container = new TestStack(this))
         {
             var result = container.Send(new AddItemCommand("adsf"));
 
@@ -61,7 +61,7 @@ public class SaveItemShould
     [Fact]
     public void A2()
     {
-        using (var container = new UnitTestContainer(this))
+        using (var container = new TestStack(this))
         {
             var result = container.Send(new AddItemCommand(null));
 
@@ -74,7 +74,7 @@ public class SaveItemShould
     [Fact]
     public void A3()
     {
-        using (var container = new UnitTestContainer(this))
+        using (var container = new TestStack(this))
         {
             var result = container.Send(new AddItemCommand(""));
 
@@ -87,7 +87,7 @@ public class SaveItemShould
     [Fact, Given(typeof(StateOneScenario))]
     public void A4()
     {
-        using (var container = new UnitTestContainer(this))
+        using (var container = new TestStack(this))
         {
             var result = container.Send(new AddItemCommand("ssss"));
 
@@ -100,7 +100,7 @@ public class SaveItemShould
     [Fact]
     public void A5()
     {
-        using (var container = new UnitTestContainer(this))
+        using (var container = new TestStack(this))
         {
             var result = container.Send(new AddItemCommand("first"));
 
