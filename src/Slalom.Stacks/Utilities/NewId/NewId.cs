@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Slalom.Stacks.Utilities.NewId.NewIdFormatters;
 using Slalom.Stacks.Utilities.NewId.NewIdProviders;
@@ -66,6 +67,7 @@ namespace Slalom.Stacks.Utilities.NewId
             _d = d;
         }
         
+        [DebuggerNonUserCode]
         public NewId(int a, short b, short c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k)
         {
             _a = (f << 24) | (g << 16) | (h << 8) | i;

@@ -13,8 +13,6 @@ namespace Slalom.Stacks.TestStack.Examples.Search
         {
         }
 
-        public IDomainFacade Domain { get; set; }
-
         public override async Task RebuildIndexAsync()
         {
         }
