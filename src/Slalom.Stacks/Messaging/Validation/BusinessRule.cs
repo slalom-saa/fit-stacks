@@ -52,8 +52,11 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <param name="instance">The instance to validate.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        protected IEnumerable<ValidationError> Validate(TCommand instance)
+        /// <exception cref="System.NotImplementedException">Thrown when neither validate methods are implemented.</exception>
+        protected virtual IEnumerable<ValidationError> Validate(TCommand instance)
         {
+            Argument.NotNull(instance, nameof(instance));
+
             var result = this.ValidateAsync(instance).Result;
             if (result == null)
             {
@@ -63,6 +66,15 @@ namespace Slalom.Stacks.Messaging.Validation
         }
 
 
-        public abstract Task<ValidationError> ValidateAsync(TCommand instance);
+        /// <summary>
+        /// Validates the specified command instance.
+        /// </summary>
+        /// <param name="instance">The instance to validate.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        /// <exception cref="System.NotImplementedException">Thrown when neither validate methods are implemented.</exception>
+        public virtual Task<ValidationError> ValidateAsync(TCommand instance)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
