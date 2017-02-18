@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Search;
 
@@ -61,6 +62,12 @@ namespace Slalom.Stacks
         /// </summary>
         /// <value>The configured <see cref="ISearchFacade"/>.</value>
         public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
+
+        /// <summary>
+        /// Gets the configured <see cref="ILogger"/>.
+        /// </summary>
+        /// <value>The configured <see cref="ILogger"/>.</value>
+        public ILogger Logger => this.Container.Resolve<ILogger>();
 
         /// <summary>
         /// Gets the configured <see cref="IContainer"/>.
