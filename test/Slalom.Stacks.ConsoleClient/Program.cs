@@ -44,6 +44,7 @@ namespace Slalom.Stacks.ConsoleClient
             this.Name = name;
         }
     }
+    
 
     public class AddProductEvent : Event
     {
@@ -63,8 +64,16 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public Task AppendAsync(AuditEntry audit)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(audit, Formatting.Indented));
+            //Console.WriteLine(JsonConvert.SerializeObject(audit, Formatting.Indented));
             return Task.FromResult(0);
+        }
+    }
+
+    public class SendEmailOnProductAdded : UseCaseActor<ProductAddedEvent>
+    {
+        public override void Execute(ProductAddedEvent command)
+        {
+            Console.WriteLine("Sending mail.");
         }
     }
 
@@ -85,6 +94,7 @@ namespace Slalom.Stacks.ConsoleClient
 
                // Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
 
+                Console.WriteLine("Complete");
                 Console.ReadKey();
             }
         }

@@ -47,11 +47,12 @@ namespace Slalom.Stacks.Messaging
             Argument.NotNull(instance, nameof(instance));
             Argument.NotNull(context, nameof(context));
 
-            var target = _handers.GetOrAdd(instance.GetType(), key => _componentContext.ResolveAll(typeof(IHandleEvent<>).MakeGenericType(instance.GetType())).Union(_componentContext.ResolveAll(typeof(IHandleEvent))));
+            var target = _handers.GetOrAdd(instance.GetType(), key => _componentContext.ResolveAll(typeof(IHandle<>).MakeGenericType(instance.GetType())));
 
-            foreach (var handler in target)
+            foreach (IHandle handler in target)
             {
-                ((Task) ((dynamic) handler).HandleAsync((dynamic) instance)).Wait();
+                handler.SetContext(context);
+                handler.HandleAsync(instance).Wait();
             }
         }
     }
