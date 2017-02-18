@@ -17,6 +17,7 @@ namespace Slalom.Stacks.Logging
             instance.Use(builder =>
             {
                 builder.Register(c => new SimpleConsoleLogger())
+                    .PreserveExistingDefaults()
                     .SingleInstance()
                     .As<ILogger>();
             });
