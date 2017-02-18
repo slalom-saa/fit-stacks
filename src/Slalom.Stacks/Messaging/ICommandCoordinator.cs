@@ -14,7 +14,7 @@ namespace Slalom.Stacks.Messaging
         /// <param name="command">The command to send.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<CommandResult> SendAsync(ICommand command, TimeSpan? timeout = null);
+        Task<CommandResult> SendAsync(IMessage command, TimeSpan? timeout = null);
 
         /// <summary>
         /// Sends the specified command with the specified timeout.
@@ -23,7 +23,7 @@ namespace Slalom.Stacks.Messaging
         /// <param name="command">The command to send.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<CommandResult> SendAsync(string path, ICommand command, TimeSpan? timeout = null);
+        Task<CommandResult> SendAsync(string path, IMessage command, TimeSpan? timeout = null);
 
         /// <summary>
         /// Sends the specified command with the specified timeout.

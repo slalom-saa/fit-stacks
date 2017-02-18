@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <param name="command">The command.</param>
         /// <param name="result">The result.</param>
         /// <param name="context">The context.</param>
-        public RequestEntry(ICommand command, CommandResult result, ExecutionContext context)
+        public RequestEntry(IMessage command, CommandResult result, ExecutionContext context)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace Slalom.Stacks.Messaging.Logging
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
             this.IsSuccessful = result.IsSuccessful;
-            this.RequestName = command.CommandName;
+            this.RequestName = command.GetType().Name;
             this.RequestId = command.Id;
             this.TimeStamp = command.TimeStamp;
             this.ValidationErrors = result.ValidationErrors?.ToArray();

@@ -64,7 +64,7 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public Task AppendAsync(AuditEntry audit)
         {
-            //Console.WriteLine(JsonConvert.SerializeObject(audit, Formatting.Indented));
+            Console.WriteLine(audit.EventName);
             return Task.FromResult(0);
         }
     }
