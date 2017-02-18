@@ -16,6 +16,8 @@ namespace Slalom.Stacks.Messaging
     /// <seealso cref="Slalom.Stacks.Messaging.IHandle{TCommand}" />
     public abstract class UseCaseActor<TCommand, TResult> : IHandle<TCommand> where TCommand : ICommand
     {
+        private IDomainFacade _domain;
+
         /// <summary>
         /// Gets the current <see cref="ExecutionContext"/>.
         /// </summary>
@@ -26,7 +28,11 @@ namespace Slalom.Stacks.Messaging
         /// Gets the configured <see cref="IDomainFacade"/>.
         /// </summary>
         /// <value>The configured <see cref="IDomainFacade"/>.</value>
-        public IDomainFacade Domain { get; set; }
+        public IDomainFacade Domain
+        {
+            get { return _domain.SetContext(this.Context); }
+            set { _domain = value; }
+        }
 
         /// <summary>
         /// Gets the configured <see cref="ISearchFacade"/>.

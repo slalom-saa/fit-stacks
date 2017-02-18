@@ -4,11 +4,10 @@ using System.Reflection;
 using Autofac;
 using Slalom.Stacks.Caching;
 using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Reflection;
 using IComponentContext = Autofac.IComponentContext;
 using Module = Autofac.Module;
 
-namespace Slalom.Stacks.Domain
+namespace Slalom.Stacks.Domain.Modules
 {
     /// <summary>
     /// An Autofac module that wires up dependencies for the domain module.
@@ -46,7 +45,7 @@ namespace Slalom.Stacks.Domain
 
             builder.RegisterGeneric(typeof(Repository<>))
                    .As(typeof(IRepository<>))
-                   .PropertiesAutowired(AllUnsetPropertySelector.Instance)
+                   .PropertiesAutowired(AllProperties.Instance)
                    .SingleInstance();
         }
     }

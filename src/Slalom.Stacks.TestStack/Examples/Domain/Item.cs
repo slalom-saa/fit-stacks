@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.TestStack.Examples.Domain
@@ -22,6 +23,16 @@ namespace Slalom.Stacks.TestStack.Examples.Domain
         }
     }
 
+    public class ItemAddedEvent : Event
+    {
+        public string Name { get; }
+
+        public ItemAddedEvent(string name)
+        {
+            this.Name = name;
+        }
+    }
+
     public class Item : AggregateRoot
     {
         protected Item()
@@ -30,10 +41,12 @@ namespace Slalom.Stacks.TestStack.Examples.Domain
 
         public static Item Create(string text)
         {
-            return new Item
+            var target = new Item
             {
                 Name = text
             };
+            target.AddEvent(new ItemAddedEvent(text));
+            return target;
         }
 
         public ItemName Name { get; private set; }

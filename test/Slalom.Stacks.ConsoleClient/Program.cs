@@ -6,37 +6,86 @@ using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
+using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.TestStack.Examples.Actors.Items.Add;
+using Slalom.Stacks.TestStack.Examples.Domain;
 
 namespace Slalom.Stacks.ConsoleClient
 {
+    public class Product : AggregateRoot
+    {
+        public string Name { get; set; }
+
+        public Product(string name)
+        {
+            this.Name = name;
+            this.AddEvent(new ProductAddedEvent(this.Name));
+        }
+    }
+
+    public class ProductAddedEvent : Event
+    {
+        public string Name { get; }
+
+        public ProductAddedEvent(string name)
+        {
+            this.Name = name;
+        }
+    }
+
+    public class AddProductCommand : Command
+    {
+        public string Name { get; }
+
+        public AddProductCommand(string name)
+        {
+            this.Name = name;
+        }
+    }
+
+    public class AddProductEvent : Event
+    {
+    }
+
+    public class AddProduct : UseCaseActor<AddProductCommand, AddProductEvent>
+    {
+        public override async Task<AddProductEvent> ExecuteAsync(AddProductCommand command)
+        {
+            await this.Domain.AddAsync(new Product("name"));
+
+            return new AddProductEvent();
+        }
+    }
+
+    public class EventStore : IAuditStore
+    {
+        public Task AppendAsync(AuditEntry audit)
+        {
+            Console.WriteLine(JsonConvert.SerializeObject(audit, Formatting.Indented));
+            return Task.FromResult(0);
+        }
+    }
+
+
     public class Program
     {
         public static void Main(string[] args)
         {
-            Start();
-            Console.WriteLine("Running application.  Press any key to halt...");
-            Console.ReadKey();
-        }
-
-        public static async void Start()
-        {
-            ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator"), new Claim(ClaimTypes.Name, "user@example.com") }));
-
-            using (var container = new Stack(typeof(AddItemCommand)))
+            using (var stack = new Stack())
             {
-                var result = await container.SendAsync("items/add", "{}");
+                stack.AddMessagingTypes(typeof(Program));
+                stack.Use(builder =>
+                {
+                    builder.RegisterInstance(new EventStore()).As<IAuditStore>();
+                });
 
-                Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+                var result = stack.SendAsync(new AddProductCommand("name")).Result;
 
-                result = await container.SendAsync("items/add", "{name:\"No\"}");
+               // Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
 
-                Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-
-                result = await container.SendAsync("items/add", "{name:\"Now\"}");
-
-                Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+                Console.ReadKey();
             }
         }
     }

@@ -43,7 +43,7 @@ namespace Slalom.Stacks
 
             foreach (var item in target)
             {
-                instance.InjectProperties(item, AllUnsetPropertySelector.Instance);
+                instance.InjectProperties(item, AllProperties.Instance);
             }
 
             return target;

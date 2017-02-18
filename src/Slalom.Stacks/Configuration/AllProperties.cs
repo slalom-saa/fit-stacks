@@ -4,15 +4,15 @@ using Autofac.Core;
 namespace Slalom.Stacks.Configuration
 {
     /// <summary>
-    /// Used to select all unset properties.
+    /// Used to select all properties.
     /// </summary>
     /// <seealso cref="Autofac.Core.IPropertySelector" />
-    public class AllUnsetPropertySelector : IPropertySelector
+    internal class AllProperties : IPropertySelector
     {
         /// <summary>
         /// The shared instance of the selector.
         /// </summary>
-        public static readonly IPropertySelector Instance = new AllUnsetPropertySelector();
+        public static readonly IPropertySelector Instance = new AllProperties();
 
         /// <summary>
         /// Provides filtering to determine if property should be injected
@@ -22,7 +22,7 @@ namespace Slalom.Stacks.Configuration
         /// <returns>Whether property should be injected</returns>
         public bool InjectProperty(PropertyInfo propertyInfo, object instance)
         {
-            return propertyInfo.CanWrite && propertyInfo.GetValue(instance) == null;
+            return propertyInfo.CanWrite;
         }
     }
 }

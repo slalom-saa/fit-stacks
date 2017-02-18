@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.Domain
 {
@@ -10,9 +12,21 @@ namespace Slalom.Stacks.Domain
     public interface IAggregateRoot : IEntity
     {
         /// <summary>
+        /// Gets the raised events.
+        /// </summary>
+        /// <value>The raised events.</value>
+        IEnumerable<IEvent> Events { get; }
+
+        /// <summary>
         /// Gets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
         string Id { get; }
+
+        /// <summary>
+        /// Commits and returns the raised events.
+        /// </summary>
+        /// <returns>The events that were raised.</returns>
+        IEnumerable<IEvent> CommitEvents();
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Domain
 {
@@ -14,6 +15,13 @@ namespace Slalom.Stacks.Domain
     /// </summary>
     public interface IDomainFacade
     {
+        /// <summary>
+        /// Sets the execution context.
+        /// </summary>
+        /// <param name="context">The execution context.</param>
+        /// <returns>Returns the current instance for method chaining.</returns>
+        IDomainFacade SetContext(ExecutionContext context);
+
         /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
         /// item already exists.
