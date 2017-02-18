@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.Domain
 {
@@ -15,21 +14,6 @@ namespace Slalom.Stacks.Domain
         private readonly List<Event> _events = new List<Event>();
 
         /// <summary>
-        /// Gets the raised events.
-        /// </summary>
-        /// <value>The raised events.</value>
-        public IEnumerable<Event> Events => _events.AsEnumerable();
-
-        /// <summary>
-        /// Adds the event to the raised events.
-        /// </summary>
-        /// <param name="event">The event to add.</param>
-        protected void AddEvent(Event @event)
-        {
-            _events.Add(@event);
-        }
-
-        /// <summary>
         /// Commits and returns the raised events.
         /// </summary>
         /// <returns>The events that were raised.</returns>
@@ -38,6 +22,15 @@ namespace Slalom.Stacks.Domain
             var copy = _events.ToList();
             _events.Clear();
             return copy;
+        }
+
+        /// <summary>
+        /// Adds the event to the raised events.
+        /// </summary>
+        /// <param name="event">The event to add.</param>
+        protected void AddEvent(Event @event)
+        {
+            _events.Add(@event);
         }
     }
 }

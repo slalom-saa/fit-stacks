@@ -12,12 +12,6 @@ namespace Slalom.Stacks.Domain
     public interface IAggregateRoot : IEntity
     {
         /// <summary>
-        /// Gets the raised events.
-        /// </summary>
-        /// <value>The raised events.</value>
-        IEnumerable<Event> Events { get; }
-
-        /// <summary>
         /// Gets the identifier.
         /// </summary>
         /// <value>The identifier.</value>

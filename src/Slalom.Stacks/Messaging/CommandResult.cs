@@ -25,6 +25,12 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <summary>
+        /// Gets the actor that handled the message.
+        /// </summary>
+        /// <value>The actor that handled the message.</value>
+        public string Actor { get; internal set; }
+
+        /// <summary>
         /// Gets or sets the date and time completed.
         /// </summary>
         /// <value>The date and time completed.</value>
@@ -49,6 +55,12 @@ namespace Slalom.Stacks.Messaging
         public bool IsSuccessful => !_validationErrors.Any() && this.RaisedException == null;
 
         /// <summary>
+        /// Gets the parent message ID.
+        /// </summary>
+        /// <value>The parent message ID.</value>
+        public string Parent { get; internal set; }
+
+        /// <summary>
         /// Gets the raised exception if any.
         /// </summary>
         /// <value>The raised exception.</value>
@@ -57,7 +69,7 @@ namespace Slalom.Stacks.Messaging
         /// <summary>
         /// Gets the actor response.
         /// </summary>
-        public object Response { get; private set; }
+        public object Response { get; internal set; }
 
         /// <summary>
         /// Gets or sets the date and time started.
@@ -72,27 +84,12 @@ namespace Slalom.Stacks.Messaging
         public IEnumerable<ValidationError> ValidationErrors => _validationErrors.AsEnumerable();
 
         /// <summary>
-        /// Gets the parent message ID.
-        /// </summary>
-        /// <value>The parent message ID.</value>
-        public string Parent { get; internal set; }
-
-        /// <summary>
         /// Adds the exception to the raised exceptions.
         /// </summary>
         /// <param name="exception">The exception to add.</param>
         public void AddException(Exception exception)
         {
             this.RaisedException = exception;
-        }
-
-        /// <summary>
-        /// Adds the specified response.
-        /// </summary>
-        /// <param name="response">The response to add.</param>
-        public void AddResponse(object response)
-        {
-            this.Response = response;
         }
 
         /// <summary>

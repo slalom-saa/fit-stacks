@@ -6,8 +6,10 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Utilities.NewId;
 using Slalom.Stacks.Validation;
+using IMessage = Slalom.Stacks.Messaging.IMessage;
 
 #if !core
 using System.Runtime.Remoting.Messaging;

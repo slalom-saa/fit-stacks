@@ -35,13 +35,16 @@ namespace Slalom.Stacks.Messaging.Modules
         {
             base.Load(builder);
 
-            builder.Register(c => new CommandCoordinator(c.Resolve<IComponentContext>()))
-                   .As<ICommandCoordinator>()
+            builder.Register(c => new ActorController(c.Resolve<IComponentContext>()))
+                   .AsSelf()
                    .SingleInstance();
 
-            builder.Register(c => new EventStream(c.Resolve<IComponentContext>()))
+            builder.Register(c => new MessageRouter(c.Resolve<IComponentContext>(), _assemblies))
+                   .AsSelf()
+                   .As<IMessageRouter>()
                    .As<IEventStream>()
                    .SingleInstance();
+
 
             builder.RegisterGeneric(typeof(CommandValidator<>));
 

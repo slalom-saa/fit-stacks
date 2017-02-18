@@ -34,7 +34,6 @@ namespace Slalom.Stacks.Messaging.Logging
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
             this.IsSuccessful = result.IsSuccessful;
-            this.RequestName = command.GetType().Name;
             this.RequestId = command.Id;
             this.TimeStamp = command.TimeStamp;
             this.ValidationErrors = result.ValidationErrors?.ToArray();
@@ -51,8 +50,10 @@ namespace Slalom.Stacks.Messaging.Logging
             this.Elapsed = result.Elapsed;
             this.Started = result.Started;
             this.Completed = result.Completed;
-            this.Parent = context.Parent;
+            this.Actor = result.Actor;
         }
+
+        public string Actor { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the application.
@@ -125,12 +126,6 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <value>The request identifier.</value>
         public string RequestId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the request.
-        /// </summary>
-        /// <value>The name of the request.</value>
-        public string RequestName { get; set; }
 
         /// <summary>
         /// Gets or sets the session identifier.

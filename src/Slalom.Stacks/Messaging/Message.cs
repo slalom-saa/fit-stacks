@@ -11,14 +11,14 @@ namespace Slalom.Stacks.Messaging
         /// Gets the message type.
         /// </summary>
         /// <value>The type.</value>
-        public Type Type { get; }
+        Type IMessage.Type { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Message"/> class.
         /// </summary>
         protected Message()
         {
-            this.Type = this.GetType();
+            ((IMessage)this).Type = this.GetType();
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The message time stamp.</value>
         public DateTimeOffset TimeStamp { get; } = DateTimeOffset.Now;
-  
+
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
         /// </summary>

@@ -82,7 +82,7 @@ namespace Slalom.Stacks
         /// <returns>A task for asynchronous programming.</returns>
         public Task<CommandResult> SendAsync(IMessage command, TimeSpan? timeout = null)
         {
-            return this.Container.Resolve<ICommandCoordinator>().SendAsync(command, timeout);
+            return this.Container.Resolve<IMessageRouter>().Send(command, timeout);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Slalom.Stacks
         /// <returns>A task for asynchronous programming.</returns>
         public Task<CommandResult> SendAsync(string path, IMessage command, TimeSpan? timeout = null)
         {
-            return this.Container.Resolve<ICommandCoordinator>().SendAsync(path, command, timeout);
+            return this.Container.Resolve<IMessageRouter>().Send(path, command, timeout);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Slalom.Stacks
         /// <returns>A task for asynchronous programming.</returns>
         public Task<CommandResult> SendAsync(string path, string command, TimeSpan? timeout = null)
         {
-            return this.Container.Resolve<ICommandCoordinator>().SendAsync(path, command, timeout);
+            return this.Container.Resolve<IMessageRouter>().Send(path, command, timeout);
         }
 
         #region IDisposable Implementation
@@ -155,5 +155,16 @@ namespace Slalom.Stacks
         }
 
         #endregion
+
+        /// <summary>
+        /// Sends the specified command with the specified timeout.
+        /// </summary>
+        /// <param name="path">The request path.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<CommandResult> SendAsync(string path, TimeSpan? timeout = null)
+        {
+            return this.Container.Resolve<IMessageRouter>().Send(path, timeout);
+        }
     }
 }

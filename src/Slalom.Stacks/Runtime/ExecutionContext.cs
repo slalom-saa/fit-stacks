@@ -128,12 +128,6 @@ namespace Slalom.Stacks.Runtime
         public ClaimsPrincipal User { get; }
 
         /// <summary>
-        /// Gets the request parent.
-        /// </summary>
-        /// <value>The request parent.</value>
-        public string Parent { get; internal set; }
-
-        /// <summary>
         /// Adds an additional raised event to the context that will be published on successful completion.
         /// </summary>
         /// <param name="instance">The event to raise.</param>

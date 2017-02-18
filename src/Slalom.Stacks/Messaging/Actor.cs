@@ -13,7 +13,7 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     /// <typeparam name="TCommand">The type of command.</typeparam>
     /// <seealso cref="Slalom.Stacks.Messaging.IHandle{TCommand}" />
-    public abstract class UseCaseActor<TCommand> : IHandle<TCommand>
+    public abstract class Actor<TCommand> : IHandle<TCommand>
     {
         private IDomainFacade _domain;
 
@@ -104,7 +104,7 @@ namespace Slalom.Stacks.Messaging
     /// <typeparam name="TCommand">The type of command.</typeparam>
     /// <typeparam name="TResult">The type of result.</typeparam>
     /// <seealso cref="Slalom.Stacks.Messaging.IHandle{TCommand}" />
-    public abstract class UseCaseActor<TCommand, TResult> : IHandle<TCommand> where TCommand : IMessage
+    public abstract class Actor<TCommand, TResult> : IHandle<TCommand> where TCommand : IMessage
     {
         private IDomainFacade _domain;
 

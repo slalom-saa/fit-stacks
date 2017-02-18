@@ -11,6 +11,7 @@ using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.TestStack.Examples.Actors.Items.Add;
 using Slalom.Stacks.TestStack.Examples.Domain;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient
 {
@@ -37,6 +38,7 @@ namespace Slalom.Stacks.ConsoleClient
 
     public class AddProductCommand : Message
     {
+        [NotNull("no")]
         public string Name { get; }
 
         public AddProductCommand(string name)
@@ -50,13 +52,16 @@ namespace Slalom.Stacks.ConsoleClient
     {
     }
 
-    public class AddProduct : UseCaseActor<AddProductCommand, AddProductEvent>
+    [Path("products/add")]
+    public class AddProduct : Actor<AddProductCommand, Product>
     {
-        public override async Task<AddProductEvent> ExecuteAsync(AddProductCommand command)
+        public override async Task<Product> ExecuteAsync(AddProductCommand command)
         {
-            await this.Domain.AddAsync(new Product("name"));
+            var target = new Product("name");
 
-            return new AddProductEvent();
+            await this.Domain.AddAsync(target);
+
+            return target;
         }
     }
 
@@ -64,7 +69,7 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public Task AppendAsync(EventEntry entry)
         {
-            Console.WriteLine(entry.EventName);
+            //Console.WriteLine(JsonConvert.SerializeObject(entry, Formatting.Indented));
 
             return Task.FromResult(0);
         }
@@ -74,13 +79,13 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public Task AppendAsync(RequestEntry entry)
         {
-            Console.WriteLine(entry.Parent);
+            Console.WriteLine(JsonConvert.SerializeObject(entry, Formatting.Indented));
 
             return Task.FromResult(0);
         }
     }
 
-    public class SendEmailOnProductAdded : UseCaseActor<ProductAddedEvent>
+    public class SendEmailOnProductAdded : Actor<ProductAddedEvent>
     {
         public override void Execute(ProductAddedEvent command)
         {
@@ -88,7 +93,7 @@ namespace Slalom.Stacks.ConsoleClient
         }
     }
 
-    public class SendOtherOnProductAdded : UseCaseActor<ProductAddedEvent>
+    public class SendOtherOnProductAdded : Actor<ProductAddedEvent>
     {
         public override void Execute(ProductAddedEvent command)
         {
@@ -101,18 +106,17 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public static void Main(string[] args)
         {
-            using (var stack = new Stack())
+            using (var stack = new Stack(typeof(Program)))
             {
-                stack.AddMessagingTypes(typeof(Program));
                 stack.Use(builder =>
                 {
                     builder.RegisterInstance(new EventStore()).As<IEventStore>();
                     builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
                 });
 
-                var result = stack.SendAsync(new AddProductCommand("name")).Result;
+                var result = stack.SendAsync("products/add", new AddProductCommand("banme")).Result;
 
-               // Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+                //Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
 
                 Console.WriteLine("Complete");
                 Console.ReadKey();

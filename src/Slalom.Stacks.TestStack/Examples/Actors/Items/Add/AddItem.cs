@@ -6,7 +6,7 @@ using Slalom.Stacks.TestStack.Examples.Domain;
 namespace Slalom.Stacks.TestStack.Examples.Actors.Items.Add
 {
     [Path("items/add")]
-    public class AddItem : UseCaseActor<AddItemCommand, AddItemEvent>
+    public class AddItem : Actor<AddItemCommand, AddItemEvent>
     {
         public override async Task<AddItemEvent> ExecuteAsync(AddItemCommand command)
         {
