@@ -80,7 +80,7 @@ namespace Slalom.Stacks
         /// <param name="command">The command to send.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<CommandResult> SendAsync(ICommand command, TimeSpan? timeout = null)
+        public Task<CommandResult> SendAsync(IMessage command, TimeSpan? timeout = null)
         {
             return this.Container.Resolve<ICommandCoordinator>().SendAsync(command, timeout);
         }
@@ -92,7 +92,7 @@ namespace Slalom.Stacks
         /// <param name="command">The command to send.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<CommandResult> SendAsync(string path, ICommand command, TimeSpan? timeout = null)
+        public Task<CommandResult> SendAsync(string path, IMessage command, TimeSpan? timeout = null)
         {
             return this.Container.Resolve<ICommandCoordinator>().SendAsync(path, command, timeout);
         }

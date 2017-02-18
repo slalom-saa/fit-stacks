@@ -4,7 +4,7 @@ using Slalom.Stacks.Messaging;
 namespace Slalom.Stacks.TestStack.Examples.Actors.Items.Search
 {
     [Request("Search Items")]
-    public class SearchItemsCommand : Command
+    public class SearchItemsCommand : Message
     {
         public SearchItemsCommand()
         {

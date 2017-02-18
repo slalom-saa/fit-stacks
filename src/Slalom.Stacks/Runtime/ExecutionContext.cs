@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Newtonsoft.Json;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Validation;
@@ -15,7 +16,7 @@ namespace Slalom.Stacks.Runtime
     /// </summary>
     public class ExecutionContext
     {
-        private readonly List<IEvent> _raisedEvents = new List<IEvent>();
+        private readonly List<Event> _raisedEvents = new List<Event>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExecutionContext"/> class.
@@ -93,13 +94,13 @@ namespace Slalom.Stacks.Runtime
         /// Gets the path.
         /// </summary>
         /// <value>The path.</value>
-        public string Path { get; private set; }
+        public string Path { get; internal set; }
 
         /// <summary>
         /// Gets the additional events that were raised during execution.
         /// </summary>
         /// <value>The additional events that were raised during execution.</value>
-        public IEnumerable<IEvent> RaisedEvents => _raisedEvents.AsEnumerable();
+        public IEnumerable<Event> RaisedEvents => _raisedEvents.AsEnumerable();
 
         /// <summary>
         /// Gets the user's session identifier.
@@ -127,20 +128,21 @@ namespace Slalom.Stacks.Runtime
         public ClaimsPrincipal User { get; }
 
         /// <summary>
+        /// Gets the request parent.
+        /// </summary>
+        /// <value>The request parent.</value>
+        public string Parent { get; internal set; }
+
+        /// <summary>
         /// Adds an additional raised event to the context that will be published on successful completion.
         /// </summary>
         /// <param name="instance">The event to raise.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        public void AddRaisedEvent(IEvent instance)
+        public void AddRaisedEvent(Event instance)
         {
             Argument.NotNull(instance, nameof(instance));
 
             _raisedEvents.Add(instance);
-        }
-
-        internal void SetPath(string path)
-        {
-            this.Path = path;
         }
     }
 }

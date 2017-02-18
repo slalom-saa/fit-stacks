@@ -25,16 +25,6 @@ namespace Slalom.Stacks.Messaging.Modules
         {
             base.Load(builder);
 
-            builder.RegisterAssemblyTypes(this._assemblies)
-                  .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandleEvent<>)))
-                  .AsImplementedInterfaces()
-                  .SingleInstance();
-
-            builder.RegisterAssemblyTypes(_assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandleEvent)))
-                   .AsImplementedInterfaces()
-                   .SingleInstance();
-
             builder.RegisterAssemblyTypes(_assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>)))
                    .As(instance => instance.GetBaseAndContractTypes())

@@ -2,15 +2,15 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Utilities.NewId;
 
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Domain
 {
     /// <summary>
     /// An event that is raised when state changes within a particular domain.
     /// </summary>
-    public abstract class Event : IEvent
+    public abstract class Event : Message
     {
         private readonly Lazy<EventAttribute> _attribute;
         private TypeInfo _type;
@@ -28,25 +28,19 @@ namespace Slalom.Stacks.Messaging
         /// Gets the event ID.
         /// </summary>
         /// <value>The event ID.</value>
-        string IMessage.Id { get; } = NewId.NextId();
+        public string Id { get; } = NewId.NextId();
 
         /// <summary>
         /// Gets the name of the event.
         /// </summary>
         /// <value>The name of the event.</value>
-        string IEvent.EventName => this.GetEventName();
+        public string EventName => this.GetEventName();
 
         /// <summary>
         /// Gets the event identifier that is used to classify the event.
         /// </summary>
         /// <value>The event identifier that is used to classify the event.</value>
-        int IEvent.EventTypeId => this.GetEventTypeId();
-
-        /// <summary>
-        /// Gets the time stamp of when the event was created.
-        /// </summary>
-        /// <value>The time stamp of when the event was created.</value>
-        DateTimeOffset IMessage.TimeStamp { get; } = DateTime.Now;
+        public int EventTypeId => this.GetEventTypeId();
 
         private string GetEventName()
         {

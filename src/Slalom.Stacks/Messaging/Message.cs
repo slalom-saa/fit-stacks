@@ -5,24 +5,20 @@ using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Messaging
 {
-    /// <summary>
-    /// An imperative message to perform an action.  It can either request to change state, which returns an event message, 
-    /// or can request data, which returns a document message.
-    /// </summary>
-    /// <seealso cref="ICommand" />
-    /// <seealso href="http://bit.ly/2d01rc7">Reactive Messaging Patterns with the Actor Model: Applications and Integration in Scala and Akka</seealso>
-    public abstract class Command : ICommand
+    public abstract class Message : IMessage
     {
-        private readonly Lazy<RequestAttribute> _attribute;
-        private readonly Type _type;
+        /// <summary>
+        /// Gets the message type.
+        /// </summary>
+        /// <value>The type.</value>
+        public Type Type { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Command"/> class.
+        /// Initializes a new instance of the <see cref="Message"/> class.
         /// </summary>
-        protected Command()
+        protected Message()
         {
-            _type = this.GetType();
-            _attribute = new Lazy<RequestAttribute>(() => _type.GetTypeInfo().GetCustomAttributes<RequestAttribute>().FirstOrDefault());
+            this.Type = this.GetType();
         }
 
         /// <summary>
@@ -35,20 +31,8 @@ namespace Slalom.Stacks.Messaging
         /// Gets the message time stamp.
         /// </summary>
         /// <value>The message time stamp.</value>
-        DateTimeOffset IMessage.TimeStamp { get; } = DateTimeOffset.Now;
-
-        /// <summary>
-        /// Gets the command type.
-        /// </summary>
-        /// <value>The command type.</value>
-        Type ICommand.Type => _type;
-
-        /// <summary>
-        /// Gets the command name.
-        /// </summary>
-        /// <value>The command name.</value>
-        string ICommand.CommandName => this.GetCommandName();
-
+        public DateTimeOffset TimeStamp { get; } = DateTimeOffset.Now;
+  
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
         /// </summary>
@@ -71,7 +55,7 @@ namespace Slalom.Stacks.Messaging
                 return false;
             }
 
-            return this.Equals((Command)obj);
+            return this.Equals((Message)obj);
         }
 
         /// <summary>
@@ -88,14 +72,9 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <param name="other">The object to compare with the current object.</param>
         /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-        protected bool Equals(Command other)
+        protected bool Equals(Message other)
         {
             return ((IMessage)this).Id.Equals(((IMessage)other).Id);
-        }
-
-        private string GetCommandName()
-        {
-            return _attribute.Value?.Name ?? _type.Name;
         }
     }
 }

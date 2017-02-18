@@ -104,7 +104,7 @@ namespace Slalom.Stacks.Messaging
     /// <typeparam name="TCommand">The type of command.</typeparam>
     /// <typeparam name="TResult">The type of result.</typeparam>
     /// <seealso cref="Slalom.Stacks.Messaging.IHandle{TCommand}" />
-    public abstract class UseCaseActor<TCommand, TResult> : IHandle<TCommand> where TCommand : ICommand
+    public abstract class UseCaseActor<TCommand, TResult> : IHandle<TCommand> where TCommand : IMessage
     {
         private IDomainFacade _domain;
 

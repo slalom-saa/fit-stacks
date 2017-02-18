@@ -10,9 +10,9 @@ using System.Linq;
 
 namespace Slalom.Stacks.TestStack
 {
-    public class TestStack : Stack, IHandleEvent
+    public class TestStack : Stack
     {
-        public readonly List<IEvent> RaisedEvents = new List<IEvent>();
+        public readonly List<Event> RaisedEvents = new List<Event>();
 
 
         public TestStack(object instance = null, [CallerMemberName] string callerName = "")
@@ -20,7 +20,7 @@ namespace Slalom.Stacks.TestStack
         {
             this.Use(builder =>
             {
-                builder.RegisterInstance(this).As<IHandleEvent>();
+             //   builder.RegisterInstance(this).As<IHandleEvent>();
             });
 
             if (instance != null && callerName != null)
@@ -35,14 +35,14 @@ namespace Slalom.Stacks.TestStack
             }
         }
 
-        public Task HandleAsync(IEvent instance)
+        public Task HandleAsync(Event instance)
         {
             RaisedEvents.Add(instance);
 
             return Task.FromResult(0);
         }
 
-        public CommandResult Send(ICommand command)
+        public CommandResult Send(IMessage command)
         {
             return SendAsync(command).Result;
         }

@@ -5,15 +5,15 @@ using Slalom.Stacks.Runtime;
 namespace Slalom.Stacks.Messaging.Logging
 {
     /// <summary>
-    /// Defines a contract for storing audits.
+    /// Defines a contract for storing events.
     /// </summary>
-    public interface IAuditStore
+    public interface IEventStore
     {
         /// <summary>
-        /// Appends an audit with the specified execution elements.
+        /// Appends an event with the specified execution elements.
         /// </summary>
-        /// <param name="audit">The audit entry to append.</param>
+        /// <param name="entry">The event entry to append.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task AppendAsync(AuditEntry audit);
+        Task AppendAsync(EventEntry entry);
     }
 }

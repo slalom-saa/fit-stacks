@@ -14,7 +14,7 @@ namespace Slalom.Stacks.Messaging.Validation
     /// </summary>
     /// <typeparam name="TCommand">The command type.</typeparam>
     /// <seealso cref="IBusinessValidationRule{TCommand}" />
-    public abstract class BusinessRule<TCommand> : IBusinessValidationRule<TCommand> where TCommand : ICommand
+    public abstract class BusinessRule<TCommand> : IBusinessValidationRule<TCommand> where TCommand : IMessage
     {
         /// <summary>
         /// Gets the execution context.

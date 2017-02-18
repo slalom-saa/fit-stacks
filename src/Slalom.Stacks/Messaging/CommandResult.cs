@@ -72,6 +72,12 @@ namespace Slalom.Stacks.Messaging
         public IEnumerable<ValidationError> ValidationErrors => _validationErrors.AsEnumerable();
 
         /// <summary>
+        /// Gets the parent message ID.
+        /// </summary>
+        /// <value>The parent message ID.</value>
+        public string Parent { get; internal set; }
+
+        /// <summary>
         /// Adds the exception to the raised exceptions.
         /// </summary>
         /// <param name="exception">The exception to add.</param>

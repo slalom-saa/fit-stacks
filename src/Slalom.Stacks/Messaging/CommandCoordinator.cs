@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
@@ -25,7 +26,7 @@ namespace Slalom.Stacks.Messaging
     /// <seealso cref="ICommandCoordinator" />
     public class CommandCoordinator : ICommandCoordinator
     {
-        private readonly Lazy<IEnumerable<IAuditStore>> _audits;
+        private readonly Lazy<IEnumerable<IEventStore>> _audits;
         private readonly ReaderWriterLockSlim _validatorsLock = new ReaderWriterLockSlim();
         private readonly IComponentContext _context;
         private readonly ConcurrentDictionary<Type, IEnumerable<object>> _handlers = new ConcurrentDictionary<Type, IEnumerable<object>>();
@@ -47,7 +48,7 @@ namespace Slalom.Stacks.Messaging
             _context = context;
             _logger = new Lazy<ILogger>(() => _context.Resolve<ILogger>());
             _publisher = new Lazy<IEventStream>(() => _context.Resolve<IEventStream>());
-            _audits = new Lazy<IEnumerable<IAuditStore>>(() => _context.ResolveAll<IAuditStore>());
+            _audits = new Lazy<IEnumerable<IEventStore>>(() => _context.ResolveAll<IEventStore>());
             _requests = new Lazy<IEnumerable<IRequestStore>>(() => _context.ResolveAll<IRequestStore>());
             _contextResolver = new Lazy<IExecutionContextResolver>(() => _context.Resolve<IExecutionContextResolver>());
         }
@@ -64,24 +65,31 @@ namespace Slalom.Stacks.Messaging
             return this.SendAsync(null, command, timeout);
         }
 
+        public Task<CommandResult> SendAsync(string path, IMessage command, TimeSpan? timeout = null)
+        {
+            return this.SendAsync(path, command, null, null);
+        }
+
         /// <summary>
         /// Handles the command, progressing it through the stages of the pipeline.
         /// </summary>
+        /// <param name="path">The path.</param>
         /// <param name="command">The command to handle.</param>
-        /// <param name="path"></param>
+        /// <param name="context">The context.</param>
         /// <param name="timeout">The timeout period.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
-        public async Task<CommandResult> SendAsync(string path, IMessage command, TimeSpan? timeout = null)
+        public async Task<CommandResult> SendAsync(string path, IMessage command, ExecutionContext context = null, TimeSpan? timeout = null)
         {
             Argument.NotNull(command, nameof(command));
 
             _logger.Value.Verbose("Starting execution for " + command.GetType().Name + " at \"{Path}\". {@Command}", path, command);
 
             // get the context
-            var context = _contextResolver.Value.Resolve();
-
-            context.SetPath(path);
+            context = context ?? _contextResolver.Value.Resolve();
+            context.Path = context.Path ?? path;
+            context.Parent = context.Parent ?? command.Id;
+            var events = context.RaisedEvents;
 
             // create the result
             var result = new CommandResult(context);
@@ -89,9 +97,9 @@ namespace Slalom.Stacks.Messaging
             try
             {
                 // validate the command
-                if (command is ICommand)
+                if (command is IMessage)
                 {
-                    await this.ValidateCommand((ICommand)command, result, context);
+                    await this.ValidateCommand((IMessage)command, result, context);
                 }
 
                 if (!result.ValidationErrors.Any())
@@ -101,7 +109,7 @@ namespace Slalom.Stacks.Messaging
                 }
 
                 // publish all events
-                this.PublishEvents(context);
+                this.PublishEvents(context.RaisedEvents.Except(events), context);
             }
             catch (Exception exception)
             {
@@ -152,7 +160,7 @@ namespace Slalom.Stacks.Messaging
             }
             foreach (var instance in context.RaisedEvents)
             {
-                tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new AuditEntry(instance, context))));
+                tasks.AddRange(_audits.Value.Select(e => e.AppendAsync(new EventEntry(instance, context))));
             }
 
             return Task.WhenAll(tasks);
@@ -172,30 +180,28 @@ namespace Slalom.Stacks.Messaging
         protected virtual async Task ExecuteHandler(IMessage command, string path, CommandResult result, ExecutionContext context)
         {
             var handlers = _context.ResolveAll(typeof(IHandle<>).MakeGenericType(command.GetType())).ToList();
-            IHandle handler;
             if (String.IsNullOrWhiteSpace(path))
             {
-                handler = (IHandle)handlers.FirstOrDefault(e => !e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any()) ??
-                          (IHandle)handlers.FirstOrDefault();
+                handlers = handlers.Where(e => !e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any()).ToList();
             }
             else
             {
-                handler = (IHandle)handlers.FirstOrDefault(e => e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path));
-                if (handler == null && handlers.Count() == 1)
-                {
-                    handler = (IHandle)handlers.FirstOrDefault();
-                }
+                handlers = handlers.Where(e => e.GetType().GetTypeInfo().GetCustomAttributes<PathAttribute>().Any(x => x.Path == path)).ToList();
             }
-            if (handler == null)
+            if (!handlers.Any())
             {
                 throw new InvalidOperationException($"The actor could be found for {command.GetType().Name} at \"{path}\".");
             }
 
-            handler.SetContext(context);
+            foreach (IHandle instance in handlers)
+            {
+                instance.SetContext(context);
 
-            var response = await handler.HandleAsync(command);
+                var response = await instance.HandleAsync(command);
 
-            result.AddResponse(response);
+                result.AddResponse(response);
+            }
+            
         }
 
         /// <summary>
@@ -245,21 +251,22 @@ namespace Slalom.Stacks.Messaging
         /// <summary>
         /// The event publishing stage of the pipeline.
         /// </summary>
-        /// <param name="context">The current execution context.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        protected virtual void PublishEvents(ExecutionContext context)
+        /// <param name="events">The current execution context.</param>
+        /// <param name="context">The context.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="events" /> argument is null.</exception>
+        protected virtual void PublishEvents(IEnumerable<Event> events, ExecutionContext context)
         {
-            Argument.NotNull(context, nameof(context));
+            Argument.NotNull(events, nameof(events));
 
-            foreach (var item in context.RaisedEvents)
+            foreach (var item in events)
             {
                 try
                 {
-                    this.SendAsync(item).Wait();
+                    this.SendAsync(null, item, context, null).Wait();
                 }
                 catch (Exception exception)
                 {
-                    _logger.Value.Error(exception, "An unhandled exception was raised while raising " + item.EventName + ": {@Event} {@Context}", item, context);
+                    _logger.Value.Error(exception, "An unhandled exception was raised while publishing " + item.EventName + ": {@Event} {@Context}", item, events);
                 }
             }
         }
@@ -273,7 +280,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context" /> argument is null.</exception>
-        protected async Task ValidateCommand(ICommand command, CommandResult result, ExecutionContext context)
+        protected async Task ValidateCommand(IMessage command, CommandResult result, ExecutionContext context)
         {
             ICommandValidator target;
             if (!_validators.TryGetValue(command.GetType(), out target))
@@ -319,7 +326,7 @@ namespace Slalom.Stacks.Messaging
 
             var commandType = actors.First().GetTypeInfo().BaseType.GetGenericArguments()[0];
 
-            var instance = (ICommand)JsonConvert.DeserializeObject(!string.IsNullOrWhiteSpace(command) ? command : "{}", commandType);
+            var instance = (IMessage)JsonConvert.DeserializeObject(!string.IsNullOrWhiteSpace(command) ? command : "{}", commandType);
 
             return this.SendAsync(path, instance, timeout);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Runtime;
@@ -9,17 +10,17 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Logging
 {
     /// <summary>
-    /// Represents an audit log entry, or information about an event that changed state.
+    /// Represents an event log entry, or information about an event that changed state.
     /// </summary>
-    public class AuditEntry
+    public class EventEntry
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuditEntry" /> class.
+        /// Initializes a new instance of the <see cref="EventEntry" /> class.
         /// </summary>
         /// <param name="instance">The event.</param>
         /// <param name="context">The current context.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
-        public AuditEntry(IEvent instance, ExecutionContext context)
+        public EventEntry(Event instance, ExecutionContext context)
         {
             Argument.NotNull(instance, nameof(instance));
 

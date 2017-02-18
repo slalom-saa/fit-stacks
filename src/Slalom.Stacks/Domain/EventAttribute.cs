@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Domain
 {
     /// <summary>
     /// Defines information about an Event.

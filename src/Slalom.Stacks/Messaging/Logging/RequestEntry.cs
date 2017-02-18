@@ -51,6 +51,7 @@ namespace Slalom.Stacks.Messaging.Logging
             this.Elapsed = result.Elapsed;
             this.Started = result.Started;
             this.Completed = result.Completed;
+            this.Parent = context.Parent;
         }
 
         /// <summary>
@@ -172,5 +173,11 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <value>The validation errors.</value>
         public IEnumerable<ValidationError> ValidationErrors { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parent ID.
+        /// </summary>
+        /// <value>The parent ID.</value>
+        public string Parent { get; set; }
     }
 }

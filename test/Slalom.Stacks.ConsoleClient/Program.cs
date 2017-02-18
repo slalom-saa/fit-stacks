@@ -35,7 +35,7 @@ namespace Slalom.Stacks.ConsoleClient
         }
     }
 
-    public class AddProductCommand : Command
+    public class AddProductCommand : Message
     {
         public string Name { get; }
 
@@ -60,11 +60,22 @@ namespace Slalom.Stacks.ConsoleClient
         }
     }
 
-    public class EventStore : IAuditStore
+    public class EventStore : IEventStore
     {
-        public Task AppendAsync(AuditEntry audit)
+        public Task AppendAsync(EventEntry entry)
         {
-            Console.WriteLine(audit.EventName);
+            Console.WriteLine(entry.EventName);
+
+            return Task.FromResult(0);
+        }
+    }
+
+    public class RequestStore : IRequestStore
+    {
+        public Task AppendAsync(RequestEntry entry)
+        {
+            Console.WriteLine(entry.Parent);
+
             return Task.FromResult(0);
         }
     }
@@ -73,7 +84,15 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public override void Execute(ProductAddedEvent command)
         {
-            Console.WriteLine("Sending mail.");
+            //Console.WriteLine("Sending mail.");
+        }
+    }
+
+    public class SendOtherOnProductAdded : UseCaseActor<ProductAddedEvent>
+    {
+        public override void Execute(ProductAddedEvent command)
+        {
+            //Console.WriteLine("Sending other.");
         }
     }
 
@@ -87,7 +106,8 @@ namespace Slalom.Stacks.ConsoleClient
                 stack.AddMessagingTypes(typeof(Program));
                 stack.Use(builder =>
                 {
-                    builder.RegisterInstance(new EventStore()).As<IAuditStore>();
+                    builder.RegisterInstance(new EventStore()).As<IEventStore>();
+                    builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
                 });
 
                 var result = stack.SendAsync(new AddProductCommand("name")).Result;

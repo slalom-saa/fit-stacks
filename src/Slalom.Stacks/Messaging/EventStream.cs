@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
@@ -42,7 +43,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>Returns a task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception> 
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception> 
-        public void Publish<TEvent>(TEvent instance, ExecutionContext context) where TEvent : IEvent
+        public void Publish<TEvent>(TEvent instance, ExecutionContext context) where TEvent : Event
         {
             Argument.NotNull(instance, nameof(instance));
             Argument.NotNull(context, nameof(context));

@@ -15,7 +15,7 @@ namespace Slalom.Stacks.Domain
         /// Gets the raised events.
         /// </summary>
         /// <value>The raised events.</value>
-        IEnumerable<IEvent> Events { get; }
+        IEnumerable<Event> Events { get; }
 
         /// <summary>
         /// Gets the identifier.
@@ -27,6 +27,6 @@ namespace Slalom.Stacks.Domain
         /// Commits and returns the raised events.
         /// </summary>
         /// <returns>The events that were raised.</returns>
-        IEnumerable<IEvent> CommitEvents();
+        IEnumerable<Event> CommitEvents();
     }
 }

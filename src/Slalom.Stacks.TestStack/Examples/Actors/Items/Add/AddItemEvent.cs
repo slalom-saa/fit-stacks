@@ -1,3 +1,4 @@
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.TestStack.Examples.Domain;
 

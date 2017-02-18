@@ -11,7 +11,7 @@ namespace Slalom.Stacks.Messaging.Validation
     /// <summary>
     /// Validates a command using input, security and business rules.
     /// </summary>
-    public class CommandValidator<TCommand> : ICommandValidator where TCommand : ICommand
+    public class CommandValidator<TCommand> : ICommandValidator where TCommand : IMessage
     {
         private readonly IEnumerable<IValidationRule<TCommand, ExecutionContext>> _rules;
 
@@ -34,7 +34,7 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <returns>The <see cref="ValidationError">messages</see> returned from validation routines.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context" /> argument is null.</exception>
-        public Task<IEnumerable<ValidationError>> Validate(ICommand command, ExecutionContext context)
+        public Task<IEnumerable<ValidationError>> Validate(IMessage command, ExecutionContext context)
         {
             Argument.NotNull(command, nameof(command));
             Argument.NotNull(context, nameof(context));
