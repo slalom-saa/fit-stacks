@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <param name="command">The command.</param>
         /// <param name="result">The result.</param>
         /// <param name="context">The context.</param>
-        public RequestEntry(IMessage command, CommandResult result, ExecutionContext context)
+        public RequestEntry(IMessage command, MessageExecutionResult result, ExecutionContext context)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace Slalom.Stacks.Messaging.Logging
             this.Elapsed = result.Elapsed;
             this.Started = result.Started;
             this.Completed = result.Completed;
-            this.Actor = result.Actor;
+            this.Actor = result.Handler;
         }
 
         public string Actor { get; set; }

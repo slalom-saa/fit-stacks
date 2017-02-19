@@ -6,9 +6,9 @@ namespace Slalom.Stacks.TestStack.Examples.Actors.Items.Search
 {
     public class SearchItems : Actor<SearchItemsCommand, IQueryable<ItemSearchResult>>
     {
-        public override IQueryable<ItemSearchResult> Execute(SearchItemsCommand command)
+        public override IQueryable<ItemSearchResult> Execute(SearchItemsCommand message)
         {
-            return this.Search.Search<ItemSearchResult>(command.Text);
+            return this.Search.Search<ItemSearchResult>(message.Text);
         }
     }
 }

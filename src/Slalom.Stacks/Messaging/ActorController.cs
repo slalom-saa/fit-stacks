@@ -31,7 +31,6 @@ namespace Slalom.Stacks.Messaging
         private readonly Lazy<ILogger> _logger;
         private readonly Lazy<IEnumerable<IRequestStore>> _requests;
         private readonly Dictionary<Type, ICommandValidator> _validators = new Dictionary<Type, ICommandValidator>();
-        private readonly Lazy<IExecutionContextResolver> _contextResolver;
         private readonly Lazy<IEventStream> _stream;
 
         /// <summary>
@@ -47,11 +46,10 @@ namespace Slalom.Stacks.Messaging
             _logger = new Lazy<ILogger>(() => _context.Resolve<ILogger>());
             _events = new Lazy<IEnumerable<IEventStore>>(() => _context.ResolveAll<IEventStore>());
             _requests = new Lazy<IEnumerable<IRequestStore>>(() => _context.ResolveAll<IRequestStore>());
-            _contextResolver = new Lazy<IExecutionContextResolver>(() => _context.Resolve<IExecutionContextResolver>());
             _stream = new Lazy<IEventStream>(() => _context.Resolve<IEventStream>());
         }
 
-        public async Task<CommandResult> Execute(IMessage command, IHandle handler, ExecutionContext context, TimeSpan? timeout = null)
+        public async Task<MessageExecutionResult> Execute(IMessage command, IHandle handler, ExecutionContext context, TimeSpan? timeout = null)
         {
             Argument.NotNull(command, nameof(command));
 
@@ -60,8 +58,8 @@ namespace Slalom.Stacks.Messaging
             var events = context.RaisedEvents.ToList();
 
             // create the result
-            var result = new CommandResult(context);
-            result.Actor = handler.GetType().Name;
+            var result = new MessageExecutionResult(context);
+            result.Handler = handler.GetType().Name;
 
             try
             {
@@ -71,13 +69,11 @@ namespace Slalom.Stacks.Messaging
                 if (!result.ValidationErrors.Any())
                 {
                     // execute the handler
-                    handler.SetContext(context);
-                    var response = await handler.HandleAsync(command);
+                    var response = await handler.Handle(new MessageEnvelope(command, context));
                     if (!(response is Task))
                     {
                         result.Response = response;
                     }
-                    result.Actor = handler.GetType().Name;
                 }
 
                 // publish all events
@@ -98,7 +94,7 @@ namespace Slalom.Stacks.Messaging
             return result;
         }
 
-        protected virtual Task Log(IMessage command, CommandResult result, ExecutionContext context, IEnumerable<Event> events)
+        protected virtual Task Log(IMessage command, MessageExecutionResult result, ExecutionContext context, IEnumerable<Event> events)
         {
             var tasks = _requests.Value.Select(e => e.AppendAsync(new RequestEntry(command, result, context))).ToList();
             foreach (var instance in events)
@@ -130,7 +126,7 @@ namespace Slalom.Stacks.Messaging
             return Task.WhenAll(tasks);
         }
 
-        protected virtual void HandleException(IMessage command, ExecutionContext context, CommandResult result, Exception exception)
+        protected virtual void HandleException(IMessage command, ExecutionContext context, MessageExecutionResult result, Exception exception)
         {
             var validationException = exception as ValidationException;
             if (validationException != null)
@@ -146,20 +142,20 @@ namespace Slalom.Stacks.Messaging
                 }
                 else if (exception.InnerException is TargetInvocationException)
                 {
-                    result.AddException(((TargetInvocationException)exception.InnerException).InnerException);
+                    result.RaisedException = ((TargetInvocationException)exception.InnerException).InnerException;
                 }
                 else
                 {
-                    result.AddException(exception.InnerException);
+                    result.RaisedException = exception.InnerException;
                 }
             }
             else if (exception is TargetInvocationException)
             {
-                result.AddException(exception.InnerException);
+                result.RaisedException = exception.InnerException;
             }
             else
             {
-                result.AddException(exception);
+                result.RaisedException = exception;
             }
         }
 
@@ -171,7 +167,7 @@ namespace Slalom.Stacks.Messaging
             }
         }
 
-        protected async Task ValidateCommand(IMessage command, CommandResult result, ExecutionContext context)
+        protected async Task ValidateCommand(IMessage command, MessageExecutionResult result, ExecutionContext context)
         {
             ICommandValidator target;
             if (!_validators.TryGetValue(command.GetType(), out target))

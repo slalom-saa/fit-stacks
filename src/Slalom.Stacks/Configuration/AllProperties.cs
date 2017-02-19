@@ -7,7 +7,7 @@ namespace Slalom.Stacks.Configuration
     /// Used to select all properties.
     /// </summary>
     /// <seealso cref="Autofac.Core.IPropertySelector" />
-    internal class AllProperties : IPropertySelector
+    public class AllProperties : IPropertySelector
     {
         /// <summary>
         /// The shared instance of the selector.

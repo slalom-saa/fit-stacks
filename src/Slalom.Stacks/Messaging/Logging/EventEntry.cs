@@ -35,9 +35,9 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
-            this.EventName = instance.EventName;
-            this.EventId = instance.Id;
-            this.TimeStamp = instance.TimeStamp;
+            this.EventName = ((IEvent)instance).EventName;
+            this.EventId = ((IMessage)instance).Id;
+            this.TimeStamp = ((IMessage)instance).TimeStamp;
             this.MachineName = context.MachineName;
             this.Environment = context.Environment;
             this.ApplicationName = context.ApplicationName;
@@ -47,7 +47,8 @@ namespace Slalom.Stacks.Messaging.Logging
             this.SourceAddress = context.SourceAddress;
             this.ThreadId = context.ThreadId;
             this.CorrelationId = context.CorrelationId;
-            this.EventTypeId = instance.EventTypeId;
+            this.EventTypeId = ((IEvent)instance).EventTypeId;
+
         }
 
         /// <summary>

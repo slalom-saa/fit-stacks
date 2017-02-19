@@ -10,7 +10,7 @@ namespace Slalom.Stacks.Domain
     /// <summary>
     /// An event that is raised when state changes within a particular domain.
     /// </summary>
-    public abstract class Event : Message
+    public abstract class Event : Message, IEvent
     {
         private readonly Lazy<EventAttribute> _attribute;
         private TypeInfo _type;
@@ -25,22 +25,16 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <summary>
-        /// Gets the event ID.
-        /// </summary>
-        /// <value>The event ID.</value>
-        public string Id { get; } = NewId.NextId();
-
-        /// <summary>
         /// Gets the name of the event.
         /// </summary>
         /// <value>The name of the event.</value>
-        public string EventName => this.GetEventName();
+        string IEvent.EventName => this.GetEventName();
 
         /// <summary>
         /// Gets the event identifier that is used to classify the event.
         /// </summary>
         /// <value>The event identifier that is used to classify the event.</value>
-        public int EventTypeId => this.GetEventTypeId();
+        int IEvent.EventTypeId => this.GetEventTypeId();
 
         private string GetEventName()
         {
@@ -50,48 +44,6 @@ namespace Slalom.Stacks.Domain
         private int GetEventTypeId()
         {
             return _attribute.Value?.EventId ?? -1;
-        }
-
-        /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
-        /// </summary>
-        /// <param name="obj">The object to compare with the current object.</param>
-        /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-            if (obj.GetType() != this.GetType())
-            {
-                return false;
-            }
-            return this.Equals((Event)obj);
-        }
-
-        /// <summary>
-        /// Returns a hash code for this instance.
-        /// </summary>
-        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
-        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
-        public override int GetHashCode()
-        {
-            return ((IMessage)this).Id.GetHashCode();
-        }
-
-        /// <summary>
-        /// Determines if another event instance is equal to this instance.
-        /// </summary>
-        /// <param name="other">The instance to compare.</param>
-        /// <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
-        protected bool Equals(Event other)
-        {
-            return ((IMessage)this).Id.Equals(((IMessage)other).Id);
         }
     }
 }

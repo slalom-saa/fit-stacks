@@ -31,7 +31,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the message time stamp.
         /// </summary>
         /// <value>The message time stamp.</value>
-        public DateTimeOffset TimeStamp { get; } = DateTimeOffset.Now;
+        DateTimeOffset IMessage.TimeStamp { get; } = DateTimeOffset.Now;
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.

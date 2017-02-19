@@ -46,7 +46,7 @@ namespace Slalom.Stacks.TestStack.Examples
 
                         watch.Start();
 
-                        var tasks = new List<Task<CommandResult>>(count);
+                        var tasks = new List<Task<MessageExecutionResult>>(count);
                         Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, e =>
                         {
                             tasks.Add(container.SendAsync("items/add", new AddItemCommand(e.ToString())));

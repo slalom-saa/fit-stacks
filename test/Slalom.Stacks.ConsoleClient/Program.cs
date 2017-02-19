@@ -36,7 +36,7 @@ namespace Slalom.Stacks.ConsoleClient
         }
     }
 
-    public class AddProductCommand : Message
+    public class AddProductCommand : Command
     {
         [NotNull("no")]
         public string Name { get; }
@@ -55,7 +55,7 @@ namespace Slalom.Stacks.ConsoleClient
     [Path("products/add")]
     public class AddProduct : Actor<AddProductCommand, Product>
     {
-        public override async Task<Product> ExecuteAsync(AddProductCommand command)
+        public override async Task<Product> ExecuteAsync(AddProductCommand message)
         {
             var target = new Product("name");
 
@@ -69,7 +69,7 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public Task AppendAsync(EventEntry entry)
         {
-            //Console.WriteLine(JsonConvert.SerializeObject(entry, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(entry, Formatting.Indented));
 
             return Task.FromResult(0);
         }
@@ -79,7 +79,7 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public Task AppendAsync(RequestEntry entry)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(entry, Formatting.Indented));
+            //Console.WriteLine(JsonConvert.SerializeObject(entry, Formatting.Indented));
 
             return Task.FromResult(0);
         }
@@ -87,7 +87,7 @@ namespace Slalom.Stacks.ConsoleClient
 
     public class SendEmailOnProductAdded : Actor<ProductAddedEvent>
     {
-        public override void Execute(ProductAddedEvent command)
+        public override void Execute(ProductAddedEvent message)
         {
             //Console.WriteLine("Sending mail.");
         }
@@ -95,7 +95,7 @@ namespace Slalom.Stacks.ConsoleClient
 
     public class SendOtherOnProductAdded : Actor<ProductAddedEvent>
     {
-        public override void Execute(ProductAddedEvent command)
+        public override void Execute(ProductAddedEvent message)
         {
             //Console.WriteLine("Sending other.");
         }

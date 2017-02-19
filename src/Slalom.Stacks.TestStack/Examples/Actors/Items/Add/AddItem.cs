@@ -8,14 +8,14 @@ namespace Slalom.Stacks.TestStack.Examples.Actors.Items.Add
     [Path("items/add")]
     public class AddItem : Actor<AddItemCommand, AddItemEvent>
     {
-        public override async Task<AddItemEvent> ExecuteAsync(AddItemCommand command)
+        public override async Task<AddItemEvent> ExecuteAsync(AddItemCommand message)
         {
-            if (command.Name == "error")
+            if (message.Name == "error")
             {
                 throw new Exception("Throwing an example error.");
             }
 
-            var target = Item.Create(command.Name);
+            var target = Item.Create(message.Name);
 
             await this.Domain.AddAsync(target);
 

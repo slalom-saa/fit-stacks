@@ -42,7 +42,7 @@ namespace Slalom.Stacks.TestStack
             return Task.FromResult(0);
         }
 
-        public CommandResult Send(IMessage command)
+        public MessageExecutionResult Send(IMessage command)
         {
             return SendAsync(command).Result;
         }

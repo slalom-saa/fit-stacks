@@ -58,7 +58,7 @@ namespace Slalom.Stacks.Messaging
 
         public void Publish<TEvent>(TEvent instance, ExecutionContext context) where TEvent : Event
         {
-            var list = new List<Task<CommandResult>>();
+            var list = new List<Task<MessageExecutionResult>>();
             var handlers = this.GetHandlers(instance);
             foreach (var item in handlers)
             {
@@ -66,9 +66,9 @@ namespace Slalom.Stacks.Messaging
             }
         }
 
-        public Task<CommandResult> Send(IMessage message, ExecutionContext context)
+        public Task<MessageExecutionResult> Send(IMessage message, ExecutionContext context)
         {
-            var list = new List<Task<CommandResult>>();
+            var list = new List<Task<MessageExecutionResult>>();
             var handlers = this.GetHandlers(message);
             foreach (var item in handlers)
             {
@@ -77,7 +77,7 @@ namespace Slalom.Stacks.Messaging
             return list.First();
         }
 
-        public Task<CommandResult> Send(IMessage command, TimeSpan? timeout = null)
+        public Task<MessageExecutionResult> Send(IMessage command, TimeSpan? timeout = null)
         {
             var handlers = this.GetHandlers(command);
             if (handlers.Count() > 1)
@@ -91,7 +91,7 @@ namespace Slalom.Stacks.Messaging
             return _controller.Execute(command, (IHandle)_components.Resolve(handlers.First()), _context.Resolve());
         }
 
-        public Task<CommandResult> Send(string path, IMessage command, TimeSpan? timeout = null)
+        public Task<MessageExecutionResult> Send(string path, IMessage command, TimeSpan? timeout = null)
         {
             var handlers = this.GetHandlers(path, command);
             if (handlers.Count() > 1)
@@ -107,7 +107,7 @@ namespace Slalom.Stacks.Messaging
             return _controller.Execute(command, (IHandle)_components.Resolve(handlers.First()), context);
         }
 
-        public Task<CommandResult> Send(string path, string command, TimeSpan? timeout = null)
+        public Task<MessageExecutionResult> Send(string path, string command, TimeSpan? timeout = null)
         {
             var handlers = this.GetHandlers(path);
             if (handlers.Count() > 1)
@@ -124,7 +124,7 @@ namespace Slalom.Stacks.Messaging
             return _controller.Execute((IMessage)JsonConvert.DeserializeObject(command, target.GetRequestType()), (IHandle)_components.Resolve(handlers.First()), context);
         }
 
-        public Task<CommandResult> Send(string path, TimeSpan? timeout)
+        public Task<MessageExecutionResult> Send(string path, TimeSpan? timeout)
         {
             var handlers = this.GetHandlers(path);
             if (handlers.Count() > 1)

@@ -7,18 +7,18 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging
 {
     /// <summary>
-    /// The result of command execution.  Contains information about the execution and the response from
-    /// the actor.
+    /// The result of message execution.  Contains information about the execution and the response from
+    /// the responding actor.
     /// </summary>
-    public class CommandResult
+    public class MessageExecutionResult
     {
         private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandResult" /> class.
+        /// Initializes a new instance of the <see cref="MessageExecutionResult" /> class.
         /// </summary>
         /// <param name="context">The context.</param>
-        public CommandResult(ExecutionContext context)
+        public MessageExecutionResult(ExecutionContext context)
         {
             this.CorrelationId = context.CorrelationId;
             this.Started = DateTimeOffset.UtcNow;
@@ -28,12 +28,12 @@ namespace Slalom.Stacks.Messaging
         /// Gets the actor that handled the message.
         /// </summary>
         /// <value>The actor that handled the message.</value>
-        public string Actor { get; internal set; }
+        public string Handler { get; set; }
 
         /// <summary>
-        /// Gets or sets the date and time completed.
+        /// Gets or sets the date and time that the execution completed.
         /// </summary>
-        /// <value>The date and time completed.</value>
+        /// <value>The date and time that the execution completed.</value>
         public DateTimeOffset? Completed { get; private set; }
 
         /// <summary>
@@ -43,9 +43,9 @@ namespace Slalom.Stacks.Messaging
         public string CorrelationId { get; private set; }
 
         /// <summary>
-        /// Gets the time elapsed.
+        /// Gets the time elapsed during the execution.
         /// </summary>
-        /// <value>The time elapsed.</value>
+        /// <value>The time elapsed during the execution.</value>
         public TimeSpan? Elapsed => this.Completed - this.Started;
 
         /// <summary>
@@ -55,26 +55,20 @@ namespace Slalom.Stacks.Messaging
         public bool IsSuccessful => !_validationErrors.Any() && this.RaisedException == null;
 
         /// <summary>
-        /// Gets the parent message ID.
-        /// </summary>
-        /// <value>The parent message ID.</value>
-        public string Parent { get; internal set; }
-
-        /// <summary>
-        /// Gets the raised exception if any.
+        /// Gets the raised exception, if any.
         /// </summary>
         /// <value>The raised exception.</value>
-        public Exception RaisedException { get; private set; }
+        public Exception RaisedException { get; set; }
 
         /// <summary>
-        /// Gets the actor response.
+        /// Gets the message response, if any.
         /// </summary>
-        public object Response { get; internal set; }
+        public object Response { get; set; }
 
         /// <summary>
-        /// Gets or sets the date and time started.
+        /// Gets the date and time the execution started.
         /// </summary>
-        /// <value>The date and time started.</value>
+        /// <value>The date and time the execution started.</value>
         public DateTimeOffset Started { get; private set; }
 
         /// <summary>
@@ -82,15 +76,6 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The validation errors that were raised.</value>
         public IEnumerable<ValidationError> ValidationErrors => _validationErrors.AsEnumerable();
-
-        /// <summary>
-        /// Adds the exception to the raised exceptions.
-        /// </summary>
-        /// <param name="exception">The exception to add.</param>
-        public void AddException(Exception exception)
-        {
-            this.RaisedException = exception;
-        }
 
         /// <summary>
         /// Adds the specified validation errors to the result.
@@ -102,7 +87,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <summary>
-        /// Completes this instance.
+        /// Marks this instance as complete.
         /// </summary>
         public void Complete()
         {
