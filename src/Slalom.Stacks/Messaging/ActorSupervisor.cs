@@ -2,6 +2,7 @@
 using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging.Exceptions;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
@@ -59,6 +60,10 @@ namespace Slalom.Stacks.Messaging
                     if (!(response is Task))
                     {
                         result.Response = response;
+                        if (response is Event)
+                        {
+                            instance.Context.AddRaisedEvent((Event)response);
+                        }
                     }
                 }
 

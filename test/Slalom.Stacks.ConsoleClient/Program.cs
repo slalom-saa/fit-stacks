@@ -89,7 +89,7 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public override void Execute(ProductAddedEvent message)
         {
-            //Console.WriteLine("Sending mail.");
+            Console.WriteLine("Sending mail.");
         }
     }
 
@@ -115,7 +115,7 @@ namespace Slalom.Stacks.ConsoleClient
                 });
                 stack.UseSimpleConsoleLogging();
 
-                var result = stack.SendAsync("products/add", new AddProductCommand("banme")).Result;
+                var result = stack.Send("products/add", new AddProductCommand("banme")).Result;
 
                 //Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
 

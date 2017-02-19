@@ -44,7 +44,7 @@ namespace Slalom.Stacks.TestStack
 
         public MessageExecutionResult Send(IMessage command)
         {
-            return SendAsync(command).Result;
+            return base.Send(command).Result;
         }
 
         public void UseScenario(Scenario scenario)

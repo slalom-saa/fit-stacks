@@ -24,6 +24,7 @@ namespace Slalom.Stacks.Logging
         public void Debug(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[DEBUG]");
             builder.AppendLine(template);
             builder.AppendLine("- " + exception);
             builder.AppendLine(Separater);
@@ -36,6 +37,7 @@ namespace Slalom.Stacks.Logging
         public void Debug(string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[DEBUG]");
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -47,6 +49,7 @@ namespace Slalom.Stacks.Logging
         public void Error(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[ERROR]");
             builder.AppendLine(template);
             builder.AppendLine("- " + exception);
             builder.AppendLine(Separater);
@@ -59,6 +62,7 @@ namespace Slalom.Stacks.Logging
         public void Error(string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[ERROR]");
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Red;
@@ -70,6 +74,7 @@ namespace Slalom.Stacks.Logging
         public void Fatal(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[DEBUG]");
             builder.AppendLine(template);
             builder.AppendLine("- " + exception);
             builder.AppendLine(Separater);
@@ -82,6 +87,7 @@ namespace Slalom.Stacks.Logging
         public void Fatal(string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[FATAL]");
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Red;
@@ -93,6 +99,7 @@ namespace Slalom.Stacks.Logging
         public void Information(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[FATAL]");
             builder.AppendLine(template);
             builder.AppendLine("- " + exception);
             builder.AppendLine(Separater);
@@ -105,6 +112,7 @@ namespace Slalom.Stacks.Logging
         public void Information(string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[INFO]");
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.White;
@@ -116,6 +124,7 @@ namespace Slalom.Stacks.Logging
         public void Verbose(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[INFO]");
             builder.AppendLine(template);
             builder.AppendLine("- " + exception);
             builder.AppendLine(Separater);
@@ -128,6 +137,7 @@ namespace Slalom.Stacks.Logging
         public void Verbose(string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[DEBUG]");
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -139,6 +149,7 @@ namespace Slalom.Stacks.Logging
         public void Warning(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[WARN]");
             builder.AppendLine(template);
             builder.AppendLine("- " + exception);
             builder.AppendLine(Separater);
@@ -151,6 +162,7 @@ namespace Slalom.Stacks.Logging
         public void Warning(string template, params object[] properties)
         {
             var builder = new StringBuilder();
+            builder.Append("[WARN]");
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Yellow;

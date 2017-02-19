@@ -80,7 +80,7 @@ namespace Slalom.Stacks
         /// <param name="command">The command to send.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<MessageExecutionResult> SendAsync(IMessage command, TimeSpan? timeout = null)
+        public Task<MessageExecutionResult> Send(IMessage command, TimeSpan? timeout = null)
         {
             return this.Container.Resolve<IMessageRouter>().Send(command, timeout);
         }
@@ -92,7 +92,7 @@ namespace Slalom.Stacks
         /// <param name="command">The command to send.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<MessageExecutionResult> SendAsync(string path, IMessage command, TimeSpan? timeout = null)
+        public Task<MessageExecutionResult> Send(string path, IMessage command, TimeSpan? timeout = null)
         {
             return this.Container.Resolve<IMessageRouter>().Send(path, command, timeout);
         }
@@ -104,7 +104,7 @@ namespace Slalom.Stacks
         /// <param name="command">The command to send.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<MessageExecutionResult> SendAsync(string path, string command, TimeSpan? timeout = null)
+        public Task<MessageExecutionResult> Send(string path, string command, TimeSpan? timeout = null)
         {
             return this.Container.Resolve<IMessageRouter>().Send(path, command, timeout);
         }
@@ -162,7 +162,7 @@ namespace Slalom.Stacks
         /// <param name="path">The request path.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<MessageExecutionResult> SendAsync(string path, TimeSpan? timeout = null)
+        public Task<MessageExecutionResult> Send(string path, TimeSpan? timeout = null)
         {
             return this.Container.Resolve<IMessageRouter>().Send(path, timeout);
         }

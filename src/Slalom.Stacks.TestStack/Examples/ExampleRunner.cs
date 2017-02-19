@@ -49,7 +49,7 @@ namespace Slalom.Stacks.TestStack.Examples
                         var tasks = new List<Task<MessageExecutionResult>>(count);
                         Parallel.For(0, count, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, e =>
                         {
-                            tasks.Add(container.SendAsync("items/add", new AddItemCommand(e.ToString())));
+                            tasks.Add(container.Send("items/add", new AddItemCommand(e.ToString())));
                         });
                         await Task.WhenAll(tasks);
 
@@ -62,7 +62,7 @@ namespace Slalom.Stacks.TestStack.Examples
                                 + JsonConvert.SerializeObject(failed.First(), Formatting.Indented));
                         }
 
-                        var searchResultCount = ((IQueryable<ItemSearchResult>)(await container.SendAsync(new SearchItemsCommand())).Response).Count();
+                        var searchResultCount = ((IQueryable<ItemSearchResult>)(await container.Send(new SearchItemsCommand())).Response).Count();
                         var entityCount = (await container.Domain.FindAsync<Item>()).Count();
                         if (entityCount != count || searchResultCount != count)
                         {
