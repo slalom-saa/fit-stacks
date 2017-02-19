@@ -1,22 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Autofac;
-using Newtonsoft.Json;
-using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Domain;
-using Slalom.Stacks.Logging;
+using System.Linq;
+using System.Threading.Tasks;
+using Slalom.Stacks.Messaging.Exceptions;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Validation;
-using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
-using ExecutionContext = Slalom.Stacks.Runtime.ExecutionContext;
-using Slalom.Stacks.Messaging.Exceptions;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -24,19 +13,19 @@ namespace Slalom.Stacks.Messaging
     /// Supervises the execution and completion of commands.  Returns a result containing the returned value if the command is successful; 
     /// otherwise, returns information about why the execution was not successful.
     /// </summary>
-    public class ActorController
+    public class ActorSupervisor
     {
         private readonly IComponentContext _context;
+        private readonly Lazy<IExecutionExceptionHandler> _exceptions;
         private readonly Lazy<ICommandLogger> _logger;
         private readonly Lazy<IEventStream> _stream;
-        private readonly Lazy<IExecutionExceptionHandler> _exceptions;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActorController"/> class.
+        /// Initializes a new instance of the <see cref="ActorSupervisor"/> class.
         /// </summary>
         /// <param name="context">The configured <see cref="IComponentContext"/> instance.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        public ActorController(IComponentContext context)
+        public ActorSupervisor(IComponentContext context)
         {
             Argument.NotNull(context, nameof(context));
 
@@ -46,7 +35,7 @@ namespace Slalom.Stacks.Messaging
             _exceptions = new Lazy<IExecutionExceptionHandler>(() => _context.Resolve<IExecutionExceptionHandler>());
         }
 
-        public async Task<MessageExecutionResult> Execute(MessageEnvelope instance, IHandle handler, TimeSpan? timeout = null)
+        public virtual async Task<MessageExecutionResult> Execute(MessageEnvelope instance, IHandle handler, TimeSpan? timeout = null)
         {
             await _logger.Value.LogStart(instance, handler);
 
@@ -90,7 +79,7 @@ namespace Slalom.Stacks.Messaging
             // finalize the result and mark it as complete
             result.Complete();
 
-            await _logger.Value.LogCompletion(instance, result);
+            await _logger.Value.LogCompletion(instance, result, handler);
 
             return result;
         }

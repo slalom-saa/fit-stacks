@@ -14,14 +14,14 @@ namespace Slalom.Stacks.Messaging
     public class MessageRouter : IMessageRouter, IEventStream
     {
         private readonly IComponentContext _components;
-        private readonly ActorController _controller;
+        private readonly ActorSupervisor _supervisor;
         private readonly IExecutionContextResolver _context;
         private readonly List<HandlerMapping> _mappings = new List<HandlerMapping>();
 
         public MessageRouter(IComponentContext components, Assembly[] assemblies)
         {
             _components = components;
-            _controller = components.Resolve<ActorController>();
+            _supervisor = components.Resolve<ActorSupervisor>();
             _context = components.Resolve<IExecutionContextResolver>();
             var actors = assemblies.SafelyGetTypes(typeof(IHandle));
 
@@ -62,7 +62,7 @@ namespace Slalom.Stacks.Messaging
             var handlers = this.GetHandlers(instance);
             foreach (var item in handlers)
             {
-                list.Add(_controller.Execute(new MessageEnvelope(instance, context), (IHandle)_components.Resolve(item)));
+                list.Add(_supervisor.Execute(new MessageEnvelope(instance, context), (IHandle)_components.Resolve(item)));
             }
         }
 
@@ -72,7 +72,7 @@ namespace Slalom.Stacks.Messaging
             var handlers = this.GetHandlers(message);
             foreach (var item in handlers)
             {
-                list.Add(_controller.Execute(new MessageEnvelope(message, context), (IHandle)_components.Resolve(item)));
+                list.Add(_supervisor.Execute(new MessageEnvelope(message, context), (IHandle)_components.Resolve(item)));
             }
             return list.First();
         }
@@ -88,7 +88,7 @@ namespace Slalom.Stacks.Messaging
             {
                 throw new InvalidOperationException();
             }
-            return _controller.Execute(new MessageEnvelope(command, _context.Resolve()), (IHandle)_components.Resolve(handlers.First()));
+            return _supervisor.Execute(new MessageEnvelope(command, _context.Resolve()), (IHandle)_components.Resolve(handlers.First()));
         }
 
         public Task<MessageExecutionResult> Send(string path, IMessage command, TimeSpan? timeout = null)
@@ -104,7 +104,7 @@ namespace Slalom.Stacks.Messaging
             }
             var context = _context.Resolve();
             context.Path = path;
-            return _controller.Execute(new MessageEnvelope(command, context), (IHandle)_components.Resolve(handlers.First()));
+            return _supervisor.Execute(new MessageEnvelope(command, context), (IHandle)_components.Resolve(handlers.First()));
         }
 
         public Task<MessageExecutionResult> Send(string path, string command, TimeSpan? timeout = null)
@@ -124,7 +124,7 @@ namespace Slalom.Stacks.Messaging
 
             var instance = new MessageEnvelope((IMessage)JsonConvert.DeserializeObject(command, target.GetRequestType()), context);
 
-            return _controller.Execute(instance, (IHandle)_components.Resolve(handlers.First()));
+            return _supervisor.Execute(instance, (IHandle)_components.Resolve(handlers.First()));
         }
 
         public Task<MessageExecutionResult> Send(string path, TimeSpan? timeout)
@@ -144,7 +144,7 @@ namespace Slalom.Stacks.Messaging
 
             var instance = new MessageEnvelope((IMessage)JsonConvert.DeserializeObject("{}", target.GetRequestType()), context);
 
-            return _controller.Execute(instance, (IHandle)_components.Resolve(handlers.First()));
+            return _supervisor.Execute(instance, (IHandle)_components.Resolve(handlers.First()));
         }
     }
 }

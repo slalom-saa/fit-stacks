@@ -69,7 +69,7 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public Task AppendAsync(EventEntry entry)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(entry, Formatting.Indented));
+            //Console.WriteLine(JsonConvert.SerializeObject(entry, Formatting.Indented));
 
             return Task.FromResult(0);
         }
@@ -113,6 +113,7 @@ namespace Slalom.Stacks.ConsoleClient
                     builder.RegisterInstance(new EventStore()).As<IEventStore>();
                     builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
                 });
+                stack.UseSimpleConsoleLogging();
 
                 var result = stack.SendAsync("products/add", new AddProductCommand("banme")).Result;
 

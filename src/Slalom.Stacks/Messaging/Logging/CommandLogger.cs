@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Messaging.Logging
             _logger = logger;
         }
 
-        public virtual Task LogCompletion(MessageEnvelope instance, MessageExecutionResult result)
+        public virtual Task LogCompletion(MessageEnvelope instance, MessageExecutionResult result, IHandle handler)
         {
             var tasks = _requests.Select(e => e.AppendAsync(new RequestEntry(instance, result))).ToList();
             foreach (var item in instance.Context.RaisedEvents)
@@ -30,25 +30,25 @@ namespace Slalom.Stacks.Messaging.Logging
 
             var message = instance.Message;
 
-            var name = message.GetType().Name;
+            var name = handler.GetType().Name;
             if (!result.IsSuccessful)
             {
                 if (result.RaisedException != null)
                 {
-                    _logger.Error(result.RaisedException, "An unhandled exception was raised while executing " + name + ".", message);
+                    _logger.Error(result.RaisedException, "An unhandled exception was raised while executing \"" + name + "\".", message);
                 }
                 else if (result.ValidationErrors?.Any() ?? false)
                 {
-                    _logger.Verbose("Execution completed with validation errors while executing " + message + ": " + String.Join("; ", result.ValidationErrors.Select(e => e.ErrorType + ": " + e.Message)), message);
+                    _logger.Verbose("Execution completed with validation errors while executing \"" + name + "\": " + String.Join("; ", result.ValidationErrors.Select(e => e.ErrorType + ": " + e.Message)), message);
                 }
                 else
                 {
-                    _logger.Error("Execution completed unsuccessfully while executing " + name + ".", message);
+                    _logger.Error("Execution completed unsuccessfully while executing \"" + name + "\".", message);
                 }
             }
             else
             {
-                _logger.Verbose("Successfully completed " + name + ".", message);
+                _logger.Verbose("Successfully executed \"" + name + "\".", message);
             }
 
             return Task.WhenAll(tasks);
@@ -56,7 +56,7 @@ namespace Slalom.Stacks.Messaging.Logging
 
         public Task LogStart(MessageEnvelope instance, IHandle handler)
         {
-            _logger.Verbose("Starting execution for \"" + instance.Message.GetType().Name + "\" with \"" + handler.GetType().Name + "\" at \"" + instance.Context.Path + "\".");
+            _logger.Verbose("Executing \"" + handler.GetType().Name + "\" at path \"" + instance.Context.Path + "\".");
 
             return Task.FromResult(0);
         }
