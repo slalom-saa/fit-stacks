@@ -97,7 +97,7 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public override void Execute(ProductAddedEvent message)
         {
-            //Console.WriteLine("Sending other.");
+            Console.WriteLine("Sending other.");
         }
     }
 

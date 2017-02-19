@@ -62,7 +62,7 @@ namespace Slalom.Stacks.Messaging
             var handlers = this.GetHandlers(instance);
             foreach (var item in handlers)
             {
-                list.Add(_controller.Execute(instance, (IHandle)_components.Resolve(item), context));
+                list.Add(_controller.Execute(new MessageEnvelope(instance, context), (IHandle)_components.Resolve(item)));
             }
         }
 
@@ -72,7 +72,7 @@ namespace Slalom.Stacks.Messaging
             var handlers = this.GetHandlers(message);
             foreach (var item in handlers)
             {
-                list.Add(_controller.Execute(message, (IHandle)_components.Resolve(item), context));
+                list.Add(_controller.Execute(new MessageEnvelope(message, context), (IHandle)_components.Resolve(item)));
             }
             return list.First();
         }
@@ -88,7 +88,7 @@ namespace Slalom.Stacks.Messaging
             {
                 throw new InvalidOperationException();
             }
-            return _controller.Execute(command, (IHandle)_components.Resolve(handlers.First()), _context.Resolve());
+            return _controller.Execute(new MessageEnvelope(command, _context.Resolve()), (IHandle)_components.Resolve(handlers.First()));
         }
 
         public Task<MessageExecutionResult> Send(string path, IMessage command, TimeSpan? timeout = null)
@@ -104,7 +104,7 @@ namespace Slalom.Stacks.Messaging
             }
             var context = _context.Resolve();
             context.Path = path;
-            return _controller.Execute(command, (IHandle)_components.Resolve(handlers.First()), context);
+            return _controller.Execute(new MessageEnvelope(command, context), (IHandle)_components.Resolve(handlers.First()));
         }
 
         public Task<MessageExecutionResult> Send(string path, string command, TimeSpan? timeout = null)
@@ -121,7 +121,10 @@ namespace Slalom.Stacks.Messaging
             var target = handlers.First();
             var context = _context.Resolve();
             context.Path = path;
-            return _controller.Execute((IMessage)JsonConvert.DeserializeObject(command, target.GetRequestType()), (IHandle)_components.Resolve(handlers.First()), context);
+
+            var instance = new MessageEnvelope((IMessage)JsonConvert.DeserializeObject(command, target.GetRequestType()), context);
+
+            return _controller.Execute(instance, (IHandle)_components.Resolve(handlers.First()));
         }
 
         public Task<MessageExecutionResult> Send(string path, TimeSpan? timeout)
@@ -138,7 +141,10 @@ namespace Slalom.Stacks.Messaging
             var target = handlers.First();
             var context = _context.Resolve();
             context.Path = path;
-            return _controller.Execute((IMessage)JsonConvert.DeserializeObject("{}", target.GetRequestType()), (IHandle)_components.Resolve(handlers.First()), context);
+
+            var instance = new MessageEnvelope((IMessage)JsonConvert.DeserializeObject("{}", target.GetRequestType()), context);
+
+            return _controller.Execute(instance, (IHandle)_components.Resolve(handlers.First()));
         }
     }
 }

@@ -17,14 +17,16 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestEntry" /> class.
         /// </summary>
-        /// <param name="command">The command.</param>
+        /// <param name="instance">The message envelope instance.</param>
         /// <param name="result">The result.</param>
-        /// <param name="context">The context.</param>
-        public RequestEntry(IMessage command, MessageExecutionResult result, ExecutionContext context)
+        public RequestEntry(MessageEnvelope instance, MessageExecutionResult result)
         {
+            var message = instance.Message;
+            var context = instance.Context;
+
             try
             {
-                this.Payload = JsonConvert.SerializeObject(command, new JsonSerializerSettings
+                this.Payload = JsonConvert.SerializeObject(message, new JsonSerializerSettings
                 {
                     ContractResolver = new CommandContractResolver()
                 });
@@ -34,8 +36,8 @@ namespace Slalom.Stacks.Messaging.Logging
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
             this.IsSuccessful = result.IsSuccessful;
-            this.RequestId = command.Id;
-            this.TimeStamp = command.TimeStamp;
+            this.RequestId = message.Id;
+            this.TimeStamp = message.TimeStamp;
             this.ValidationErrors = result.ValidationErrors?.ToArray();
             this.MachineName = context.MachineName;
             this.Environment = context.Environment;

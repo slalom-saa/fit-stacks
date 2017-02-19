@@ -17,16 +17,13 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <summary>
         /// Initializes a new instance of the <see cref="EventEntry" /> class.
         /// </summary>
-        /// <param name="instance">The event.</param>
-        /// <param name="context">The current context.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
-        public EventEntry(Event instance, ExecutionContext context)
+        /// <param name="message">The message.</param>
+        /// <param name="context">The context.</param>
+        public EventEntry(Event message, ExecutionContext context)
         {
-            Argument.NotNull(instance, nameof(instance));
-
             try
             {
-                this.Payload = JsonConvert.SerializeObject(instance, new JsonSerializerSettings
+                this.Payload = JsonConvert.SerializeObject(message, new JsonSerializerSettings
                 {
                     ContractResolver = new EventContractResolver()
                 });
@@ -35,9 +32,9 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
-            this.EventName = ((IEvent)instance).EventName;
-            this.EventId = ((IMessage)instance).Id;
-            this.TimeStamp = ((IMessage)instance).TimeStamp;
+            this.EventName = ((IEvent)message).EventName;
+            this.EventId = ((IMessage)message).Id;
+            this.TimeStamp = ((IMessage)message).TimeStamp;
             this.MachineName = context.MachineName;
             this.Environment = context.Environment;
             this.ApplicationName = context.ApplicationName;
@@ -47,7 +44,7 @@ namespace Slalom.Stacks.Messaging.Logging
             this.SourceAddress = context.SourceAddress;
             this.ThreadId = context.ThreadId;
             this.CorrelationId = context.CorrelationId;
-            this.EventTypeId = ((IEvent)instance).EventTypeId;
+            this.EventTypeId = ((IEvent)message).EventTypeId;
 
         }
 

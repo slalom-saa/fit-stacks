@@ -32,16 +32,13 @@ namespace Slalom.Stacks.Messaging.Validation
         /// Validates the specified command instance.
         /// </summary>
         /// <param name="instance">The instance to validate.</param>
-        /// <param name="context">The execution context.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        public IEnumerable<ValidationError> Validate(TCommand instance, ExecutionContext context)
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
+        public IEnumerable<ValidationError> Validate(MessageEnvelope instance)
         {
             Argument.NotNull(instance, nameof(instance));
-            Argument.NotNull(context, nameof(context));
 
-            this.Context = context;
+            this.Context = instance.Context;
 
             return this.Validate(instance);
         }

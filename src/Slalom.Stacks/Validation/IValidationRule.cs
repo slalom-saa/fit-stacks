@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.Validation
 {
@@ -15,11 +16,8 @@ namespace Slalom.Stacks.Validation
         /// Validates the specified instance and returns any validation errors.
         /// </summary>
         /// <param name="instance">The instance to validate.</param>
-        /// <param name="context">The current context that can be used to share information
-        /// between validation rules.</param>
         /// <returns>Returns all found validation errors.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        IEnumerable<ValidationError> Validate(TValue instance, TContext context);
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
+        IEnumerable<ValidationError> Validate(MessageEnvelope instance);
     }
 }
