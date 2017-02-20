@@ -12,17 +12,17 @@ namespace Slalom.Stacks.Validation
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationException"/> class.
         /// </summary>
-        /// <param name="messages">The validation messages to add to the exception.</param>
-        public ValidationException(params ValidationError[] messages)
-            : base(string.Join(Environment.NewLine, messages.Select(e => e.Message)))
+        /// <param name="errors">The validation errors to add to the exception.</param>
+        public ValidationException(params ValidationError[] errors)
+            : base(string.Join(Environment.NewLine, errors.Select(e => e.ToString())))
         {
-            this.ValidationMessages = messages;
+            this.ValidationErrors = errors;
         }
 
         /// <summary>
         /// Gets the validation messages.
         /// </summary>
         /// <value>The validation messages.</value>
-        public ValidationError[] ValidationMessages { get; private set; }
+        public ValidationError[] ValidationErrors { get; private set; }
     }
 }

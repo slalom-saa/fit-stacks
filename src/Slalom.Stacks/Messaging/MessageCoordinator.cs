@@ -44,8 +44,7 @@ namespace Slalom.Stacks.Messaging
             var message = instance.Message;
 
             // create the result
-            var result = new MessageExecutionResult(context);
-            result.Handler = handler.GetType().Name;
+            var result = new MessageExecutionResult(message, handler, context);
 
             try
             {

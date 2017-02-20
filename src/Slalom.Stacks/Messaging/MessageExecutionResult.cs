@@ -17,18 +17,22 @@ namespace Slalom.Stacks.Messaging
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageExecutionResult" /> class.
         /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="handler">The handler.</param>
         /// <param name="context">The context.</param>
-        public MessageExecutionResult(ExecutionContext context)
+        public MessageExecutionResult(IMessage message, IHandle handler, ExecutionContext context)
         {
+            this.MessageId = message.Id;
             this.CorrelationId = context.CorrelationId;
             this.Started = DateTimeOffset.UtcNow;
+            this.Handler = handler.GetType().Name;
         }
 
         /// <summary>
         /// Gets the actor that handled the message.
         /// </summary>
         /// <value>The actor that handled the message.</value>
-        public string Handler { get; set; }
+        public string Handler { get; private set; }
 
         /// <summary>
         /// Gets or sets the date and time that the execution completed.
@@ -76,6 +80,12 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The validation errors that were raised.</value>
         public IEnumerable<ValidationError> ValidationErrors => _validationErrors.AsEnumerable();
+
+        /// <summary>
+        /// Gets or sets the message identifier.
+        /// </summary>
+        /// <value>The message identifier.</value>
+        public string MessageId { get; set; }
 
         /// <summary>
         /// Adds the specified validation errors to the result.

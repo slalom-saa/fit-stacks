@@ -19,14 +19,14 @@ namespace Slalom.Stacks.Messaging.Exceptions
             var validationException = exception as ValidationException;
             if (validationException != null)
             {
-                result.AddValidationErrors(validationException.ValidationMessages);
+                result.AddValidationErrors(validationException.ValidationErrors);
             }
             else if (exception is AggregateException)
             {
                 var innerException = exception.InnerException as ValidationException;
                 if (innerException != null)
                 {
-                    result.AddValidationErrors(innerException.ValidationMessages);
+                    result.AddValidationErrors(innerException.ValidationErrors);
                 }
                 else if (exception.InnerException is TargetInvocationException)
                 {

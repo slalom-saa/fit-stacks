@@ -22,9 +22,9 @@ namespace Slalom.Stacks.ConsoleClient
                 stack.Use(builder =>
                 {
                     //builder.RegisterInstance(new EventStore()).As<IEventStore>();
-                    //builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
+                    builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
                 });
-                stack.UseSimpleConsoleLogging();
+                //stack.UseSimpleConsoleLogging();
 
                 if (stack.Send("products/add", new AddProductCommand("banme", -1)).Result.IsSuccessful)
                 {

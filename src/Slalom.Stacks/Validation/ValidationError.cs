@@ -106,5 +106,11 @@ namespace Slalom.Stacks.Validation
 
             return this;
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{this.ErrorType}: {this.Message}";
+        }
     }
 }

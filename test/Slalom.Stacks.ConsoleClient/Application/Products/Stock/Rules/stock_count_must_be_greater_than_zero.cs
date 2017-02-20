@@ -13,7 +13,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Stock.Rules
         {
             if (instance.ItemCount < 5)
             {
-                yield return "Zero";
+                yield return "The stock count must be in multiples of 5.";
             }
         }
     }
