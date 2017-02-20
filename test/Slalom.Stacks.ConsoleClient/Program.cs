@@ -26,7 +26,7 @@ namespace Slalom.Stacks.ConsoleClient
                 });
                 stack.UseSimpleConsoleLogging();
 
-                if (stack.Send("products/add", new AddProductCommand("banme", 15)).Result.IsSuccessful)
+                if (stack.Send("products/add", new AddProductCommand("banme", -1)).Result.IsSuccessful)
                 {
                     stack.Send("products/publish", "{}").Wait();
                 }
