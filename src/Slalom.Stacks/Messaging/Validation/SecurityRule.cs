@@ -6,10 +6,10 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
-    /// Performs security validation on a command.
+    /// Performs security validation on a message.
     /// </summary>
-    /// <typeparam name="TCommand">The command type.</typeparam>
-    public abstract class SecurityRule<TCommand> : ISecurityValidationRule<TCommand> where TCommand : IMessage
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    public abstract class SecurityRule<TMessage> : ISecurityValidationRule<TMessage> where TMessage : IMessage
     {
         /// <summary>
         /// Gets the execution context.
@@ -40,7 +40,7 @@ namespace Slalom.Stacks.Messaging.Validation
 
             this.Context = instance.Context;
 
-            return this.Validate(instance);
+            return this.Validate((TMessage)instance.Message);
         }
 
         /// <summary>
@@ -49,6 +49,6 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <param name="instance">The instance to validate.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        protected abstract IEnumerable<ValidationError> Validate(TCommand instance);
+        protected abstract IEnumerable<ValidationError> Validate(TMessage instance);
     }
 }

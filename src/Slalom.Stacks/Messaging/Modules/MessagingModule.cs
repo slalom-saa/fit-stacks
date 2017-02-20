@@ -39,7 +39,7 @@ namespace Slalom.Stacks.Messaging.Modules
         {
             base.Load(builder);
 
-            builder.Register(c => new ActorSupervisor(c.Resolve<IComponentContext>()))
+            builder.Register(c => new MessageCoordinator(c.Resolve<IComponentContext>()))
                    .AsSelf()
                    .SingleInstance();
 

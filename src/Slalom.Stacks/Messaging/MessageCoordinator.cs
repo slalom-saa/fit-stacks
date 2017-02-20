@@ -14,7 +14,7 @@ namespace Slalom.Stacks.Messaging
     /// Supervises the execution and completion of commands.  Returns a result containing the returned value if the command is successful; 
     /// otherwise, returns information about why the execution was not successful.
     /// </summary>
-    public class ActorSupervisor
+    public class MessageCoordinator
     {
         private readonly IComponentContext _context;
         private readonly Lazy<IExecutionExceptionHandler> _exceptions;
@@ -22,11 +22,11 @@ namespace Slalom.Stacks.Messaging
         private readonly Lazy<IEventStream> _stream;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActorSupervisor"/> class.
+        /// Initializes a new instance of the <see cref="MessageCoordinator"/> class.
         /// </summary>
         /// <param name="context">The configured <see cref="IComponentContext"/> instance.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        public ActorSupervisor(IComponentContext context)
+        public MessageCoordinator(IComponentContext context)
         {
             Argument.NotNull(context, nameof(context));
 

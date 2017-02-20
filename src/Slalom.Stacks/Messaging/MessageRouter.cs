@@ -14,14 +14,14 @@ namespace Slalom.Stacks.Messaging
     public class MessageRouter : IMessageRouter, IEventStream
     {
         private readonly IComponentContext _components;
-        private readonly ActorSupervisor _supervisor;
+        private readonly MessageCoordinator _supervisor;
         private readonly IExecutionContextResolver _context;
         private readonly List<HandlerMapping> _mappings = new List<HandlerMapping>();
 
         public MessageRouter(IComponentContext components, Assembly[] assemblies)
         {
             _components = components;
-            _supervisor = components.Resolve<ActorSupervisor>();
+            _supervisor = components.Resolve<MessageCoordinator>();
             _context = components.Resolve<IExecutionContextResolver>();
             var actors = assemblies.SafelyGetTypes(typeof(IHandle));
 

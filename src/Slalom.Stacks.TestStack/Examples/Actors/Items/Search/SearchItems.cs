@@ -4,7 +4,7 @@ using Slalom.Stacks.TestStack.Examples.Search;
 
 namespace Slalom.Stacks.TestStack.Examples.Actors.Items.Search
 {
-    public class SearchItems : Actor<SearchItemsCommand, IQueryable<ItemSearchResult>>
+    public class SearchItems : UseCaseActor<SearchItemsCommand, IQueryable<ItemSearchResult>>
     {
         public override IQueryable<ItemSearchResult> Execute(SearchItemsCommand message)
         {

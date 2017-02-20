@@ -9,8 +9,7 @@ namespace Slalom.Stacks.Messaging
     {
         public static Type GetRequestType(this Type type)
         {
-            var actorType = type.GetBaseTypes().FirstOrDefault(
-                e => IntrospectionExtensions.GetTypeInfo(e).IsGenericType && (e.GetGenericTypeDefinition() == typeof(Actor<,>) || e.GetGenericTypeDefinition() == typeof(Actor<>)));
+            var actorType = type?.GetInterfaces().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(IHandle<>));
 
             return actorType != null ? actorType.GetGenericArguments()[0] : null;
         }

@@ -6,16 +6,16 @@ using Slalom.Stacks.TestStack.Examples.Domain;
 namespace Slalom.Stacks.TestStack.Examples.Actors.Items.Add
 {
     [Path("items/add")]
-    public class AddItem : Actor<AddItemCommand, AddItemEvent>
+    public class AddItem : UseCaseActor<AddItemCommand, AddItemEvent>
     {
-        public override async Task<AddItemEvent> ExecuteAsync(AddItemCommand message)
+        public override async Task<AddItemEvent> ExecuteAsync(AddItemCommand command)
         {
-            if (message.Name == "error")
+            if (command.Name == "error")
             {
                 throw new Exception("Throwing an example error.");
             }
 
-            var target = Item.Create(message.Name);
+            var target = Item.Create(command.Name);
 
             await this.Domain.AddAsync(target);
 

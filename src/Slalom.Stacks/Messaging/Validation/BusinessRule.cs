@@ -10,11 +10,11 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
-    /// Performs business validation on a command.
+    /// Performs business validation on a message.
     /// </summary>
-    /// <typeparam name="TCommand">The command type.</typeparam>
+    /// <typeparam name="TMessage">The message type.</typeparam>
     /// <seealso cref="IBusinessValidationRule{TCommand}" />
-    public abstract class BusinessRule<TCommand> : IBusinessValidationRule<TCommand> where TCommand : IMessage
+    public abstract class BusinessRule<TMessage> : IBusinessValidationRule<TMessage> where TMessage : IMessage
     {
         /// <summary>
         /// Gets the execution context.
@@ -40,7 +40,7 @@ namespace Slalom.Stacks.Messaging.Validation
 
             this.Context = instance.Context;
 
-            return this.Validate(instance);
+            return this.Validate((TMessage)instance.Message);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
         /// <exception cref="System.NotImplementedException">Thrown when neither validate methods are implemented.</exception>
-        protected virtual IEnumerable<ValidationError> Validate(TCommand instance)
+        protected virtual IEnumerable<ValidationError> Validate(TMessage instance)
         {
             Argument.NotNull(instance, nameof(instance));
 
@@ -69,7 +69,7 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <param name="instance">The instance to validate.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.NotImplementedException">Thrown when neither validate methods are implemented.</exception>
-        public virtual Task<ValidationError> ValidateAsync(TCommand instance)
+        public virtual Task<ValidationError> ValidateAsync(TMessage instance)
         {
             throw new NotImplementedException();
         }
