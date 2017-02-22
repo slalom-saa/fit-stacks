@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{51556D6C-A5D7-4E44-B2DA-7E1E2217C682}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		assets\Package.ps1 = assets\Package.ps1
 		README.md = README.md
 		assets\Restore.ps1 = assets\Restore.ps1
 		assets\stacks.ruleset = assets\stacks.ruleset
