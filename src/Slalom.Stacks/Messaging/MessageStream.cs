@@ -28,7 +28,7 @@ namespace Slalom.Stacks.Messaging
 
             await requests.First().Execute();
 
-            return new MessageResult(requests.First().Context);
+            return new MessageResult(requests.First());
         }
 
 
