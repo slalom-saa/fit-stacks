@@ -17,16 +17,14 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestEntry" /> class.
         /// </summary>
-        /// <param name="instance">The message envelope instance.</param>
+        /// <param name="command">The message.</param>
         /// <param name="result">The result.</param>
-        public RequestEntry(MessageEnvelope instance, MessageExecutionResult result)
+        /// <param name="context">The context.</param>
+        public RequestEntry(IMessage command, MessageContext context)
         {
-            var message = instance.Message;
-            var context = instance.Context;
-
             try
             {
-                this.Payload = JsonConvert.SerializeObject(message, new JsonSerializerSettings
+                this.Payload = JsonConvert.SerializeObject(command, new JsonSerializerSettings
                 {
                     ContractResolver = new CommandContractResolver()
                 });
@@ -35,27 +33,25 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
-            this.IsSuccessful = result.IsSuccessful;
-            this.RequestId = message.Id;
-            this.TimeStamp = message.TimeStamp;
-            this.ValidationErrors = result.ValidationErrors?.ToArray();
-            this.MachineName = context.MachineName;
-            this.Environment = context.Environment;
-            this.ApplicationName = context.ApplicationName;
-            this.SessionId = context.SessionId;
-            this.UserName = context.User?.Identity?.Name;
-            this.Path = context.Path;
-            this.SourceAddress = context.SourceAddress;
-            this.ThreadId = context.ThreadId;
-            this.CorrelationId = context.CorrelationId;
-            this.RaisedException = result.RaisedException;
-            this.Elapsed = result.Elapsed;
-            this.Started = result.Started;
-            this.Completed = result.Completed;
-            this.Actor = result.Handler;
+            //this.IsSuccessful = result.IsSuccessful;
+            //this.RequestName = message.CommandName;
+            //this.RequestId = message.Id;
+            //this.TimeStamp = message.TimeStamp;
+            //this.ValidationErrors = result.ValidationErrors?.ToArray();
+            //this.MachineName = context.MachineName;
+            //this.Environment = context.Environment;
+            //this.ApplicationName = context.ApplicationName;
+            //this.SessionId = context.SessionId;
+            //this.UserName = context.User?.Identity?.Name;
+            //this.Path = context.Path;
+            //this.SourceAddress = context.SourceAddress;
+            //this.ThreadId = context.ThreadId;
+            //this.CorrelationId = context.CorrelationId;
+            //this.Exception = result.Exception;
+            //this.Elapsed = result.Elapsed;
+            //this.Started = result.Started;
+            //this.Completed = result.Completed;
         }
-
-        public string Actor { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the application.
@@ -130,6 +126,12 @@ namespace Slalom.Stacks.Messaging.Logging
         public string RequestId { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the request.
+        /// </summary>
+        /// <value>The name of the request.</value>
+        public string RequestName { get; set; }
+
+        /// <summary>
         /// Gets or sets the session identifier.
         /// </summary>
         /// <value>The session identifier.</value>
@@ -170,11 +172,5 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <value>The validation errors.</value>
         public IEnumerable<ValidationError> ValidationErrors { get; set; }
-
-        /// <summary>
-        /// Gets or sets the parent ID.
-        /// </summary>
-        /// <value>The parent ID.</value>
-        public string Parent { get; set; }
     }
 }

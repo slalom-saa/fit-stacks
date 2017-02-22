@@ -3,13 +3,12 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Slalom.Stacks.Domain;
 using Slalom.Stacks.Serialization;
 
 namespace Slalom.Stacks.Messaging.Serialization
 {
     /// <summary>
-    /// A JSON Contract Resolver for <see cref="Event"/> instances.
+    /// A JSON Contract Resolver for <see cref="IEvent"/> instances.
     /// </summary>
     public class EventContractResolver : BaseContractResolver
     {

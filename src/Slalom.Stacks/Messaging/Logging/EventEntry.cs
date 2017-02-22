@@ -1,6 +1,5 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Runtime;
@@ -10,20 +9,23 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Logging
 {
     /// <summary>
-    /// Represents an event log entry, or information about an event that changed state.
+    /// Represents an audit log entry, or information about an event that changed state.
     /// </summary>
     public class EventEntry
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EventEntry" /> class.
         /// </summary>
-        /// <param name="message">The message.</param>
-        /// <param name="context">The context.</param>
-        public EventEntry(Event message, ExecutionContext context)
+        /// <param name="instance">The event.</param>
+        /// <param name="context">The current context.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
+        public EventEntry(IEvent instance, MessageContext context)
         {
+            Argument.NotNull(instance, nameof(instance));
+
             try
             {
-                this.Payload = JsonConvert.SerializeObject(message, new JsonSerializerSettings
+                this.Payload = JsonConvert.SerializeObject(instance, new JsonSerializerSettings
                 {
                     ContractResolver = new EventContractResolver()
                 });
@@ -32,20 +34,19 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
-            this.EventName = ((IEvent)message).EventName;
-            this.EventId = ((IMessage)message).Id;
-            this.TimeStamp = ((IMessage)message).TimeStamp;
-            this.MachineName = context.MachineName;
-            this.Environment = context.Environment;
-            this.ApplicationName = context.ApplicationName;
-            this.SessionId = context.SessionId;
-            this.UserName = context.User?.Identity?.Name;
-            this.Path = context.Path;
-            this.SourceAddress = context.SourceAddress;
-            this.ThreadId = context.ThreadId;
-            this.CorrelationId = context.CorrelationId;
-            this.EventTypeId = ((IEvent)message).EventTypeId;
-
+            this.EventName = instance.EventName;
+            this.EventId = instance.Id;
+            this.TimeStamp = instance.TimeStamp;
+            //this.MachineName = context.MachineName;
+            //this.Environment = context.Environment;
+            //this.ApplicationName = context.ApplicationName;
+            //this.SessionId = context.SessionId;
+            //this.UserName = context.User?.Identity?.Name;
+            //this.Path = context.Path;
+            //this.SourceAddress = context.SourceAddress;
+            //this.ThreadId = context.ThreadId;
+            //this.CorrelationId = context.CorrelationId;
+            //this.EventTypeId = instance.EventTypeId;
         }
 
         /// <summary>

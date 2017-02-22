@@ -7,9 +7,9 @@ using Slalom.Stacks.Messaging.Exceptions;
 namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
 {
     [Path("products/add")]
-    public class AddProduct : UseCaseActor<AddProductCommand, Product>
+    public class AddProduct : UseCase<AddProductCommand, AddProductEvent>
     {
-        public override async Task<Product> ExecuteAsync(AddProductCommand command)
+        public override async Task<AddProductEvent> ExecuteAsync(AddProductCommand command)
         {
             var target = new Product("name");
 
@@ -23,7 +23,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
                 throw new ChainFailedException(command, stock);
             }
 
-            return target;
+            return new AddProductEvent();
         }
     }
 }

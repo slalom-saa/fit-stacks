@@ -52,9 +52,33 @@ namespace Slalom.Stacks.Validation
         /// <param name="message">The message text.</param>
         /// <param name="type">The validation type.</param>
         public ValidationError(string code, string message, ValidationErrorType type)
+            : this(code, message, null, type)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValidationError"/> class.
+        /// </summary>
+        /// <param name="code">The message code for client consumption.</param>
+        /// <param name="message">The message text.</param>
+        /// <param name="helpUrl">The help URL.</param>
+        public ValidationError(string code, string message, string helpUrl)
+            : this(code, message, helpUrl, ValidationErrorType.None)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValidationError"/> class.
+        /// </summary>
+        /// <param name="code">The message code for client consumption.</param>
+        /// <param name="message">The message text.</param>
+        /// <param name="helpUrl">The help URL.</param>
+        /// <param name="type">The validation type.</param>
+        public ValidationError(string code, string message, string helpUrl, ValidationErrorType type)
         {
             this.Code = code;
             this.Message = message;
+            this.HelpUrl = helpUrl;
             this.ErrorType = type;
         }
 
@@ -67,15 +91,6 @@ namespace Slalom.Stacks.Validation
         public string Code { get; private set; }
 
         /// <summary>
-        /// Gets validation type.
-        /// </summary>
-        /// <value>
-        /// The validation type.
-        /// </value>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public ValidationErrorType ErrorType { get; private set; }
-
-        /// <summary>
         /// Gets the message text.
         /// </summary>
         /// <value>
@@ -84,16 +99,21 @@ namespace Slalom.Stacks.Validation
         public string Message { get; private set; }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="System.String"/> to <see cref="ValidationError"/>.
+        /// Gets the help URL.
         /// </summary>
-        /// <param name="message">The message text.</param>
-        /// <returns>
-        /// The result of the conversion.
-        /// </returns>
-        public static implicit operator ValidationError(string message)
-        {
-            return new ValidationError(message);
-        }
+        /// <value>
+        /// The help URL.
+        /// </value>
+        public string HelpUrl { get; private set; }
+
+        /// <summary>
+        /// Gets validation type.
+        /// </summary>
+        /// <value>
+        /// The validation type.
+        /// </value>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ValidationErrorType ErrorType { get; private set; }
 
         /// <summary>
         /// Adds the type to the message.
@@ -107,10 +127,16 @@ namespace Slalom.Stacks.Validation
             return this;
         }
 
-        /// <inheritdoc />
-        public override string ToString()
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="System.String"/> to <see cref="ValidationError"/>.
+        /// </summary>
+        /// <param name="message">The message text.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator ValidationError(string message)
         {
-            return $"{this.ErrorType}: {this.Message}";
+            return new ValidationError(message);
         }
     }
 }

@@ -9,7 +9,7 @@ using Slalom.Stacks.Reflection;
 namespace Slalom.Stacks.Messaging.Serialization
 {
     /// <summary>
-    /// A JSON Contract Resolver for <see cref="Message"/> instances.
+    /// A JSON Contract Resolver for <see cref="Command"/> instances.
     /// </summary>
     public class CommandContractResolver : BaseContractResolver
     {
@@ -23,7 +23,7 @@ namespace Slalom.Stacks.Messaging.Serialization
         {
             var prop = base.CreateProperty(member, memberSerialization);
             var declaringType = (member as PropertyInfo)?.DeclaringType;
-            if (declaringType == typeof(Message))
+            if (declaringType == typeof(Command))
             {
                 prop.Ignored = true;
                 return prop;

@@ -1,4 +1,5 @@
 ﻿using Slalom.Stacks.Domain;
+using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
 {

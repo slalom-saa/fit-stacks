@@ -9,7 +9,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Stock.Rules
 {
     public class stock_count_must_be_greater_than_zero : BusinessRule<StockProductCommand>
     {
-        protected override IEnumerable<ValidationError> Validate(StockProductCommand instance)
+        public override IEnumerable<ValidationError> Validate(StockProductCommand instance)
         {
             if (instance.ItemCount < 5)
             {

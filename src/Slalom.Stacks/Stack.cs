@@ -1,12 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using Autofac;
-using System.Linq;
-using System.Threading.Tasks;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks
@@ -18,7 +16,7 @@ namespace Slalom.Stacks
     public class Stack : IDisposable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Stack"/> class.
+        /// Initializes a new instance of the <see cref="Stack" /> class.
         /// </summary>
         /// <param name="markers">Item markers used to identify assemblies.</param>
         public Stack(params object[] markers)
@@ -52,66 +50,31 @@ namespace Slalom.Stacks
         public Assembly[] Assemblies { get; }
 
         /// <summary>
-        /// Gets the configured <see cref="IDomainFacade"/>.
+        /// Gets the configured <see cref="IDomainFacade" />.
         /// </summary>
-        /// <value>The configured <see cref="IDomainFacade"/>.</value>
+        /// <value>The configured <see cref="IDomainFacade" />.</value>
         public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
 
         /// <summary>
-        /// Gets the configured <see cref="ISearchFacade"/>.
+        /// Gets the configured <see cref="ISearchFacade" />.
         /// </summary>
-        /// <value>The configured <see cref="ISearchFacade"/>.</value>
+        /// <value>The configured <see cref="ISearchFacade" />.</value>
         public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
 
         /// <summary>
-        /// Gets the configured <see cref="ILogger"/>.
+        /// Gets the configured <see cref="ILogger" />.
         /// </summary>
-        /// <value>The configured <see cref="ILogger"/>.</value>
+        /// <value>The configured <see cref="ILogger" />.</value>
         public ILogger Logger => this.Container.Resolve<ILogger>();
 
         /// <summary>
-        /// Gets the configured <see cref="IContainer"/>.
+        /// Gets the configured <see cref="IContainer" />.
         /// </summary>
         public IContainer Container { get; }
 
-        /// <summary>
-        /// Sends the specified command with the specified timeout.
-        /// </summary>
-        /// <param name="command">The command to send.</param>
-        /// <param name="timeout">The timeout.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task<MessageExecutionResult> Send(IMessage command, TimeSpan? timeout = null)
-        {
-            return this.Container.Resolve<IMessageRouter>().Send(command, timeout);
-        }
-
-        /// <summary>
-        /// Sends the specified command with the specified timeout.
-        /// </summary>
-        /// <param name="path">The request path.</param>
-        /// <param name="command">The command to send.</param>
-        /// <param name="timeout">The timeout.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task<MessageExecutionResult> Send(string path, IMessage command, TimeSpan? timeout = null)
-        {
-            return this.Container.Resolve<IMessageRouter>().Send(path, command, timeout);
-        }
-
-        /// <summary>
-        /// Sends the specified command with the specified timeout.
-        /// </summary>
-        /// <param name="path">The request path.</param>
-        /// <param name="command">The command to send.</param>
-        /// <param name="timeout">The timeout.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task<MessageExecutionResult> Send(string path, string command, TimeSpan? timeout = null)
-        {
-            return this.Container.Resolve<IMessageRouter>().Send(path, command, timeout);
-        }
-
         #region IDisposable Implementation
 
-        bool _disposed;
+        private bool _disposed;
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -123,7 +86,7 @@ namespace Slalom.Stacks
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="Stack"/> class.
+        /// Finalizes an instance of the <see cref="Stack" /> class.
         /// </summary>
         ~Stack()
         {
@@ -155,16 +118,5 @@ namespace Slalom.Stacks
         }
 
         #endregion
-
-        /// <summary>
-        /// Sends the specified command with the specified timeout.
-        /// </summary>
-        /// <param name="path">The request path.</param>
-        /// <param name="timeout">The timeout.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task<MessageExecutionResult> Send(string path, TimeSpan? timeout = null)
-        {
-            return this.Container.Resolve<IMessageRouter>().Send(path, timeout);
-        }
     }
 }

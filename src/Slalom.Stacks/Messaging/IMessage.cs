@@ -17,12 +17,6 @@ namespace Slalom.Stacks.Messaging
         /// Gets the message timestamp.
         /// </summary>
         /// <value>The message timestamp.</value>
-        DateTimeOffset TimeStamp { get; }
-
-        /// <summary>
-        /// Gets the message type.
-        /// </summary>
-        /// <value>The message type.</value>
-        Type Type { get; set; }
+        DateTimeOffset TimeStamp { get; }   
     }
 }

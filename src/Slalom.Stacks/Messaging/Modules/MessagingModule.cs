@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac;
-using Slalom.Stacks.Logging;
-using Slalom.Stacks.Messaging.Exceptions;
-using Slalom.Stacks.Messaging.Logging;
+using Slalom.Stacks.Messaging.Pipeline;
+using Slalom.Stacks.Messaging.Routing;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
 using Module = Autofac.Module;
@@ -39,23 +37,21 @@ namespace Slalom.Stacks.Messaging.Modules
         {
             base.Load(builder);
 
-            builder.Register(c => new MessageCoordinator(c.Resolve<IComponentContext>()))
-                   .AsSelf()
+            builder.Register(c => new MessageStream(c.Resolve<IComponentContext>()))
+                   .As<IMessageStream>()
                    .SingleInstance();
 
-            builder.Register(c => new MessageRouter(c.Resolve<IComponentContext>(), _assemblies))
-                   .AsSelf()
-                   .As<IMessageRouter>()
-                   .As<IEventStream>()
-                   .SingleInstance();
+            builder.RegisterAssemblyTypes(_assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
+                .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
+                .AsSelf();
 
-            builder.Register(c => new ExecutionExceptionHandler())
-                   .As<IExecutionExceptionHandler>()
-                   .SingleInstance();
+            builder.RegisterType<MessageExecutionPipeline>()
+                .AsImplementedInterfaces();
 
-            builder.Register(c => new CommandLogger(c.Resolve<IEnumerable<IRequestStore>>(), c.Resolve<IEnumerable<IEventStore>>(), c.Resolve<ILogger>()))
-                   .As<ICommandLogger>()
-                   .SingleInstance();
+            builder.RegisterType<RequestRouting>()
+                .AsImplementedInterfaces();
+
+            
 
             builder.RegisterGeneric(typeof(CommandValidator<>));
 

@@ -8,14 +8,14 @@ namespace Slalom.Stacks.Messaging.Exceptions
 {
     public class ChainFailedException : Exception
     {
-        public IMessage Command { get; }
+        public IMessage Message { get; }
 
-        public MessageExecutionResult Child { get; }
+        public MessageResult Child { get; }
 
-        public ChainFailedException(IMessage command, MessageExecutionResult child) 
-            : base($"Failed to complete command {command.Id} because of a failed dependent command {child.MessageId}.", child.RaisedException ?? new ValidationException(child.ValidationErrors.ToArray()))
+        public ChainFailedException(IMessage message, MessageResult child)
+            : base($"Failed to complete message {message.Id} because of a failed dependent message {child.RequestId}.", child.RaisedException ?? new ValidationException(child.ValidationErrors.ToArray()))
         {
-            this.Command = command;
+            this.Message = message;
             this.Child = child;
         }
     }

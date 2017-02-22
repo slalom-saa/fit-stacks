@@ -6,7 +6,7 @@ using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Products.Stock
 {
-    public class StockProduct : UseCaseActor<StockProductCommand>
+    public class StockProduct : UseCase<StockProductCommand>
     {
         public override void Execute(StockProductCommand message)
         {

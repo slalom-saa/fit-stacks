@@ -6,10 +6,9 @@ using Newtonsoft.Json;
 using Slalom.Stacks.ConsoleClient.Application.Products.Add;
 using Slalom.Stacks.ConsoleClient.Aspects;
 using Slalom.Stacks.Logging;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Serialization;
-using Slalom.Stacks.TestStack.Examples.Actors.Items.Add;
-using Slalom.Stacks.TestStack.Examples.Domain;
 
 namespace Slalom.Stacks.ConsoleClient
 {
@@ -21,15 +20,13 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 stack.Use(builder =>
                 {
-                    //builder.RegisterInstance(new EventStore()).As<IEventStore>();
-                    builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
+                    builder.RegisterInstance(new EventStore()).As<IEventStore>();
+                    //builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
                 });
-                //stack.UseSimpleConsoleLogging();
+                stack.UseSimpleConsoleLogging();
 
-                if (stack.Send("products/add", new AddProductCommand("banme", -1)).Result.IsSuccessful)
-                {
-                    stack.Send("products/publish", "{}").Wait();
-                }
+                stack.Send("products/add", new AddProductCommand("banme", 15)).Wait();
+                //stack.Send("products/publish", "{}").Wait();
 
                 //Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
 

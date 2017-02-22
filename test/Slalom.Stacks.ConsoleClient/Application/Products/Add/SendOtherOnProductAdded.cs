@@ -3,7 +3,7 @@ using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
 {
-    public class SendOtherOnProductAdded : EventActor<AddProductEvent>
+    public class SendOtherOnProductAdded : UseCase<AddProductEvent>
     {
         public override void Execute(AddProductEvent message)
         {

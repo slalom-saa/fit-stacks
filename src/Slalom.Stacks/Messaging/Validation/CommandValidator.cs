@@ -9,17 +9,17 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
-    /// Validates a command using input, security and business rules.
+    /// Validates a message using input, security and business rules.
     /// </summary>
-    public class CommandValidator<TCommand> : ICommandValidator where TCommand : IMessage
+    public class CommandValidator<TCommand> : ICommandValidator where TCommand : ICommand
     {
-        private readonly IEnumerable<IValidationRule<TCommand, ExecutionContext>> _rules;
+        private readonly IEnumerable<IValidationRule<TCommand>> _rules;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandValidator{TCommand}"/> class.
         /// </summary>
-        /// <param name="rules">The rules for the command.</param>
-        public CommandValidator(IEnumerable<IValidationRule<TCommand, ExecutionContext>> rules)
+        /// <param name="rules">The rules for the message.</param>
+        public CommandValidator(IEnumerable<IValidationRule<TCommand>> rules)
         {
             Argument.NotNull(rules, nameof(rules));
 
@@ -27,13 +27,16 @@ namespace Slalom.Stacks.Messaging.Validation
         }
 
         /// <summary>
-        /// Validates the specified command.
+        /// Validates the specified message.
         /// </summary>
+        /// <param name="command">The message to validate.</param>
         /// <returns>The <see cref="ValidationError">messages</see> returned from validation routines.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
-        public Task<IEnumerable<ValidationError>> Validate(MessageEnvelope instance)
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
+        public Task<IEnumerable<ValidationError>> Validate(ICommand command)
         {
-            Argument.NotNull(instance, nameof(instance));
+            Argument.NotNull(command, nameof(command));
+
+            var instance = (TCommand)command;
 
             var input = this.CheckInputRules(instance).ToList();
             if (input.Any())
@@ -59,13 +62,14 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <summary>
         /// Checks all discovered business rules for validation errors.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="command">The message to validate.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        protected virtual IEnumerable<ValidationError> CheckBusinessRules(MessageEnvelope instance)
+        protected virtual IEnumerable<ValidationError> CheckBusinessRules(TCommand command)
         {
-            foreach (var rule in _rules.OfType<IBusinessValidationRule<TCommand>>())
+            foreach (var rule in _rules.OfType<IBusinessRule<TCommand>>())
             {
-                var result = (rule.Validate(instance)).ToList();
+                var result = (rule.Validate(command)).ToList();
                 if (result.Any())
                 {
                     return result;
@@ -77,24 +81,25 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <summary>
         /// Checks all discovered input rules for validation errors.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="command">The message to validate.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        protected virtual IEnumerable<ValidationError> CheckInputRules(MessageEnvelope instance)
+        protected virtual IEnumerable<ValidationError> CheckInputRules(TCommand command)
         {
             var target = new List<ValidationError>();
-            foreach (var rule in _rules.OfType<IInputValidationRule<TCommand>>())
+            foreach (var rule in _rules.OfType<IInputRule<TCommand>>())
             {
-                target.AddRange(rule.Validate(instance));
+                target.AddRange(rule.Validate(command));
             }
-            foreach (var property in instance.Message.Type.GetProperties())
+            foreach (var property in command.Type.GetProperties())
             {
                 foreach (var attribute in property.GetCustomAttributes<ValidationAttribute>())
                 {
-                    if (!attribute.IsValid(property.GetValue(instance.Message)))
+                    if (!attribute.IsValid(property.GetValue(command)))
                     {
                         if (attribute.Code == null)
                         {
-                            attribute.Code = $"{instance.Message.Type.Name}.{property.Name}.{attribute.GetType().Name.Replace("Attribute", "")}";
+                            attribute.Code = $"{command.Type.Name}.{property.Name}.{attribute.GetType().Name.Replace("Attribute", "")}";
                         }
                         target.Add(attribute.ValidationError);
                     }
@@ -107,13 +112,14 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <summary>
         /// Checks all discovered security rules for validation errors.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="command">The message to validate.</param>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        protected virtual IEnumerable<ValidationError> CheckSecurityRules(MessageEnvelope instance)
+        protected virtual IEnumerable<ValidationError> CheckSecurityRules(TCommand command)
         {
-            foreach (var rule in _rules.OfType<ISecurityValidationRule<TCommand>>())
+            foreach (var rule in _rules.OfType<ISecurityRule<TCommand>>())
             {
-                var result = (rule.Validate(instance)).ToList();
+                var result = (rule.Validate(command)).ToList();
                 if (result.Any())
                 {
                     return result;

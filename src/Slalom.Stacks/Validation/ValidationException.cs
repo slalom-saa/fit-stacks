@@ -14,15 +14,15 @@ namespace Slalom.Stacks.Validation
         /// </summary>
         /// <param name="errors">The validation errors to add to the exception.</param>
         public ValidationException(params ValidationError[] errors)
-            : base(string.Join(Environment.NewLine, errors.Select(e => e.ToString())))
+            : base(string.Join(Environment.NewLine, errors.Select(e => e.Message)))
         {
             this.ValidationErrors = errors;
         }
 
         /// <summary>
-        /// Gets the validation messages.
+        /// Gets the validation errors.
         /// </summary>
-        /// <value>The validation messages.</value>
+        /// <value>The validation errors.</value>
         public ValidationError[] ValidationErrors { get; private set; }
     }
 }

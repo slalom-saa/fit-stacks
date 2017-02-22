@@ -42,9 +42,9 @@ namespace Slalom.Stacks.TestStack
             return Task.FromResult(0);
         }
 
-        public MessageExecutionResult Send(IMessage command)
+        public MessageResult Send(ICommand command)
         {
-            return base.Send(command).Result;
+            return base.Container.Resolve<IMessageStream>().Send(command).Result;
         }
 
         public void UseScenario(Scenario scenario)

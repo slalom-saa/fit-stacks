@@ -26,12 +26,12 @@ namespace Slalom.Stacks.Messaging.Modules
             base.Load(builder);
 
             builder.RegisterAssemblyTypes(_assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<,>)))
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<>)))
                    .As(instance => instance.GetBaseAndContractTypes())
                    .PropertiesAutowired(AllProperties.Instance);
 
             builder.RegisterAssemblyTypes(_assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandle)))
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandle<>)))
                    .As(instance => instance.GetBaseAndContractTypes())
                    .AsSelf()
                    .PropertiesAutowired(AllProperties.Instance);
