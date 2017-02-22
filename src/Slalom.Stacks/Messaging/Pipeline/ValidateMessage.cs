@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Messaging.Validation;
 
-namespace Slalom.Stacks.Messaging.Pipeline.Steps
+namespace Slalom.Stacks.Messaging.Pipeline
 {
     public class ValidateMessage : IMessageExecutionStep
     {

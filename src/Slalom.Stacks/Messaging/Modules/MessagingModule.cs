@@ -45,9 +45,6 @@ namespace Slalom.Stacks.Messaging.Modules
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 
-            builder.RegisterType<MessageExecutionPipeline>()
-                .AsImplementedInterfaces();
-
             builder.RegisterType<RequestRouting>()
                 .AsImplementedInterfaces();
 

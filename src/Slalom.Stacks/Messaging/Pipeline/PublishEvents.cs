@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 
-namespace Slalom.Stacks.Messaging.Pipeline.Steps
+namespace Slalom.Stacks.Messaging.Pipeline
 {
     public class PublishEvents : IMessageExecutionStep
     {
@@ -20,6 +19,10 @@ namespace Slalom.Stacks.Messaging.Pipeline.Steps
             if (context.IsSuccessful)
             {
                 _eventStream.Publish(context.RaisedEvents, context);
+                if (context.Response is IEvent)
+                {
+                    _eventStream.Publish((IEvent)context.Response, context);
+                }
             }
             return Task.FromResult(0);
         }

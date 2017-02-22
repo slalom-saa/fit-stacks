@@ -48,12 +48,12 @@ namespace Slalom.Stacks.Search
             builder.Register(c => new SearchFacade(c.Resolve<IComponentContext>()))
                 .AsImplementedInterfaces()
                 .AsSelf()
-                .PropertiesAutowired(AllProperties.Instance)
+                .PropertiesAutowired()
                 .SingleInstance();
 
             builder.RegisterGeneric(typeof(SearchIndex<>))
                 .As(typeof(ISearchIndex<>))
-                .PropertiesAutowired(AllProperties.Instance)
+                .PropertiesAutowired()
                 .InstancePerDependency();
 
             builder.RegisterAssemblyTypes(this.Assemblies)
@@ -63,7 +63,7 @@ namespace Slalom.Stacks.Search
                     var interfaces = instance.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(ISearchIndex<>));
                     return interfaces.Select(e => typeof(ISearchIndex<>).MakeGenericType(e.GetGenericArguments()[0]));
                 })
-                .PropertiesAutowired(AllProperties.Instance)
+                .PropertiesAutowired()
                 .InstancePerDependency();
         }
     }

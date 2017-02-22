@@ -6,7 +6,7 @@ using Autofac;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging.Logging;
 
-namespace Slalom.Stacks.Messaging.Pipeline.Steps
+namespace Slalom.Stacks.Messaging.Pipeline
 {
     public class LogCompletion : IMessageExecutionStep
     {

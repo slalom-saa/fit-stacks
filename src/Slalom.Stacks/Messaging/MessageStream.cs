@@ -11,47 +11,46 @@ namespace Slalom.Stacks.Messaging
 {
     public class MessageStream : IMessageStream
     {
-        private Lazy<IMessageExecutionPipeline> _pipe;
         private Lazy<IExecutionContextResolver> _executionContext;
         private Lazy<IRequestRouting> _routing;
 
         public MessageStream(IComponentContext components)
         {
-            _pipe = new Lazy<IMessageExecutionPipeline>(components.Resolve<IMessageExecutionPipeline>);
             _executionContext = new Lazy<IExecutionContextResolver>(components.Resolve<IExecutionContextResolver>);
             _routing = new Lazy<IRequestRouting>(components.Resolve<IRequestRouting>);
         }
 
-        public async Task<MessageResult> Send(ICommand command, MessageContext context = null, TimeSpan? timeout = null)
+        public async Task<MessageResult> Send(ICommand instance, MessageContext context = null, TimeSpan? timeout = null)
         {
-            var requests = _routing.Value.BuildRequests(command).ToList();
+            var requests = _routing.Value.BuildRequests(instance).ToList();
             if (requests.Count() != 1)
             {
                 throw new Exception("TBD");
             }
 
             context = new MessageContext(requests.Single(), _executionContext.Value.Resolve(), context);
-            await _pipe.Value.Execute(command, context);
+
+            await requests.First().Recipient.Handle(instance, context);
 
             return new MessageResult(context);
         }
 
 
-        public async Task Publish(IEvent command, MessageContext context = null)
+        public async Task Publish(IEvent instance, MessageContext context = null)
         {
-            var requests = _routing.Value.BuildRequests(command);
+            var requests = _routing.Value.BuildRequests(instance);
 
             foreach (var request in requests)
             {
                 context = new MessageContext(request, _executionContext.Value.Resolve(), context);
 
-                await _pipe.Value.Execute(command, context);
+                await request.Recipient.Handle(instance, context);
             }
         }
 
-        public async Task Publish(IEnumerable<IEvent> command, MessageContext context = null)
+        public async Task Publish(IEnumerable<IEvent> instance, MessageContext context = null)
         {
-            foreach (var item in command)
+            foreach (var item in instance)
             {
                 await this.Publish(item, context);
             }

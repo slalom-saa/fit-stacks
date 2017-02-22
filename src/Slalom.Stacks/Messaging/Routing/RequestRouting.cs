@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Messaging.Routing
             var handlers = _components.ResolveAll(typeof(IHandle<>).MakeGenericType(command.GetType()));
             foreach (var item in handlers)
             {
-                yield return new Request(item.GetType().Name, command, new RequestHandlerReference(item));
+                yield return new Request(item.GetType().Name, command, new IHandleRequestHandler(item));
             }
         }
     }

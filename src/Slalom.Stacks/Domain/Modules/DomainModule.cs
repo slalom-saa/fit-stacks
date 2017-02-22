@@ -45,7 +45,7 @@ namespace Slalom.Stacks.Domain.Modules
 
             builder.RegisterGeneric(typeof(Repository<>))
                    .As(typeof(IRepository<>))
-                   .PropertiesAutowired(AllProperties.Instance)
+                   .PropertiesAutowired()
                    .SingleInstance();
         }
     }

@@ -3,29 +3,22 @@ using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Messaging.Routing
 {
-    public class RequestHandlerReference : IRequestHandler, IUseMessageContext
+    public class IHandleRequestHandler : IRequestHandler
     {
         private readonly object _instance;
 
-        public RequestHandlerReference(object instance)
+        public IHandleRequestHandler(object instance)
         {
             _instance = instance;
         }
 
-        public Task Handle(object instance)
+        public Task Handle(object instance, MessageContext context)
         {
             if (_instance is IUseMessageContext)
             {
-                ((IUseMessageContext) _instance).SetContext(this.Context);
+                ((IUseMessageContext) _instance).UseContext(context);
             }
             return (Task)typeof(IHandle<>).MakeGenericType(instance.GetType()).GetMethod("Handle").Invoke(_instance, new[] { instance });
         }
-
-        public void SetContext(MessageContext context)
-        {
-            this.Context = context;
-        }
-
-        public MessageContext Context { get; private set; }
     }
 }

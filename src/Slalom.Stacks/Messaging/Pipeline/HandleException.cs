@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Messaging.Pipeline.Steps
+namespace Slalom.Stacks.Messaging.Pipeline
 {
     public class HandleException : IMessageExecutionStep
     {

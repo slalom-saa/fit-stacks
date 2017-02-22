@@ -9,10 +9,10 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     public interface IMessageStream
     {
-        Task<MessageResult> Send(ICommand command, MessageContext context = null, TimeSpan? timeout = null);
+        Task<MessageResult> Send(ICommand instance, MessageContext context = null, TimeSpan? timeout = null);
 
-        Task Publish(IEvent command, MessageContext context = null);
+        Task Publish(IEvent instance, MessageContext context = null);
 
-        Task Publish(IEnumerable<IEvent> command, MessageContext context = null);
+        Task Publish(IEnumerable<IEvent> instance, MessageContext context = null);
     }
 }
