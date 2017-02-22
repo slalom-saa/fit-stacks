@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Autofac;
+using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Messaging.Routing
 {
@@ -12,12 +13,15 @@ namespace Slalom.Stacks.Messaging.Routing
             _components = components;
         }
 
-        public IEnumerable<Request> BuildRequests(IMessage command)
+        public IEnumerable<Request> BuildRequests(IMessage command, MessageContext parent = null)
         {
+            var executionContext = _components.Resolve<IExecutionContextResolver>().Resolve();;
             var handlers = _components.ResolveAll(typeof(IHandle<>).MakeGenericType(command.GetType()));
             foreach (var item in handlers)
             {
-                yield return new Request(item.GetType().Name, command, new IHandleRequestHandler(item));
+                var context = new MessageContext(command.Id, item.GetType().Name, null, executionContext, parent);
+
+                yield return new Request(command, new IHandleRequestHandler(item), context);
             }
         }
     }

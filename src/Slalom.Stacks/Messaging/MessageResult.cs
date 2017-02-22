@@ -24,11 +24,11 @@ namespace Slalom.Stacks.Messaging
             this.RaisedException = context.Exception;
             this.Response = context.Response;
             this.ValidationErrors = context.ValidationErrors.ToList();
-            this.RequestId = context.Request.Message.Id;
+            this.RequestId = context.RequestId;
         }
 
         /// <summary>
-        /// Gets or sets the date and time completed.
+        /// Gets the date and time completed.
         /// </summary>
         /// <value>The date and time completed.</value>
         public DateTimeOffset? Completed { get; }

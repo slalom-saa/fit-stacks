@@ -29,7 +29,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
                 tasks.AddRange(_events.Select(e => e.AppendAsync(new EventEntry(item, context))));
             }
 
-            var name = context.Request.Name;
+            var name = context.RequestName;
             if (!context.IsSuccessful)
             {
                 if (context.Exception != null)
