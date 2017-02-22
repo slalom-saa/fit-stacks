@@ -12,7 +12,7 @@ namespace Slalom.Stacks.Messaging.Routing
             _instance = instance;
         }
 
-        public Task Handle(object instance, MessageContext context)
+        public Task Handle(IMessage instance, MessageContext context)
         {
             if (_instance is IUseMessageContext)
             {

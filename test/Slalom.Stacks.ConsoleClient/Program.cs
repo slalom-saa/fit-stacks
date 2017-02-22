@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.ConsoleClient.Application.Products.Add;
@@ -12,12 +13,36 @@ using Slalom.Stacks.Messaging.Serialization;
 
 namespace Slalom.Stacks.ConsoleClient
 {
+    public class A
+    {
+        public AddProduct Instance { get; }
+
+        public A(AddProduct instance)
+        {
+            this.Instance = instance;
+        }
+
+        public Task ExecuteAsync(AddProductCommand addProductCommand)
+        {
+            return this.Instance.ExecuteAsync(addProductCommand);
+        }
+    }
+
     public class Program
     {
         public static void Main(string[] args)
         {
             using (var stack = new Stack(typeof(Program)))
             {
+                //stack.Use(builder =>
+                //{
+                //    builder.RegisterType<A>();
+                //});
+
+                //var x = stack.Container.Resolve<A>();
+
+                //x.ExecuteAsync(new AddProductCommand("Asdf", 444)).Wait();
+
                 stack.Use(builder =>
                 {
                     builder.RegisterInstance(new EventStore()).As<IEventStore>();
