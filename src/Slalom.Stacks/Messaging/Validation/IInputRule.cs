@@ -9,7 +9,7 @@ namespace Slalom.Stacks.Messaging.Validation
     /// Defines a contract for input validation of a message.
     /// </summary>
     /// <typeparam name="TValue">The type of the message to validate.</typeparam>
-    public interface IInputRule<in TValue> : IValidationRule<TValue> where TValue : ICommand
+    public interface IInputRule<in TValue> : IValidate<TValue> where TValue : ICommand
     {
     }
 }

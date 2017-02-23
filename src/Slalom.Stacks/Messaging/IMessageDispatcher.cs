@@ -7,7 +7,7 @@ namespace Slalom.Stacks.Messaging
     /// <summary>
     /// TBD.
     /// </summary>
-    public interface IMessageStream
+    public interface IMessageDispatcher
     {
         Task<MessageResult> Send(ICommand instance, MessageContext context = null, TimeSpan? timeout = null);
 

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging.Pipeline;
-using Slalom.Stacks.Messaging.Routing;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Validation;
 
@@ -86,7 +85,7 @@ namespace Slalom.Stacks.Messaging
         protected IComponentContext Components { get; set; }
 
         protected MessageContext Context { get; set; }
-
+            
         protected IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
 
         protected ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
@@ -125,7 +124,7 @@ namespace Slalom.Stacks.Messaging
 
         protected Task<MessageResult> Send(ICommand message)
         {
-            var stream = this.Components.Resolve<IMessageStream>();
+            var stream = this.Components.Resolve<IMessageDispatcher>();
 
             return stream.Send(message, this.Context);
         }

@@ -17,22 +17,29 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public static void Main(string[] args)
         {
-            using (var stack = new Stack(typeof(Program)))
+            try
             {
-                stack.Use(builder =>
+                using (var stack = new Stack(typeof(Program)))
                 {
-                    builder.RegisterInstance(new EventStore()).As<IEventStore>();
-                    //builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
-                });
-                stack.UseSimpleConsoleLogging();
+                    stack.Use(builder =>    
+                    {
+                        builder.RegisterInstance(new EventStore()).As<IEventStore>();
+                        //builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
+                    });
+                    stack.UseSimpleConsoleLogging();
 
-                stack.Send("products/add", new AddProductCommand("banme", 15)).Wait();
-                //stack.Send("products/publish", "{}").Wait();
+                    stack.Send("products/add", new AddProductCommand("banme", 15)).Wait();
+                    //stack.Send("products/publish", "{}").Wait();
 
-                //Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+                    //Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
 
-                Console.WriteLine("Complete");
-                Console.ReadKey();
+                    Console.WriteLine("Complete");
+                    Console.ReadKey();
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
             }
         }
     }

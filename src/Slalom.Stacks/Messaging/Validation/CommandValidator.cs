@@ -13,13 +13,13 @@ namespace Slalom.Stacks.Messaging.Validation
     /// </summary>
     public class CommandValidator<TCommand> : ICommandValidator where TCommand : ICommand
     {
-        private readonly IEnumerable<IValidationRule<TCommand>> _rules;
+        private readonly IEnumerable<IValidate<TCommand>> _rules;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandValidator{TCommand}"/> class.
         /// </summary>
         /// <param name="rules">The rules for the message.</param>
-        public CommandValidator(IEnumerable<IValidationRule<TCommand>> rules)
+        public CommandValidator(IEnumerable<IValidate<TCommand>> rules)
         {
             Argument.NotNull(rules, nameof(rules));
 

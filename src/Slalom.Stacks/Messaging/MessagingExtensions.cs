@@ -14,7 +14,7 @@ namespace Slalom.Stacks.Messaging
     {
         public static Task Send(this Stack instance, string path, ICommand command, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageStream>().Send(command, timeout: timeout);
+            return instance.Container.Resolve<IMessageDispatcher>().Send(command, timeout: timeout);
         }
 
         /// <summary>

@@ -2,26 +2,6 @@
     $Configuration = "DEBUG"
 )
 
-function Go ($Path) {
-    Push-Location $Path
-
-    Remove-Item .\Bin -Force -Recurse
-    Increment-Version
-    dotnet build
-    dotnet pack --no-build --configuration $Configuration
-    copy .\bin\$Configuration\*.nupkg c:\nuget\
-
-    Pop-Location
-}
-
-Push-Location $PSScriptRoot
-
-Go ..\src\Slalom.Stacks
-Go ..\src\Slalom.Stacks.TestStack
-
-Pop-Location
-
-
 
 function Increment-Version() {
     $jsonpath = 'project.json'
@@ -56,3 +36,24 @@ function Format-Json([Parameter(Mandatory, ValueFromPipeline)][String] $json) {
       $line
   }) -Join "`n"
 }
+
+function Go ($Path) {
+    Push-Location $Path
+
+    Remove-Item .\Bin -Force -Recurse
+    Increment-Version
+    dotnet build
+    dotnet pack --no-build --configuration $Configuration
+    copy .\bin\$Configuration\*.nupkg c:\nuget\
+
+    Pop-Location
+}
+
+Push-Location $PSScriptRoot
+
+Go ..\src\Slalom.Stacks
+Go ..\src\Slalom.Stacks.TestStack
+
+Pop-Location
+
+

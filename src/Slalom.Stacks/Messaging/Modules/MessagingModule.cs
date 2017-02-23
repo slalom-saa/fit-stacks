@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using Autofac;
 using Slalom.Stacks.Messaging.Pipeline;
-using Slalom.Stacks.Messaging.Routing;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
 using Module = Autofac.Module;
@@ -37,18 +36,14 @@ namespace Slalom.Stacks.Messaging.Modules
         {
             base.Load(builder);
 
-            builder.Register(c => new MessageStream(c.Resolve<IComponentContext>()))
-                   .As<IMessageStream>()
+            builder.Register(c => new MessageDispatcher(c.Resolve<IComponentContext>()))
+                   .As<IMessageDispatcher>()
                    .SingleInstance();
 
             builder.RegisterAssemblyTypes(_assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 
-            builder.RegisterType<RequestRouting>()
-                .AsImplementedInterfaces();
-
-            
 
             builder.RegisterGeneric(typeof(CommandValidator<>));
 
