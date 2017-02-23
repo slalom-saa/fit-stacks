@@ -18,6 +18,7 @@ namespace Slalom.Stacks.Messaging
             this.RequestId = requestId;
             this.RequestName = requestName;
             this.Path = path;
+            this.Execution = execution;
         }
 
         public object Response { get; set; }
@@ -60,6 +61,8 @@ namespace Slalom.Stacks.Messaging
         public string RequestName { get; }
 
         public string Path { get; }
+
+        public ExecutionContext Execution { get; }
 
         public void AddValidationErrors(IEnumerable<ValidationError> results)
         {

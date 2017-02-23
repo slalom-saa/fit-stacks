@@ -9,7 +9,11 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     public interface IMessageDispatcher
     {
-        Task<MessageResult> Send(ICommand instance, MessageContext context = null, TimeSpan? timeout = null);
+        Task<MessageResult> Send(ICommand command, MessageContext context = null, TimeSpan? timeout = null);
+
+        Task<MessageResult> Send(string path, ICommand command, MessageContext context = null, TimeSpan? timeout = null);
+
+        Task<MessageResult> Send(string path, string command, MessageContext context = null, TimeSpan? timeout = null);
 
         Task Publish(IEvent instance, MessageContext context = null);
 

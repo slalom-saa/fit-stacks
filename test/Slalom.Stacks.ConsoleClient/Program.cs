@@ -23,13 +23,13 @@ namespace Slalom.Stacks.ConsoleClient
                 {
                     stack.Use(builder =>    
                     {
-                        builder.RegisterInstance(new EventStore()).As<IEventStore>();
-                        //builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
+                        //builder.RegisterInstance(new EventStore()).As<IEventStore>();
+                        builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
                     });
                     stack.UseSimpleConsoleLogging();
 
                     stack.Send("products/add", new AddProductCommand("banme", 15)).Wait();
-                    //stack.Send("products/publish", "{}").Wait();
+                    stack.Send("products/publish", "{}").Wait();
 
                     //Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
 
