@@ -8,7 +8,7 @@ namespace Slalom.Stacks.Messaging.Validation
     /// Defines a contract for a business validation rule.
     /// </summary>
     /// <typeparam name="TCommand">The type of message to validate.</typeparam>
-    public interface IBusinessRule<in TCommand> : IValidationRule<TCommand> where TCommand : ICommand
+    public interface IBusinessRule<in TCommand> : IValidate<TCommand> where TCommand : ICommand
     {
     }
 }

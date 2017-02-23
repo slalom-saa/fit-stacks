@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Stacks.Messaging.Routing;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 

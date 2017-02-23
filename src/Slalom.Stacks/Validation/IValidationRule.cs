@@ -8,7 +8,7 @@ namespace Slalom.Stacks.Validation
     /// Defines a contract for validating a class instance.
     /// </summary>
     /// <typeparam name="TValue">The instance type to validate.</typeparam>
-    public interface IValidationRule<in TValue>
+    public interface IValidate<in TValue>
     {
         /// <summary>
         /// Validates the specified instance and returns any validation errors.

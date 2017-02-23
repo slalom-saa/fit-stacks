@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Slalom.Stacks.Messaging.Routing;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
@@ -17,15 +16,15 @@ namespace Slalom.Stacks.Messaging
         /// Initializes a new instance of the <see cref="MessageResult" /> class.
         /// </summary>
         /// <param name="request">The request.</param>
-        public MessageResult(Request request)
+        public MessageResult(MessageContext context)
         {
-            this.CorrelationId = request.Context.CorrelationId;
+            this.CorrelationId = context.CorrelationId;
             this.Started = DateTimeOffset.UtcNow;
-            this.Completed = request.Context.Completed;
-            this.RaisedException = request.Context.Exception;
-            this.Response = request.Context.Response;
-            this.ValidationErrors = request.Context.ValidationErrors.ToList();
-            this.RequestId = request.Context.RequestId;
+            this.Completed = context.Completed;
+            this.RaisedException = context.Exception;
+            this.Response = context.Response;
+            this.ValidationErrors = context.ValidationErrors.ToList();
+            this.RequestId = context.RequestId;
         }
 
         /// <summary>

@@ -1,6 +1,9 @@
+using System;
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Autofac.Builder;
+using Autofac.Core;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Validation;
@@ -26,15 +29,15 @@ namespace Slalom.Stacks.Messaging.Modules
             base.Load(builder);
 
             builder.RegisterAssemblyTypes(_assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidationRule<>)))
-                   .As(instance => instance.GetBaseAndContractTypes())
-                   .PropertiesAutowired();
+                .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidate<>)))
+                .As(instance => instance.GetBaseAndContractTypes())
+                .Autowired();
 
             builder.RegisterAssemblyTypes(_assemblies)
                    .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandle<>)))
                    .As(instance => instance.GetBaseAndContractTypes())
                    .AsSelf()
-                   .PropertiesAutowired();
+                   .Autowired();
         }
     }
 }
