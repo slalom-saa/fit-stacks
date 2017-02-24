@@ -13,6 +13,11 @@ using Slalom.Stacks.Messaging.Serialization;
 
 namespace Slalom.Stacks.ConsoleClient
 {
+    [Path("products")]
+    public class A : UseCase<AddProductCommand>
+    {
+    }
+
     public class Program
     {
         public static void Main(string[] args)
@@ -21,6 +26,10 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack(typeof(Program)))
                 {
+                    var registry = new LocalRegistry(stack.Assemblies);
+                    Console.WriteLine(JsonConvert.SerializeObject(registry, Formatting.Indented));
+
+                    return;
                     stack.Use(builder =>    
                     {
                         //builder.RegisterInstance(new EventStore()).As<IEventStore>();

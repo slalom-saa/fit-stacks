@@ -33,24 +33,24 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
-            //this.IsSuccessful = result.IsSuccessful;
-            //this.RequestName = message.CommandName;
-            //this.RequestId = message.Id;
-            //this.TimeStamp = message.TimeStamp;
-            //this.ValidationErrors = result.ValidationErrors?.ToArray();
-            //this.MachineName = context.MachineName;
-            //this.Environment = context.Environment;
-            //this.ApplicationName = context.ApplicationName;
-            //this.SessionId = context.SessionId;
-            //this.UserName = context.User?.Identity?.Name;
-            //this.Path = context.Path;
-            //this.SourceAddress = context.SourceAddress;
-            //this.ThreadId = context.ThreadId;
-            //this.CorrelationId = context.CorrelationId;
-            //this.Exception = result.Exception;
-            //this.Elapsed = result.Elapsed;
-            //this.Started = result.Started;
-            //this.Completed = result.Completed;
+            this.IsSuccessful = context.IsSuccessful;
+            this.RequestName = context.RequestName;
+            this.RequestId = context.RequestId;
+            this.TimeStamp = command.TimeStamp;
+            this.ValidationErrors = context.ValidationErrors?.ToArray();
+            this.MachineName = context.Execution.MachineName;
+            this.Environment = context.Execution.Environment;
+            this.ApplicationName = context.Execution.ApplicationName;
+            this.SessionId = context.Execution.SessionId;
+            this.UserName = context.Execution.User?.Identity?.Name;
+            this.Path = context.Path;
+            this.SourceAddress = context.Execution.SourceAddress;
+            this.ThreadId = context.Execution.ThreadId;
+            this.CorrelationId = context.CorrelationId;
+            this.RaisedException = context.Exception;
+            this.Elapsed = this.Completed - this.Started;
+            this.Started = context.Started;
+            this.Completed = context.Completed;
         }
 
         /// <summary>
