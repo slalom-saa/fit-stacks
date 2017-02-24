@@ -16,6 +16,6 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <param name="entry">The log entry to append.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task AppendAsync(RequestEntry entry);
+        Task Append(RequestEntry entry);
     }
 }

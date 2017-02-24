@@ -5,9 +5,9 @@ using Slalom.Stacks.Messaging.Logging;
 
 namespace Slalom.Stacks.ConsoleClient.Aspects
 {
-    public class EventStore : IEventStore
+    public class RequestStore : IRequestStore
     {
-        public Task AppendAsync(EventEntry entry)
+        public Task Append(RequestEntry entry)
         {
             Console.WriteLine(JsonConvert.SerializeObject(entry, Formatting.Indented));
 

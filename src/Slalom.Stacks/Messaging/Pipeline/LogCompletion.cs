@@ -10,26 +10,20 @@ namespace Slalom.Stacks.Messaging.Pipeline
 {
     public class LogCompletion : IMessageExecutionStep
     {
-        private IEnumerable<IRequestStore> _requests;
-        private IEnumerable<IEventStore> _events;
+        private IEnumerable<IActionStore> _actions;
         private ILogger _logger;
 
         public LogCompletion(IComponentContext context)
         {
-            _requests = context.Resolve<IEnumerable<IRequestStore>>();
-            _events = context.Resolve<IEnumerable<IEventStore>>();
+            _actions = context.Resolve<IEnumerable<IActionStore>>();
             _logger = context.Resolve<ILogger>();
         }
 
         public Task Execute(IMessage instance, MessageExecutionContext context)
         {
-            var tasks = _requests.Select(e => e.AppendAsync(new RequestEntry(context.Request))).ToList();
-            foreach (var item in context.RaisedEvents)
-            {
-                tasks.AddRange(_events.Select(e => e.AppendAsync(new EventEntry(item, context))));
-            }
+            var tasks = _actions.Select(e => e.Append(new ActionEntry(context))).ToList();
 
-            var name = context.Request.RequestName;
+            var name = context.Request.MessageName;
             if (!context.IsSuccessful)
             {
                 if (context.Exception != null)

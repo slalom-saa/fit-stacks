@@ -26,15 +26,15 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
-            this.RequestName = request.RequestName;
-            this.RequestId = request.RequestId;
+            this.MessageName = request.MessageName;
+            this.MessageId = request.MessageId;
             this.TimeStamp = request.Message.TimeStamp;
             this.SessionId = request.SessionId;
             this.UserName = request.User?.Identity?.Name;
             this.Path = request.Path;
             this.SourceAddress = request.SourceAddress;
             this.CorrelationId = request.CorrelationId;
-            this.ParentRequestId = request.ParentContext?.RequestId;
+            this.ParentMessageId = request.ParentContext?.MessageId;
         }
 
         /// <summary>
@@ -49,12 +49,24 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <value>The instance identifier.</value>
         public string Id { get; set; } = NewId.NextId();
 
+        /// <summary>
+        /// Gets or sets the request identifier.
+        /// </summary>
+        /// <value>The request identifier.</value>
+        public string MessageId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the request.
+        /// </summary>
+        /// <value>The name of the request.</value>
+        public string MessageName { get; set; }
+
 
         /// <summary>
         /// Gets or sets the parent request identifier.
         /// </summary>
         /// <value>The parent request identifier.</value>
-        public string ParentRequestId { get; set; }
+        public string ParentMessageId { get; set; }
 
         /// <summary>
         /// Gets or sets the request path or URL.
@@ -69,18 +81,6 @@ namespace Slalom.Stacks.Messaging.Logging
         public string Payload { get; set; }
 
         /// <summary>
-        /// Gets or sets the request identifier.
-        /// </summary>
-        /// <value>The request identifier.</value>
-        public string RequestId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the request.
-        /// </summary>
-        /// <value>The name of the request.</value>
-        public string RequestName { get; set; }
-
-        /// <summary>
         /// Gets or sets the session identifier.
         /// </summary>
         /// <value>The session identifier.</value>
@@ -91,12 +91,6 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <value>The user host address.</value>
         public string SourceAddress { get; set; }
-
-        /// <summary>
-        /// Gets or sets the thread identifier.
-        /// </summary>
-        /// <value>The thread identifier.</value>
-        public int ThreadId { get; set; }
 
         /// <summary>
         /// Gets or sets the message time stamp.

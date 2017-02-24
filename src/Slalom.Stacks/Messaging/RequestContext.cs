@@ -20,9 +20,9 @@ namespace Slalom.Stacks.Messaging
 
         public string Path { get; private set; }
 
-        public string RequestId { get; private set; }
+        public string MessageId { get; private set; }
 
-        public string RequestName { get; private set; }
+        public string MessageName { get; private set; }
 
         /// <summary>
         /// Gets the user's session identifier.
@@ -35,11 +35,6 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The calling IP address.</value>
         public string SourceAddress { get; private set; }
-
-        internal RequestContext()
-        {
-        }
-
 
         /// <summary>
         /// Gets the user making the request.
@@ -54,9 +49,10 @@ namespace Slalom.Stacks.Messaging
             {
                 CorrelationId = this.GetCorrelationId(),
                 SourceAddress = this.GetSourceIPAddress(),
+                SessionId = this.GetSession(),
                 User = ClaimsPrincipal.Current,
-                RequestName = requestName,
-                RequestId = message.Id,
+                MessageName = requestName,
+                MessageId = message.Id,
                 Path = path,
                 Message = message,
                 ParentContext = parent

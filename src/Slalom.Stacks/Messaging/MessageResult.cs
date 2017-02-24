@@ -24,7 +24,7 @@ namespace Slalom.Stacks.Messaging
             this.RaisedException = context.Exception;
             this.Response = context.Response;
             this.ValidationErrors = context.ValidationErrors.ToList();
-            this.RequestId = context.Request.RequestId;
+            this.RequestId = context.Request.MessageId;
         }
 
         /// <summary>

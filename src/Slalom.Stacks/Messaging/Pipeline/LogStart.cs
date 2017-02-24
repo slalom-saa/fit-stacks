@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
 
         public Task Execute(IMessage message, MessageExecutionContext context)
         {
-            _logger.Verbose("Executing \"" + context.Request.RequestName + "\" at path \"" + context.Request.Path + "\".");
+            _logger.Verbose("Executing \"" + context.Request.MessageName + "\" at path \"" + context.Request.Path + "\".");
 
             return Task.FromResult(0);
         }
