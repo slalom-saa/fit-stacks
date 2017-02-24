@@ -13,7 +13,7 @@ namespace Slalom.Stacks.Runtime
         /// Initializes a new instance of the <see cref="NullExecutionContext"/> class.
         /// </summary>
         public NullExecutionContext()
-            : base("", "", "", "", new AnonymousPrincipal(), "127.0.0.1", "", -1)
+            : base("", "", "", 0)
         {
         }
     }

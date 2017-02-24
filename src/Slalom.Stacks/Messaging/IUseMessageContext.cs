@@ -7,6 +7,6 @@ namespace Slalom.Stacks.Messaging
 {
     public interface IUseMessageContext
     {
-        void UseContext(MessageContext context);
+        void UseContext(MessageExecutionContext context);
     }
 }

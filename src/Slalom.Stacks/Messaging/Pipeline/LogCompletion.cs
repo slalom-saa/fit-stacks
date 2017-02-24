@@ -21,9 +21,9 @@ namespace Slalom.Stacks.Messaging.Pipeline
             _logger = context.Resolve<ILogger>();
         }
 
-        public Task Execute(IMessage instance, MessageContext context)
+        public Task Execute(IMessage instance, MessageExecutionContext context)
         {
-            var tasks = _requests.Select(e => e.AppendAsync(new RequestEntry(instance, context))).ToList();
+            var tasks = _requests.Select(e => e.AppendAsync(new RequestEntry(context.Request))).ToList();
             foreach (var item in context.RaisedEvents)
             {
                 tasks.AddRange(_events.Select(e => e.AppendAsync(new EventEntry(item, context))));

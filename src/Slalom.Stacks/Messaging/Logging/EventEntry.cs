@@ -19,7 +19,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <param name="instance">The event.</param>
         /// <param name="context">The current requestContext.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
-        public EventEntry(IEvent instance, MessageContext context)
+        public EventEntry(IEvent instance, MessageExecutionContext context)
         {
             Argument.NotNull(instance, nameof(instance));
 

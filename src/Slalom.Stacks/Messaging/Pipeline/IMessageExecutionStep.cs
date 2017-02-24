@@ -7,6 +7,6 @@ namespace Slalom.Stacks.Messaging.Pipeline
 {
     public interface IMessageExecutionStep
     {
-        Task Execute(IMessage message, MessageContext context);
+        Task Execute(IMessage message, MessageExecutionContext context);
     }
 }

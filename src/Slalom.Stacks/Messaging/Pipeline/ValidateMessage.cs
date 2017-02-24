@@ -15,7 +15,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
             _context = context;
         }
 
-        public async Task Execute(IMessage message, MessageContext context)
+        public async Task Execute(IMessage message, MessageExecutionContext context)
         {
             if (message is ICommand)
             {

@@ -15,20 +15,22 @@ namespace Slalom.Stacks.Messaging
     {
         private readonly IComponentContext _components;
         private LocalRegistry _registry;
+        private IRequestContext _requestContext;
 
         public MessageDispatcher(IComponentContext components)
         {
             _components = components;
             _registry = components.Resolve<LocalRegistry>();
+            _requestContext = components.Resolve<IRequestContext>();
         }
 
-        public Task<MessageResult> Send(ICommand instance, MessageContext context = null, TimeSpan? timeout = null)
+        public Task<MessageResult> Send(ICommand instance, MessageExecutionContext context = null, TimeSpan? timeout = null)
         {
             return this.Send(null, instance, context, timeout);
         }
 
 
-        public async Task Publish(IEvent instance, MessageContext context = null)
+        public async Task Publish(IEvent instance, MessageExecutionContext context = null)
         {
             //var handlers = _components.ResolveAll(typeof(IHandle<>).MakeGenericType(instance.GetType()));
             //var executionContext = _components.Resolve<IExecutionContext>().Resolve();
@@ -44,7 +46,7 @@ namespace Slalom.Stacks.Messaging
             //}
         }
 
-        public async Task Publish(IEnumerable<IEvent> instance, MessageContext context = null)
+        public async Task Publish(IEnumerable<IEvent> instance, MessageExecutionContext context = null)
         {
             foreach (var item in instance)
             {
@@ -52,7 +54,7 @@ namespace Slalom.Stacks.Messaging
             }
         }
 
-        public async Task<MessageResult> Send(string path, ICommand instance, MessageContext parentContext = null, TimeSpan? timeout = null)
+        public async Task<MessageResult> Send(string path, ICommand instance, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
             var entries = _registry.Find(instance).ToList();
             if (entries.Count() != 1)
@@ -63,10 +65,10 @@ namespace Slalom.Stacks.Messaging
             var entry = entries.First();
 
             var handler = _components.Resolve(entry.Type);
-            var request = new RequestContext(instance.CommandName, path, instance);
+            var request = _requestContext.Resolve(instance.CommandName, path, instance, parentContext?.Request);
             var executionContext = _components.Resolve<IExecutionContext>().Resolve();
 
-            parentContext = new MessageContext(request, executionContext, parentContext);
+            parentContext = new MessageExecutionContext(request, entry, executionContext, parentContext);
 
             if (handler is IUseMessageContext)
             {
@@ -78,7 +80,7 @@ namespace Slalom.Stacks.Messaging
             return new MessageResult(parentContext);
         }
 
-        public async Task<MessageResult> Send(string path, string command, MessageContext parentContext = null, TimeSpan? timeout = null)
+        public async Task<MessageResult> Send(string path, string command, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
             //var handlerType = _components.Resolve<IDiscoverTypes>().Find(typeof(IHandle<>)).FirstOrDefault(e => e.GetAllAttributes<PathAttribute>().Any(x => x.Path == path));
 

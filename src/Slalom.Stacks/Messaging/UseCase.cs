@@ -84,7 +84,7 @@ namespace Slalom.Stacks.Messaging
     {
         protected IComponentContext Components { get; set; }
 
-        protected MessageContext Context { get; set; }
+        protected MessageExecutionContext Context { get; set; }
             
         protected IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
 
@@ -117,7 +117,7 @@ namespace Slalom.Stacks.Messaging
             }
         }
 
-        public void UseContext(MessageContext context)
+        public void UseContext(MessageExecutionContext context)
         {
             this.Context = context;
         }

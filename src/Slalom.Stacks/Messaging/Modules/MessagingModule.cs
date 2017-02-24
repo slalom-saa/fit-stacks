@@ -48,6 +48,9 @@ namespace Slalom.Stacks.Messaging.Modules
                 .AsSelf()
                 .SingleInstance();
 
+            builder.Register(c => new RequestContext())
+                .As<IRequestContext>();
+
             builder.RegisterGeneric(typeof(CommandValidator<>));
 
             builder.RegisterModule(new MessagingTypesModule(this._assemblies));

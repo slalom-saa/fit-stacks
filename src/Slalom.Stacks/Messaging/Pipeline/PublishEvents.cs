@@ -14,7 +14,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
             _eventDispatcher = context.Resolve<IMessageDispatcher>();
         }
 
-        public Task Execute(IMessage message, MessageContext context)
+        public Task Execute(IMessage message, MessageExecutionContext context)
         {
             if (context.IsSuccessful)
             {

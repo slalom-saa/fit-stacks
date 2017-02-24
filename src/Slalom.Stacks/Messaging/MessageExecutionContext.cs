@@ -7,23 +7,24 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
 {
-    public class MessageContext
+    public class MessageExecutionContext
     {
         private readonly List<Event> _raisedEvents = new List<Event>();
 
-        public MessageContext(RequestContext request, ExecutionContext execution, MessageContext parent = null)
+        public MessageExecutionContext(RequestContext request, LocalRegistryEntry entry, ExecutionContext execution, MessageExecutionContext parent = null)
         {
             this.Request = request;
+            this.Entry = entry;
             this.Parent = parent;
-            this.CorrelationId = execution.CorrelationId;
             this.Execution = execution;
         }
 
         public object Response { get; set; }
 
         public RequestContext Request { get; }
+        public LocalRegistryEntry Entry { get; }
 
-        public MessageContext Parent { get; }
+        public MessageExecutionContext Parent { get; }
 
         public DateTimeOffset Started { get; } = DateTimeOffset.UtcNow;
 
@@ -53,8 +54,6 @@ namespace Slalom.Stacks.Messaging
         {
             this.Exception = exception;
         }
-
-        public string CorrelationId { get; }
 
         public ExecutionContext Execution { get; }
 

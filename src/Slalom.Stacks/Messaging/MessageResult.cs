@@ -16,9 +16,9 @@ namespace Slalom.Stacks.Messaging
         /// Initializes a new instance of the <see cref="MessageResult" /> class.
         /// </summary>
         /// <param name="request">The request.</param>
-        public MessageResult(MessageContext context)
+        public MessageResult(MessageExecutionContext context)
         {
-            this.CorrelationId = context.CorrelationId;
+            this.CorrelationId = context.Request.CorrelationId;
             this.Started = DateTimeOffset.UtcNow;
             this.Completed = context.Completed;
             this.RaisedException = context.Exception;
