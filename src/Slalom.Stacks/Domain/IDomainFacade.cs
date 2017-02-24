@@ -16,13 +16,6 @@ namespace Slalom.Stacks.Domain
     public interface IDomainFacade
     {
         /// <summary>
-        /// Sets the execution context.
-        /// </summary>
-        /// <param name="context">The execution context.</param>
-        /// <returns>Returns the current instance for method chaining.</returns>
-        IDomainFacade SetContext(ExecutionContext context);
-
-        /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
         /// item already exists.
         /// </summary>

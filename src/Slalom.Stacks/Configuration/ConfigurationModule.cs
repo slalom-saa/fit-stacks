@@ -61,9 +61,9 @@ namespace Slalom.Stacks.Configuration
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new NullCachingModule());
 
-            builder.Register(c => new LocalExecutionContextResolver(c.Resolve<IConfiguration>()))
-                   .As<IExecutionContextResolver>()
-                   .SingleInstance();
+            builder.Register(c => new ExecutionContext(c.Resolve<IConfiguration>()))
+                .As<IExecutionContext>();
+                   
 
             builder.Register(c => new DiscoveryService(c.Resolve<ILogger>()))
                    .As<IDiscoverTypes>()

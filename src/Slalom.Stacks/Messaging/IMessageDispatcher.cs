@@ -11,9 +11,9 @@ namespace Slalom.Stacks.Messaging
     {
         Task<MessageResult> Send(ICommand command, MessageContext context = null, TimeSpan? timeout = null);
 
-        Task<MessageResult> Send(string path, ICommand command, MessageContext context = null, TimeSpan? timeout = null);
+        Task<MessageResult> Send(string path, ICommand command, MessageContext parentContext = null, TimeSpan? timeout = null);
 
-        Task<MessageResult> Send(string path, string command, MessageContext context = null, TimeSpan? timeout = null);
+        Task<MessageResult> Send(string path, string command, MessageContext parentContext = null, TimeSpan? timeout = null);
 
         Task Publish(IEvent instance, MessageContext context = null);
 

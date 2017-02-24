@@ -7,7 +7,7 @@ using Slalom.Stacks.Configuration;
 namespace Slalom.Stacks.Logging
 {
     /// <summary>
-    /// A composite <see cref="ILogger"/> implemenation that uses the component context to use all registered loggers.
+    /// A composite <see cref="ILogger"/> implemenation that uses the component requestContext to use all registered loggers.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Logging.ILogger" />
     public class CompositeLogger : ILogger
@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Logging
         /// <summary>
         /// Initializes a new instance of the <see cref="CompositeLogger"/> class.
         /// </summary>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The requestContext.</param>
         public CompositeLogger(IComponentContext context)
         {
             _context = context;

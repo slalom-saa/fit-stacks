@@ -4,7 +4,7 @@
 //namespace Slalom.Stacks.Configuration
 //{
 //    /// <summary>
-//    /// Context that registers and resolves components.
+//    /// RequestContext that registers and resolves components.
 //    /// </summary>
 //    public interface IComponentContext
 //    {
@@ -17,14 +17,14 @@
 //        T BuildUp<T>(T instance);
 
 //        /// <summary>
-//        /// Resolves an instance of the specified type from the context.
+//        /// Resolves an instance of the specified type from the requestContext.
 //        /// </summary>
 //        /// <param name="type">The type to resolve.</param>
 //        /// <returns>The resolved instance.</returns>
 //        object Resolve(Type type);
 
 //        /// <summary>
-//        /// Resolves an instance of the specified type from the context.
+//        /// Resolves an instance of the specified type from the requestContext.
 //        /// </summary>
 //        /// <typeparam name="T">The type to resolve.</typeparam>
 //        /// <returns>The resolved instance.</returns>

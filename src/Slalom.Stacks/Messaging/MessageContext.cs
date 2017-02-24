@@ -11,17 +11,17 @@ namespace Slalom.Stacks.Messaging
     {
         private readonly List<Event> _raisedEvents = new List<Event>();
 
-        public MessageContext(string requestId, string requestName, string path, ExecutionContext execution, MessageContext parent = null)
+        public MessageContext(RequestContext request, ExecutionContext execution, MessageContext parent = null)
         {
+            this.Request = request;
             this.Parent = parent;
             this.CorrelationId = execution.CorrelationId;
-            this.RequestId = requestId;
-            this.RequestName = requestName;
-            this.Path = path;
             this.Execution = execution;
         }
 
         public object Response { get; set; }
+
+        public RequestContext Request { get; }
 
         public MessageContext Parent { get; }
 
@@ -55,12 +55,6 @@ namespace Slalom.Stacks.Messaging
         }
 
         public string CorrelationId { get; }
-
-        public string RequestId { get; }
-
-        public string RequestName { get; }
-
-        public string Path { get; }
 
         public ExecutionContext Execution { get; }
 

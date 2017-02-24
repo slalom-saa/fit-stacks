@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Initializes a new instance of the <see cref="EventEntry" /> class.
         /// </summary>
         /// <param name="instance">The event.</param>
-        /// <param name="context">The current context.</param>
+        /// <param name="context">The current requestContext.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
         public EventEntry(IEvent instance, MessageContext context)
         {
@@ -37,15 +37,15 @@ namespace Slalom.Stacks.Messaging.Logging
             this.EventName = instance.EventName;
             this.EventId = instance.Id;
             this.TimeStamp = instance.TimeStamp;
-            //this.MachineName = context.MachineName;
-            //this.Environment = context.Environment;
-            //this.ApplicationName = context.ApplicationName;
-            //this.SessionId = context.SessionId;
-            //this.UserName = context.User?.Identity?.Name;
-            //this.Path = context.Path;
-            //this.SourceAddress = context.SourceAddress;
-            //this.ThreadId = context.ThreadId;
-            //this.CorrelationId = context.CorrelationId;
+            //this.MachineName = requestContext.MachineName;
+            //this.Environment = requestContext.Environment;
+            //this.ApplicationName = requestContext.ApplicationName;
+            //this.SessionId = requestContext.SessionId;
+            //this.UserName = requestContext.User?.Identity?.Name;
+            //this.Path = requestContext.Path;
+            //this.SourceAddress = requestContext.SourceAddress;
+            //this.ThreadId = requestContext.ThreadId;
+            //this.CorrelationId = requestContext.CorrelationId;
             //this.EventTypeId = instance.EventTypeId;
         }
 

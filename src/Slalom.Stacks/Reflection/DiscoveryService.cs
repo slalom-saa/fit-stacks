@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyModel;
 namespace Slalom.Stacks.Reflection
 {
     /// <summary>
-    /// Scans and locates types and assemblies given the current context.
+    /// Scans and locates types and assemblies given the current requestContext.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Reflection.IDiscoverTypes" />
     public class DiscoveryService : IDiscoverTypes

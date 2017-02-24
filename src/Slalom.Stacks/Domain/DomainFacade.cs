@@ -23,12 +23,11 @@ namespace Slalom.Stacks.Domain
         private readonly ICacheManager _cacheManager;
         private readonly IComponentContext _componentContext;
         private readonly ConcurrentDictionary<Type, object> _instances = new ConcurrentDictionary<Type, object>();
-        private ExecutionContext _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DomainFacade" /> class.
         /// </summary>
-        /// <param name="componentContext">The component context.</param>
+        /// <param name="componentContext">The component request.</param>
         /// <param name="cacheManager">The cache manager.</param>
         public DomainFacade(IComponentContext componentContext, ICacheManager cacheManager)
         {
@@ -69,12 +68,6 @@ namespace Slalom.Stacks.Domain
             }
 
             await repository.AddAsync(instances);
-
-            foreach (var instance in instances.SelectMany(e => e.CommitEvents()))
-            {
-                _context.AddRaisedEvent(instance);
-            }
-
             await _cacheManager.AddAsync(instances);
         }
 
@@ -312,18 +305,6 @@ namespace Slalom.Stacks.Domain
         public Task UpdateAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
             return this.UpdateAsync(instances.ToArray());
-        }
-
-        /// <summary>
-        /// Sets the execution context.
-        /// </summary>
-        /// <param name="context">The execution context.</param>
-        /// <returns>Returns the current instance for method chaining.</returns>
-        public IDomainFacade SetContext(ExecutionContext context)
-        {
-            _context = context;
-
-            return this;
         }
     }
 }

@@ -18,8 +18,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Initializes a new instance of the <see cref="RequestEntry" /> class.
         /// </summary>
         /// <param name="command">The message.</param>
-        /// <param name="result">The result.</param>
-        /// <param name="context">The context.</param>
+        /// <param name="context">The requestContext.</param>
         public RequestEntry(IMessage command, MessageContext context)
         {
             try
@@ -34,8 +33,8 @@ namespace Slalom.Stacks.Messaging.Logging
                 this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
             }
             this.IsSuccessful = context.IsSuccessful;
-            this.RequestName = context.RequestName;
-            this.RequestId = context.RequestId;
+            this.RequestName = context.Request.RequestName;
+            this.RequestId = context.Request.RequestId;
             this.TimeStamp = command.TimeStamp;
             this.ValidationErrors = context.ValidationErrors?.ToArray();
             this.MachineName = context.Execution.MachineName;
@@ -43,7 +42,7 @@ namespace Slalom.Stacks.Messaging.Logging
             this.ApplicationName = context.Execution.ApplicationName;
             this.SessionId = context.Execution.SessionId;
             this.UserName = context.Execution.User?.Identity?.Name;
-            this.Path = context.Path;
+            this.Path = context.Request.Path;
             this.SourceAddress = context.Execution.SourceAddress;
             this.ThreadId = context.Execution.ThreadId;
             this.CorrelationId = context.CorrelationId;

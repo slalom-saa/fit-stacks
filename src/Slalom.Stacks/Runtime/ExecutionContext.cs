@@ -1,38 +1,69 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using Slalom.Stacks.Domain;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Serialization;
-using Slalom.Stacks.Validation;
+using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Runtime
 {
     /// <summary>
-    /// Represents the execution context and contains information about the request and response. This information is otherwise lost
+    /// Represents the environment request and contains information about machine execution. This information is otherwise lost
     /// when processing is multi-threaded or distributed.
     /// </summary>
-    public class ExecutionContext
+    public class ExecutionContext : IExecutionContext
     {
-        private readonly List<Event> _raisedEvents = new List<Event>();
+        private readonly IConfiguration _configuration;
+        private static string _sourceAddress;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExecutionContext"/> class.
-        /// </summary>
-        protected ExecutionContext()
+        public ExecutionContext(IConfiguration configuration)
         {
+            _configuration = configuration;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ExecutionContext"/> class.
-        /// </summary>
-        /// <param name="userName">The current user's username.</param>
-        /// <param name="claims">The user's claims.</param>
-        protected ExecutionContext(string userName, params Claim[] claims)
+        private string GetCorrelationId()
         {
-            this.User = new ClaimsPrincipal(new ClaimsIdentity(claims.Union(new[] { new Claim(ClaimTypes.Name, userName) })));
+            return NewId.NextId();
+        }
+
+        private string GetSession()
+        {
+            return NewId.NextId();
+        }
+
+        private static string GetSourceIPAddress()
+        {
+            if (_sourceAddress == null)
+            {
+                try
+                {
+                    using (var client = new HttpClient())
+                    {
+                        var response = client.GetAsync("http://ipinfo.io/ip").Result;
+                        _sourceAddress = response.Content.ReadAsStringAsync().Result.Trim();
+                    }
+                }
+                catch
+                {
+                    _sourceAddress = "127.0.0.1";
+                }
+            }
+            return _sourceAddress;
+        }
+
+        [ThreadStatic] private static ExecutionContext _current;
+
+        public ExecutionContext Resolve()
+        {
+            return _current ?? (_current = new ExecutionContext(_configuration?["Application"],
+                _configuration?["Environment"],
+                this.GetCorrelationId(),
+                this.GetSession(),
+                ClaimsPrincipal.Current,
+                GetSourceIPAddress(),
+                System.Environment.MachineName,
+                System.Environment.CurrentManagedThreadId));
         }
 
         /// <summary>
@@ -40,16 +71,14 @@ namespace Slalom.Stacks.Runtime
         /// </summary>
         /// <param name="applicationName">The mame of the application.</param>
         /// <param name="environment">The current environment. (Development, Quality Assurance, Production)</param>
-        /// <param name="path">The execution path.</param>
         /// <param name="correlationId">The correlation identifier.</param>
         /// <param name="sessionId">The session identifier.</param>
         /// <param name="user">The current user.</param>
         /// <param name="sourceAddress">The user host address.</param>
         /// <param name="machineName">The name of the machine.</param>
         /// <param name="threadId">The current thread identifier.</param>
-        public ExecutionContext(string applicationName, string environment, string path, string correlationId, string sessionId, ClaimsPrincipal user, string sourceAddress, string machineName, int threadId)
+        protected ExecutionContext(string applicationName, string environment, string correlationId, string sessionId, ClaimsPrincipal user, string sourceAddress, string machineName, int threadId)
         {
-            this.Path = path;
             this.CorrelationId = correlationId;
             this.SessionId = sessionId;
             this.User = user;
@@ -85,22 +114,10 @@ namespace Slalom.Stacks.Runtime
         public string MachineName { get; }
 
         /// <summary>
-        /// Gets a null execution context.
+        /// Gets a null execution request.
         /// </summary>
-        /// <value>A null execution context.</value>
+        /// <value>A null execution request.</value>
         public static ExecutionContext Null => new NullExecutionContext();
-
-        /// <summary>
-        /// Gets the path.
-        /// </summary>
-        /// <value>The path.</value>
-        public string Path { get; internal set; }
-
-        /// <summary>
-        /// Gets the additional events that were raised during execution.
-        /// </summary>
-        /// <value>The additional events that were raised during execution.</value>
-        public IEnumerable<Event> RaisedEvents => _raisedEvents.AsEnumerable();
 
         /// <summary>
         /// Gets the user's session identifier.
@@ -126,17 +143,10 @@ namespace Slalom.Stacks.Runtime
         /// <value>The user making the request.</value>
         [JsonConverter(typeof(ClaimsPrincipalConverter))]
         public ClaimsPrincipal User { get; }
+    }
 
-        /// <summary>
-        /// Adds an additional raised event to the context that will be published on successful completion.
-        /// </summary>
-        /// <param name="instance">The event to raise.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        public void AddRaisedEvent(Event instance)
-        {
-            Argument.NotNull(instance, nameof(instance));
-
-            _raisedEvents.Add(instance);
-        }
+    public interface IExecutionContext
+    {
+        ExecutionContext Resolve();
     }
 }

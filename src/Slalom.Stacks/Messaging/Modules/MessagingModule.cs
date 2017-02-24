@@ -44,6 +44,9 @@ namespace Slalom.Stacks.Messaging.Modules
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 
+            builder.Register(c => new LocalRegistry(this._assemblies))
+                .AsSelf()
+                .SingleInstance();
 
             builder.RegisterGeneric(typeof(CommandValidator<>));
 

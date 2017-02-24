@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Slalom.Stacks.Search
 {
     /// <summary>
-    /// Defines a search context that is used to access a search source.
+    /// Defines a search requestContext that is used to access a search source.
     /// </summary>
     public interface ISearchContext
     {
