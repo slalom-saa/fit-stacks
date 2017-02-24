@@ -7,6 +7,6 @@ namespace Slalom.Stacks.Messaging.Logging
 {
     public interface IActionStore
     {
-        Task Append(ActionEntry entry);
+        Task Append(ResponseEntry entry);
     }
 }

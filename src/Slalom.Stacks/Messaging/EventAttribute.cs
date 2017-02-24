@@ -4,7 +4,7 @@ using System.Linq;
 namespace Slalom.Stacks.Messaging
 {
     /// <summary>
-    /// Defines information about an Event.
+    /// Defines information about an EventName.
     /// </summary>
     /// <seealso cref="System.Attribute" />
     [AttributeUsage(AttributeTargets.Class)]

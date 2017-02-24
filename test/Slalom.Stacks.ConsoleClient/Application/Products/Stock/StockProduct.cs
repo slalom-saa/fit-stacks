@@ -16,6 +16,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Stock
 
         public override void Execute(StockProductCommand message)
         {
+            //throw new Exception("XX");
         }
     }
 }

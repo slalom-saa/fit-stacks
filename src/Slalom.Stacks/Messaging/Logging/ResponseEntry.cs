@@ -6,18 +6,22 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Logging
 {
-    public class ActionEntry
+    public class ResponseEntry
     {
-        public ActionEntry(MessageExecutionContext context)
+        public ResponseEntry(MessageExecutionContext context)
         {
             this.CorrelationId = context.Request.CorrelationId;
             this.MessageId = context.Request.Message.Id;
             this.Completed = context.Completed;
-            this.Action = context.Entry.Type.Name;
+            this.Response = context.Entry.Type.Name;
             this.Exception = context.Exception;
             this.IsSuccessful = context.IsSuccessful;
             this.Started = context.Started;
             this.ValidationErrors = context.ValidationErrors;
+            this.MachineName = context.Execution.MachineName;
+            this.ThreadId = context.Execution.ThreadId;
+            this.ApplicationName = context.Execution.ApplicationName;
+            this.Environment = context.Execution.Environment;
             if (this.Completed.HasValue)
             {
                 this.Elapsed = this.Completed.Value - this.Started;
@@ -25,10 +29,12 @@ namespace Slalom.Stacks.Messaging.Logging
 
             if (context.Response is IEvent)
             {
-                this.Event = context.Response.GetType().Name;
+                var target = (IEvent) context.Response;
+                this.EventName = target.EventName;
+                this.EventId = target.Id;
                 try
                 {
-                    this.EventPayload = JsonConvert.SerializeObject(context.Response, new JsonSerializerSettings
+                    this.EventPayload = JsonConvert.SerializeObject(target, new JsonSerializerSettings
                     {
                         ContractResolver = new EventContractResolver()
                     });
@@ -40,17 +46,25 @@ namespace Slalom.Stacks.Messaging.Logging
             }
         }
 
-        public string Action { get; }
+        public string ApplicationName { get; set; }
         public DateTimeOffset? Completed { get; }
         public string CorrelationId { get; set; }
         public TimeSpan Elapsed { get; set; }
+
+        public string Environment { get; set; }
+        public string EventId { get; set; }
+        public string EventName { get; set; }
+        public string EventPayload { get; set; }
         public Exception Exception { get; }
         public bool IsSuccessful { get; }
-        public string MessageId { get; }
-        public string Event { get; set; }
 
-        public string EventPayload { get; set; }
+        public string MachineName { get; set; }
+        public string MessageId { get; }
+
+        public string Response { get; }
         public DateTimeOffset Started { get; }
+
+        public int ThreadId { get; set; }
 
         public IEnumerable<ValidationError> ValidationErrors { get; }
     }

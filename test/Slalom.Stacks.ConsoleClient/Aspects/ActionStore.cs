@@ -7,7 +7,7 @@ namespace Slalom.Stacks.ConsoleClient.Aspects
 {
     public class ActionStore : IActionStore
     {
-        public Task Append(ActionEntry entry)
+        public Task Append(ResponseEntry entry)
         {
             Console.WriteLine(JsonConvert.SerializeObject(entry, Formatting.Indented));
 

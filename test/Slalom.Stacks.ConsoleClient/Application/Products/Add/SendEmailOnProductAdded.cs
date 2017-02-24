@@ -8,6 +8,8 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
         public override void Execute(AddProductEvent message)
         {
             Console.WriteLine("Sending mail.");
+
+            throw new Exception("SS");
         }
     }
 }

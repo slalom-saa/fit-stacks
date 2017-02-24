@@ -21,7 +21,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
 
         public Task Execute(IMessage instance, MessageExecutionContext context)
         {
-            var tasks = _actions.Select(e => e.Append(new ActionEntry(context))).ToList();
+            var tasks = _actions.Select(e => e.Append(new ResponseEntry(context))).ToList();
 
             var name = context.Request.MessageName;
             if (!context.IsSuccessful)

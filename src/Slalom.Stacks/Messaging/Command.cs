@@ -10,7 +10,7 @@ namespace Slalom.Stacks.Messaging
     /// or can request data, which returns a document message.
     /// </summary>
     /// <seealso cref="ICommand" />
-    /// <seealso href="http://bit.ly/2d01rc7">Reactive Messaging Patterns with the Action Model: Applications and Integration in Scala and Akka</seealso>
+    /// <seealso href="http://bit.ly/2d01rc7">Reactive Messaging Patterns with the Response Model: Applications and Integration in Scala and Akka</seealso>
     public abstract class Command : ICommand
     {
         private readonly Type _type;
