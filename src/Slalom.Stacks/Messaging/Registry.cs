@@ -68,11 +68,11 @@ namespace Slalom.Stacks.Messaging
         }
     }
 
-    public class LocalRegistry
+    public class Registry
     {
         private readonly Assembly[] _assemblies;
 
-        public LocalRegistry(Assembly[] assemblies)
+        public Registry(Assembly[] assemblies)
         {
             _assemblies = assemblies;
 

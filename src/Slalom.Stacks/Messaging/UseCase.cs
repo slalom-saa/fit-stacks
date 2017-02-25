@@ -124,7 +124,7 @@ namespace Slalom.Stacks.Messaging
 
         protected Task<MessageResult> Send(ICommand message)
         {
-            var stream = this.Components.Resolve<IMessageDispatcher>();
+            var stream = this.Components.Resolve<IMessageRouter>();
 
             return stream.Send(message, this.Context);
         }

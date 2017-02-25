@@ -14,12 +14,12 @@ namespace Slalom.Stacks.Messaging
     {
         public static Task Send(this Stack instance, string path, ICommand command, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageDispatcher>().Send(path, command, timeout: timeout);
+            return instance.Container.Resolve<IMessageRouter>().Send(path, command, timeout: timeout);
         }
 
         public static Task Send(this Stack instance, string path, string command, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageDispatcher>().Send(path, command, timeout: timeout);
+            return instance.Container.Resolve<IMessageRouter>().Send(path, command, timeout: timeout);
         }
 
         /// <summary>
