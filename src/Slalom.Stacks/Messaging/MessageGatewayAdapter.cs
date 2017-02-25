@@ -12,27 +12,27 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging
 {
     /// <summary>
-    /// A default <see cref="IMessageRouter" /> implementation.
+    /// A default <see cref="IMessageGatewayAdapter" /> implementation.
     /// </summary>
-    public class MessageRouter : IMessageRouter
+    public class MessageGatewayAdapter : IMessageGatewayAdapter
     {
         private readonly IComponentContext _components;
-        private readonly Lazy<Registry> _registry;
+        private readonly Lazy<LocalRegistry> _registry;
         private readonly Lazy<IRequestContext> _requestContext;
         private readonly Lazy<IEnumerable<IRequestStore>> _requests;
         private readonly Lazy<IExecutionContext> _executionContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageRouter" /> class.
+        /// Initializes a new instance of the <see cref="MessageGatewayAdapter" /> class.
         /// </summary>
         /// <param name="components">The components.</param>
-        public MessageRouter(IComponentContext components)
+        public MessageGatewayAdapter(IComponentContext components)
         {
             Argument.NotNull(components, nameof(components));
 
             _components = components;
 
-            _registry = new Lazy<Registry>(components.Resolve<Registry>);
+            _registry = new Lazy<LocalRegistry>(components.Resolve<LocalRegistry>);
             _requestContext = new Lazy<IRequestContext>(components.Resolve<IRequestContext>);
             _requests = new Lazy<IEnumerable<IRequestStore>>(components.ResolveAll<IRequestStore>);
             _executionContext = new Lazy<IExecutionContext>(components.Resolve<IExecutionContext>);
@@ -44,7 +44,7 @@ namespace Slalom.Stacks.Messaging
         {
             Argument.NotNull(instance, nameof(instance));
 
-            var request = _requestContext.Value.Resolve(instance.EventName, null, instance, parentContext?.Request);
+            var request = _requestContext.Value.Resolve(null, instance, parentContext?.RequestContext);
             await Task.WhenAll(_requests.Value.Select(e => e.Append(new RequestEntry(request))));
 
             var entries = _registry.Value.Find(instance).ToList();
@@ -82,7 +82,7 @@ namespace Slalom.Stacks.Messaging
         /// <inheritdoc />
         public async Task<MessageResult> Send(string path, ICommand instance, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
-            var request = _requestContext.Value.Resolve(instance.CommandName, path, instance, parentContext?.Request);
+            var request = _requestContext.Value.Resolve(path, instance, parentContext?.RequestContext);
             await Task.WhenAll(_requests.Value.Select(e => e.Append(new RequestEntry(request))));
 
             var entries = _registry.Value.Find(instance).ToList();
@@ -111,7 +111,7 @@ namespace Slalom.Stacks.Messaging
             var entry = _registry.Value.Find(path);
             var instance = (ICommand) JsonConvert.DeserializeObject(command, entry.RequestType);
 
-            var request = _requestContext.Value.Resolve(instance.CommandName, path, instance, parentContext?.Request);
+            var request = _requestContext.Value.Resolve(path, instance, parentContext?.RequestContext);
             await Task.WhenAll(_requests.Value.Select(e => e.Append(new RequestEntry(request))));
 
             var handler = _components.Resolve(entry.Type);

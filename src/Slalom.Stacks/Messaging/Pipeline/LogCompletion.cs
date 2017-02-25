@@ -8,22 +8,31 @@ using Slalom.Stacks.Messaging.Logging;
 
 namespace Slalom.Stacks.Messaging.Pipeline
 {
+    /// <summary>
+    /// The log completion step of the use case execution pipeline.
+    /// </summary>
+    /// <seealso cref="Slalom.Stacks.Messaging.Pipeline.IMessageExecutionStep" />
     public class LogCompletion : IMessageExecutionStep
     {
         private IEnumerable<IResponseStore> _actions;
         private ILogger _logger;
 
-        public LogCompletion(IComponentContext context)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogCompletion"/> class.
+        /// </summary>
+        /// <param name="components">The component context.</param>
+        public LogCompletion(IComponentContext components)
         {
-            _actions = context.Resolve<IEnumerable<IResponseStore>>();
-            _logger = context.Resolve<ILogger>();
+            _actions = components.Resolve<IEnumerable<IResponseStore>>();
+            _logger = components.Resolve<ILogger>();
         }
 
+        /// <inheritdoc />
         public Task Execute(IMessage instance, MessageExecutionContext context)
         {
             var tasks = _actions.Select(e => e.Append(new ResponseEntry(context))).ToList();
 
-            var name = context.Request.MessageName;
+            var name = context.RequestContext.Message.GetType().FullName;
             if (!context.IsSuccessful)
             {
                 if (context.Exception != null)

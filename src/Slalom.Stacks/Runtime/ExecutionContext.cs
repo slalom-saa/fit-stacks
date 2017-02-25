@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Net.Http;
-using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using Slalom.Stacks.Serialization;
-using Slalom.Stacks.Utilities.NewId;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Runtime
 {
@@ -14,26 +10,20 @@ namespace Slalom.Stacks.Runtime
     /// </summary>
     public class ExecutionContext : IExecutionContext
     {
-        private readonly IConfiguration _configuration;
-      
+        [ThreadStatic]
+        private static ExecutionContext current;
 
+        private readonly IConfiguration _configuration;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExecutionContext"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
         public ExecutionContext(IConfiguration configuration)
         {
+            Argument.NotNull(configuration, nameof(configuration));
+
             _configuration = configuration;
-        }
-
-
-      
-
-
-        [ThreadStatic] private static ExecutionContext _current;
-
-        public ExecutionContext Resolve()
-        {
-            return _current ?? (_current = new ExecutionContext(_configuration?["Application"],
-                _configuration?["Environment"],
-                System.Environment.MachineName,
-                System.Environment.CurrentManagedThreadId));
         }
 
         /// <summary>
@@ -76,14 +66,18 @@ namespace Slalom.Stacks.Runtime
         public static ExecutionContext Null => new NullExecutionContext();
 
         /// <summary>
-        /// Gets or sets the thread identifier.
+        /// Gets the thread identifier.
         /// </summary>
         /// <value>The thread identifier.</value>
         public int ThreadId { get; }
-    }
 
-    public interface IExecutionContext
-    {
-        ExecutionContext Resolve();
+        /// <inheritdoc />
+        public ExecutionContext Resolve()
+        {
+            return current ?? (current = new ExecutionContext(_configuration?["Application"],
+                                   _configuration?["Environment"],
+                                   System.Environment.MachineName,
+                                   System.Environment.CurrentManagedThreadId));
+        }
     }
 }

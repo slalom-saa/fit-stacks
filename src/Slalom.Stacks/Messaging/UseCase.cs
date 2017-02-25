@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging.Pipeline;
 using Slalom.Stacks.Search;
@@ -15,7 +15,6 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     /// <typeparam name="TCommand">The type of message.</typeparam>
     /// <typeparam name="TResult">The type of result.</typeparam>
-    /// <seealso cref="IRequestHandler" />
     public abstract class UseCase<TCommand, TResult> : UseCase, IHandle<TCommand> where TCommand : ICommand
     {
         /// <summary>
@@ -38,6 +37,7 @@ namespace Slalom.Stacks.Messaging
             return Task.FromResult(this.Execute(command));
         }
 
+        /// <inheritdoc />
         public async Task Handle(TCommand instance)
         {
             await this.Prepare(instance);
@@ -80,29 +80,48 @@ namespace Slalom.Stacks.Messaging
         }
     }
 
+    /// <summary>
+    /// The base usecase class.
+    /// </summary>
+    /// <seealso cref="Slalom.Stacks.Messaging.UseCase" />
+    /// <seealso cref="Slalom.Stacks.Messaging.IHandle{TCommand}" />
     public abstract class UseCase : IUseMessageContext
     {
-        protected IComponentContext Components { get; set; }
+        /// <summary>
+        /// Gets the configured <see cref="IComponentContext"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IComponentContext"/> instance.</value>
+        protected IComponentContext Components { get; private set; }
 
-        protected MessageExecutionContext Context { get; set; }
-            
+        /// <summary>
+        /// Gets the current <see cref="MessageExecutionContext"/> instance.
+        /// </summary>
+        /// <value>The current <see cref="MessageExecutionContext"/> instance.</value>
+        protected MessageExecutionContext Context { get; private set; }
+
+        /// <summary>
+        /// Gets the configured <see cref="IDomainFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade"/> instance.</value>    
         protected IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
 
+        /// <summary>
+        /// Gets the configured <see cref="ISearchFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade"/> instance.</value>
         protected ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
 
-        protected async Task Prepare(IMessage message)
+        /// <inheritdoc />
+        public void UseContext(MessageExecutionContext context)
         {
-            var steps = new List<IMessageExecutionStep>
-            {
-                this.Components.Resolve<LogStart>(),
-                this.Components.Resolve<ValidateMessage>(),
-            };
-            foreach (var step in steps)
-            {
-                await step.Execute(message, this.Context);
-            }
+            this.Context = context;
         }
 
+        /// <summary>
+        /// Completes the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns>A task for asynchronous programming.</returns>
         protected async Task Complete(IMessage message)
         {
             var steps = new List<IMessageExecutionStep>
@@ -117,14 +136,32 @@ namespace Slalom.Stacks.Messaging
             }
         }
 
-        public void UseContext(MessageExecutionContext context)
+        /// <summary>
+        /// Prepares the usecase for execution.
+        /// </summary>
+        /// <param name="message">The current message.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        protected async Task Prepare(IMessage message)
         {
-            this.Context = context;
+            var steps = new List<IMessageExecutionStep>
+            {
+                this.Components.Resolve<LogStart>(),
+                this.Components.Resolve<ValidateMessage>()
+            };
+            foreach (var step in steps)
+            {
+                await step.Execute(message, this.Context);
+            }
         }
 
+        /// <summary>
+        /// Sends the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns>A task for asynchronous programming.</returns>
         protected Task<MessageResult> Send(ICommand message)
         {
-            var stream = this.Components.Resolve<IMessageRouter>();
+            var stream = this.Components.Resolve<IMessageGatewayAdapter>();
 
             return stream.Send(message, this.Context);
         }
@@ -134,7 +171,6 @@ namespace Slalom.Stacks.Messaging
     /// Defines a use case actor that performs a defined function.
     /// </summary>
     /// <typeparam name="TCommand">The type of message.</typeparam>
-    /// <seealso cref="IRequestHandler" />
     public abstract class UseCase<TCommand> : UseCase, IHandle<TCommand> where TCommand : IMessage
     {
         /// <summary>
@@ -158,6 +194,7 @@ namespace Slalom.Stacks.Messaging
             return Task.FromResult(0);
         }
 
+        /// <inheritdoc />
         public async Task Handle(TCommand instance)
         {
             await this.Prepare(instance);
@@ -168,7 +205,7 @@ namespace Slalom.Stacks.Messaging
                 {
                     await this.ExecuteAsync(instance);
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
                     this.Context.RaiseException(exception);
                 }

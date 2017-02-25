@@ -1,5 +1,4 @@
 ﻿using System;
-using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -10,15 +9,9 @@ namespace Slalom.Stacks.Messaging
     public interface ICommand : IMessage
     {
         /// <summary>
-        /// Gets the message type.
+        /// Gets the command name.
         /// </summary>
-        /// <value>The message type.</value>
-        Type Type { get; }
-
-        /// <summary>
-        /// Gets the message name.
-        /// </summary>
-        /// <value>The message name.</value>
+        /// <value>The command name.</value>
         string CommandName { get; }
     }
 }

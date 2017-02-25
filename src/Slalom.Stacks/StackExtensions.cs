@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Autofac;
+using System.Linq;
 using Autofac.Builder;
-using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Validation;
 
 #pragma warning disable 618
@@ -16,20 +15,32 @@ namespace Slalom.Stacks
     /// </summary>
     public static class StackExtensions
     {
+        /// <summary>
+        /// Autowires properties of registered instances.
+        /// </summary>
+        /// <typeparam name="TLimit">The type of the t limit.</typeparam>
+        /// <typeparam name="TActivatorData">The type of the t activator data.</typeparam>
+        /// <typeparam name="TRegistrationStyle">The type of the t registration style.</typeparam>
+        /// <param name="registration">The registration.</param>
+        /// <returns>IRegistrationBuilder&lt;TLimit, TActivatorData, TRegistrationStyle&gt;.</returns>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> AutowireProperties<TLimit, TActivatorData, TRegistrationStyle>(
+            this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration)
+        {
+            return registration.OnActivated(args => InjectProperties(args.Context, args.Instance, true));
+        }
+
+        /// <summary>
+        /// Injects values into properties of the specified instance.
+        /// </summary>
+        /// <param name="context">The context to get the value from.</param>
+        /// <param name="instance">The instance where properties should be set.</param>
+        /// <param name="overrideSetValues">if set to <c>true</c> [override set values].</param>
         public static void InjectProperties(IComponentContext context, object instance, bool overrideSetValues)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
+            Argument.NotNull(context, nameof(context));
+            Argument.NotNull(instance, nameof(instance));
 
-            foreach (var propertyInfo in instance.GetType().GetProperties(BindingFlags.Instance |
-                                                                          BindingFlags.Public |
-                                                                          BindingFlags.NonPublic))
+            foreach (var propertyInfo in instance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 var propertyType = propertyInfo.PropertyType;
 
@@ -46,12 +57,6 @@ namespace Slalom.Stacks
                     }
                 }
             }
-        }
-
-        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Autowired<TLimit, TActivatorData, TRegistrationStyle>(
-            this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration)
-        {
-            return registration.OnActivated(args => InjectProperties(args.Context, args.Instance, true));
         }
 
         /// <summary>
@@ -79,7 +84,7 @@ namespace Slalom.Stacks
             Argument.NotNull(instance, nameof(instance));
             Argument.NotNull(type, nameof(type));
 
-            var target = ((IEnumerable<object>) instance.Resolve(typeof(IEnumerable<>).MakeGenericType(type))).ToList();
+            var target = ((IEnumerable<object>)instance.Resolve(typeof(IEnumerable<>).MakeGenericType(type))).ToList();
 
             foreach (var item in target)
             {

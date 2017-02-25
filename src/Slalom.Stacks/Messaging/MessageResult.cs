@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
@@ -15,16 +14,16 @@ namespace Slalom.Stacks.Messaging
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageResult" /> class.
         /// </summary>
-        /// <param name="request">The request.</param>
+        /// <param name="context">The completed context.</param>
         public MessageResult(MessageExecutionContext context)
         {
-            this.CorrelationId = context.Request.CorrelationId;
+            this.CorrelationId = context.RequestContext.CorrelationId;
             this.Started = DateTimeOffset.UtcNow;
             this.Completed = context.Completed;
             this.RaisedException = context.Exception;
             this.Response = context.Response;
             this.ValidationErrors = context.ValidationErrors.ToList();
-            this.RequestId = context.Request.MessageId;
+            this.RequestId = context.RequestContext.Message.Id;
         }
 
         /// <summary>
@@ -58,6 +57,12 @@ namespace Slalom.Stacks.Messaging
         public Exception RaisedException { get; }
 
         /// <summary>
+        /// Gets or sets the request ID.
+        /// </summary>
+        /// <value>The request ID.</value>
+        public string RequestId { get; set; }
+
+        /// <summary>
         /// Gets the actor response.
         /// </summary>
         public object Response { get; }
@@ -73,7 +78,5 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The validation errors that were raised.</value>
         public IReadOnlyList<ValidationError> ValidationErrors { get; }
-
-        public string RequestId { get; set; }
     }
 }

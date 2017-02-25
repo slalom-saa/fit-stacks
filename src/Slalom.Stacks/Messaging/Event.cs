@@ -24,28 +24,16 @@ namespace Slalom.Stacks.Messaging
             _attribute = new Lazy<EventAttribute>(() => _type.GetCustomAttributes<EventAttribute>().FirstOrDefault());
         }
 
-        /// <summary>
-        /// Gets the event ID.
-        /// </summary>
-        /// <value>The event ID.</value>
+        /// <inheritdoc />
         string IMessage.Id { get; } = NewId.NextId();
 
-        /// <summary>
-        /// Gets the name of the event.
-        /// </summary>
-        /// <value>The name of the event.</value>
+        /// <inheritdoc />
         string IEvent.EventName => this.GetEventName();
 
-        /// <summary>
-        /// Gets the event identifier that is used to classify the event.
-        /// </summary>
-        /// <value>The event identifier that is used to classify the event.</value>
+        /// <inheritdoc />
         int IEvent.EventTypeId => this.GetEventTypeId();
 
-        /// <summary>
-        /// Gets the time stamp of when the event was created.
-        /// </summary>
-        /// <value>The time stamp of when the event was created.</value>
+        /// <inheritdoc />
         DateTimeOffset IMessage.TimeStamp { get; } = DateTime.Now;
 
         private string GetEventName()
@@ -58,11 +46,7 @@ namespace Slalom.Stacks.Messaging
             return _attribute.Value?.EventId ?? -1;
         }
 
-        /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
-        /// </summary>
-        /// <param name="obj">The object to compare with the current object.</param>
-        /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))
@@ -80,10 +64,7 @@ namespace Slalom.Stacks.Messaging
             return this.Equals((Event)obj);
         }
 
-        /// <summary>
-        /// Returns a hash code for this instance.
-        /// </summary>
-        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+        /// <inheritdoc />
         [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
         public override int GetHashCode()
         {
@@ -99,5 +80,7 @@ namespace Slalom.Stacks.Messaging
         {
             return ((IMessage)this).Id.Equals(((IMessage)other).Id);
         }
+
+        Type IMessage.Type => _type;
     }
 }

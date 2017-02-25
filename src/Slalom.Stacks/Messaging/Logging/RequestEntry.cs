@@ -17,24 +17,24 @@ namespace Slalom.Stacks.Messaging.Logging
         {
             try
             {
-                this.Payload = JsonConvert.SerializeObject(request.Message, new JsonSerializerSettings
+                this.MessageBody = JsonConvert.SerializeObject(request.Message, new JsonSerializerSettings
                 {
                     ContractResolver = new CommandContractResolver()
                 });
             }
             catch
             {
-                this.Payload = "{ \"Error\" : \"Serialization failed.\" }";
+                this.MessageBody = "{ \"Error\" : \"Serialization failed.\" }";
             }
-            this.MessageName = request.MessageName;
-            this.MessageId = request.MessageId;
+            this.MessageType = request.Message.Type.FullName;
+            this.MessageId = request.Message.Id;
             this.TimeStamp = request.Message.TimeStamp;
             this.SessionId = request.SessionId;
             this.UserName = request.User?.Identity?.Name;
             this.Path = request.Path;
             this.SourceAddress = request.SourceAddress;
             this.CorrelationId = request.CorrelationId;
-            this.ParentMessageId = request.ParentContext?.MessageId;
+            this.Parent = request.ParentContext?.Message.Id;
         }
 
         /// <summary>
@@ -50,6 +50,12 @@ namespace Slalom.Stacks.Messaging.Logging
         public string Id { get; set; } = NewId.NextId();
 
         /// <summary>
+        /// Gets or sets the request payload.
+        /// </summary>
+        /// <value>The request payload.</value>
+        public string MessageBody { get; set; }
+
+        /// <summary>
         /// Gets or sets the request identifier.
         /// </summary>
         /// <value>The request identifier.</value>
@@ -59,26 +65,19 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Gets or sets the name of the request.
         /// </summary>
         /// <value>The name of the request.</value>
-        public string MessageName { get; set; }
-
+        public string MessageType { get; set; }
 
         /// <summary>
         /// Gets or sets the parent request identifier.
         /// </summary>
         /// <value>The parent request identifier.</value>
-        public string ParentMessageId { get; set; }
+        public string Parent { get; set; }
 
         /// <summary>
         /// Gets or sets the request path or URL.
         /// </summary>
         /// <value>The request path or URL.</value>
         public string Path { get; set; }
-
-        /// <summary>
-        /// Gets or sets the request payload.
-        /// </summary>
-        /// <value>The request payload.</value>
-        public string Payload { get; set; }
 
         /// <summary>
         /// Gets or sets the session identifier.

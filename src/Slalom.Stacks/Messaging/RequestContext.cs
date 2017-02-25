@@ -6,6 +6,10 @@ using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Messaging
 {
+    /// <summary>
+    /// Default (local) request context and resolver.
+    /// </summary>
+    /// <seealso cref="Slalom.Stacks.Messaging.IRequestContext" />
     public class RequestContext : IRequestContext
     {
         private static string _sourceAddress;
@@ -16,13 +20,23 @@ namespace Slalom.Stacks.Messaging
         /// <value>The correlation identifier for the request.</value>
         public string CorrelationId { get; private set; }
 
+        /// <summary>
+        /// Gets the request message.
+        /// </summary>
+        /// <value>The request message.</value>
         public IMessage Message { get; private set; }
 
+        /// <summary>
+        /// Gets the parent context.
+        /// </summary>
+        /// <value>The parent context.</value>
+        public RequestContext ParentContext { get; private set; }
+
+        /// <summary>
+        /// Gets the requested path.
+        /// </summary>
+        /// <value>The requested path.</value>
         public string Path { get; private set; }
-
-        public string MessageId { get; private set; }
-
-        public string MessageName { get; private set; }
 
         /// <summary>
         /// Gets the user's session identifier.
@@ -43,24 +57,25 @@ namespace Slalom.Stacks.Messaging
         [JsonConverter(typeof(ClaimsPrincipalConverter))]
         public ClaimsPrincipal User { get; private set; }
 
-        public RequestContext Resolve(string requestName, string path, IMessage message, RequestContext parent = null)
+        /// <inheritdoc />
+        public RequestContext Resolve(string path, IMessage message, RequestContext parentContext = null)
         {
-            return new RequestContext()
+            return new RequestContext
             {
                 CorrelationId = this.GetCorrelationId(),
                 SourceAddress = this.GetSourceIPAddress(),
                 SessionId = this.GetSession(),
                 User = ClaimsPrincipal.Current,
-                MessageName = requestName,
-                MessageId = message.Id,
                 Path = path,
                 Message = message,
-                ParentContext = parent
+                ParentContext = parentContext
             };
         }
 
-        public RequestContext ParentContext { get; private set; }
-
+        /// <summary>
+        /// Gets the source IP address.
+        /// </summary>
+        /// <returns>Returns the source IP address.</returns>
         protected virtual string GetSourceIPAddress()
         {
             if (_sourceAddress == null)
@@ -81,20 +96,22 @@ namespace Slalom.Stacks.Messaging
             return _sourceAddress;
         }
 
-
-        private string GetCorrelationId()
+        /// <summary>
+        /// Gets the current correlation ID.
+        /// </summary>
+        /// <returns>Returns the current correlation ID.</returns>
+        protected virtual string GetCorrelationId()
         {
             return NewId.NextId();
         }
 
-        private string GetSession()
+        /// <summary>
+        /// Gets the current session ID.
+        /// </summary>
+        /// <returns>Returns the current session ID.</returns>
+        protected virtual string GetSession()
         {
             return NewId.NextId();
         }
-    }
-
-    public interface IRequestContext
-    {
-        RequestContext Resolve(string requestName, string path, IMessage message, RequestContext parentContext = null);
     }
 }

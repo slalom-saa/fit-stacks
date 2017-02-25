@@ -6,8 +6,13 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Pipeline
 {
+    /// <summary>
+    /// The handle exception step of the usecase execution pipeline.  This attempt to unwrap the exception if it can.
+    /// </summary>
+    /// <seealso cref="Slalom.Stacks.Messaging.Pipeline.IMessageExecutionStep" />
     public class HandleException : IMessageExecutionStep
     {
+        /// <inheritdoc />
         public Task Execute(IMessage message, MessageExecutionContext context)
         {
             var exception = context.Exception;

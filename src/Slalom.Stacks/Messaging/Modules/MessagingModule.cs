@@ -36,15 +36,15 @@ namespace Slalom.Stacks.Messaging.Modules
         {
             base.Load(builder);
 
-            builder.Register(c => new MessageRouter(c.Resolve<IComponentContext>()))
-                   .As<IMessageRouter>()
+            builder.Register(c => new MessageGatewayAdapter(c.Resolve<IComponentContext>()))
+                   .As<IMessageGatewayAdapter>()
                    .SingleInstance();
 
             builder.RegisterAssemblyTypes(_assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 
-            builder.Register(c => new Registry(this._assemblies))
+            builder.Register(c => new LocalRegistry(this._assemblies))
                 .AsSelf()
                 .SingleInstance();
 

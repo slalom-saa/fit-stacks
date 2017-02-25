@@ -9,15 +9,20 @@ namespace Slalom.Stacks.Messaging
     public class Message : IMessage
     {
         /// <summary>
-        /// Gets the message identifier.
+        /// Initializes a new instance of the <see cref="Message"/> class.
         /// </summary>
-        /// <value>The message identifier.</value>
+        public Message()
+        {
+            this.Type = this.GetType();
+        }
+
+        /// <inheritdoc />
         public string Id { get; } = NewId.NextId();
 
-        /// <summary>
-        /// Gets the time stamp.
-        /// </summary>
-        /// <value>The time stamp.</value>
+        /// <inheritdoc />
         public DateTimeOffset TimeStamp { get; } = DateTimeOffset.UtcNow;
+
+        /// <inheritdoc />
+        public Type Type { get; }
     }
 }

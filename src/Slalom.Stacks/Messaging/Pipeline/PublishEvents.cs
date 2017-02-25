@@ -1,27 +1,36 @@
 ﻿using System;
+using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 
 namespace Slalom.Stacks.Messaging.Pipeline
 {
+    /// <summary>
+    /// The publish events step of the usecase execution pipeline.
+    /// </summary>
+    /// <seealso cref="Slalom.Stacks.Messaging.Pipeline.IMessageExecutionStep" />
     public class PublishEvents : IMessageExecutionStep
     {
-        private IMessageRouter _eventRouter;
+        private readonly IMessageGatewayAdapter _eventGatewayAdapter;
 
-        public PublishEvents(IComponentContext context)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PublishEvents"/> class.
+        /// </summary>
+        /// <param name="components">The components.</param>
+        public PublishEvents(IComponentContext components)
         {
-            _eventRouter = context.Resolve<IMessageRouter>();
+            _eventGatewayAdapter = components.Resolve<IMessageGatewayAdapter>();
         }
 
+        /// <inheritdoc />
         public Task Execute(IMessage message, MessageExecutionContext context)
         {
             if (context.IsSuccessful)
             {
-                _eventRouter.Publish(context.RaisedEvents, context);
+                _eventGatewayAdapter.Publish(context.RaisedEvents, context);
                 if (context.Response is IEvent)
                 {
-                    _eventRouter.Publish((IEvent)context.Response, context);
+                    _eventGatewayAdapter.Publish((IEvent)context.Response, context);
                 }
             }
             return Task.FromResult(0);

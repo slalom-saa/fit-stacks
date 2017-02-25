@@ -16,7 +16,11 @@ namespace Slalom.Stacks.Messaging.Validation
     /// <seealso cref="IBusinessRule{TCommand}" />
     public abstract class BusinessRule<TCommand> : IBusinessRule<TCommand> where TCommand : ICommand
     {
-        public IDomainFacade Domain { get; set; }
+        /// <summary>
+        /// Gets the configured <see cref="IDomainFacade"/>.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade"/>.</value>
+        public IDomainFacade Domain { get; protected set; }
 
         /// <summary>
         /// Validates the specified message instance.

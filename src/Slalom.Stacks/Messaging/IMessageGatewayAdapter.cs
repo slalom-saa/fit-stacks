@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 namespace Slalom.Stacks.Messaging
 {
     /// <summary>
-    /// Routes messages to configured endpoints.
+    /// An adpater to a specific message gateway implementation like Akka.NET.
     /// </summary>
-    public interface IMessageRouter
+    public interface IMessageGatewayAdapter
     {
         /// <summary>
         /// Publishes the specified event to the configured publish-subscribe endpoint.

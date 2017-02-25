@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Linq;
 using Slalom.Stacks.Utilities.NewId;
 
@@ -23,35 +22,19 @@ namespace Slalom.Stacks.Messaging
             _type = this.GetType();
         }
 
-        /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        /// <value>The identifier.</value>
+        /// <inheritdoc />
         string IMessage.Id { get; } = NewId.NextId();
 
-        /// <summary>
-        /// Gets the message time stamp.
-        /// </summary>
-        /// <value>The message time stamp.</value>
+        /// <inheritdoc />
         DateTimeOffset IMessage.TimeStamp { get; } = DateTimeOffset.Now;
 
-        /// <summary>
-        /// Gets the message type.
-        /// </summary>
-        /// <value>The message type.</value>
-        Type ICommand.Type => _type;
-
-        /// <summary>
-        /// Gets the message name.
-        /// </summary>
-        /// <value>The message name.</value>
+        /// <inheritdoc />
         string ICommand.CommandName => this.GetCommandName();
 
-        /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
-        /// </summary>
-        /// <param name="obj">The object to compare with the current object.</param>
-        /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
+        /// <inheritdoc />
+        Type IMessage.Type => _type;
+
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))
@@ -72,10 +55,7 @@ namespace Slalom.Stacks.Messaging
             return this.Equals((Command)obj);
         }
 
-        /// <summary>
-        /// Returns a hash code for this instance.
-        /// </summary>
-        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return ((IMessage)this).Id.GetHashCode();
