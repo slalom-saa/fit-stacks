@@ -109,6 +109,10 @@ namespace Slalom.Stacks.Messaging
         public async Task<MessageResult> Send(string path, string command, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
             var entry = _registry.Value.Find(path);
+            if (String.IsNullOrWhiteSpace(command))
+            {
+                command = "{}";
+            }
             var instance = (ICommand) JsonConvert.DeserializeObject(command, entry.RequestType);
 
             var request = _requestContext.Value.Resolve(path, instance, parentContext?.RequestContext);

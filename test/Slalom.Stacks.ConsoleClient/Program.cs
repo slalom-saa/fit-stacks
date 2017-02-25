@@ -28,7 +28,7 @@ namespace Slalom.Stacks.ConsoleClient
                     });
                    // stack.UseSimpleConsoleLogging();
 
-                    stack.Send("products/add", new AddProductCommand("banme", 15)).Wait();
+                    stack.Send("products/add", "").Wait();
                   //  stack.Send("products/publish", "{}").Wait();
 
                     //Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
