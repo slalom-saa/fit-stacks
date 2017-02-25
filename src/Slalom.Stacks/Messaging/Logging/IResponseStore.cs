@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Messaging.Logging
 {
-    public interface IActionStore
+    public interface IResponseStore
     {
         Task Append(ResponseEntry entry);
     }

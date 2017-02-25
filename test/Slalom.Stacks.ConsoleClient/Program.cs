@@ -24,7 +24,7 @@ namespace Slalom.Stacks.ConsoleClient
                     stack.Use(builder =>    
                     {
                         builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
-                        builder.RegisterInstance(new ActionStore()).As<IActionStore>();
+                        builder.RegisterInstance(new ResponseStore()).As<IResponseStore>();
                     });
                    // stack.UseSimpleConsoleLogging();
 

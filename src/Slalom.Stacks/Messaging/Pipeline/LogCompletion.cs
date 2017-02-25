@@ -10,12 +10,12 @@ namespace Slalom.Stacks.Messaging.Pipeline
 {
     public class LogCompletion : IMessageExecutionStep
     {
-        private IEnumerable<IActionStore> _actions;
+        private IEnumerable<IResponseStore> _actions;
         private ILogger _logger;
 
         public LogCompletion(IComponentContext context)
         {
-            _actions = context.Resolve<IEnumerable<IActionStore>>();
+            _actions = context.Resolve<IEnumerable<IResponseStore>>();
             _logger = context.Resolve<ILogger>();
         }
 

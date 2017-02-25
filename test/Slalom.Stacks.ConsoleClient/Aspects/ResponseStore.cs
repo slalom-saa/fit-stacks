@@ -5,7 +5,7 @@ using Slalom.Stacks.Messaging.Logging;
 
 namespace Slalom.Stacks.ConsoleClient.Aspects
 {
-    public class ActionStore : IActionStore
+    public class ResponseStore : IResponseStore
     {
         public Task Append(ResponseEntry entry)
         {
