@@ -19,19 +19,12 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
+
                 using (var stack = new Stack(typeof(Program)))
                 {
-                    stack.Use(builder =>    
-                    {
-                        builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
-                        builder.RegisterInstance(new ResponseStore()).As<IResponseStore>();
-                    });
-                   // stack.UseSimpleConsoleLogging();
+                    stack.UseSimpleConsoleLogging();
 
-                    stack.Send("products/add", "").Wait();
-                  //  stack.Send("products/publish", "{}").Wait();
-
-                    //Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+                    stack.Logger.Debug("asdf");
 
                     Console.WriteLine("Complete");
                     Console.ReadKey();
