@@ -11,11 +11,10 @@ namespace Slalom.Stacks.Messaging.Validation
     public interface ICommandValidator
     {
         /// <summary>
-        /// Validates the specified command.
+        /// Validates the specified message.
         /// </summary>
-        /// <param name="command">The command to validate.</param>
-        /// <param name="context">The current execution context.</param>
+        /// <param name="command">The message to validate.</param>
         /// <returns>The <see cref="ValidationError">messages</see> returned from validation routines.</returns>
-        Task<IEnumerable<ValidationError>> Validate(ICommand command, ExecutionContext context);
+        Task<IEnumerable<ValidationError>> Validate(ICommand command);
     }
 }

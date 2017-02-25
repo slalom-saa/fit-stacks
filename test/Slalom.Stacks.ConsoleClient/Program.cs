@@ -4,10 +4,12 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Autofac;
 using Newtonsoft.Json;
-using Slalom.Stacks.Domain;
+using Slalom.Stacks.ConsoleClient.Application.Products.Add;
+using Slalom.Stacks.ConsoleClient.Aspects;
 using Slalom.Stacks.Logging;
+using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Serialization;
-using Slalom.Stacks.TestStack.Examples.Actors.Items.Add;
 
 namespace Slalom.Stacks.ConsoleClient
 {
@@ -15,28 +17,29 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public static void Main(string[] args)
         {
-            Start();
-            Console.WriteLine("Running application.  Press any key to halt...");
-            Console.ReadKey();
-        }
-
-        public static async void Start()
-        {
-            ClaimsPrincipal.ClaimsPrincipalSelector = () => new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Role, "Administrator"), new Claim(ClaimTypes.Name, "user@example.com") }));
-
-            using (var container = new Stack(typeof(AddItemCommand)))
+            try
             {
-                var result = await container.SendAsync("items/add", "{}");
+                using (var stack = new Stack(typeof(Program)))
+                {
+                    stack.Use(builder =>    
+                    {
+                        builder.RegisterInstance(new RequestStore()).As<IRequestStore>();
+                        builder.RegisterInstance(new ResponseStore()).As<IResponseStore>();
+                    });
+                   // stack.UseSimpleConsoleLogging();
 
-                Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+                    stack.Send("products/add", new AddProductCommand("banme", 15)).Wait();
+                  //  stack.Send("products/publish", "{}").Wait();
 
-                result = await container.SendAsync("items/add", "{name:\"No\"}");
+                    //Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
 
-                Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-
-                result = await container.SendAsync("items/add", "{name:\"Now\"}");
-
-                Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+                    Console.WriteLine("Complete");
+                    Console.ReadKey();
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
             }
         }
     }

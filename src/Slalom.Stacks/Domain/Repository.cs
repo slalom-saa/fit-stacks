@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Domain
         /// <summary>
         /// Initializes a new instance of the <see cref="Repository{TRoot}" /> class.
         /// </summary>
-        /// <param name="context">The configured context.</param>
+        /// <param name="context">The configured requestContext.</param>
         public Repository(IEntityContext context)
         {
             Argument.NotNull(context, nameof(context));

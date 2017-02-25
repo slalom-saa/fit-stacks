@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Linq;
 using Slalom.Stacks.Utilities.NewId;
 
@@ -10,10 +9,9 @@ namespace Slalom.Stacks.Messaging
     /// or can request data, which returns a document message.
     /// </summary>
     /// <seealso cref="ICommand" />
-    /// <seealso href="http://bit.ly/2d01rc7">Reactive Messaging Patterns with the Actor Model: Applications and Integration in Scala and Akka</seealso>
+    /// <seealso href="http://bit.ly/2d01rc7">Reactive Messaging Patterns with the Response Model: Applications and Integration in Scala and Akka</seealso>
     public abstract class Command : ICommand
     {
-        private readonly Lazy<RequestAttribute> _attribute;
         private readonly Type _type;
 
         /// <summary>
@@ -22,38 +20,21 @@ namespace Slalom.Stacks.Messaging
         protected Command()
         {
             _type = this.GetType();
-            _attribute = new Lazy<RequestAttribute>(() => _type.GetTypeInfo().GetCustomAttributes<RequestAttribute>().FirstOrDefault());
         }
 
-        /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        /// <value>The identifier.</value>
+        /// <inheritdoc />
         string IMessage.Id { get; } = NewId.NextId();
 
-        /// <summary>
-        /// Gets the message time stamp.
-        /// </summary>
-        /// <value>The message time stamp.</value>
+        /// <inheritdoc />
         DateTimeOffset IMessage.TimeStamp { get; } = DateTimeOffset.Now;
 
-        /// <summary>
-        /// Gets the command type.
-        /// </summary>
-        /// <value>The command type.</value>
-        Type ICommand.Type => _type;
-
-        /// <summary>
-        /// Gets the command name.
-        /// </summary>
-        /// <value>The command name.</value>
+        /// <inheritdoc />
         string ICommand.CommandName => this.GetCommandName();
 
-        /// <summary>
-        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
-        /// </summary>
-        /// <param name="obj">The object to compare with the current object.</param>
-        /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
+        /// <inheritdoc />
+        Type IMessage.Type => _type;
+
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))
@@ -74,10 +55,7 @@ namespace Slalom.Stacks.Messaging
             return this.Equals((Command)obj);
         }
 
-        /// <summary>
-        /// Returns a hash code for this instance.
-        /// </summary>
-        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return ((IMessage)this).Id.GetHashCode();
@@ -95,7 +73,7 @@ namespace Slalom.Stacks.Messaging
 
         private string GetCommandName()
         {
-            return _attribute.Value?.Name ?? _type.Name;
+            return _type.Name;
         }
     }
 }

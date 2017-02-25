@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Domain
 {
+    /// <summary>
+    /// Base class for value objects.
+    /// </summary>
+    /// <typeparam name="T">The type of value object.</typeparam>
+    /// <seealso cref="System.IEquatable{T}" />
     public abstract class ValueObject<T> : IEquatable<T> where T : ValueObject<T>
     {
         static IList<FieldInfo> _fields = new List<FieldInfo>();
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -20,6 +26,7 @@ namespace Slalom.Stacks.Domain
             return Equals(other);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             var fields = GetFields().Select(field => field.GetValue(this)).Where(value => value != null).ToList();
@@ -27,6 +34,11 @@ namespace Slalom.Stacks.Domain
             return GetHashCode(fields.ToArray());
         }
 
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <param name="objects">The objects.</param>
+        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public static int GetHashCode(params object[] objects)
         {
             unchecked
@@ -40,6 +52,7 @@ namespace Slalom.Stacks.Domain
             }
         }
 
+        /// <inheritdoc />
         public virtual bool Equals(T other)
         {
             if (other == null)
@@ -70,11 +83,23 @@ namespace Slalom.Stacks.Domain
             return true;
         }
 
+        /// <summary>
+        /// Implements the != operator.
+        /// </summary>
+        /// <param name="x">The x value.</param>
+        /// <param name="y">The y value.</param>
+        /// <returns>The result of the operator.</returns>
         public static bool operator ==(ValueObject<T> x, ValueObject<T> y)
         {
             return ReferenceEquals(x, y) || x.Equals(y);
         }
 
+        /// <summary>
+        /// Implements the != operator.
+        /// </summary>
+        /// <param name="x">The x value.</param>
+        /// <param name="y">The y value.</param>
+        /// <returns>The result of the operator.</returns>
         public static bool operator !=(ValueObject<T> x, ValueObject<T> y)
         {
             return !(x == y);

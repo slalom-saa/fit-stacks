@@ -6,8 +6,10 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Caching;
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Domain.Modules;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Modules;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
@@ -59,9 +61,9 @@ namespace Slalom.Stacks.Configuration
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new NullCachingModule());
 
-            builder.Register(c => new LocalExecutionContextResolver(c.Resolve<IConfiguration>()))
-                   .As<IExecutionContextResolver>()
-                   .SingleInstance();
+            builder.Register(c => new ExecutionContext(c.Resolve<IConfiguration>()))
+                .As<IExecutionContext>();
+                   
 
             builder.Register(c => new DiscoveryService(c.Resolve<ILogger>()))
                    .As<IDiscoverTypes>()

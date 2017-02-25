@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Caching;
-using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Domain
@@ -27,7 +27,7 @@ namespace Slalom.Stacks.Domain
         /// <summary>
         /// Initializes a new instance of the <see cref="DomainFacade" /> class.
         /// </summary>
-        /// <param name="componentContext">The component context.</param>
+        /// <param name="componentContext">The component request.</param>
         /// <param name="cacheManager">The cache manager.</param>
         public DomainFacade(IComponentContext componentContext, ICacheManager cacheManager)
         {
@@ -68,7 +68,6 @@ namespace Slalom.Stacks.Domain
             }
 
             await repository.AddAsync(instances);
-
             await _cacheManager.AddAsync(instances);
         }
 

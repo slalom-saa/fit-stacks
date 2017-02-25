@@ -1,17 +1,19 @@
 using System;
 using System.Threading.Tasks;
-using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Messaging
 {
-    public interface IHandle
+    /// <summary>
+    /// The root IHandle interface.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type.</typeparam>
+    public interface IHandle<in TMessage>
     {
-        Task<Object> HandleAsync(object instance);
-
-        void SetContext(ExecutionContext context);
-    }
-
-    public interface IHandle<T> : IHandle
-    {
+        /// <summary>
+        /// Handles the specified message instance.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task Handle(TMessage instance);
     }
 }

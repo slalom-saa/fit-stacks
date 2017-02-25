@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Caching
 {
@@ -10,7 +9,7 @@ namespace Slalom.Stacks.Caching
     /// A message containing information about what was changed in the cache.
     /// </summary>
     /// <seealso cref="IMessage" />
-    public class CacheUpdatedMessage : IMessage
+    public class CacheUpdatedMessage : Message
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheUpdatedMessage"/> class.
@@ -26,17 +25,5 @@ namespace Slalom.Stacks.Caching
         /// </summary>
         /// <value>The keys updated.</value>
         public IEnumerable<string> KeysUpdated { get; }
-
-        /// <summary>
-        /// Gets the message identifier.
-        /// </summary>
-        /// <value>The message identifier.</value>
-        public string Id { get; } = NewId.NextId();
-
-        /// <summary>
-        /// Gets the message timestamp.
-        /// </summary>
-        /// <value>The message timestamp.</value>
-        public DateTimeOffset TimeStamp { get; } = DateTimeOffset.UtcNow;
     }
 }

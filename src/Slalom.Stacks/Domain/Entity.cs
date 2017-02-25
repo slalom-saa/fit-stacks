@@ -48,6 +48,12 @@ namespace Slalom.Stacks.Domain
 
         #region Equality Members
 
+        /// <summary>
+        /// Implements the ==.
+        /// </summary>
+        /// <param name="a">The first item to compare.</param>
+        /// <param name="b">The second item to compare.</param>
+        /// <returns>The result of the operator.</returns>
         public static bool operator ==(Entity a, Entity b)
         {
             if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
@@ -57,6 +63,12 @@ namespace Slalom.Stacks.Domain
             return a.Equals(b);
         }
 
+        /// <summary>
+        /// Implements the !=.
+        /// </summary>
+        /// <param name="a">The first item to compare.</param>
+        /// <param name="b">The second item to compare.</param>
+        /// <returns>The result of the operator.</returns>
         public static bool operator !=(Entity a, Entity b)
         {
             return !(a == b);

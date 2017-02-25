@@ -1,4 +1,6 @@
 using System;
+using System.CodeDom.Compiler;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Slalom.Stacks.Utilities.NewId.NewIdFormatters;
 using Slalom.Stacks.Utilities.NewId.NewIdProviders;
@@ -70,7 +72,9 @@ namespace Slalom.Stacks.Utilities.NewId
         {
             _a = (f << 24) | (g << 16) | (h << 8) | i;
             _b = (j << 24) | (k << 16) | (d << 8) | e;
+#pragma warning disable CS0675 // Bitwise-or operator used on a sign-extended operand
             _c = (c << 16) | b;
+#pragma warning restore CS0675 // Bitwise-or operator used on a sign-extended operand
             _d = a;
         }
 

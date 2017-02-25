@@ -10,50 +10,29 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
-    /// Performs business validation on a command.
+    /// Performs business validation on a message.
     /// </summary>
-    /// <typeparam name="TCommand">The command type.</typeparam>
-    /// <seealso cref="IBusinessValidationRule{TCommand}" />
-    public abstract class BusinessRule<TCommand> : IBusinessValidationRule<TCommand> where TCommand : ICommand
+    /// <typeparam name="TCommand">The message type.</typeparam>
+    /// <seealso cref="IBusinessRule{TCommand}" />
+    public abstract class BusinessRule<TCommand> : IBusinessRule<TCommand> where TCommand : ICommand
     {
         /// <summary>
-        /// Gets the execution context.
+        /// Gets the configured <see cref="IDomainFacade"/>.
         /// </summary>
-        /// <value>The execution context.</value>
-        public ExecutionContext Context { get; private set; }
+        /// <value>The configured <see cref="IDomainFacade"/>.</value>
+        public IDomainFacade Domain { get; protected set; }
 
         /// <summary>
-        /// Gets the configured <see cref="IDomainFacade"/> instance.
-        /// </summary>
-        /// <value>The configured <see cref="IDomainFacade"/> instance.</value>
-        public IDomainFacade Domain { get; set; }
-
-        /// <summary>
-        /// Validates the specified command instance.
+        /// Validates the specified message instance.
         /// </summary>
         /// <param name="instance">The instance to validate.</param>
-        /// <param name="context">The execution context.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="context"/> argument is null.</exception>
-        public IEnumerable<ValidationError> Validate(TCommand instance, ExecutionContext context)
+        /// <exception cref="System.NotImplementedException">Thrown when neither validate methods are implemented.</exception>
+        public virtual IEnumerable<ValidationError> Validate(TCommand instance)
         {
             Argument.NotNull(instance, nameof(instance));
-            Argument.NotNull(context, nameof(context));
 
-            this.Context = context;
-
-            return this.Validate(instance);
-        }
-
-        /// <summary>
-        /// Validates the specified command instance.
-        /// </summary>
-        /// <param name="instance">The instance to validate.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        protected IEnumerable<ValidationError> Validate(TCommand instance)
-        {
             var result = this.ValidateAsync(instance).Result;
             if (result == null)
             {
@@ -63,6 +42,15 @@ namespace Slalom.Stacks.Messaging.Validation
         }
 
 
-        public abstract Task<ValidationError> ValidateAsync(TCommand instance);
+        /// <summary>
+        /// Validates the specified message instance.
+        /// </summary>
+        /// <param name="instance">The instance to validate.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        /// <exception cref="System.NotImplementedException">Thrown when neither validate methods are implemented.</exception>
+        public virtual Task<ValidationError> ValidateAsync(TCommand instance)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

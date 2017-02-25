@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.Domain
 {
@@ -14,5 +16,11 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         /// <value>The identifier.</value>
         string Id { get; }
+
+        /// <summary>
+        /// Commits and returns the raised events.
+        /// </summary>
+        /// <returns>The events that were raised.</returns>
+        IEnumerable<Event> CommitEvents();
     }
 }

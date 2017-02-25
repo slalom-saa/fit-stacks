@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Search
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchIndex{TSearchResult}" /> class.
         /// </summary>
-        /// <param name="context">The configured context.</param>
+        /// <param name="context">The configured requestContext.</param>
         public SearchIndex(ISearchContext context)
         {
             Argument.NotNull(context, nameof(context));

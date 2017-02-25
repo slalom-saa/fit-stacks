@@ -21,7 +21,7 @@ namespace Slalom.Stacks.Search
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchFacade"/> class.
         /// </summary>
-        /// <param name="componentContext">The component context.</param>
+        /// <param name="componentContext">The component requestContext.</param>
         public SearchFacade(IComponentContext componentContext)
         {
             Argument.NotNull(componentContext, nameof(componentContext));

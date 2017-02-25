@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Slalom.Stacks.Domain
 {
     /// <summary>
-    /// Defines an entity context that is used to access a single source.
+    /// Defines an entity requestContext that is used to access a single source.
     /// </summary>
     public interface IEntityContext
     {
