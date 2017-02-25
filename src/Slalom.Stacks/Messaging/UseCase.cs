@@ -91,7 +91,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the configured <see cref="IComponentContext"/> instance.
         /// </summary>
         /// <value>The configured <see cref="IComponentContext"/> instance.</value>
-        protected IComponentContext Components { get; private set; }
+        protected IComponentContext Components { get; set; }
 
         /// <summary>
         /// Gets the current <see cref="MessageExecutionContext"/> instance.

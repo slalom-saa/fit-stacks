@@ -23,7 +23,7 @@ namespace Slalom.Stacks
         /// <typeparam name="TRegistrationStyle">The type of the t registration style.</typeparam>
         /// <param name="registration">The registration.</param>
         /// <returns>IRegistrationBuilder&lt;TLimit, TActivatorData, TRegistrationStyle&gt;.</returns>
-        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> AutowireProperties<TLimit, TActivatorData, TRegistrationStyle>(
+        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> AllPropertiesAutowired<TLimit, TActivatorData, TRegistrationStyle>(
             this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration)
         {
             return registration.OnActivated(args => InjectProperties(args.Context, args.Instance, true));
