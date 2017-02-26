@@ -65,7 +65,7 @@ namespace Slalom.Stacks.Messaging
         /// <summary>
         /// Gets the actor response.
         /// </summary>
-        public object Response { get; }
+        public object Response { get; set; }
 
         /// <summary>
         /// Gets or sets the date and time started.

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autofac;
@@ -21,20 +23,36 @@ namespace Slalom.Stacks
         /// <param name="markers">Item markers used to identify assemblies.</param>
         public Stack(params object[] markers)
         {
-            this.Assemblies = markers.Select(e =>
+            if (!markers?.Any() ?? true)
             {
-                var type = e as Type;
-                if (type != null)
+                var current = Assembly.GetEntryAssembly();
+                var list = new List<Assembly>
                 {
-                    return type.GetTypeInfo().Assembly;
-                }
-                var assembly = e as Assembly;
-                if (assembly != null)
+                    current
+                };
+                foreach (var assembly in Directory.GetFiles(Path.GetDirectoryName(current.Location), current.GetName().Name.Split('.')[0] + "*.dll"))
                 {
-                    return assembly;
+                    list.Add(Assembly.LoadFrom(assembly));
                 }
-                return e.GetType().GetTypeInfo().Assembly;
-            }).Distinct().ToArray();
+                this.Assemblies = list.Distinct().ToArray();
+            }
+            else
+            {
+                this.Assemblies = markers.Select(e =>
+                {
+                    var type = e as Type;
+                    if (type != null)
+                    {
+                        return type.GetTypeInfo().Assembly;
+                    }
+                    var assembly = e as Assembly;
+                    if (assembly != null)
+                    {
+                        return assembly;
+                    }
+                    return e.GetType().GetTypeInfo().Assembly;
+                }).Distinct().ToArray();
+            }
 
             var builder = new ContainerBuilder();
 

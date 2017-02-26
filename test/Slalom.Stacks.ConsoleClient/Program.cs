@@ -19,8 +19,7 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-
-                using (var stack = new Stack(typeof(Program)))
+                using (var stack = new Stack())
                 {
                     stack.UseSimpleConsoleLogging();
 
