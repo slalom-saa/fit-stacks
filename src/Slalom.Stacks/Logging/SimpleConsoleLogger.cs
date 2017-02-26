@@ -26,7 +26,10 @@ namespace Slalom.Stacks.Logging
             var builder = new StringBuilder();
             builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "DEBUG", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(builder.ToString());
@@ -51,7 +54,10 @@ namespace Slalom.Stacks.Logging
             var builder = new StringBuilder();
             builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "ERROR", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(builder.ToString());
@@ -76,7 +82,10 @@ namespace Slalom.Stacks.Logging
             var builder = new StringBuilder();
             builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "FATAL", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(builder.ToString());
@@ -101,7 +110,10 @@ namespace Slalom.Stacks.Logging
             var builder = new StringBuilder();
             builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "INFO", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(builder.ToString());
@@ -126,7 +138,10 @@ namespace Slalom.Stacks.Logging
             var builder = new StringBuilder();
             builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "VERBOSE", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.Write(builder.ToString());
@@ -151,7 +166,10 @@ namespace Slalom.Stacks.Logging
             var builder = new StringBuilder();
             builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "WARN", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write(builder.ToString());
