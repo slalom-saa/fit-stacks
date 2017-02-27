@@ -24,7 +24,7 @@ namespace Slalom.Stacks.Messaging.Registration
         /// <returns>Services that are registered to take the specified message.</returns>
         public IEnumerable<Service> Find(IMessage message)
         {
-            return this.Services.Where(e => e.Input == message.GetType().AssemblyQualifiedName);
+            return this.Services.Where(e => e.InputType == message.GetType().AssemblyQualifiedName);
         }
 
         /// <summary>
@@ -34,7 +34,13 @@ namespace Slalom.Stacks.Messaging.Registration
         /// <returns>Returns the service registered at the specified path.</returns>
         public Service Find(string path)
         {
-            return this.Services.FirstOrDefault(e => e.Path == path);
+            var target = this.Services.FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
+            if (target == null)
+            {
+                target = this.Services.Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
+            }
+
+            return target;
         }
 
         /// <summary>

@@ -1,23 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Messaging
 {
     /// <summary>
-    /// Indicates the path the actor.
+    /// Indicates the path the service.
     /// </summary>
     /// <seealso cref="System.Attribute" />
     [AttributeUsage(AttributeTargets.Class)]
     public class PathAttribute : Attribute
     {
-        /// <summary>
-        /// Gets the path.
-        /// </summary>
-        /// <value>The name.</value>
-        public string Path { get; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PathAttribute"/> class.
         /// </summary>
@@ -26,5 +18,17 @@ namespace Slalom.Stacks.Messaging
         {
             this.Path = path;
         }
+
+        /// <summary>
+        /// Gets the path.
+        /// </summary>
+        /// <value>The name.</value>
+        public string Path { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version number.
+        /// </summary>
+        /// <value>The version number.</value>
+        public int Version { get; set; } = 1;
     }
 }

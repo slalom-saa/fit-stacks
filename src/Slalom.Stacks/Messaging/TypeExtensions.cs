@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Reflection;
 using System.Linq;
+using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -12,13 +15,32 @@ namespace Slalom.Stacks.Messaging
     public static class TypeExtensions
     {
         /// <summary>
-        /// Gets the path for the type.
+        /// Gets the path for the service.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>Returns the path for the type.</returns>
         public static string GetPath(this Type type)
         {
             return type.GetAllAttributes<PathAttribute>().Select(e => e.Path).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Gets the version for the service.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>Returns the path for the type.</returns>
+        public static int GetVersion(this Type type)
+        {
+            return type.GetAllAttributes<PathAttribute>().FirstOrDefault()?.Version ?? 1;
+        }
+
+        public static IEnumerable<ServiceProperty> GetInputProperties(this Type type)
+        {
+            type = type.GetRequestType();
+            foreach (var property in type.GetProperties())
+            {
+                yield return new ServiceProperty(property.Name, property.PropertyType);
+            }
         }
 
         /// <summary>
@@ -43,6 +65,13 @@ namespace Slalom.Stacks.Messaging
             var actorType = type?.GetBaseAndContractTypes().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(UseCase<,>));
 
             return actorType != null ? actorType.GetGenericArguments()[1] : null;
+        }
+
+        public static Type[] GetRules(this Type type)
+        {
+            var input = type.GetRequestType();
+
+            return type.Assembly.SafelyGetTypes(typeof(IValidate<>).MakeGenericType(input));
         }
 
         /// <summary>

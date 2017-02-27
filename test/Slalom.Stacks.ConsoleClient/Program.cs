@@ -9,6 +9,7 @@ using Slalom.Stacks.ConsoleClient.Aspects;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Logging;
+using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Messaging.Serialization;
 
 namespace Slalom.Stacks.ConsoleClient
@@ -23,10 +24,9 @@ namespace Slalom.Stacks.ConsoleClient
                 {
                     stack.UseSimpleConsoleLogging();
 
-
-                    stack.Send(new AddProductCommand("afd", 15)).Wait();
-
-
+                    var service = stack.GetServices().Find("products/add");
+                    Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
+                    
                     Console.WriteLine("Complete");
                     Console.ReadKey();
                 }

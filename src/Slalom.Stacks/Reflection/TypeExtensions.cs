@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace Slalom.Stacks.Reflection
     /// </summary>
     public static class TypeExtensions
     {
+        private static readonly ConcurrentDictionary<Assembly, Type[]> _loadedTypes = new ConcurrentDictionary<Assembly, Type[]>();
+
         /// <summary>
         /// Returns all custom attributes of the specified type.
         /// </summary>
@@ -56,6 +59,35 @@ namespace Slalom.Stacks.Reflection
         }
 
         /// <summary>
+        /// Gets all properties recursively.
+        /// </summary>
+        /// <param name="type">The root type.</param>
+        /// <returns>All discovered properties.</returns>
+        public static IEnumerable<PropertyInfo> GetPropertiesRecursive(this Type type)
+        {
+            var seenNames = new HashSet<string>();
+
+            var currentTypeInfo = type.GetTypeInfo();
+
+            while (currentTypeInfo.AsType() != typeof(object))
+            {
+                var unseenProperties = currentTypeInfo.DeclaredProperties.Where(p => p.CanRead &&
+                                                                                     p.GetMethod.IsPublic &&
+                                                                                     !p.GetMethod.IsStatic &&
+                                                                                     (p.Name != "Item" || p.GetIndexParameters().Length == 0) &&
+                                                                                     !seenNames.Contains(p.Name));
+
+                foreach (var propertyInfo in unseenProperties)
+                {
+                    seenNames.Add(propertyInfo.Name);
+                    yield return propertyInfo;
+                }
+
+                currentTypeInfo = currentTypeInfo.BaseType.GetTypeInfo();
+            }
+        }
+
+        /// <summary>
         /// Safely gets all types when some referenced assemblies may not be available.
         /// </summary>
         /// <param name="assemblies">The instance.</param>
@@ -77,10 +109,7 @@ namespace Slalom.Stacks.Reflection
             {
                 return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => e.GetBaseAndContractTypes().Any(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == type)).ToArray();
             }
-            else
-            {
-                return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => (type.IsAssignableFrom(e))).ToArray();
-            }
+            return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => e != null && type.IsAssignableFrom(e)).ToArray();
         }
 
         /// <summary>
@@ -115,32 +144,17 @@ namespace Slalom.Stacks.Reflection
         }
 
         /// <summary>
-        /// Gets all properties recursively.
+        /// Safely gets all types when some referenced assemblies may not be available.
         /// </summary>
-        /// <param name="type">The root type.</param>
-        /// <returns>All discovered properties.</returns>
-        public static IEnumerable<PropertyInfo> GetPropertiesRecursive(this Type type)
+        /// <param name="assembly">The instance.</param>
+        /// <param name="type">The parent type.</param>
+        /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
+        public static Type[] SafelyGetTypes(this Assembly assembly, Type type)
         {
-            var seenNames = new HashSet<string>();
-
-            var currentTypeInfo = type.GetTypeInfo();
-
-            while (currentTypeInfo.AsType() != typeof(object))
+            return _loadedTypes.GetOrAdd(assembly, a =>
             {
-                var unseenProperties = currentTypeInfo.DeclaredProperties.Where(p => p.CanRead &&
-                                                                                     p.GetMethod.IsPublic &&
-                                                                                     !p.GetMethod.IsStatic &&
-                                                                                     (p.Name != "Item" || p.GetIndexParameters().Length == 0) &&
-                                                                                     !seenNames.Contains(p.Name));
-
-                foreach (var propertyInfo in unseenProperties)
-                {
-                    seenNames.Add(propertyInfo.Name);
-                    yield return propertyInfo;
-                }
-
-                currentTypeInfo = currentTypeInfo.BaseType.GetTypeInfo();
-            }
+                return assembly.SafelyGetTypes().Where(e => e != null && type.IsAssignableFrom(e)).ToArray();
+            });
         }
 
         private static IEnumerable<Type> GetTypeAndGeneric(Type type)

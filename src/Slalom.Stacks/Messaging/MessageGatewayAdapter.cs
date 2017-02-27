@@ -52,7 +52,7 @@ namespace Slalom.Stacks.Messaging
 
             foreach (var entry in entries)
             {
-                var handler = _components.Resolve(Type.GetType(entry.Type));
+                var handler = _components.Resolve(Type.GetType(entry.ServiceType));
                 var executionContext = _executionContext.Value.Resolve();
 
                 var context = new MessageExecutionContext(request, entry, executionContext, parentContext);
@@ -94,7 +94,7 @@ namespace Slalom.Stacks.Messaging
 
             var entry = entries.First();
 
-            var handler = _components.Resolve(Type.GetType(entry.Type));
+            var handler = _components.Resolve(Type.GetType(entry.ServiceType));
             var executionContext = _executionContext.Value.Resolve();
 
             var context = new MessageExecutionContext(request, entry, executionContext, parentContext);
@@ -114,12 +114,12 @@ namespace Slalom.Stacks.Messaging
             {
                 command = "{}";
             }
-            var instance = (ICommand) JsonConvert.DeserializeObject(command, Type.GetType(entry.Input));
+            var instance = (ICommand) JsonConvert.DeserializeObject(command, Type.GetType(entry.InputType));
 
             var request = _requestContext.Value.Resolve(path, instance, parentContext?.RequestContext);
             await Task.WhenAll(_requests.Value.Select(e => e.Append(new RequestEntry(request))));
 
-            var handler = _components.Resolve(Type.GetType(entry.Type));
+            var handler = _components.Resolve(Type.GetType(entry.ServiceType));
             var executionContext = _executionContext.Value.Resolve();
 
             var context = new MessageExecutionContext(request, entry, executionContext, parentContext);
