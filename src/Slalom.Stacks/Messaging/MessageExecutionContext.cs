@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
@@ -19,13 +20,13 @@ namespace Slalom.Stacks.Messaging
         /// Initializes a new instance of the <see cref="MessageExecutionContext"/> class.
         /// </summary>
         /// <param name="requestContext">The request.</param>
-        /// <param name="registryEntry">The entry.</param>
+        /// <param name="service">The current service.</param>
         /// <param name="executionContext">The execution.</param>
         /// <param name="parent">The parent.</param>
-        public MessageExecutionContext(RequestContext requestContext, RegistryEntry registryEntry, ExecutionContext executionContext, MessageExecutionContext parent = null)
+        public MessageExecutionContext(RequestContext requestContext, Service service, ExecutionContext executionContext, MessageExecutionContext parent = null)
         {
             this.RequestContext = requestContext;
-            this.RegistryEntry = registryEntry;
+            this.Service = service;
             this.Parent = parent;
             this.ExecutionContext = executionContext;
         }
@@ -70,7 +71,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the registry entry.
         /// </summary>
         /// <value>The registry entry.</value>
-        public RegistryEntry RegistryEntry { get; }
+        public Service Service { get; }
 
         /// <summary>
         /// Gets the request context.

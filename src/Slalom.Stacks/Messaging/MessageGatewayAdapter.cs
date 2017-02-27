@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Messaging.Logging;
+using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
@@ -17,7 +18,7 @@ namespace Slalom.Stacks.Messaging
     public class MessageGatewayAdapter : IMessageGatewayAdapter
     {
         private readonly IComponentContext _components;
-        private readonly Lazy<LocalRegistry> _registry;
+        private readonly Lazy<ServiceRegistry> _registry;
         private readonly Lazy<IRequestContext> _requestContext;
         private readonly Lazy<IEnumerable<IRequestStore>> _requests;
         private readonly Lazy<IExecutionContext> _executionContext;
@@ -32,7 +33,7 @@ namespace Slalom.Stacks.Messaging
 
             _components = components;
 
-            _registry = new Lazy<LocalRegistry>(components.Resolve<LocalRegistry>);
+            _registry = new Lazy<ServiceRegistry>(components.Resolve<ServiceRegistry>);
             _requestContext = new Lazy<IRequestContext>(components.Resolve<IRequestContext>);
             _requests = new Lazy<IEnumerable<IRequestStore>>(components.ResolveAll<IRequestStore>);
             _executionContext = new Lazy<IExecutionContext>(components.Resolve<IExecutionContext>);
@@ -51,7 +52,7 @@ namespace Slalom.Stacks.Messaging
 
             foreach (var entry in entries)
             {
-                var handler = _components.Resolve(entry.Type);
+                var handler = _components.Resolve(Type.GetType(entry.Type));
                 var executionContext = _executionContext.Value.Resolve();
 
                 var context = new MessageExecutionContext(request, entry, executionContext, parentContext);
@@ -93,7 +94,7 @@ namespace Slalom.Stacks.Messaging
 
             var entry = entries.First();
 
-            var handler = _components.Resolve(entry.Type);
+            var handler = _components.Resolve(Type.GetType(entry.Type));
             var executionContext = _executionContext.Value.Resolve();
 
             var context = new MessageExecutionContext(request, entry, executionContext, parentContext);
@@ -113,12 +114,12 @@ namespace Slalom.Stacks.Messaging
             {
                 command = "{}";
             }
-            var instance = (ICommand) JsonConvert.DeserializeObject(command, entry.RequestType);
+            var instance = (ICommand) JsonConvert.DeserializeObject(command, Type.GetType(entry.Input));
 
             var request = _requestContext.Value.Resolve(path, instance, parentContext?.RequestContext);
             await Task.WhenAll(_requests.Value.Select(e => e.Append(new RequestEntry(request))));
 
-            var handler = _components.Resolve(entry.Type);
+            var handler = _components.Resolve(Type.GetType(entry.Type));
             var executionContext = _executionContext.Value.Resolve();
 
             var context = new MessageExecutionContext(request, entry, executionContext, parentContext);

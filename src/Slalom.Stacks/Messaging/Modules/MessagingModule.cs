@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac;
 using Slalom.Stacks.Messaging.Pipeline;
+using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
 using Module = Autofac.Module;
@@ -44,9 +45,13 @@ namespace Slalom.Stacks.Messaging.Modules
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 
-            builder.Register(c => new LocalRegistry(this._assemblies))
+            builder.Register(c => new ServiceRegistry())
                 .AsSelf()
-                .SingleInstance();
+                .SingleInstance()
+                .OnActivated(e =>
+                   {
+                       e.Instance.RegisterLocal(this._assemblies);
+                   });
 
             builder.Register(c => new RequestContext())
                 .As<IRequestContext>();

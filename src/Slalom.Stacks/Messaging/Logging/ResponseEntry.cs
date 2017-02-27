@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Messaging.Logging
             this.CorrelationId = context.RequestContext.CorrelationId;
             this.MessageId = context.RequestContext.Message.Id;
             this.Completed = context.Completed;
-            this.ActorType = context.RegistryEntry.Type.FullName;
+            this.Service = context.Service.Type;
             this.Exception = context.Exception;
             this.IsSuccessful = context.IsSuccessful;
             this.Started = context.Started;
@@ -54,17 +54,11 @@ namespace Slalom.Stacks.Messaging.Logging
         }
 
         /// <summary>
-        /// Gets the type of the actor.
-        /// </summary>
-        /// <value>The type of the actor.</value>
-        public string ActorType { get; }
-
-        /// <summary>
         /// Gets or sets the name of the application.
         /// </summary>
         /// <value>The name of the application.</value>
         public string ApplicationName { get; set; }
-
+            
         /// <summary>
         /// Gets the completion date and time.
         /// </summary>
@@ -130,6 +124,12 @@ namespace Slalom.Stacks.Messaging.Logging
         /// </summary>
         /// <value>The message identifier.</value>
         public string MessageId { get; }
+
+        /// <summary>
+        /// Gets the type of the service.
+        /// </summary>
+        /// <value>The type of the service.</value>
+        public string Service { get; }
 
         /// <summary>
         /// Gets the start date and time.

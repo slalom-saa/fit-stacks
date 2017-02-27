@@ -23,7 +23,9 @@ namespace Slalom.Stacks.ConsoleClient
                 {
                     stack.UseSimpleConsoleLogging();
 
-                    stack.Logger.Debug("asdf");
+
+                    stack.Send(new AddProductCommand("afd", 15)).Wait();
+
 
                     Console.WriteLine("Complete");
                     Console.ReadKey();
