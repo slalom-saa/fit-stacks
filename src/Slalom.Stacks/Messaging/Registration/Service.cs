@@ -55,5 +55,14 @@ namespace Slalom.Stacks.Messaging.Registration
         /// </summary>
         /// <value>The service type.</value>
         public string Type { get; set; }
+
+        /// <summary>
+        /// Determines whether the service is local.
+        /// </summary>
+        /// <returns><c>true</c> if the service is local; otherwise, <c>false</c>.</returns>
+        public bool IsLocal()
+        {
+            return this.RootPath == LocalPath;
+        }
     }
 }
