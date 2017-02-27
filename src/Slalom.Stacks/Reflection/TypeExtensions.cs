@@ -129,18 +129,21 @@ namespace Slalom.Stacks.Reflection
         /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
         public static Type[] SafelyGetTypes(this Assembly assembly)
         {
-            try
+            return _loadedTypes.GetOrAdd(assembly, a =>
             {
-                return assembly.GetTypes().Where(e => e != null).ToArray();
-            }
-            catch (ReflectionTypeLoadException exception)
-            {
-                return exception.Types.Where(x => x != null).ToArray();
-            }
-            catch
-            {
-                return new Type[0];
-            }
+                try
+                {
+                    return assembly.GetTypes().Where(e => e != null).ToArray();
+                }
+                catch (ReflectionTypeLoadException exception)
+                {
+                    return exception.Types.Where(x => x != null).ToArray();
+                }
+                catch
+                {
+                    return new Type[0];
+                }
+            });
         }
 
         /// <summary>
@@ -151,10 +154,7 @@ namespace Slalom.Stacks.Reflection
         /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
         public static Type[] SafelyGetTypes(this Assembly assembly, Type type)
         {
-            return _loadedTypes.GetOrAdd(assembly, a =>
-            {
-                return assembly.SafelyGetTypes().Where(e => e != null && type.IsAssignableFrom(e)).ToArray();
-            });
+            return assembly.SafelyGetTypes().Where(e => e != null && type.IsAssignableFrom(e)).ToArray();
         }
 
         private static IEnumerable<Type> GetTypeAndGeneric(Type type)

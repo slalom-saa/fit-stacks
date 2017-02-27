@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
 using System.Reflection;
 using System.Linq;
+using System.Xml.Linq;
 using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Validation;
+using System.Xml.XPath;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -32,6 +36,35 @@ namespace Slalom.Stacks.Messaging
         public static int GetVersion(this Type type)
         {
             return type.GetAllAttributes<PathAttribute>().FirstOrDefault()?.Version ?? 1;
+        }
+
+        private static ConcurrentDictionary<Assembly, XDocument> _commentsCache = new ConcurrentDictionary<Assembly, XDocument>();
+
+        public static XDocument GetComments(this Assembly assembly)
+        {
+            return _commentsCache.GetOrAdd(assembly, a =>
+            {
+                var path = Path.Combine(Path.GetDirectoryName(a.Location), Path.GetFileNameWithoutExtension(a.Location) + ".xml");
+                if (File.Exists(path))
+                {
+                    return XDocument.Load(path);
+                }
+                return null;
+            });
+        }
+
+        public static string GetComments(this Type type)
+        {
+            var document = type.Assembly.GetComments();
+            if (document != null)
+            {
+                var node = document.XPathSelectElement("//member[@name=\"T:" + type.FullName + "\"]");
+                if (node != null)
+                {
+                    return node.XPathSelectElement("summary").Value.Trim();
+                }
+            }
+            return null;
         }
 
         public static IEnumerable<ServiceProperty> GetInputProperties(this Type type)

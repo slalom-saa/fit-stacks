@@ -5,7 +5,8 @@
   //},
   "buildOptions": {
     "preserveCompilationContext": true,
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "xmlDoc": true
   },
   "dependencies": {
     "Slalom.Stacks": {

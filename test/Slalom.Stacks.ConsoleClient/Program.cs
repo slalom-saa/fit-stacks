@@ -24,8 +24,13 @@ namespace Slalom.Stacks.ConsoleClient
                 {
                     stack.UseSimpleConsoleLogging();
 
-                    var service = stack.GetServices().Find("products/add");
-                    Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
+
+
+                    var comments = typeof(AddProduct).GetComments();
+                    Console.WriteLine(comments);
+
+                    //var service = stack.GetServices().Find("products/add");
+                    //Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
                     
                     Console.WriteLine("Complete");
                     Console.ReadKey();
