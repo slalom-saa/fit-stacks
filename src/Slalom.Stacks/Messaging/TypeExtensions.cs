@@ -12,6 +12,16 @@ namespace Slalom.Stacks.Messaging
     public static class TypeExtensions
     {
         /// <summary>
+        /// Gets the path for the type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>Returns the path for the type.</returns>
+        public static string GetPath(this Type type)
+        {
+            return type.GetAllAttributes<PathAttribute>().Select(e => e.Path).FirstOrDefault();
+        }
+
+        /// <summary>
         /// Gets the type of the request.
         /// </summary>
         /// <param name="type">The type.</param>
@@ -23,6 +33,11 @@ namespace Slalom.Stacks.Messaging
             return actorType != null ? actorType.GetGenericArguments()[0] : null;
         }
 
+        /// <summary>
+        /// Gets the type of the response.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>The response type.</returns>
         public static Type GetResponseType(this Type type)
         {
             var actorType = type?.GetBaseAndContractTypes().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(UseCase<,>));
@@ -30,16 +45,21 @@ namespace Slalom.Stacks.Messaging
             return actorType != null ? actorType.GetGenericArguments()[1] : null;
         }
 
+        /// <summary>
+        /// Determines whether the type handles commands.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns><c>true</c> if the type handles commands; otherwise, <c>false</c>.</returns>
         public static bool IsCommandHandler(this Type type)
         {
             return typeof(ICommand).IsAssignableFrom(type.GetRequestType());
         }
 
-        public static string GetPath(this Type type)
-        {
-            return type.GetAllAttributes<PathAttribute>().Select(e => e.Path).FirstOrDefault();
-        }
-
+        /// <summary>
+        /// Determines whether the specified type is dynamic.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns><c>true</c> if the specified type is dynamic; otherwise, <c>false</c>.</returns>
         public static bool IsDynamic(this Type type)
         {
             return typeof(IDynamicMetaObjectProvider).IsAssignableFrom(type);
