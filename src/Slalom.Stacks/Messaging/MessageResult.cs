@@ -17,13 +17,13 @@ namespace Slalom.Stacks.Messaging
         /// <param name="context">The completed context.</param>
         public MessageResult(MessageExecutionContext context)
         {
-            this.CorrelationId = context.RequestContext.CorrelationId;
+            this.CorrelationId = context.Request.CorrelationId;
             this.Started = DateTimeOffset.UtcNow;
             this.Completed = context.Completed;
             this.RaisedException = context.Exception;
             this.Response = context.Response;
             this.ValidationErrors = context.ValidationErrors.ToList();
-            this.RequestId = context.RequestContext.Message.Id;
+            this.RequestId = context.Request.Message.Id;
         }
 
         /// <summary>

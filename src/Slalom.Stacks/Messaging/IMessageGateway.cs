@@ -7,7 +7,7 @@ namespace Slalom.Stacks.Messaging
     /// <summary>
     /// An adpater to a specific message gateway implementation like Akka.NET.
     /// </summary>
-    public interface IMessageGatewayAdapter
+    public interface IMessageGateway
     {
         /// <summary>
         /// Publishes the specified event to the configured publish-subscribe endPoint.

@@ -11,7 +11,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
     /// <seealso cref="Slalom.Stacks.Messaging.Pipeline.IMessageExecutionStep" />
     public class PublishEvents : IMessageExecutionStep
     {
-        private readonly IMessageGatewayAdapter _eventGatewayAdapter;
+        private readonly IMessageGateway _eventGateway;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PublishEvents"/> class.
@@ -19,7 +19,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
         /// <param name="components">The components.</param>
         public PublishEvents(IComponentContext components)
         {
-            _eventGatewayAdapter = components.Resolve<IMessageGatewayAdapter>();
+            _eventGateway = components.Resolve<IMessageGateway>();
         }
 
         /// <inheritdoc />
@@ -27,10 +27,10 @@ namespace Slalom.Stacks.Messaging.Pipeline
         {
             if (context.IsSuccessful)
             {
-                _eventGatewayAdapter.Publish(context.RaisedEvents, context);
+                _eventGateway.Publish(context.RaisedEvents, context);
                 if (context.Response is IEvent)
                 {
-                    _eventGatewayAdapter.Publish((IEvent)context.Response, context);
+                    _eventGateway.Publish((IEvent)context.Response, context);
                 }
             }
             return Task.FromResult(0);

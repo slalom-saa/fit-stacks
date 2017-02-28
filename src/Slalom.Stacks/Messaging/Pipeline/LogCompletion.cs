@@ -32,7 +32,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
         {
             var tasks = _actions.Select(e => e.Append(new ResponseEntry(context))).ToList();
 
-            var name = context.RequestContext.Message.GetType().FullName;
+            var name = context.Request.Message.GetType().FullName;
             if (!context.IsSuccessful)
             {
                 if (context.Exception != null)

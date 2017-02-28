@@ -1,19 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
-using System.Linq;
 
-namespace Slalom.Stacks.TestStack
+namespace Slalom.Stacks.TestKit
 {
     public class TestStack : Stack
     {
         public readonly List<Event> RaisedEvents = new List<Event>();
+
+        public TestStack() : base(new StackFrame(1).GetMethod().DeclaringType)
+        {
+            var method = new StackFrame(1).GetMethod();
+            var attribute = method.GetCustomAttributes<GivenAttribute>().FirstOrDefault();
+            if (attribute != null)
+            {
+                var scenario = (Scenario)Activator.CreateInstance(attribute.Name);
+                this.UseScenario(scenario);
+            }
+        }
 
         public TestStack(params object[] markers) : base(markers)
         {
@@ -37,7 +47,7 @@ namespace Slalom.Stacks.TestStack
 
         public MessageResult Send(ICommand command)
         {
-            return this.LastResult = base.Container.Resolve<IMessageGatewayAdapter>().Send(command).Result;
+            return this.LastResult = base.Container.Resolve<IMessageGateway>().Send(command).Result;
         }
 
         public void UseScenario(Scenario scenario)

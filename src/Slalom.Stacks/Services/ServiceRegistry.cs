@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Slalom.Stacks.Messaging;
@@ -33,10 +34,10 @@ namespace Slalom.Stacks.Services
         }
 
         /// <summary>
-        /// Finds services based on the specified message.
+        /// Finds services based on the specified endPoint.
         /// </summary>
-        /// <param name="message">The message.</param>
-        /// <returns>Services that are registered to take the specified message.</returns>
+        /// <param name="message">The endPoint.</param>
+        /// <returns>Services that are registered to take the specified endPoint.</returns>
         public IEnumerable<EndPoint> Find(IMessage message)
         {
             return this.Services.SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.GetType().AssemblyQualifiedName);
@@ -80,6 +81,23 @@ namespace Slalom.Stacks.Services
             foreach (var service in remote.CreatePublicRegistry(path).Services)
             {
                 this.Services.Add(service);
+            }
+        }
+
+        public EndPoint Find(Type endPoint)
+        {
+            return this.Services.SelectMany(e => e.EndPoints).FirstOrDefault(e => e.Type == endPoint.AssemblyQualifiedName);
+        }
+
+        public EndPoint Find(string path, ICommand instance)
+        {
+            if (path != null)
+            {
+                return this.Find(path);
+            }
+            else
+            {
+                return this.Find(instance).OrderBy(e => e.Version).LastOrDefault();
             }
         }
     }

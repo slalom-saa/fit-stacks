@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using Slalom.Stacks.Domain;
 
-namespace Slalom.Stacks.TestStack
+namespace Slalom.Stacks.TestKit
 {
     public class Scenario
     {
@@ -16,7 +16,7 @@ namespace Slalom.Stacks.TestStack
 
         public ClaimsPrincipal User { get; set; }
 
-        public Scenario WithUser(string userName, params string[] roles)
+        public Scenario AsUser(string userName, params string[] roles)
         {
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, userName) };
             claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
@@ -33,7 +33,7 @@ namespace Slalom.Stacks.TestStack
 
         public Scenario AsAdmin()
         {
-            this.WithUser("admin@admin.com", "Administrator");
+            this.AsUser("admin@admin.com", "Administrator");
 
             return this;
         }

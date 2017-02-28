@@ -23,7 +23,7 @@ namespace Slalom.Stacks
         /// <param name="markers">Item markers used to identify assemblies.</param>
         public Stack(params object[] markers)
         {
-            if (!markers?.Any() ?? true)
+            if (!markers?.Any() ?? true)    
             {
                 var current = Assembly.GetEntryAssembly();
                 var list = new List<Assembly>

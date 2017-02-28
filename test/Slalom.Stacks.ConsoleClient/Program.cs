@@ -27,8 +27,11 @@ namespace Slalom.Stacks.ConsoleClient
                     //var comments = typeof(AddProductCommand).GetProperty("Name").GetComments();
                     //Console.WriteLine(comments);
 
-                    var service = stack.CreatePublicRegistry("http://localhost");
-                    Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
+                    //var service = stack.CreatePublicRegistry("http://localhost");
+                    //Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
+
+
+                    stack.Send("products/add", "{name:\"15\", count:15}").Wait();
 
                     Console.WriteLine("Complete");
                     Console.ReadKey();

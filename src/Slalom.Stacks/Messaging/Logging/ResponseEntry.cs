@@ -17,8 +17,8 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <param name="context">The completed context.</param>
         public ResponseEntry(MessageExecutionContext context)
         {
-            this.CorrelationId = context.RequestContext.CorrelationId;
-            this.MessageId = context.RequestContext.Message.Id;
+            this.CorrelationId = context.Request.CorrelationId;
+            this.MessageId = context.Request.Message.Id;
             this.Completed = context.Completed;
             this.Service = context.EndPoint.Type;
             this.Exception = context.Exception;

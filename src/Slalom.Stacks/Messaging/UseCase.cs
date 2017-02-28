@@ -161,7 +161,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         protected Task<MessageResult> Send(ICommand message)
         {
-            var stream = this.Components.Resolve<IMessageGatewayAdapter>();
+            var stream = this.Components.Resolve<IMessageGateway>();
 
             return stream.Send(message, this.Context);
         }

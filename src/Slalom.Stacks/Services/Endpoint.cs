@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.Services
@@ -21,7 +22,7 @@ namespace Slalom.Stacks.Services
             this.Type = endpoint.AssemblyQualifiedName;
             this.RequestType = endpoint.GetRequestType().AssemblyQualifiedName;
             this.ResponseType = endpoint.GetResponseType()?.AssemblyQualifiedName;
-            this.Rules = endpoint.GetRules().Select(e => e.Name).ToList();
+            this.Rules = endpoint.GetRules().Select(e => new EndPointRule { Name = e.Name }).ToList();
             this.Version = endpoint.GetVersion();
             this.RequestProperties = endpoint.GetInputProperties().ToList();
             this.Summary = endpoint.GetComments();
@@ -56,7 +57,7 @@ namespace Slalom.Stacks.Services
         /// <value>The output type.</value>
         public string ResponseType { get; set; }
 
-        public List<string> Rules { get; set; }
+        public List<EndPointRule> Rules { get; set; }
 
         /// <summary>
         /// Gets or sets the summary.
@@ -78,9 +79,14 @@ namespace Slalom.Stacks.Services
 
         public EndPoint Copy(string rootPath)
         {
-            var target = (EndPoint) this.MemberwiseClone();
+            var target = (EndPoint)this.MemberwiseClone();
             target.RootPath = rootPath;
             return target;
+        }
+
+        public IMessage CreateMessage(string content)
+        {
+            return (IMessage)JsonConvert.DeserializeObject(content, System.Type.GetType(this.RequestType));
         }
     }
 }

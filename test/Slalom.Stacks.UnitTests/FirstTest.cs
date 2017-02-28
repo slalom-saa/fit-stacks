@@ -4,7 +4,8 @@ using FluentAssertions;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Validation;
-using Slalom.Stacks.TestStack;
+using Slalom.Stacks.Services;
+using Slalom.Stacks.TestKit;
 using Slalom.Stacks.Validation;
 using Xunit;
 
@@ -77,13 +78,21 @@ namespace Slalom.Stacks.UnitTests
         }
     }
 
+    public class StateZeroAsAdmin : StateZero
+    {
+        public StateZeroAsAdmin()
+        {
+            this.AsAdmin();
+        }
+    }
+
 
     public class FirstTest
     {
         [Fact(DisplayName = "Add product"), Given(typeof(StateZero))]
         public void A()
         {
-            using (var context = new TestStack.TestStack(typeof(AddProduct)))
+            using (var context = new TestStack())
             {
                 context.Send(new AddProductCommand("code"));
 
@@ -96,7 +105,7 @@ namespace Slalom.Stacks.UnitTests
         [Fact(DisplayName = "Add product with null name"), Given(typeof(StateZero))]
         public void B()
         {
-            using (var context = new TestStack.TestStack(typeof(AddProduct)))
+            using (var context = new TestStack())
             {
                 context.Send(new AddProductCommand(null));
 
@@ -109,7 +118,7 @@ namespace Slalom.Stacks.UnitTests
         [Fact(DisplayName = "Add product with invalid name"), Given(typeof(StateZero))]
         public void C()
         {
-            using (var context = new TestStack.TestStack(typeof(AddProduct)))
+            using (var context = new TestStack())
             {
                 context.Send(new AddProductCommand("some"));
 

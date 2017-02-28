@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Slalom.Stacks.TestStack
+namespace Slalom.Stacks.TestKit
 {
     public class GivenAttribute : Attribute
     {

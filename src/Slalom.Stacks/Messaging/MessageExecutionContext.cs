@@ -13,19 +13,18 @@ namespace Slalom.Stacks.Messaging
     public class MessageExecutionContext
     {
         private readonly List<Event> _raisedEvents = new List<Event>();
-
         private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageExecutionContext" /> class.
         /// </summary>
-        /// <param name="requestContext">The request.</param>
+        /// <param name="request">The request.</param>
         /// <param name="endPoint">The current endpoint.</param>
         /// <param name="executionContext">The execution.</param>
         /// <param name="parent">The parent.</param>
-        public MessageExecutionContext(RequestContext requestContext, EndPoint endPoint, ExecutionContext executionContext, MessageExecutionContext parent = null)
+        public MessageExecutionContext(RequestContext request, EndPoint endPoint, ExecutionContext executionContext, MessageExecutionContext parent = null)
         {
-            this.RequestContext = requestContext;
+            this.Request = request;
             this.EndPoint = endPoint;
             this.Parent = parent;
             this.ExecutionContext = executionContext;
@@ -77,7 +76,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the request context.
         /// </summary>
         /// <value>The request context.</value>
-        public RequestContext RequestContext { get; }
+        public RequestContext Request { get; }
 
         /// <summary>
         /// Gets or sets the response.

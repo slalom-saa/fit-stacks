@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using FluentAssertions;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Services;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.TestStack
+namespace Slalom.Stacks.TestKit
 {
     public static class TestExtensions
     {
+        public static void ShouldBeSecure(this EndPoint endpoint)
+        {
+            endpoint.Rules.Should().Contain(e => e.RuleType == ValidationType.Security);
+        }
+
         public static void ShouldBeSuccessful(this MessageResult result, string because = "message execution should have been successful")
         {
             result.IsSuccessful.Should().BeTrue(because);

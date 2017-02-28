@@ -7,7 +7,7 @@
     "Slalom.Stacks": {
       "target": "project"
     },
-    "Slalom.Stacks.TestStack": {
+    "Slalom.Stacks.TestKit": {
       "target": "project"
     },
     "dotnet-test-xunit": "2.2.0-preview2-build1029",

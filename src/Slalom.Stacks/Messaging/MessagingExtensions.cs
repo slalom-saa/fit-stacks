@@ -36,7 +36,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         public static Task<MessageResult> Send(this Stack instance, ICommand command, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageGatewayAdapter>().Send(command, timeout: timeout);
+            return instance.Container.Resolve<IMessageGateway>().Send(command, timeout: timeout);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         public static Task<MessageResult> Send(this Stack instance, string path, ICommand command, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageGatewayAdapter>().Send(path, command, timeout: timeout);
+            return instance.Container.Resolve<IMessageGateway>().Send(path, command, timeout: timeout);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         public static Task<MessageResult> Send(this Stack instance, string path, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageGatewayAdapter>().Send(path, "{}", timeout: timeout);
+            return instance.Container.Resolve<IMessageGateway>().Send(path, "{}", timeout: timeout);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         public static Task<MessageResult> Send(this Stack instance, string path, string command, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageGatewayAdapter>().Send(path, command, timeout: timeout);
+            return instance.Container.Resolve<IMessageGateway>().Send(path, command, timeout: timeout);
         }
     }
 }

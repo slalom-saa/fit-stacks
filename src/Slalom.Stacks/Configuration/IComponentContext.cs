@@ -4,7 +4,7 @@
 //namespace Slalom.Stacks.Configuration
 //{
 //    /// <summary>
-//    /// RequestContext that registers and resolves components.
+//    /// Request that registers and resolves components.
 //    /// </summary>
 //    public interface IComponentContext
 //    {

@@ -22,7 +22,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.ConsoleClient
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.UnitTests", "test\Slalom.Stacks.UnitTests\Slalom.Stacks.UnitTests.xproj", "{F1F20ACF-22EE-440F-AC2E-4FBD9E042047}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.TestStack", "src\Slalom.Stacks.TestStack\Slalom.Stacks.TestStack.xproj", "{BC0461ED-C80E-4F22-8946-3C656B323250}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.TestKit", "src\Slalom.Stacks.TestKit\Slalom.Stacks.TestKit.xproj", "{BC0461ED-C80E-4F22-8946-3C656B323250}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
