@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Messaging.Logging;
-using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Services;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging

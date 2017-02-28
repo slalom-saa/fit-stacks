@@ -9,8 +9,8 @@ using Slalom.Stacks.ConsoleClient.Aspects;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Logging;
-using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Messaging.Serialization;
+using Slalom.Stacks.Services;
 
 namespace Slalom.Stacks.ConsoleClient
 {

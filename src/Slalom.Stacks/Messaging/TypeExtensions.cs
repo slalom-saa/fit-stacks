@@ -6,10 +6,10 @@ using System.IO;
 using System.Reflection;
 using System.Linq;
 using System.Xml.Linq;
-using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Validation;
 using System.Xml.XPath;
+using Slalom.Stacks.Services;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -81,12 +81,12 @@ namespace Slalom.Stacks.Messaging
             return null;
         }
 
-        public static IEnumerable<ServiceProperty> GetInputProperties(this Type type)
+        public static IEnumerable<EndPointProperty> GetInputProperties(this Type type)
         {
             type = type.GetRequestType();
             foreach (var property in type.GetProperties())
             {
-                yield return new ServiceProperty(property);
+                yield return new EndPointProperty(property);
             }
         }
 

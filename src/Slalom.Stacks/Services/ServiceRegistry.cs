@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Reflection;
 
-namespace Slalom.Stacks.Messaging.Registration
+namespace Slalom.Stacks.Services
 {
     /// <summary>
     /// A simple service registration implementation.

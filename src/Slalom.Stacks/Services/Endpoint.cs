@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Slalom.Stacks.Serialization.Model;
+using Slalom.Stacks.Messaging;
 
-namespace Slalom.Stacks.Messaging.Registration
+namespace Slalom.Stacks.Services
 {
     /// <summary>
     /// A service endpoint in the registry.
@@ -14,7 +11,7 @@ namespace Slalom.Stacks.Messaging.Registration
     public class EndPoint
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EndPoint"/> class.
+        /// Initializes a new instance of the <see cref="EndPoint" /> class.
         /// </summary>
         /// <param name="endpoint">The endPoint type.</param>
         public EndPoint(Type endpoint)
@@ -30,16 +27,16 @@ namespace Slalom.Stacks.Messaging.Registration
         }
 
         /// <summary>
-        /// Gets or sets the summary.
+        /// Gets or sets the relative path.
         /// </summary>
-        /// <value>The summary.</value>
-        public string Summary { get; set; }
+        /// <value>The path.</value>
+        public string Path { get; set; }
 
         /// <summary>
         /// Gets or sets the input properties.
         /// </summary>
         /// <value>The input properties.</value>
-        public List<ServiceProperty> RequestProperties { get; set; }
+        public List<EndPointProperty> RequestProperties { get; set; }
 
         /// <summary>
         /// Gets or sets the input type.
@@ -53,13 +50,13 @@ namespace Slalom.Stacks.Messaging.Registration
         /// <value>The output type.</value>
         public string ResponseType { get; set; }
 
-        /// <summary>
-        /// Gets or sets the relative path.
-        /// </summary>
-        /// <value>The path.</value>
-        public string Path { get; set; }
-
         public List<string> Rules { get; set; }
+
+        /// <summary>
+        /// Gets or sets the summary.
+        /// </summary>
+        /// <value>The summary.</value>
+        public string Summary { get; set; }
 
         /// <summary>
         /// Gets or sets the endPoint type.

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Services;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Messaging
         private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageExecutionContext"/> class.
+        /// Initializes a new instance of the <see cref="MessageExecutionContext" /> class.
         /// </summary>
         /// <param name="requestContext">The request.</param>
         /// <param name="endPoint">The current endpoint.</param>
@@ -36,6 +36,12 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The date and time that execution completed.</value>
         public DateTimeOffset? Completed { get; private set; }
+
+        /// <summary>
+        /// Gets the registry entry.
+        /// </summary>
+        /// <value>The registry entry.</value>
+        public EndPoint EndPoint { get; }
 
         /// <summary>
         /// Gets the raised exception, if any.
@@ -66,12 +72,6 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The raised events.</value>
         public IEnumerable<Event> RaisedEvents => _raisedEvents.AsEnumerable();
-
-        /// <summary>
-        /// Gets the registry entry.
-        /// </summary>
-        /// <value>The registry entry.</value>
-        public EndPoint EndPoint { get; }
 
         /// <summary>
         /// Gets the request context.

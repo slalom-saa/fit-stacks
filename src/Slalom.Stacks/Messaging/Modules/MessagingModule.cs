@@ -3,9 +3,9 @@ using System.Linq;
 using System.Reflection;
 using Autofac;
 using Slalom.Stacks.Messaging.Pipeline;
-using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Services;
 using Module = Autofac.Module;
 
 namespace Slalom.Stacks.Messaging.Modules

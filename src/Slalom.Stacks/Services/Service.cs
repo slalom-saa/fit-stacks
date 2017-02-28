@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Slalom.Stacks.Messaging.Registration
+namespace Slalom.Stacks.Services
 {
     /// <summary>
     /// A service in the registry.
