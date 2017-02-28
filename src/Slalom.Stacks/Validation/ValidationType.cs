@@ -3,7 +3,7 @@
     /// <summary>
     /// Indicates the validation error type.
     /// </summary>
-    public enum ValidationErrorType
+    public enum ValidationType
     {
         /// <summary>
         /// Indicates a type was not specified.

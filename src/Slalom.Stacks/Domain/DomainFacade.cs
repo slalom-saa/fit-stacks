@@ -48,7 +48,7 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
         /// and have a small set, then you can use the update method.</remarks>
-        public async Task AddAsync<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
+        public async Task Add<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
         {
             if (instances == null)
             {
@@ -81,9 +81,9 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
         /// and have a small set, then you can use the update method.</remarks>
-        public Task AddAsync<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
+        public Task Add<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
-            return this.AddAsync(instances.ToArray());
+            return this.Add(instances.ToArray());
         }
 
         /// <summary>
@@ -96,9 +96,9 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
         /// and have a small set, then you can use the update method.</remarks>
-        public Task AddAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
+        public Task Add<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
-            return this.AddAsync(instances.ToArray());
+            return this.Add(instances.ToArray());
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         /// <typeparam name="TAggregateRoot">The type of instance.</typeparam>
         /// <returns>A task for asynchronous programming.</returns>
-        public async Task ClearAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
+        public async Task Clear<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
         {
             var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
@@ -127,7 +127,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public async Task<TAggregateRoot> FindAsync<TAggregateRoot>(string id) where TAggregateRoot : IAggregateRoot
+        public async Task<TAggregateRoot> Find<TAggregateRoot>(string id) where TAggregateRoot : IAggregateRoot
         {
             var target = await _cacheManager.FindAsync<TAggregateRoot>(id);
             if (target != null)
@@ -158,7 +158,7 @@ namespace Slalom.Stacks.Domain
         /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
         /// <param name="expression">The expression to filter with.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<IEnumerable<TAggregateRoot>> FindAsync<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot
+        public Task<IEnumerable<TAggregateRoot>> Find<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot
         {
             var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
@@ -176,7 +176,7 @@ namespace Slalom.Stacks.Domain
         /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public Task<IEnumerable<TAggregateRoot>> FindAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
+        public Task<IEnumerable<TAggregateRoot>> Find<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
         {
             var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
@@ -195,7 +195,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to remove.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public async Task RemoveAsync<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
+        public async Task Remove<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
         {
             if (instances == null)
             {
@@ -226,9 +226,9 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to remove.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public Task RemoveAsync<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
+        public Task Remove<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
-            return this.RemoveAsync(instances.ToArray());
+            return this.Remove(instances.ToArray());
         }
 
         /// <summary>
@@ -238,9 +238,9 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to remove.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public Task RemoveAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
+        public Task Remove<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
-            return this.RemoveAsync(instances.ToArray());
+            return this.Remove(instances.ToArray());
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
         /// and have a small set, then you can use the update method.</remarks>
-        public async Task UpdateAsync<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
+        public async Task Update<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
         {
             if (instances == null)
             {
@@ -287,9 +287,9 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
         /// and have a small set, then you can use the update method.</remarks>
-        public Task UpdateAsync<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
+        public Task Update<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
-            return this.UpdateAsync(instances.ToArray());
+            return this.Update(instances.ToArray());
         }
 
         /// <summary>
@@ -302,9 +302,9 @@ namespace Slalom.Stacks.Domain
         /// <exception cref="System.ArgumentNullException"></exception>
         /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
         /// and have a small set, then you can use the update method.</remarks>
-        public Task UpdateAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
+        public Task Update<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
-            return this.UpdateAsync(instances.ToArray());
+            return this.Update(instances.ToArray());
         }
     }
 }

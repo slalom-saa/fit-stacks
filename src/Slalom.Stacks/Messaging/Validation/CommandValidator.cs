@@ -41,19 +41,19 @@ namespace Slalom.Stacks.Messaging.Validation
             var input = this.CheckInputRules(instance).ToList();
             if (input.Any())
             {
-                return Task.FromResult(input.WithType(ValidationErrorType.Input));
+                return Task.FromResult(input.WithType(ValidationType.Input));
             }
 
             var security = this.CheckSecurityRules(instance).ToList();
             if (security.Any())
             {
-                return Task.FromResult(security.WithType(ValidationErrorType.Security));
+                return Task.FromResult(security.WithType(ValidationType.Security));
             }
 
             var business = this.CheckBusinessRules(instance).ToList();
             if (business.Any())
             {
-                return Task.FromResult(business.WithType(ValidationErrorType.Business));
+                return Task.FromResult(business.WithType(ValidationType.Business));
             }
 
             return Task.FromResult(Enumerable.Empty<ValidationError>());

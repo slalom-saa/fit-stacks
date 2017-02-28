@@ -16,12 +16,12 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
         {
             var target = new Product("name");
 
-            await this.Domain.AddAsync(target);
+            await this.Domain.Add(target);
 
             var stock = await this.Send(new StockProductCommand(command.Count));
             if (!stock.IsSuccessful)
             {
-                await this.Domain.RemoveAsync(target);
+                await this.Domain.Remove(target);
 
                 throw new ChainFailedException(command, stock);
             }
@@ -40,12 +40,12 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
         {
             var target = new Product("name");
 
-            await this.Domain.AddAsync(target);
+            await this.Domain.Add(target);
 
             var stock = await this.Send(new StockProductCommand(command.Count));
             if (!stock.IsSuccessful)
             {
-                await this.Domain.RemoveAsync(target);
+                await this.Domain.Remove(target);
 
                 throw new ChainFailedException(command, stock);
             }

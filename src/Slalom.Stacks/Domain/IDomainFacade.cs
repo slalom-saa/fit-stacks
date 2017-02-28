@@ -27,7 +27,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to add.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        Task AddAsync<TAggregateRoot>(params TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot;
+        Task Add<TAggregateRoot>(params TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
@@ -41,7 +41,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to add.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        Task AddAsync<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
+        Task Add<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
@@ -55,14 +55,14 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to add.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        Task AddAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
+        Task Add<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Clears all instances of the specified type.
         /// </summary>
         /// <typeparam name="TAggregateRoot">The type of instance.</typeparam>
         /// <returns>A task for asynchronous programming.</returns>
-        Task ClearAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot;
+        Task Clear<TAggregateRoot>() where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Finds the instance with the specified identifier.
@@ -70,7 +70,7 @@ namespace Slalom.Stacks.Domain
         /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<TAggregateRoot> FindAsync<TAggregateRoot>(string id) where TAggregateRoot : IAggregateRoot;
+        Task<TAggregateRoot> Find<TAggregateRoot>(string id) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Finds instances with the specified expression.
@@ -78,14 +78,14 @@ namespace Slalom.Stacks.Domain
         /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
         /// <param name="expression">The expression to filter with.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<IEnumerable<TAggregateRoot>> FindAsync<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot;
+        Task<IEnumerable<TAggregateRoot>> Find<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Finds all instances of the specified type.
         /// </summary>
         /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<IEnumerable<TAggregateRoot>> FindAsync<TAggregateRoot>() where TAggregateRoot : IAggregateRoot;
+        Task<IEnumerable<TAggregateRoot>> Find<TAggregateRoot>() where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Removes the specified instances.
@@ -94,7 +94,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to remove.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        Task RemoveAsync<TAggregateRoot>(params TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot;
+        Task Remove<TAggregateRoot>(params TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Removes the specified instances.
@@ -103,7 +103,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to remove.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        Task RemoveAsync<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
+        Task Remove<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Removes the specified instances.
@@ -112,7 +112,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to remove.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        Task RemoveAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
+        Task Remove<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Updates the specified instances. Update is similar to Add, but Add skips a check to see if the
@@ -126,7 +126,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to update.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        Task UpdateAsync<TAggregateRoot>(params TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot;
+        Task Update<TAggregateRoot>(params TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Updates the specified instances. Update is similar to Add, but Add skips a check to see if the
@@ -140,7 +140,7 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to update.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        Task UpdateAsync<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
+        Task Update<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Updates the specified instances. Update is similar to Add, but Add skips a check to see if the
@@ -154,6 +154,6 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to update.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        Task UpdateAsync<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
+        Task Update<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot;
     }
 }

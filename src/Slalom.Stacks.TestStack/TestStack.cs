@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -14,24 +15,14 @@ namespace Slalom.Stacks.TestStack
     {
         public readonly List<Event> RaisedEvents = new List<Event>();
 
-
-        public TestStack(object instance = null, [CallerMemberName] string callerName = "")
-            : base(typeof(TestStack))
+        public TestStack(params object[] markers) : base(markers)
         {
-            this.Use(builder =>
+            var method = new StackFrame(1).GetMethod();
+            var attribute = method.GetCustomAttributes<GivenAttribute>().FirstOrDefault();
+            if (attribute != null)
             {
-             //   builder.RegisterInstance(this).As<IHandleEvent>();
-            });
-
-            if (instance != null && callerName != null)
-            {
-                var method = instance.GetType().GetTypeInfo().GetMethod(callerName);
-                var attribute = method.GetCustomAttributes<GivenAttribute>().FirstOrDefault();
-                if (attribute != null)
-                {
-                    var scenario = (Scenario)Activator.CreateInstance(attribute.Name);
-                    this.UseScenario(scenario);
-                }
+                var scenario = (Scenario)Activator.CreateInstance(attribute.Name);
+                this.UseScenario(scenario);
             }
         }
 
@@ -42,9 +33,11 @@ namespace Slalom.Stacks.TestStack
             return Task.FromResult(0);
         }
 
+        public MessageResult LastResult { get; set; }
+
         public MessageResult Send(ICommand command)
         {
-            return base.Container.Resolve<IMessageGatewayAdapter>().Send(command).Result;
+            return this.LastResult = base.Container.Resolve<IMessageGatewayAdapter>().Send(command).Result;
         }
 
         public void UseScenario(Scenario scenario)
