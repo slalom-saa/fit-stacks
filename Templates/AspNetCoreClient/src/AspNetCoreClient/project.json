@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "Slalom.Stacks.Web.AspNetCore": "1.4.8"
+  },
+
+  "frameworks": {
+    "net461": {
+      "dependencies": {
+
+      },
+      "imports": "dnxcore50"
+    }
+  }
+}

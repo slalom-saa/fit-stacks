@@ -10,7 +10,7 @@ namespace Slalom.Stacks.Messaging
     public interface IMessageGatewayAdapter
     {
         /// <summary>
-        /// Publishes the specified event to the configured publish-subscribe endpoint.
+        /// Publishes the specified event to the configured publish-subscribe endPoint.
         /// </summary>
         /// <param name="instance">The event instances.</param>
         /// <param name="context">The current context.</param>
@@ -18,7 +18,7 @@ namespace Slalom.Stacks.Messaging
         Task Publish(IEvent instance, MessageExecutionContext context = null);
 
         /// <summary>
-        /// Publishes the specified events to the configured publish-subscribe endpoint.
+        /// Publishes the specified events to the configured publish-subscribe endPoint.
         /// </summary>
         /// <param name="instances">The event instances.</param>
         /// <param name="context">The current context.</param>
@@ -26,7 +26,7 @@ namespace Slalom.Stacks.Messaging
         Task Publish(IEnumerable<IEvent> instances, MessageExecutionContext context = null);
 
         /// <summary>
-        /// Sends the specified command to the configured point-to-point endpoint.
+        /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
         /// <param name="command">The command to send.</param>
         /// <param name="parentContext">The parent message context.</param>
@@ -35,7 +35,7 @@ namespace Slalom.Stacks.Messaging
         Task<MessageResult> Send(ICommand command, MessageExecutionContext parentContext = null, TimeSpan? timeout = null);
 
         /// <summary>
-        /// Sends the specified command to the configured point-to-point endpoint.
+        /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
         /// <param name="path">The path to the receiver.</param>
         /// <param name="command">The command to send.</param>
@@ -45,7 +45,7 @@ namespace Slalom.Stacks.Messaging
         Task<MessageResult> Send(string path, ICommand command, MessageExecutionContext parentContext = null, TimeSpan? timeout = null);
 
         /// <summary>
-        /// Sends the specified command to the configured point-to-point endpoint.
+        /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
         /// <param name="path">The path to the receiver.</param>
         /// <param name="command">The serialized command to send.</param>

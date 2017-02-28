@@ -19,7 +19,7 @@ namespace Slalom.Stacks.Messaging
     public static class TypeExtensions
     {
         /// <summary>
-        /// Gets the path for the service.
+        /// Gets the path for the endPoint.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>Returns the path for the type.</returns>
@@ -29,7 +29,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <summary>
-        /// Gets the version for the service.
+        /// Gets the version for the endPoint.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>Returns the path for the type.</returns>
@@ -67,12 +67,26 @@ namespace Slalom.Stacks.Messaging
             return null;
         }
 
+        public static string GetComments(this PropertyInfo property)
+        {
+            var document = property.DeclaringType.Assembly.GetComments();
+            if (document != null)
+            {
+                var node = document.XPathSelectElement("//member[@name=\"P:" + property.DeclaringType.FullName + "." + property.Name + "\"]");
+                if (node != null)
+                {
+                    return node.XPathSelectElement("summary").Value.Trim();
+                }
+            }
+            return null;
+        }
+
         public static IEnumerable<ServiceProperty> GetInputProperties(this Type type)
         {
             type = type.GetRequestType();
             foreach (var property in type.GetProperties())
             {
-                yield return new ServiceProperty(property.Name, property.PropertyType);
+                yield return new ServiceProperty(property);
             }
         }
 

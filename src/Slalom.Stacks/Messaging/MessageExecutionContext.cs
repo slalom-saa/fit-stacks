@@ -20,13 +20,13 @@ namespace Slalom.Stacks.Messaging
         /// Initializes a new instance of the <see cref="MessageExecutionContext"/> class.
         /// </summary>
         /// <param name="requestContext">The request.</param>
-        /// <param name="service">The current service.</param>
+        /// <param name="endPoint">The current endpoint.</param>
         /// <param name="executionContext">The execution.</param>
         /// <param name="parent">The parent.</param>
-        public MessageExecutionContext(RequestContext requestContext, Service service, ExecutionContext executionContext, MessageExecutionContext parent = null)
+        public MessageExecutionContext(RequestContext requestContext, EndPoint endPoint, ExecutionContext executionContext, MessageExecutionContext parent = null)
         {
             this.RequestContext = requestContext;
-            this.Service = service;
+            this.EndPoint = endPoint;
             this.Parent = parent;
             this.ExecutionContext = executionContext;
         }
@@ -71,7 +71,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the registry entry.
         /// </summary>
         /// <value>The registry entry.</value>
-        public Service Service { get; }
+        public EndPoint EndPoint { get; }
 
         /// <summary>
         /// Gets the request context.

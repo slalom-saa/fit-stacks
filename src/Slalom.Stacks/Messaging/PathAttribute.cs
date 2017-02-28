@@ -4,7 +4,7 @@ using System.Linq;
 namespace Slalom.Stacks.Messaging
 {
     /// <summary>
-    /// Indicates the path the service.
+    /// Indicates the path the endPoint.
     /// </summary>
     /// <seealso cref="System.Attribute" />
     [AttributeUsage(AttributeTargets.Class)]

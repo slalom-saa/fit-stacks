@@ -28,7 +28,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <summary>
-        /// Sends the specified command to the configured point-to-point endpoint.
+        /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
         /// <param name="instance">The this instance.</param>
         /// <param name="command">The command to send.</param>
@@ -40,7 +40,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <summary>
-        /// Sends the specified command to the configured point-to-point endpoint.
+        /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
         /// <param name="instance">The this instance.</param>
         /// <param name="path">The path.</param>
@@ -53,7 +53,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <summary>
-        /// Sends the an empty command to the configured point-to-point endpoint.
+        /// Sends the an empty command to the configured point-to-point endPoint.
         /// </summary>
         /// <param name="instance">The this instance.</param>
         /// <param name="path">The path.</param>
@@ -65,7 +65,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <summary>
-        /// Sends the specified command to the configured point-to-point endpoint.
+        /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
         /// <param name="instance">The this instance.</param>
         /// <param name="path">The path to the receiver.</param>
