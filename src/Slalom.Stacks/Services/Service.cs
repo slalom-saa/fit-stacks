@@ -35,7 +35,7 @@ namespace Slalom.Stacks.Services
             return new Service
             {
                 Path = path,
-                EndPoints = this.EndPoints.Where(e => e.Path != null).Select(e => e.Copy()).ToList()
+                EndPoints = this.EndPoints.Where(e => e.Path != null).Select(e => e.Copy(path)).ToList()
             };
         }
     }

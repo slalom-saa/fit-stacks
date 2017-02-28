@@ -74,5 +74,13 @@ namespace Slalom.Stacks.Services
             }
             this.Services.Add(service);
         }
+
+        public void IncludeRemoteRegistry(string path, ServiceRegistry remote)
+        {
+            foreach (var service in remote.CreatePublicRegistry(path).Services)
+            {
+                this.Services.Add(service);
+            }
+        }
     }
 }

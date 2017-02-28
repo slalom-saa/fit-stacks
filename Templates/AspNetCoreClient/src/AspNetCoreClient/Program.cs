@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AspNetCoreClient.Application.Products.Add;
 using Slalom.Stacks;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Registration;
 using Slalom.Stacks.Web.AspNetCore;
 
 namespace AspNetCoreClient
@@ -16,7 +15,7 @@ namespace AspNetCoreClient
         {
             using (var stack = new Stack())
             {
-                stack.RunHost();
+                stack.RunWebHost();
             }
         }
     }

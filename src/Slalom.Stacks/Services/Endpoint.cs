@@ -13,8 +13,9 @@ namespace Slalom.Stacks.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="EndPoint" /> class.
         /// </summary>
-        /// <param name="endpoint">The endPoint type.</param>
-        public EndPoint(Type endpoint)
+        /// <param name="endpoint">The endpoint type.</param>
+        /// <param name="rootPath">The root path.</param>
+        public EndPoint(Type endpoint, string rootPath = Service.LocalPath)
         {
             this.Path = endpoint.GetPath();
             this.Type = endpoint.AssemblyQualifiedName;
@@ -24,7 +25,12 @@ namespace Slalom.Stacks.Services
             this.Version = endpoint.GetVersion();
             this.RequestProperties = endpoint.GetInputProperties().ToList();
             this.Summary = endpoint.GetComments();
+            this.RootPath = rootPath;
         }
+
+        public string RootPath { get; set; }
+
+        public bool IsLocal => this.RootPath == Service.LocalPath;
 
         /// <summary>
         /// Gets or sets the relative path.
@@ -70,9 +76,11 @@ namespace Slalom.Stacks.Services
         /// <value>The version number.</value>
         public int Version { get; set; }
 
-        public EndPoint Copy()
+        public EndPoint Copy(string rootPath)
         {
-            return (EndPoint) this.MemberwiseClone();
+            var target = (EndPoint) this.MemberwiseClone();
+            target.RootPath = rootPath;
+            return target;
         }
     }
 }
