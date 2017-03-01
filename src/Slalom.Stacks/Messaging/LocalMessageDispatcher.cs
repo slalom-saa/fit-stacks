@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using Newtonsoft.Json;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Services;
 
@@ -26,9 +27,22 @@ namespace Slalom.Stacks.Messaging
 
             var context = new MessageExecutionContext(request, endPoint, executionContext, parentContext);
 
+            var message = request.Message;
+            if (message.GetType().AssemblyQualifiedName != endPoint.RequestType)
+            {
+                if (message is string)
+                {
+                    message = (IMessage)JsonConvert.DeserializeObject((string)message, Type.GetType(endPoint.RequestType));
+                }
+                else
+                {
+                    message = (IMessage) JsonConvert.DeserializeObject(JsonConvert.SerializeObject(message), Type.GetType(endPoint.RequestType));
+                }
+            }
+
             (handler as IUseMessageContext)?.UseContext(context);
 
-            await(Task) handler.GetType().GetMethod("Handle").Invoke(handler, new object[] { request.Message });
+            await (Task)handler.GetType().GetMethod("Handle").Invoke(handler, new object[] { message });
 
             return new MessageResult(context);
         }

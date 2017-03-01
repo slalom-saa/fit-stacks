@@ -18,7 +18,7 @@ namespace Slalom.Stacks.Messaging.Logging
         public ResponseEntry(MessageExecutionContext context)
         {
             this.CorrelationId = context.Request.CorrelationId;
-            this.MessageId = context.Request.Message.Id;
+            //this.MessageId = context.Request.Message.Id;
             this.Completed = context.Completed;
             this.Service = context.EndPoint.Type;
             this.Exception = context.Exception;

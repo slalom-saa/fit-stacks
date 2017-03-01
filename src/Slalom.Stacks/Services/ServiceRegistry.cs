@@ -38,7 +38,7 @@ namespace Slalom.Stacks.Services
         /// </summary>
         /// <param name="message">The endPoint.</param>
         /// <returns>Services that are registered to take the specified endPoint.</returns>
-        public IEnumerable<EndPoint> Find(IMessage message)
+        public IEnumerable<EndPoint> Find(object message)
         {
             return this.Services.SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.GetType().AssemblyQualifiedName);
         }

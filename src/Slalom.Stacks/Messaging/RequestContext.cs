@@ -24,7 +24,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the request message.
         /// </summary>
         /// <value>The request message.</value>
-        public IMessage Message { get; private set; }
+        public object Message { get; private set; }
 
         /// <summary>
         /// Gets the parent context.
@@ -58,7 +58,7 @@ namespace Slalom.Stacks.Messaging
         public ClaimsPrincipal User { get; private set; }
 
         /// <inheritdoc />
-        public RequestContext Resolve(string path, IMessage message, RequestContext parentContext = null)
+        public RequestContext Resolve(string path, object message, RequestContext parentContext = null)
         {
             return new RequestContext
             {

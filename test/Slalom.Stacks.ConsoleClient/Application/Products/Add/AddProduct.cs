@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Slalom.Stacks.ConsoleClient.Application.Products.Stock;
 using Slalom.Stacks.ConsoleClient.Domain.Products;
@@ -6,6 +7,15 @@ using Slalom.Stacks.Messaging.Exceptions;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
 {
+    [Path("products/add2")]
+    public class AddProduct3 : UseCase<AddProductCommand_v2>
+    {
+        public override void Execute(AddProductCommand_v2 command)
+        {
+            Console.WriteLine("xxxxx");
+        }
+    }
+
     /// <summary>
     /// Adds a product.  Yay.
     /// </summary>

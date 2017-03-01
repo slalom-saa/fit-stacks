@@ -12,6 +12,6 @@ namespace Slalom.Stacks.Messaging
         /// <param name="message">The request message.</param>
         /// <param name="parentContext">The parent context.</param>
         /// <returns>Returns the current request context.</returns>
-        RequestContext Resolve(string path, IMessage message, RequestContext parentContext = null);
+        RequestContext Resolve(string path, object message, RequestContext parentContext = null);
     }
 }

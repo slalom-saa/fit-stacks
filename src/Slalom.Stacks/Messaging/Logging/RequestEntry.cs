@@ -26,15 +26,15 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.MessageBody = "{ \"Error\" : \"Serialization failed.\" }";
             }
-            this.MessageType = request.Message.Type.FullName;
-            this.MessageId = request.Message.Id;
-            this.TimeStamp = request.Message.TimeStamp;
-            this.SessionId = request.SessionId;
-            this.UserName = request.User?.Identity?.Name;
-            this.Path = request.Path;
-            this.SourceAddress = request.SourceAddress;
-            this.CorrelationId = request.CorrelationId;
-            this.Parent = request.ParentContext?.Message.Id;
+            //this.MessageType = request.Message.Type.FullName;
+            //this.MessageId = request.Message.Id;
+            //this.TimeStamp = request.Message.TimeStamp;
+            //this.SessionId = request.SessionId;
+            //this.UserName = request.User?.Identity?.Name;
+            //this.Path = request.Path;
+            //this.SourceAddress = request.SourceAddress;
+            //this.CorrelationId = request.CorrelationId;
+            //this.Parent = request.ParentContext?.Message.Id;
         }
 
         /// <summary>

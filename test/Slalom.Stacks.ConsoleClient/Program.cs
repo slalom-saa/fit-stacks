@@ -31,7 +31,7 @@ namespace Slalom.Stacks.ConsoleClient
                     //Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
 
 
-                    stack.Send("products/add", "{name:\"15\", count:15}").Wait();
+                    stack.Send("products/add2", new AddProductCommand("asdf", 15)).Wait();
 
                     Console.WriteLine("Complete");
                     Console.ReadKey();
