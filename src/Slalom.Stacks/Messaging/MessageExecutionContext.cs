@@ -123,10 +123,10 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <summary>
-        /// Raises the exception.
+        /// Sets the exception.
         /// </summary>
         /// <param name="exception">The exception.</param>
-        public void RaiseException(Exception exception)
+        public void SetException(Exception exception)
         {
             this.Exception = exception;
         }

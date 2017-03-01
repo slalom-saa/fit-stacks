@@ -4,11 +4,14 @@ namespace Slalom.Stacks.ConsoleClient.Domain.Products
 {
     public class Product : AggregateRoot
     {
-        public string Name { get; set; }
+        public ProductName Name { get; set; }
 
-        public Product(string name)
+        public ProductDescription Description { get; set; }
+
+        public Product(string name, string description)
         {
             this.Name = name;
+            this.Description = description;
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Domain
 {
@@ -63,6 +62,14 @@ namespace Slalom.Stacks.Domain
         /// <typeparam name="TAggregateRoot">The type of instance.</typeparam>
         /// <returns>A task for asynchronous programming.</returns>
         Task Clear<TAggregateRoot>() where TAggregateRoot : IAggregateRoot;
+
+        /// <summary>
+        /// Determines if any instances with the specified expression exist.
+        /// </summary>
+        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
+        /// <param name="expression">The expression to filter with.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task<bool> Exists<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot;
 
         /// <summary>
         /// Finds the instance with the specified identifier.

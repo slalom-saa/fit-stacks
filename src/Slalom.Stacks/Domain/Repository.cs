@@ -28,49 +28,45 @@ namespace Slalom.Stacks.Domain
             _context = context;
         }
 
-        /// <summary>
-        /// Gets or sets the configured logger.
-        /// </summary>
-        /// <value>The configured logger.</value>
+        /// <inheritdoc />
         public ILogger Logger { get; set; }
 
-        /// <summary>
-        /// Adds the specified instances.
-        /// </summary>
-        /// <param name="instances">The instances to update.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task AddAsync(TRoot[] instances)
+        /// <inheritdoc />
+        public Task Add(TRoot[] instances)
         {
             Argument.NotNull(instances, nameof(instances));
 
             this.Logger.Verbose($"Adding {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
 
-            return _context.AddAsync(instances);
+            return _context.Add(instances);
         }
 
-        /// <summary>
-        /// Clears all instances.
-        /// </summary>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task ClearAsync()
+        /// <inheritdoc />
+        public Task Clear()
         {
             this.Logger.Verbose($"Clearing all items of type {typeof(TRoot)} using {_context.GetType()}.");
 
-            return _context.ClearAsync<TRoot>();
+            return _context.Clear<TRoot>();
         }
 
-        /// <summary>
-        /// Finds instances with the specified expression.
-        /// </summary>
-        /// <param name="expression">The expression to filter with.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task<IEnumerable<TRoot>> FindAsync(Expression<Func<TRoot, bool>> expression)
+        /// <inheritdoc />
+        public Task<bool> Exists(Expression<Func<TRoot, bool>> expression)
+        {
+            Argument.NotNull(expression, nameof(expression));
+
+            this.Logger.Verbose($"Checking to see if items of type {typeof(TRoot)} exist using {_context.GetType()}.");
+
+            return _context.Exists(expression);
+        }
+
+        /// <inheritdoc />
+        public Task<IEnumerable<TRoot>> Find(Expression<Func<TRoot, bool>> expression)
         {
             Argument.NotNull(expression, nameof(expression));
 
             this.Logger.Verbose($"Finding items of type {typeof(TRoot)} using {_context.GetType()}.");
 
-            return _context.FindAsync(expression);
+            return _context.Find(expression);
         }
 
         /// <summary>
@@ -78,50 +74,39 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public Task<TRoot> FindAsync(string id)
+        public Task<TRoot> Find(string id)
         {
             this.Logger.Verbose($"Finding item of type {typeof(TRoot)} with ID {id} using {_context.GetType()}.");
 
-            return _context.FindAsync<TRoot>(id);
+            return _context.Find<TRoot>(id);
         }
 
-        /// <summary>
-        /// Finds all instances.
-        /// </summary>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task<IEnumerable<TRoot>> FindAsync()
+        /// <inheritdoc />
+        public Task<IEnumerable<TRoot>> Find()
         {
             this.Logger.Verbose($"Finding all items of type {typeof(TRoot)} using {_context.GetType()}.");
 
-            return _context.FindAsync<TRoot>();
+            return _context.Find<TRoot>();
         }
 
-        /// <summary>
-        /// Removes the specified instances.
-        /// </summary>
-        /// <param name="instances">The instances to remove.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task RemoveAsync(TRoot[] instances)
+        /// <inheritdoc />
+        public Task Remove(TRoot[] instances)
         {
             Argument.NotNull(instances, nameof(instances));
 
             this.Logger.Verbose($"Removing {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
 
-            return _context.RemoveAsync(instances);
+            return _context.Remove(instances);
         }
 
-        /// <summary>
-        /// Updates the specified instances.
-        /// </summary>
-        /// <param name="instances">The instances to update.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task UpdateAsync(TRoot[] instances)
+        /// <inheritdoc />
+        public Task Update(TRoot[] instances)
         {
             Argument.NotNull(instances, nameof(instances));
 
             this.Logger.Verbose($"Updating {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
 
-            return _context.UpdateAsync(instances);
+            return _context.Update(instances);
         }
     }
 }

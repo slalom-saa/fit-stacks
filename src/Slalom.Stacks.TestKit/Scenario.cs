@@ -26,7 +26,7 @@ namespace Slalom.Stacks.TestKit
 
         public Scenario WithData(params IAggregateRoot[] items)
         {
-            this.EntityContext.AddAsync(items).Wait();
+            this.EntityContext.Add(items).Wait();
 
             return this;
         }

@@ -1,130 +1,143 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using FluentAssertions;
-using Slalom.Stacks.Domain;
-using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Validation;
-using Slalom.Stacks.Services;
+using System.Linq;
+using Slalom.Stacks.ConsoleClient.Application.Inventory.Products.Stock;
+using Slalom.Stacks.ConsoleClient.Application.Products.Add;
+using Slalom.Stacks.ConsoleClient.Domain.Products;
+using Slalom.Stacks.ConsoleClient.Domain.Shipping;
 using Slalom.Stacks.TestKit;
 using Slalom.Stacks.Validation;
 using Xunit;
 
+// ReSharper disable ObjectCreationAsStatement
+
 namespace Slalom.Stacks.UnitTests
 {
-    public class ProductName : ConceptAs<string>
-    {
-        public static implicit operator ProductName(string value)
-        {
-            var target = new ProductName { Value = value };
-            target.EnsureValid();
-            return target;
-        }
-
-        public override IEnumerable<ValidationError> Validate()
-        {
-            if (this.Value?.Length != 4)
-            {
-                yield return "A product name must be 3 characters.";
-            }
-        }
-    }
-
-    public class name_must_be_unique : BusinessRule<AddProductCommand>
-    {
-        public override IEnumerable<ValidationError> Validate(AddProductCommand instance)
-        {
-            if (instance.Name != "code")
-            {
-                yield return "no code";
-            }
-        }
-    }
-
-    public class AddProductCommand : Command
-    {
-        [NotNull("Code")]
-        public string Name { get; }
-
-        public AddProductCommand(string name)
-        {
-            this.Name = name;
-        }
-    }
-
-    public class AddProduct : UseCase<AddProductCommand>
-    {
-        public override void Execute(AddProductCommand command)
-        {
-            this.Domain.Add(new Product(command.Name));
-        }
-    }
-
-
-    public class Product : AggregateRoot
-    {
-        public Product(string name)
-        {
-            this.Name = name;
-        }
-
-        public ProductName Name { get; set; }
-    }
-
     public class StateZero : Scenario
     {
-        public StateZero()
+    }
+
+    public class StateOne : StateZero
+    {
+        public StateOne()
         {
-            this.WithData(new Product("aaaa"), new Product("bbbb"));
+            this.WithData(new Product("abcde", ""));
         }
     }
 
-    public class StateZeroAsAdmin : StateZero
+    public class StockOne : StateZero
     {
-        public StateZeroAsAdmin()
+        public static string ProductId = "abcde";
+
+        public StockOne()
         {
-            this.AsAdmin();
+            var item = new StockItem(ProductId);
+            item.Add(5);
+            this.WithData(item);
         }
     }
 
-
-    public class FirstTest
+    public class When_creating_a_product
     {
-        [Fact(DisplayName = "Add product"), Given(typeof(StateZero))]
-        public void A()
+        [Fact]
+        public void ProductNameShouldNotThrowWithFiveCharacters()
         {
-            using (var context = new TestStack())
+            new Action(() => new Product("abcde", "")).ShouldNotThrow<ValidationException>();
+        }
+
+        [Fact]
+        public void ProductNameShouldThrowWithLessThanThreeCharacters()
+        {
+            new Action(() => new Product("", "")).ShouldThrow<ValidationException>();
+        }
+
+        [Fact]
+        public void ProductNameShouldThrowWithMoreThanOneHundredCharacters()
+        {
+            new Action(() => new Product(new string('a', 101), "")).ShouldThrow<ValidationException>();
+        }
+    }
+
+    public class When_adding_a_product
+    {
+        [Fact]
+        public void a_product_with_the_name_and_description_are_added()
+        {
+            using (var context = new TestStack(typeof(AddProduct)))
             {
-                context.Send(new AddProductCommand("code"));
+                context.Send(new AddProductCommand("abcde", ""));
 
-                context.LastResult.ShouldBeSuccessful();
+                context.Domain.Find<Product>().Result.Count().Should().Be(1);
+            }
+        }
+    }
 
-                context.Domain.Find<Product>().Result.Count().Should().Be(3);
+    public class When_stocking_a_product_with_invalid_quantity
+    {
+        [Fact]
+        public void a_validation_error_should_be_returned()
+        {
+            using (var context = new TestStack(typeof(AddProduct)))
+            {
+                context.Send(new StockProductCommand("asdf", -1));
+
+                context.LastResult.ShouldContainMessage("The product quantity must be greater than 0.");
+            }
+        }
+    }
+
+    public class When_stocking_a_product
+    {
+        [Fact]
+        public void should_add_an_item_if_not_exists()
+        {
+            using (var context = new TestStack(typeof(AddProduct)))
+            {
+                context.Send(new StockProductCommand("asdf", 10));
+
+                var target = context.Domain.Find<StockItem>(e => e.ProductId == "asdf").Result.FirstOrDefault();
+
+                target.Should().NotBeNull();
             }
         }
 
-        [Fact(DisplayName = "Add product with null name"), Given(typeof(StateZero))]
-        public void B()
+        [Fact]
+        public void should_increment_the_quantity()
         {
-            using (var context = new TestStack())
+            using (var context = new TestStack(typeof(AddProduct)))
             {
-                context.Send(new AddProductCommand(null));
+                context.Send(new StockProductCommand("asdf", 10));
 
-                context.LastResult.ShouldNotBeSuccessful("a null name was sent");
+                var target = context.Domain.Find<StockItem>(e => e.ProductId == "asdf").Result.FirstOrDefault();
 
-                context.LastResult.ShouldContainMessage(ValidationType.Input, "Code");
+                target.Quantity.Should().Be(10);
             }
         }
 
-        [Fact(DisplayName = "Add product with invalid name"), Given(typeof(StateZero))]
-        public void C()
+        [Fact, Given(typeof(StockOne))]
+        public void should_increment_the_quantity_of_existing_item()
         {
-            using (var context = new TestStack())
+            using (var context = new TestStack(typeof(AddProduct)))
             {
-                context.Send(new AddProductCommand("some"));
+                context.Send(new StockProductCommand(StockOne.ProductId, 10));
 
-                context.LastResult.ShouldNotBeSuccessful("a name of some was sent");
+                var target = context.Domain.Find<StockItem>(e => e.ProductId == StockOne.ProductId).Result.FirstOrDefault();
 
-                context.LastResult.ShouldContainMessage(ValidationType.Business, "no code");
+                target.Quantity.Should().Be(15);
+            }
+        }
+    }
+
+    public class When_adding_a_product_with_non_unique_name
+    {
+        [Fact, Given(typeof(StateOne))]
+        public void a_validation_error_should_be_returned()
+        {
+            using (var context = new TestStack(typeof(AddProduct)))
+            {
+                context.Send(new AddProductCommand("abcde", ""));
+
+                context.LastResult.ShouldContainMessage("A product name must be unique.");
             }
         }
     }

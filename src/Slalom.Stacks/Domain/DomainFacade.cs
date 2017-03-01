@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Autofac;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Autofac;
 using Slalom.Stacks.Caching;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Domain
 {
     /// <summary>
-    /// Provides a single access point to aggregates, allows for repositories to be granular and for
-    /// application/infrastructure components to access objects with minimal bloat and lifetime management;  Instead of using
-    /// many dependencies, in each class, for each data access component, the facade can be used and it will resolve the
-    /// dependences as needed instead of on construction.
+    /// A default <see cref="IDomainFacade"/> implementation.
     /// </summary>
     /// <seealso cref="IDomainFacade" />
     public class DomainFacade : IDomainFacade
@@ -38,16 +34,7 @@ namespace Slalom.Stacks.Domain
             _cacheManager = cacheManager;
         }
 
-        /// <summary>
-        /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
-        /// item already exists.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of instance to add.</typeparam>
-        /// <param name="instances">The instances to add.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
+        /// <inheritdoc />
         public async Task Add<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
         {
             if (instances == null)
@@ -67,45 +54,23 @@ namespace Slalom.Stacks.Domain
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
-            await repository.AddAsync(instances);
+            await repository.Add(instances);
             await _cacheManager.AddAsync(instances);
         }
 
-        /// <summary>
-        /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
-        /// item already exists.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of instance to add.</typeparam>
-        /// <param name="instances">The instances to add.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
+        /// <inheritdoc />
         public Task Add<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
             return this.Add(instances.ToArray());
         }
 
-        /// <summary>
-        /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
-        /// item already exists.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of instance to add.</typeparam>
-        /// <param name="instances">The instances to add.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
+        /// <inheritdoc />
         public Task Add<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
             return this.Add(instances.ToArray());
         }
 
-        /// <summary>
-        /// Clears all instances of the specified type.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of instance.</typeparam>
-        /// <returns>A task for asynchronous programming.</returns>
+        /// <inheritdoc />
         public async Task Clear<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
         {
             var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
@@ -115,18 +80,25 @@ namespace Slalom.Stacks.Domain
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
-            await repository.ClearAsync();
+            await repository.Clear();
 
             await _cacheManager.ClearAsync();
         }
 
-        /// <summary>
-        /// Finds the instance with the specified identifier.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
-        /// <param name="id">The instance identifier.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <inheritdoc />
+        public Task<bool> Exists<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot
+        {
+            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+
+            if (repository == null)
+            {
+                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
+            }
+
+            return repository.Exists(expression);
+        }
+
+        /// <inheritdoc />
         public async Task<TAggregateRoot> Find<TAggregateRoot>(string id) where TAggregateRoot : IAggregateRoot
         {
             var target = await _cacheManager.FindAsync<TAggregateRoot>(id);
@@ -142,7 +114,7 @@ namespace Slalom.Stacks.Domain
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
-            target = await repository.FindAsync(id);
+            target = await repository.Find(id);
 
             if (target != null)
             {
@@ -152,12 +124,7 @@ namespace Slalom.Stacks.Domain
             return target;
         }
 
-        /// <summary>
-        /// Finds instances with the specified expression.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
-        /// <param name="expression">The expression to filter with.</param>
-        /// <returns>A task for asynchronous programming.</returns>
+        /// <inheritdoc />
         public Task<IEnumerable<TAggregateRoot>> Find<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot
         {
             var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
@@ -167,15 +134,10 @@ namespace Slalom.Stacks.Domain
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
-            return repository.FindAsync(expression);
+            return repository.Find(expression);
         }
 
-        /// <summary>
-        /// Finds all instances of the specified type.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of the instance.</typeparam>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <inheritdoc />
         public Task<IEnumerable<TAggregateRoot>> Find<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
         {
             var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
@@ -185,16 +147,10 @@ namespace Slalom.Stacks.Domain
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
-            return repository.FindAsync();
+            return repository.Find();
         }
 
-        /// <summary>
-        /// Removes the specified instances.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of instance to remove.</typeparam>
-        /// <param name="instances">The instances to remove.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <inheritdoc />
         public async Task Remove<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
         {
             if (instances == null)
@@ -214,45 +170,24 @@ namespace Slalom.Stacks.Domain
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
-            await repository.RemoveAsync(instances);
+            await repository.Remove(instances);
 
             await _cacheManager.RemoveAsync(instances);
         }
 
-        /// <summary>
-        /// Removes the specified instances.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of instance to remove.</typeparam>
-        /// <param name="instances">The instances to remove.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <inheritdoc />
         public Task Remove<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
             return this.Remove(instances.ToArray());
         }
 
-        /// <summary>
-        /// Removes the specified instances.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of instance to remove.</typeparam>
-        /// <param name="instances">The instances to remove.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <inheritdoc />
         public Task Remove<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
             return this.Remove(instances.ToArray());
         }
 
-        /// <summary>
-        /// Updates the specified instances. Update is similar to Add, but Add skips a check to see if the
-        /// item already exists.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of instance.</typeparam>
-        /// <param name="instances">The instances to update.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
+        /// <inheritdoc />
         public async Task Update<TAggregateRoot>(TAggregateRoot[] instances) where TAggregateRoot : IAggregateRoot
         {
             if (instances == null)
@@ -272,36 +207,18 @@ namespace Slalom.Stacks.Domain
                 throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
             }
 
-            await repository.UpdateAsync(instances);
+            await repository.Update(instances);
 
             await _cacheManager.UpdateAsync(instances);
         }
 
-        /// <summary>
-        /// Updates the specified instances. Update is similar to Add, but Add skips a check to see if the
-        /// item already exists.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of instance.</typeparam>
-        /// <param name="instances">The instances to update.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
+        /// <inheritdoc />
         public Task Update<TAggregateRoot>(IEnumerable<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
             return this.Update(instances.ToArray());
         }
 
-        /// <summary>
-        /// Updates the specified instances. Update is similar to Add, but Add skips a check to see if the
-        /// item already exists.
-        /// </summary>
-        /// <typeparam name="TAggregateRoot">The type of instance.</typeparam>
-        /// <param name="instances">The instances to update.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="System.ArgumentNullException"></exception>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
+        /// <inheritdoc />
         public Task Update<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
             return this.Update(instances.ToArray());

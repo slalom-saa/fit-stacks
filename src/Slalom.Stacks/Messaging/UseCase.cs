@@ -52,7 +52,7 @@ namespace Slalom.Stacks.Messaging
                 }
                 catch (Exception exception)
                 {
-                    this.Context.RaiseException(exception);
+                    this.Context.SetException(exception);
                 }
             }
 
@@ -126,6 +126,7 @@ namespace Slalom.Stacks.Messaging
         {
             var steps = new List<IMessageExecutionStep>
             {
+                this.Components.Resolve<HandleException>(),
                 this.Components.Resolve<Complete>(),
                 this.Components.Resolve<PublishEvents>(),
                 this.Components.Resolve<LogCompletion>()
@@ -207,7 +208,7 @@ namespace Slalom.Stacks.Messaging
                 }
                 catch (Exception exception)
                 {
-                    this.Context.RaiseException(exception);
+                    this.Context.SetException(exception);
                 }
             }
 

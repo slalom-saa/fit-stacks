@@ -20,6 +20,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
             if (validationException != null)
             {
                 context.AddValidationErrors(validationException.ValidationErrors);
+                context.SetException(null);
             }
             else if (exception is AggregateException)
             {
@@ -27,23 +28,24 @@ namespace Slalom.Stacks.Messaging.Pipeline
                 if (innerException != null)
                 {
                     context.AddValidationErrors(innerException.ValidationErrors);
+                    context.SetException(null);
                 }
                 else if (exception.InnerException is TargetInvocationException)
                 {
-                    context.RaiseException(((TargetInvocationException)exception.InnerException).InnerException);
+                    context.SetException(((TargetInvocationException)exception.InnerException).InnerException);
                 }
-                else
+                else if (((AggregateException)exception).InnerExceptions.Count == 1)
                 {
-                    context.RaiseException(exception.InnerException);
+                    context.SetException(exception.InnerException);
                 }
             }
             else if (exception is TargetInvocationException)
             {
-                context.RaiseException(exception.InnerException);
+                context.SetException(exception.InnerException);
             }
             else
             {
-                context.RaiseException(exception);
+                context.SetException(exception);
             }
             return Task.FromResult(0);
         }

@@ -26,13 +26,8 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         protected readonly List<IAggregateRoot> Instances = new List<IAggregateRoot>();
 
-        /// <summary>
-        /// Adds the specified instances.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="instances">The instances to update.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task AddAsync<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
+        /// <inheritdoc />
+        public Task Add<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
         {
             Argument.NotNull(instances, nameof(instances));
 
@@ -51,12 +46,8 @@ namespace Slalom.Stacks.Domain
             return Task.FromResult(0);
         }
 
-        /// <summary>
-        /// Clears all instances.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task ClearAsync<TEntity>() where TEntity : IAggregateRoot
+        /// <inheritdoc />
+        public Task Clear<TEntity>() where TEntity : IAggregateRoot
         {
             CacheLock.EnterWriteLock();
             try
@@ -70,13 +61,16 @@ namespace Slalom.Stacks.Domain
             return Task.FromResult(0);
         }
 
-        /// <summary>
-        /// Finds the instance with the specified identifier.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="id">The instance identifier.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task<TEntity> FindAsync<TEntity>(string id) where TEntity : IAggregateRoot
+        /// <inheritdoc />
+        public async Task<bool> Exists<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : IAggregateRoot
+        {
+            var current = await this.Find(expression);
+
+            return current.Any();
+        }
+
+        /// <inheritdoc />
+        public Task<TEntity> Find<TEntity>(string id) where TEntity : IAggregateRoot
         {
             CacheLock.EnterReadLock();
             try
@@ -89,13 +83,8 @@ namespace Slalom.Stacks.Domain
             }
         }
 
-        /// <summary>
-        /// Finds instances with the specified expression.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="expression">The expression to filter with.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public async Task<IEnumerable<TEntity>> FindAsync<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : IAggregateRoot
+        /// <inheritdoc />
+        public async Task<IEnumerable<TEntity>> Find<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : IAggregateRoot
         {
             CacheLock.EnterReadLock();
             try
@@ -112,12 +101,8 @@ namespace Slalom.Stacks.Domain
             }
         }
 
-        /// <summary>
-        /// Finds all instances of the specified type.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns>A task for asynchronous programming.</returns>
-        public async Task<IEnumerable<TEntity>> FindAsync<TEntity>() where TEntity : IAggregateRoot
+        /// <inheritdoc />
+        public async Task<IEnumerable<TEntity>> Find<TEntity>() where TEntity : IAggregateRoot
         {
             CacheLock.EnterReadLock();
             try
@@ -132,13 +117,8 @@ namespace Slalom.Stacks.Domain
             }
         }
 
-        /// <summary>
-        /// Removes the specified instances.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="instances">The instances to remove.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task RemoveAsync<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
+        /// <inheritdoc />
+        public Task Remove<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
         {
             CacheLock.EnterWriteLock();
             try
@@ -153,17 +133,12 @@ namespace Slalom.Stacks.Domain
             return Task.FromResult(0);
         }
 
-        /// <summary>
-        /// update as an asynchronous operation.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="instances">The instances to update.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public async Task UpdateAsync<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
+        /// <inheritdoc />
+        public async Task Update<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
         {
-            await this.RemoveAsync(instances);
+            await this.Remove(instances);
 
-            await this.AddAsync(instances);
+            await this.Add(instances);
         }
     }
 }

@@ -18,33 +18,40 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         /// <param name="instances">The instances to update.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
-        Task AddAsync(TRoot[] instances);
+        Task Add(TRoot[] instances);
 
         /// <summary>
         /// Clears all instances.
         /// </summary>
         /// <returns>A task for asynchronous programming.</returns>
-        Task ClearAsync();
+        Task Clear();
+
+        /// <summary>
+        /// Determines if any instances with the specified expression exist.
+        /// </summary>
+        /// <param name="expression">The expression to filter with.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task<bool> Exists(Expression<Func<TRoot, bool>> expression);
 
         /// <summary>
         /// Finds the instance with the specified identifier.
         /// </summary>
         /// <param name="id">The instance identifier.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<TRoot> FindAsync(string id);
+        Task<TRoot> Find(string id);
 
         /// <summary>
         /// Finds instances with the specified expression.
         /// </summary>
         /// <param name="expression">The expression to filter with.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<IEnumerable<TRoot>> FindAsync(Expression<Func<TRoot, bool>> expression);
+        Task<IEnumerable<TRoot>> Find(Expression<Func<TRoot, bool>> expression);
 
         /// <summary>
         /// Finds all instances.
         /// </summary>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<IEnumerable<TRoot>> FindAsync();
+        Task<IEnumerable<TRoot>> Find();
 
         /// <summary>
         /// Removes the specified instances.
@@ -52,13 +59,13 @@ namespace Slalom.Stacks.Domain
         /// <param name="instances">The instances to remove.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        Task RemoveAsync(TRoot[] instances);
+        Task Remove(TRoot[] instances);
 
         /// <summary>
         /// Updates the specified instances.
         /// </summary>
         /// <param name="instances">The instances to update.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
-        Task UpdateAsync(TRoot[] instances);
+        Task Update(TRoot[] instances);
     }
 }
