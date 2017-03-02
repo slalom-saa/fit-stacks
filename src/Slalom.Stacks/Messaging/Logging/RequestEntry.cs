@@ -26,7 +26,7 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.MessageBody = "{ \"Error\" : \"Serialization failed.\" }";
             }
-            //this.MessageType = request.Message.Type.FullName;
+            //this.MessageType = request.Message.EndPointType.FullName;
             //this.MessageId = request.Message.Id;
             //this.TimeStamp = request.Message.TimeStamp;
             //this.SessionId = request.SessionId;

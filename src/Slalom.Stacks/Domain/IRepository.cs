@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Domain
 {
     /// <summary>
-    /// Defines a <see href="http://bit.ly/2dVQsXu">Repository</see> for an <see cref="IAggregateRoot"/>.
+    /// Defines a <see href="http://bit.ly/2dVQsXu">Repository</see> for an <see cref="IAggregateRoot" />.
     /// </summary>
-    /// <typeparam name="TRoot">The type of <see cref="IAggregateRoot"/>.</typeparam>
+    /// <typeparam name="TRoot">The type of <see cref="IAggregateRoot" />.</typeparam>
     /// <seealso href="http://bit.ly/2dVQsXu">Domain-Driven Design: Tackling Complexity in the Heart of Software</seealso>
     public interface IRepository<TRoot> where TRoot : IAggregateRoot
     {
@@ -17,7 +16,7 @@ namespace Slalom.Stacks.Domain
         /// Adds the specified instances.
         /// </summary>
         /// <param name="instances">The instances to update.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances" /> argument is null.</exception>
         Task Add(TRoot[] instances);
 
         /// <summary>
@@ -32,6 +31,13 @@ namespace Slalom.Stacks.Domain
         /// <param name="expression">The expression to filter with.</param>
         /// <returns>A task for asynchronous programming.</returns>
         Task<bool> Exists(Expression<Func<TRoot, bool>> expression);
+
+        /// <summary>
+        /// Determines if an instance with the specified ID exists.
+        /// </summary>
+        /// <param name="id">The instance identifier.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task<bool> Exists(string id);
 
         /// <summary>
         /// Finds the instance with the specified identifier.
@@ -57,7 +63,7 @@ namespace Slalom.Stacks.Domain
         /// Removes the specified instances.
         /// </summary>
         /// <param name="instances">The instances to remove.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances" /> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
         Task Remove(TRoot[] instances);
 
@@ -65,7 +71,7 @@ namespace Slalom.Stacks.Domain
         /// Updates the specified instances.
         /// </summary>
         /// <param name="instances">The instances to update.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances" /> argument is null.</exception>
         Task Update(TRoot[] instances);
     }
 }

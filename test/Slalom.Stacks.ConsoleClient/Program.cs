@@ -6,6 +6,7 @@ using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.ConsoleClient.Application.Products.Add;
 using Slalom.Stacks.ConsoleClient.Aspects;
+using Slalom.Stacks.Documentation;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Logging;
@@ -20,21 +21,9 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-                using (var stack = new Stack())
+                using (var stack = new DocumentStack(typeof(AddProduct)))
                 {
-                    stack.UseSimpleConsoleLogging();
-
-                    //var comments = typeof(AddProductCommand).GetProperty("Name").GetComments();
-                    //Console.WriteLine(comments);
-
-                    //var service = stack.CreatePublicRegistry("http://localhost");
-                    //Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
-
-
-                    stack.Send(new AddProductCommand("asdf", "description")).Wait();
-
-                    Console.WriteLine("Complete");
-                    Console.ReadKey();
+                    stack.WriteToConsole();
                 }
             }
             catch (Exception exception)

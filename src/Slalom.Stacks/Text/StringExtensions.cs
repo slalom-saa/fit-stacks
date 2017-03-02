@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Slalom.Stacks.Text
 {
@@ -32,6 +33,26 @@ namespace Slalom.Stacks.Text
                     return Convert.ToBase64String(outStream.ToArray());
                 }
             }
+        }
+
+        /// <summary>
+        /// Converts the pascal string to a sentence.
+        /// </summary>
+        /// <param name="instance">The this instance.</param>
+        /// <returns>Returns a new sentance string.</returns>
+        public static string ToSentence(this string instance)
+        {
+            return Regex.Replace(instance, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToLower(m.Value[1])}");
+        }
+
+        /// <summary>
+        /// Converts the pascal string to a title.
+        /// </summary>
+        /// <param name="instance">The this instance.</param>
+        /// <returns>Returns a new title string.</returns>
+        public static string ToTitle(this string instance)
+        {
+            return Regex.Replace(instance, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
         }
 
         /// <summary>

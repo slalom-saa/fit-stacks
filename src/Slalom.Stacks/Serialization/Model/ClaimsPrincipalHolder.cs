@@ -5,7 +5,7 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Serialization.Model
 {
     /// <summary>
-    /// Type used to hold a <see cref="ClaimsPrincipal"/> for serialization.
+    /// EndPointType used to hold a <see cref="ClaimsPrincipal"/> for serialization.
     /// </summary>
     public class ClaimsPrincipalHolder
     {

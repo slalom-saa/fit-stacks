@@ -1,0 +1,25 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "buildOptions": {
+    "preserveCompilationContext": true,
+    "emitEntryPoint": true,
+    "xmlDoc": true
+  },
+
+  "dependencies": {
+    "Slalom.Stacks": "1.4.60-*",
+    "xunit": "2.1.0",
+    "dotnet-test-xunit": "1.0.0-rc2-build10025",
+    "BenchmarkDotNet": "0.10.3"
+  },
+
+  "frameworks": {
+    "net461": {
+      "dependencies": {
+
+      },
+      "imports": "dnxcore50"
+    }
+  }
+}

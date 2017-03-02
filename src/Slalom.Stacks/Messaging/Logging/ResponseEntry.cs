@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Messaging.Logging
             this.CorrelationId = context.Request.CorrelationId;
             //this.MessageId = context.Request.Message.Id;
             this.Completed = context.Completed;
-            this.Service = context.EndPoint.Type;
+            this.Service = context.EndPoint.EndPointType;
             this.Exception = context.Exception;
             this.IsSuccessful = context.IsSuccessful;
             this.Started = context.Started;

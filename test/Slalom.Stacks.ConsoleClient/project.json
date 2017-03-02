@@ -12,6 +12,7 @@
     "Slalom.Stacks": {
       "target": "project"
     },
+    "Slalom.Stacks.Documentation": "1.0.0-*",
     "Slalom.Stacks.TestKit": {
       "target": "project"
     }

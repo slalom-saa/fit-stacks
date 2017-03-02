@@ -16,21 +16,37 @@ namespace Slalom.Stacks.Services
         public EndPointProperty(PropertyInfo property)
         {
             this.Name = property.Name;
-            this.Type = property.PropertyType.FullName;
-            this.Summary = property.GetComments();
+            this.PropertyType = property.PropertyType.FullName;
+            this.Comments = property.GetComments();
             var validation = property.GetCustomAttribute<ValidationAttribute>(true);
             if (validation != null)
             {
-                this.Validation = validation.Message;
+                this.Validation = new PropertyValidation(validation);
             }
         }
 
         public string Name { get; set; }
 
-        public string Summary { get; set; }
+        public Comments Comments { get; set; }
 
-        public string Type { get; set; }
+        public string PropertyType { get; set; }
 
-        public string Validation { get; set; }
+        public PropertyValidation Validation { get; set; }
+    }
+
+    public class PropertyValidation
+    {
+        public PropertyValidation(ValidationAttribute attribute)
+        {
+            this.Message = attribute.Message;
+            this.ValidationType = attribute.GetType().AssemblyQualifiedName;
+            this.ValidationName = attribute.GetType().Name.Replace("Attribute", "");
+        }
+
+        public string ValidationType { get; set; }
+
+        public string Message { get; set; }
+
+        public string ValidationName { get; set; }
     }
 }

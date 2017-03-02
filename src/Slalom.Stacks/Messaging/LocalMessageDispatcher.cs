@@ -23,7 +23,7 @@ namespace Slalom.Stacks.Messaging
         public async Task<MessageResult> Dispatch(RequestContext request, EndPoint endPoint, MessageExecutionContext parentContext)
         {
             var executionContext = _executionContext.Resolve();
-            var handler = _components.Resolve(Type.GetType(endPoint.Type));
+            var handler = _components.Resolve(Type.GetType(endPoint.EndPointType));
 
             var context = new MessageExecutionContext(request, endPoint, executionContext, parentContext);
 

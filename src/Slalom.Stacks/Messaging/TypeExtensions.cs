@@ -13,6 +13,24 @@ using Slalom.Stacks.Services;
 
 namespace Slalom.Stacks.Messaging
 {
+    public class Comments
+    {
+        public string Summary { get; set; }
+        public string Value { get; set; }
+        public string Remarks { get; set; }
+
+        public Comments(XNode node)
+        {
+            this.Summary = node.XPathSelectElement("summary")?.Value.Trim();
+            this.Value = node.XPathSelectElement("value")?.Value.Trim();
+            this.Remarks = node.XPathSelectElement("remarks")?.Value.Trim();
+        }
+
+        public Comments()
+        {
+        }
+    }
+
     /// <summary>
     /// Extensions for types within messaging.
     /// </summary>
@@ -67,7 +85,9 @@ namespace Slalom.Stacks.Messaging
             return null;
         }
 
-        public static string GetComments(this PropertyInfo property)
+
+
+        public static Comments GetComments(this PropertyInfo property)
         {
             var document = property.DeclaringType.Assembly.GetComments();
             if (document != null)
@@ -75,10 +95,10 @@ namespace Slalom.Stacks.Messaging
                 var node = document.XPathSelectElement("//member[@name=\"P:" + property.DeclaringType.FullName + "." + property.Name + "\"]");
                 if (node != null)
                 {
-                    return node.XPathSelectElement("summary").Value.Trim();
+                    return new Comments(node);
                 }
             }
-            return null;
+            return new Comments();
         }
 
         public static IEnumerable<EndPointProperty> GetInputProperties(this Type type)
@@ -90,11 +110,23 @@ namespace Slalom.Stacks.Messaging
             }
         }
 
+        public static IEnumerable<EndPointProperty> GetOutputProperties(this Type type)
+        {
+            type = type.GetResponseType();
+            if (type != null)
+            {
+                foreach (var property in type.GetProperties())
+                {
+                    yield return new EndPointProperty(property);
+                }
+            }
+        }
+
         /// <summary>
         /// Gets the type of the request.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns>Type.</returns>
+        /// <returns>EndPointType.</returns>
         public static Type GetRequestType(this Type type)
         {
             var actorType = type?.GetInterfaces().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(IHandle<>));

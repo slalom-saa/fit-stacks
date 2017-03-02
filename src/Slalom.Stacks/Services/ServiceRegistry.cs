@@ -86,7 +86,7 @@ namespace Slalom.Stacks.Services
 
         public EndPoint Find(Type endPoint)
         {
-            return this.Services.SelectMany(e => e.EndPoints).FirstOrDefault(e => e.Type == endPoint.AssemblyQualifiedName);
+            return this.Services.SelectMany(e => e.EndPoints).FirstOrDefault(e => e.EndPointType == endPoint.AssemblyQualifiedName);
         }
 
         public EndPoint Find(string path, ICommand instance)

@@ -75,7 +75,7 @@ namespace Slalom.Stacks.Domain
             CacheLock.EnterReadLock();
             try
             {
-                return Task.FromResult((TEntity)Instances.Find(e => e.Id == id));
+                return Task.FromResult((TEntity) Instances.Find(e => e.Id == id));
             }
             finally
             {
@@ -139,6 +139,14 @@ namespace Slalom.Stacks.Domain
             await this.Remove(instances);
 
             await this.Add(instances);
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> Exists<TEntity>(string id) where TEntity : IAggregateRoot
+        {
+            var target = await this.Find<TEntity>(id);
+
+            return target != null;
         }
     }
 }
