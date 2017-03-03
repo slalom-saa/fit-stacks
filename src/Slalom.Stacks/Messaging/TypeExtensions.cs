@@ -61,7 +61,7 @@ namespace Slalom.Stacks.Messaging
                 var node = document.XPathSelectElement("//member[@name=\"T:" + type.FullName + "\"]");
                 if (node != null)
                 {
-                    return node.XPathSelectElement("summary").Value.Trim();
+                    return node.XPathSelectElement("summary")?.Value.Trim();
                 }
             }
             return null;
@@ -75,7 +75,7 @@ namespace Slalom.Stacks.Messaging
                 var node = document.XPathSelectElement("//member[@name=\"P:" + property.DeclaringType.FullName + "." + property.Name + "\"]");
                 if (node != null)
                 {
-                    return node.XPathSelectElement("summary").Value.Trim();
+                    return node.XPathSelectElement("summary")?.Value.Trim();
                 }
             }
             return null;

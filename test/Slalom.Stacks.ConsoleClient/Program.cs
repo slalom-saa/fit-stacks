@@ -14,8 +14,18 @@ using Slalom.Stacks.Services;
 
 namespace Slalom.Stacks.ConsoleClient
 {
+    public class Send : UseCase<AddProductEvent>
+    {
+        public override void Execute(AddProductEvent command)
+        {
+            Console.WriteLine("SSS");
+        }
+    }
+
     public class Program
     {
+
+
         public static void Main(string[] args)
         {
             try

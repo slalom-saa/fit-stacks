@@ -12,7 +12,7 @@ namespace Slalom.Stacks.Messaging
     /// <seealso cref="Slalom.Stacks.Messaging.IRequestContext" />
     public class RequestContext : IRequestContext
     {
-        private static string _sourceAddress;
+        private static string sourceAddress;
 
         /// <summary>
         /// Gets the correlation identifier for the request.
@@ -24,7 +24,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the request message.
         /// </summary>
         /// <value>The request message.</value>
-        public object Message { get; private set; }
+        public IMessage Message { get; private set; }
 
         /// <summary>
         /// Gets the parent context.
@@ -67,35 +67,11 @@ namespace Slalom.Stacks.Messaging
                 SessionId = this.GetSession(),
                 User = ClaimsPrincipal.Current,
                 Path = path,
-                Message = message,
+                Message = (message as IMessage) ?? new Message(message),
                 ParentContext = parentContext
             };
         }
-
-        /// <summary>
-        /// Gets the source IP address.
-        /// </summary>
-        /// <returns>Returns the source IP address.</returns>
-        protected virtual string GetSourceIPAddress()
-        {
-            if (_sourceAddress == null)
-            {
-                try
-                {
-                    using (var client = new HttpClient())
-                    {
-                        var response = client.GetAsync("http://ipinfo.io/ip").Result;
-                        _sourceAddress = response.Content.ReadAsStringAsync().Result.Trim();
-                    }
-                }
-                catch
-                {
-                    _sourceAddress = "127.0.0.1";
-                }
-            }
-            return _sourceAddress;
-        }
-
+     
         /// <summary>
         /// Gets the current correlation ID.
         /// </summary>
@@ -112,6 +88,30 @@ namespace Slalom.Stacks.Messaging
         protected virtual string GetSession()
         {
             return NewId.NextId();
+        }
+
+        /// <summary>
+        /// Gets the source IP address.
+        /// </summary>
+        /// <returns>Returns the source IP address.</returns>
+        protected virtual string GetSourceIPAddress()
+        {
+            if (sourceAddress == null)
+            {
+                try
+                {
+                    using (var client = new HttpClient())
+                    {
+                        var response = client.GetAsync("http://ipinfo.io/ip").Result;
+                        sourceAddress = response.Content.ReadAsStringAsync().Result.Trim();
+                    }
+                }
+                catch
+                {
+                    sourceAddress = "127.0.0.1";
+                }
+            }
+            return sourceAddress;
         }
     }
 }

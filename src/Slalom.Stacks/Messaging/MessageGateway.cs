@@ -39,10 +39,12 @@ namespace Slalom.Stacks.Messaging
         {
             Argument.NotNull(instance, nameof(instance));
 
-            var request = _requestContext.Value.Resolve(null, instance, parentContext?.Request);
+            var message = new Message(instance);
+
+            var request = _requestContext.Value.Resolve(null, message, parentContext?.Request);
             await Task.WhenAll(_requests.Value.Select(e => e.Append(new RequestEntry(request))));
 
-            var endPoints = _services.Value.Find(instance).ToList();
+            var endPoints = _services.Value.Find(message).ToList();
 
             foreach (var endPoint in endPoints)
             {
@@ -73,15 +75,15 @@ namespace Slalom.Stacks.Messaging
         /// <inheritdoc />
         public virtual async Task<MessageResult> Send(string path, object instance, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
-            instance = new Message(instance);
+            var message = new Message(instance);
 
-            var endPoint = _services.Value.Find(path, instance);
+            var endPoint = _services.Value.Find(path, message);
             if (endPoint == null)
             {
                 throw new InvalidOperationException("No endpoint could be found for the request.");
             }
             
-            var request = _requestContext.Value.Resolve(path, instance, parentContext?.Request);
+            var request = _requestContext.Value.Resolve(path, message, parentContext?.Request);
             await Task.WhenAll(_requests.Value.Select(e => e.Append(new RequestEntry(request))));
 
             var dispatch = this.GetDispatchers(endPoint).FirstOrDefault();
