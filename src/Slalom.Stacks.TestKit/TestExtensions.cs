@@ -3,6 +3,7 @@ using FluentAssertions;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Validation;
+using EndPoint = Slalom.Stacks.Services.EndPoint;
 
 namespace Slalom.Stacks.TestKit
 {

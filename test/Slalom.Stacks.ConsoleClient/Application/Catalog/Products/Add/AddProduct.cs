@@ -9,7 +9,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
     /// <summary>
     /// Adds a product to the product catalog.
     /// </summary>
-    [Path("catalog/products/add")]
+    [EndPoint("catalog/products/add")]
     public class AddProduct : UseCase<AddProductCommand, AddProductEvent>
     {
         /// <inheritdoc />

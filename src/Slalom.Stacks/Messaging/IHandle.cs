@@ -4,16 +4,15 @@ using System.Threading.Tasks;
 namespace Slalom.Stacks.Messaging
 {
     /// <summary>
-    /// The root IHandle interface.
+    /// Defines a method for handling a message.
     /// </summary>
-    /// <typeparam name="TMessage">The message type.</typeparam>
-    public interface IHandle<in TMessage>
+    public interface IHandle
     {
         /// <summary>
         /// Handles the specified message instance.
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task Handle(TMessage instance);
+        Task Handle(IMessage instance);
     }
 }

@@ -9,7 +9,7 @@ namespace Slalom.Stacks.Messaging.Validation
     /// Performs security validation on a message.
     /// </summary>
     /// <typeparam name="TCommand">The message type.</typeparam>
-    public abstract class SecurityRule<TCommand> : ISecurityRule<TCommand> where TCommand : ICommand
+    public abstract class SecurityRule<TCommand> : ISecurityRule<TCommand>
     {
         /// <summary>
         /// Validates the specified message instance.

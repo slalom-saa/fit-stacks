@@ -36,20 +36,20 @@ namespace Slalom.Stacks.Messaging.Logging
 
             if (context.Response is IEvent)
             {
-                var target = (IEvent)context.Response;
-                this.EventType = target.GetType().FullName;
-                this.EventId = target.Id;
-                try
-                {
-                    this.EventBody = JsonConvert.SerializeObject(target, new JsonSerializerSettings
-                    {
-                        ContractResolver = new EventContractResolver()
-                    });
-                }
-                catch
-                {
-                    this.EventBody = "{ \"Error\" : \"Serialization failed.\" }";
-                }
+                //var target = (IEvent)context.Response;
+                //this.EventType = target.GetType().FullName;
+                //this.EventId = target.Id;
+                //try
+                //{
+                //    this.EventBody = JsonConvert.SerializeObject(target, new JsonSerializerSettings
+                //    {
+                //        ContractResolver = new EventContractResolver()
+                //    });
+                //}
+                //catch
+                //{
+                //    this.EventBody = "{ \"Error\" : \"Serialization failed.\" }";
+                //}
             }
         }
 

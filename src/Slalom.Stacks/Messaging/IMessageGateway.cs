@@ -32,7 +32,7 @@ namespace Slalom.Stacks.Messaging
         /// <param name="parentContext">The parent message context.</param>
         /// <param name="timeout">The request timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<MessageResult> Send(ICommand command, MessageExecutionContext parentContext = null, TimeSpan? timeout = null);
+        Task<MessageResult> Send(object command, MessageExecutionContext parentContext = null, TimeSpan? timeout = null);
 
         /// <summary>
         /// Sends the specified command to the configured point-to-point endPoint.
@@ -42,7 +42,7 @@ namespace Slalom.Stacks.Messaging
         /// <param name="parentContext">The parent message context.</param>
         /// <param name="timeout">The request timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<MessageResult> Send(string path, ICommand command, MessageExecutionContext parentContext = null, TimeSpan? timeout = null);
+        Task<MessageResult> Send(string path, object command, MessageExecutionContext parentContext = null, TimeSpan? timeout = null);
 
         /// <summary>
         /// Sends the specified command to the configured point-to-point endPoint.

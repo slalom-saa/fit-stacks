@@ -84,11 +84,12 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <summary>
-        /// Implements the != operator.
+        /// Implements the == operator.
         /// </summary>
         /// <param name="x">The x value.</param>
         /// <param name="y">The y value.</param>
-        /// <returns>The result of the operator.</returns>
+        /// <returns>Returns the result of the operator.</returns>
+        /// <returns>Returns the result of the operator.</returns>
         public static bool operator ==(ValueObject<T> x, ValueObject<T> y)
         {
             return ReferenceEquals(x, y) || x.Equals(y);
@@ -99,7 +100,7 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         /// <param name="x">The x value.</param>
         /// <param name="y">The y value.</param>
-        /// <returns>The result of the operator.</returns>
+        /// <returns>Returns the result of the operator.</returns>
         public static bool operator !=(ValueObject<T> x, ValueObject<T> y)
         {
             return !(x == y);

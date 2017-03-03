@@ -34,7 +34,7 @@ namespace Slalom.Stacks.Messaging
         /// <param name="command">The command to send.</param>
         /// <param name="timeout">The request timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public static Task<MessageResult> Send(this Stack instance, ICommand command, TimeSpan? timeout = null)
+        public static Task<MessageResult> Send(this Stack instance, object command, TimeSpan? timeout = null)
         {
             return instance.Container.Resolve<IMessageGateway>().Send(command, timeout: timeout);
         }
@@ -47,7 +47,7 @@ namespace Slalom.Stacks.Messaging
         /// <param name="command">The command to send.</param>
         /// <param name="timeout">The request timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public static Task<MessageResult> Send(this Stack instance, string path, ICommand command, TimeSpan? timeout = null)
+        public static Task<MessageResult> Send(this Stack instance, string path, object command, TimeSpan? timeout = null)
         {
             return instance.Container.Resolve<IMessageGateway>().Send(path, command, timeout: timeout);
         }

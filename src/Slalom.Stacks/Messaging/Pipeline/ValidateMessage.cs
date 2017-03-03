@@ -22,19 +22,16 @@ namespace Slalom.Stacks.Messaging.Pipeline
         public ValidateMessage(IComponentContext components)
         {
             Argument.NotNull(components, nameof(components));
-            
+
             _components = components;
         }
 
         /// <inheritdoc />
         public async Task Execute(IMessage message, MessageExecutionContext context)
         {
-            if (message is ICommand)
-            {
-                var validator = (ICommandValidator)_components.Resolve(typeof(CommandValidator<>).MakeGenericType(message.GetType()));
-                var results = await validator.Validate((ICommand)message);
-                context.AddValidationErrors(results);
-            }
+            var validator = (ICommandValidator)_components.Resolve(typeof(CommandValidator<>).MakeGenericType(message.MessageType));
+            var results = await validator.Validate(message.Body);
+            context.AddValidationErrors(results);
         }
     }
 }

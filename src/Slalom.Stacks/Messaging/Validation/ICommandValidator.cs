@@ -15,6 +15,6 @@ namespace Slalom.Stacks.Messaging.Validation
         /// </summary>
         /// <param name="command">The message to validate.</param>
         /// <returns>The <see cref="ValidationError">messages</see> returned from validation routines.</returns>
-        Task<IEnumerable<ValidationError>> Validate(ICommand command);
+        Task<IEnumerable<ValidationError>> Validate(object command);
     }
 }

@@ -31,7 +31,7 @@ namespace Slalom.Stacks.Messaging.Modules
                    .AllPropertiesAutowired();
 
             builder.RegisterAssemblyTypes(_assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandle<>)))
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandle)))
                    .As(instance => instance.GetBaseAndContractTypes())
                    .AsSelf()
                    .AllPropertiesAutowired();

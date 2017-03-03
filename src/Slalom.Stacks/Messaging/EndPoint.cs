@@ -8,13 +8,13 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     /// <seealso cref="System.Attribute" />
     [AttributeUsage(AttributeTargets.Class)]
-    public class PathAttribute : Attribute
+    public class EndPoint : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PathAttribute"/> class.
+        /// Initializes a new instance of the <see cref="EndPoint"/> class.
         /// </summary>
         /// <param name="path">The path.</param>
-        public PathAttribute(string path)
+        public EndPoint(string path)
         {
             this.Path = path;
         }

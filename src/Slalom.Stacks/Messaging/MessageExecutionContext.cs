@@ -22,7 +22,7 @@ namespace Slalom.Stacks.Messaging
         /// <param name="endPoint">The current endpoint.</param>
         /// <param name="executionContext">The execution.</param>
         /// <param name="parent">The parent.</param>
-        public MessageExecutionContext(RequestContext request, EndPoint endPoint, ExecutionContext executionContext, MessageExecutionContext parent = null)
+        public MessageExecutionContext(RequestContext request, Services.EndPoint endPoint, ExecutionContext executionContext, MessageExecutionContext parent = null)
         {
             this.Request = request;
             this.EndPoint = endPoint;
@@ -40,7 +40,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the registry entry.
         /// </summary>
         /// <value>The registry entry.</value>
-        public EndPoint EndPoint { get; }
+        public Services.EndPoint EndPoint { get; }
 
         /// <summary>
         /// Gets the raised exception, if any.

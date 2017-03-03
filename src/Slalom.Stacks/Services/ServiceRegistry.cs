@@ -66,7 +66,7 @@ namespace Slalom.Stacks.Services
         public void RegisterLocal(Assembly[] assemblies)
         {
             var service = new Service();
-            foreach (var endpoint in assemblies.SafelyGetTypes(typeof(IHandle<>)))
+            foreach (var endpoint in assemblies.SafelyGetTypes(typeof(UseCase<>)))
             {
                 if (!endpoint.IsGenericType && !endpoint.IsDynamic())
                 {
@@ -89,7 +89,7 @@ namespace Slalom.Stacks.Services
             return this.Services.SelectMany(e => e.EndPoints).FirstOrDefault(e => e.Type == endPoint.AssemblyQualifiedName);
         }
 
-        public EndPoint Find(string path, ICommand instance)
+        public EndPoint Find(string path, object instance)
         {
             if (path != null)
             {

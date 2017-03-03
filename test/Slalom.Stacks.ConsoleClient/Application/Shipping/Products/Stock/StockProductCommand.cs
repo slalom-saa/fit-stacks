@@ -5,7 +5,7 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Inventory.Products.Stock
 {
-    public class StockProductCommand : Command
+    public class StockProductCommand
     {
         public StockProductCommand(string productId, int quantity)
         {

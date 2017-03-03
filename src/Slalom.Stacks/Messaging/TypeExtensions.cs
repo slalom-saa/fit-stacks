@@ -25,7 +25,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>Returns the path for the type.</returns>
         public static string GetPath(this Type type)
         {
-            return type.GetAllAttributes<PathAttribute>().Select(e => e.Path).FirstOrDefault();
+            return type.GetAllAttributes<EndPoint>().Select(e => e.Path).FirstOrDefault();
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>Returns the path for the type.</returns>
         public static int GetVersion(this Type type)
         {
-            return type.GetAllAttributes<PathAttribute>().FirstOrDefault()?.Version ?? 1;
+            return type.GetAllAttributes<EndPoint>().FirstOrDefault()?.Version ?? 1;
         }
 
         private static ConcurrentDictionary<Assembly, XDocument> _commentsCache = new ConcurrentDictionary<Assembly, XDocument>();
@@ -97,7 +97,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>Type.</returns>
         public static Type GetRequestType(this Type type)
         {
-            var actorType = type?.GetInterfaces().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(IHandle<>));
+            var actorType = type?.GetBaseAndContractTypes().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(UseCase<>));
 
             return actorType != null ? actorType.GetGenericArguments()[0] : null;
         }
@@ -119,16 +119,6 @@ namespace Slalom.Stacks.Messaging
             var input = type.GetRequestType();
 
             return type.Assembly.SafelyGetTypes(typeof(IValidate<>).MakeGenericType(input));
-        }
-
-        /// <summary>
-        /// Determines whether the type handles commands.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns><c>true</c> if the type handles commands; otherwise, <c>false</c>.</returns>
-        public static bool IsCommandHandler(this Type type)
-        {
-            return typeof(ICommand).IsAssignableFrom(type.GetRequestType());
         }
 
         /// <summary>

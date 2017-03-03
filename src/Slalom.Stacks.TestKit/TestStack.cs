@@ -45,7 +45,7 @@ namespace Slalom.Stacks.TestKit
 
         public MessageResult LastResult { get; set; }
 
-        public MessageResult Send(ICommand command)
+        public MessageResult Send(object command)
         {
             return this.LastResult = base.Container.Resolve<IMessageGateway>().Send(command).Result;
         }

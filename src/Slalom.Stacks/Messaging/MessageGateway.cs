@@ -65,14 +65,16 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public Task<MessageResult> Send(ICommand instance, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
+        public Task<MessageResult> Send(object instance, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
             return this.Send(null, instance, parentContext, timeout);
         }
 
         /// <inheritdoc />
-        public virtual async Task<MessageResult> Send(string path, ICommand instance, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
+        public virtual async Task<MessageResult> Send(string path, object instance, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
+            instance = new Message(instance);
+
             var endPoint = _services.Value.Find(path, instance);
             if (endPoint == null)
             {
@@ -117,7 +119,7 @@ namespace Slalom.Stacks.Messaging
             return await dispatch.Dispatch(request, endPoint, parentContext);
         }
 
-        protected virtual IEnumerable<IMessageDispatcher> GetDispatchers(EndPoint endPoint)
+        protected virtual IEnumerable<IMessageDispatcher> GetDispatchers(Services.EndPoint endPoint)
         {
             return _dispatchers.Value.Where(e => e.CanDispatch(endPoint));
         }

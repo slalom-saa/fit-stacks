@@ -6,7 +6,7 @@ using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Inventory.Products.Stock
 {
-    [Path("shipping/products/stock")]
+    [EndPoint("shipping/products/stock")]
     public class StockProduct : UseCase<StockProductCommand, StockProductEvent>
     {
         public override async Task<StockProductEvent> ExecuteAsync(StockProductCommand command)

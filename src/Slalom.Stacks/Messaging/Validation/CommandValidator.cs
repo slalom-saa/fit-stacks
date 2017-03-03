@@ -11,7 +11,7 @@ namespace Slalom.Stacks.Messaging.Validation
     /// <summary>
     /// Validates a message using input, security and business rules.
     /// </summary>
-    public class CommandValidator<TCommand> : ICommandValidator where TCommand : ICommand
+    public class CommandValidator<TCommand> : ICommandValidator
     {
         private readonly IEnumerable<IValidate<TCommand>> _rules;
 
@@ -32,7 +32,7 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <param name="command">The message to validate.</param>
         /// <returns>The <see cref="ValidationError">messages</see> returned from validation routines.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
-        public Task<IEnumerable<ValidationError>> Validate(ICommand command)
+        public Task<IEnumerable<ValidationError>> Validate(object command)
         {
             Argument.NotNull(command, nameof(command));
 
@@ -91,7 +91,7 @@ namespace Slalom.Stacks.Messaging.Validation
             {
                 target.AddRange(rule.Validate(command));
             }
-            foreach (var property in command.Type.GetProperties())
+            foreach (var property in command.GetType().GetProperties())
             {
                 foreach (var attribute in property.GetCustomAttributes<ValidationAttribute>())
                 {
@@ -99,7 +99,7 @@ namespace Slalom.Stacks.Messaging.Validation
                     {
                         if (attribute.Code == null)
                         {
-                            attribute.Code = $"{command.Type.Name}.{property.Name}.{attribute.GetType().Name.Replace("Attribute", "")}";
+                            attribute.Code = $"{command.GetType().Name}.{property.Name}.{attribute.GetType().Name.Replace("Attribute", "")}";
                         }
                         target.Add(attribute.ValidationError);
                     }

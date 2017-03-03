@@ -15,14 +15,14 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     /// <typeparam name="TCommand">The type of message.</typeparam>
     /// <typeparam name="TResult">The type of result.</typeparam>
-    public abstract class UseCase<TCommand, TResult> : UseCase, IHandle<TCommand> where TCommand : ICommand
+    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand>
     {
         /// <summary>
         /// Executes the use case given the specified message.
         /// </summary>
         /// <param name="command">The message containing the input.</param>
         /// <returns>The message result.</returns>
-        public virtual TResult Execute(TCommand command)
+        public new virtual TResult Execute(TCommand command)
         {
             throw new NotImplementedException($"The execution methods for the {this.GetType().Name} use case actor have not been implemented.");
         }
@@ -32,13 +32,13 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <param name="command">The message containing the input.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public virtual Task<TResult> ExecuteAsync(TCommand command)
+        public new virtual Task<TResult> ExecuteAsync(TCommand command)
         {
             return Task.FromResult(this.Execute(command));
         }
 
         /// <inheritdoc />
-        public async Task Handle(TCommand instance)
+        public override async Task Handle(IMessage instance)
         {
             await this.Prepare(instance);
 
@@ -46,7 +46,7 @@ namespace Slalom.Stacks.Messaging
             {
                 try
                 {
-                    var result = await this.ExecuteAsync(instance);
+                    var result = await this.ExecuteAsync((TCommand)instance.Body);
 
                     this.Context.Response = result;
                 }
@@ -58,34 +58,13 @@ namespace Slalom.Stacks.Messaging
 
             await this.Complete(instance);
         }
-
-        /// <summary>
-        /// Validates the specified message.
-        /// </summary>
-        /// <param name="command">The message to validate.</param>
-        /// <returns>Any validation errors.</returns>
-        public virtual IEnumerable<ValidationError> Validate(TCommand command)
-        {
-            yield break;
-        }
-
-        /// <summary>
-        /// Validates the specified message.
-        /// </summary>
-        /// <param name="command">The message to validate.</param>
-        /// <returns>Any validation errors.</returns>
-        public virtual Task<IEnumerable<ValidationError>> ValidateAsync(TCommand command)
-        {
-            return Task.FromResult(this.Validate(command));
-        }
     }
 
     /// <summary>
-    /// The base usecase class.
+    /// Defines a use case actor that performs a defined function.
     /// </summary>
-    /// <seealso cref="Slalom.Stacks.Messaging.UseCase" />
-    /// <seealso cref="Slalom.Stacks.Messaging.IHandle{TCommand}" />
-    public abstract class UseCase : IUseMessageContext
+    /// <typeparam name="TCommand">The type of message.</typeparam>
+    public abstract class UseCase<TCommand> : IHandle, IUseMessageContext
     {
         /// <summary>
         /// Gets the configured <see cref="IComponentContext"/> instance.
@@ -111,10 +90,71 @@ namespace Slalom.Stacks.Messaging
         /// <value>The configured <see cref="ISearchFacade"/> instance.</value>
         protected ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
 
+        /// <summary>
+        /// Executes the use case given the specified message.
+        /// </summary>
+        /// <param name="command">The message containing the input.</param>
+        /// <returns>The message result.</returns>
+        public virtual void Execute(TCommand command)
+        {
+            throw new NotImplementedException($"The execution methods for the {this.GetType().Name} use case actor have not been implemented.");
+        }
+
+        /// <summary>
+        /// Executes the use case given the specified message.
+        /// </summary>
+        /// <param name="command">The message containing the input.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public virtual Task ExecuteAsync(TCommand command)
+        {
+            this.Execute(command);
+            return Task.FromResult(0);
+        }
+
+        /// <inheritdoc />
+        public virtual async Task Handle(IMessage instance)
+        {
+            await this.Prepare(instance);
+
+            if (!this.Context.ValidationErrors.Any())
+            {
+                try
+                {
+                    await this.ExecuteAsync((TCommand)instance.Body);
+                }
+                catch (Exception exception)
+                {
+                    this.Context.SetException(exception);
+                }
+            }
+
+            await this.Complete(instance);
+        }
+
         /// <inheritdoc />
         public void UseContext(MessageExecutionContext context)
         {
             this.Context = context;
+        }
+
+        /// <summary>
+        /// Validates the specified message.
+        /// </summary>
+        /// <param name="command">The message to validate.</param>
+        /// <returns>Any validation errors.</returns>
+        public virtual IEnumerable<ValidationError> Validate(TCommand command)
+        {
+            yield break;
+        }
+
+        /// <summary>
+        /// Validates the specified message.
+        /// </summary>
+        /// <param name="command">The message to validate.</param>
+        /// <returns>Any validation errors.</returns>
+        public virtual Task<IEnumerable<ValidationError>> ValidateAsync(TCommand command)
+        {
+            return Task.FromResult(this.Validate(command));
         }
 
         /// <summary>
@@ -160,79 +200,11 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        protected Task<MessageResult> Send(ICommand message)
+        protected Task<MessageResult> Send(object message)
         {
             var stream = this.Components.Resolve<IMessageGateway>();
 
             return stream.Send(message, this.Context);
-        }
-    }
-
-    /// <summary>
-    /// Defines a use case actor that performs a defined function.
-    /// </summary>
-    /// <typeparam name="TCommand">The type of message.</typeparam>
-    public abstract class UseCase<TCommand> : UseCase, IHandle<TCommand> where TCommand : IMessage
-    {
-        /// <summary>
-        /// Executes the use case given the specified message.
-        /// </summary>
-        /// <param name="command">The message containing the input.</param>
-        /// <returns>The message result.</returns>
-        public virtual void Execute(TCommand command)
-        {
-            throw new NotImplementedException($"The execution methods for the {this.GetType().Name} use case actor have not been implemented.");
-        }
-
-        /// <summary>
-        /// Executes the use case given the specified message.
-        /// </summary>
-        /// <param name="command">The message containing the input.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public virtual Task ExecuteAsync(TCommand command)
-        {
-            this.Execute(command);
-            return Task.FromResult(0);
-        }
-
-        /// <inheritdoc />
-        public async Task Handle(TCommand instance)
-        {
-            await this.Prepare(instance);
-
-            if (!this.Context.ValidationErrors.Any())
-            {
-                try
-                {
-                    await this.ExecuteAsync(instance);
-                }
-                catch (Exception exception)
-                {
-                    this.Context.SetException(exception);
-                }
-            }
-
-            await this.Complete(instance);
-        }
-
-        /// <summary>
-        /// Validates the specified message.
-        /// </summary>
-        /// <param name="command">The message to validate.</param>
-        /// <returns>Any validation errors.</returns>
-        public virtual IEnumerable<ValidationError> Validate(TCommand command)
-        {
-            yield break;
-        }
-
-        /// <summary>
-        /// Validates the specified message.
-        /// </summary>
-        /// <param name="command">The message to validate.</param>
-        /// <returns>Any validation errors.</returns>
-        public virtual Task<IEnumerable<ValidationError>> ValidateAsync(TCommand command)
-        {
-            return Task.FromResult(this.Validate(command));
         }
     }
 }

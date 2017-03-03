@@ -31,7 +31,7 @@ namespace Slalom.Stacks.ConsoleClient
                     //Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
 
 
-                    stack.Send(new AddProductCommand("asdf", "description")).Wait();
+                    stack.Send("catalog/products/add", new AddProductCommand("asdf", "description")).Wait();
 
                     Console.WriteLine("Complete");
                     Console.ReadKey();
