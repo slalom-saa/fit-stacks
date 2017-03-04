@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Services;
 
 namespace AspNetCoreClient.Application.Products.Add
 {
