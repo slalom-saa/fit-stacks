@@ -41,6 +41,8 @@ namespace Slalom.Stacks.Messaging
         /// <inheritdoc />
         public override async Task Handle(IMessage instance)
         {
+            this.Message = instance;
+
             await this.Prepare(instance);
 
             if (!this.Context.ValidationErrors.Any())
@@ -72,6 +74,12 @@ namespace Slalom.Stacks.Messaging
     /// <typeparam name="TCommand">The type of message.</typeparam>
     public abstract class UseCase<TCommand> : IHandle, IUseMessageContext where TCommand : class
     {
+        /// <summary>
+        /// Gets the message that is being executed.
+        /// </summary>
+        /// <value>The message that is being executed.</value>
+        public IMessage Message { get; protected internal set; }
+
         /// <summary>
         /// Gets the configured <see cref="IComponentContext"/> instance.
         /// </summary>
@@ -120,6 +128,8 @@ namespace Slalom.Stacks.Messaging
         /// <inheritdoc />
         public virtual async Task Handle(IMessage instance)
         {
+            this.Message = instance;
+
             await this.Prepare(instance);
 
             if (!this.Context.ValidationErrors.Any())
