@@ -7,23 +7,33 @@ using Slalom.Stacks.Services;
 
 namespace Slalom.Stacks.Messaging
 {
+    /// <summary>
+    /// A local <see cref="IMessageDispatcher"/> implementation.
+    /// </summary>
+    /// <seealso cref="Slalom.Stacks.Messaging.IMessageDispatcher" />
     public class LocalMessageDispatcher : IMessageDispatcher
     {
         private readonly IComponentContext _components;
         private readonly IExecutionContext _executionContext;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocalMessageDispatcher"/> class.
+        /// </summary>
+        /// <param name="components">The configured <see cref="IComponentContext"/>.</param>
         public LocalMessageDispatcher(IComponentContext components)
         {
             _components = components;
             _executionContext = components.Resolve<IExecutionContext>();
         }
 
-        public bool CanDispatch(Services.EndPoint endPoint)
+        /// <inheritdoc />
+        public bool CanDispatch(EndPoint endPoint)
         {
             return endPoint.RootPath == Service.LocalPath;
         }
 
-        public async Task<MessageResult> Dispatch(RequestContext request, Services.EndPoint endPoint, MessageExecutionContext parentContext)
+        /// <inheritdoc />
+        public async Task<MessageResult> Dispatch(RequestContext request, EndPoint endPoint, MessageExecutionContext parentContext)
         {
             var executionContext = _executionContext.Resolve();
             var handler = _components.Resolve(Type.GetType(endPoint.Type));
@@ -32,16 +42,9 @@ namespace Slalom.Stacks.Messaging
 
             (handler as IUseMessageContext)?.UseContext(context);
 
-            await (Task)handler.GetType().GetMethod("Handle").Invoke(handler, new[] { request.Message });
+            await (Task)typeof(IHandle).GetMethod("Handle").Invoke(handler, new object[] { request.Message });
 
             return new MessageResult(context);
         }
-    }
-
-    public interface IMessageDispatcher
-    {
-        bool CanDispatch(Services.EndPoint endPoint);
-
-        Task<MessageResult> Dispatch(RequestContext request, Services.EndPoint endPoint, MessageExecutionContext parentContext);
     }
 }

@@ -52,9 +52,9 @@ namespace Slalom.Stacks.ConsoleClient
                     //var service = stack.CreatePublicRegistry("http://localhost");
                     //Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
 
-                    //stack.Send("catalog/products/add", JsonConvert.SerializeObject(new AddProductCommand("asdf", "description"))).Wait();
+                    stack.Send("catalog/products/add", new AddProductCommand("asdf", "description").ToJson()).Wait();
                     stack.Send("catalog/products/add", new AddProductCommand("asdf", "description")).Wait();
-                    //stack.Send("catalog/products/add", new AddProductCommand("asdf", "description")).Wait();
+                    stack.Send(new AddProductCommand("asdf", "description")).Wait();
 
                     Console.WriteLine("Complete");
                     Console.ReadKey();

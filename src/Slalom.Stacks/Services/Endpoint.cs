@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.Services
@@ -29,8 +28,10 @@ namespace Slalom.Stacks.Services
             this.RootPath = rootPath;
         }
 
-        public string RootPath { get; set; }
-
+        /// <summary>
+        /// Gets a value indicating whether this instance is local.
+        /// </summary>
+        /// <value><c>true</c> if this instance is local; otherwise, <c>false</c>.</value>
         public bool IsLocal => this.RootPath == Service.LocalPath;
 
         /// <summary>
@@ -57,6 +58,12 @@ namespace Slalom.Stacks.Services
         /// <value>The output type.</value>
         public string ResponseType { get; set; }
 
+        /// <summary>
+        /// Gets or sets the root path.
+        /// </summary>
+        /// <value>The root path.</value>
+        public string RootPath { get; set; }
+
         public List<EndPointRule> Rules { get; set; }
 
         /// <summary>
@@ -77,16 +84,16 @@ namespace Slalom.Stacks.Services
         /// <value>The version number.</value>
         public int Version { get; set; }
 
+        /// <summary>
+        /// Copies this instance using the specified root path.
+        /// </summary>
+        /// <param name="rootPath">The root path.</param>
+        /// <returns>Returns the copied instance.</returns>
         public EndPoint Copy(string rootPath)
         {
             var target = (EndPoint)this.MemberwiseClone();
             target.RootPath = rootPath;
             return target;
-        }
-
-        public IMessage CreateMessage(string content)
-        {
-            return (IMessage)JsonConvert.DeserializeObject(content, System.Type.GetType(this.RequestType));
         }
     }
 }

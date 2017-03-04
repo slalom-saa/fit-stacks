@@ -25,12 +25,28 @@ namespace Slalom.Stacks.Services
             }
         }
 
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets the summary.
+        /// </summary>
+        /// <value>The summary.</value>
         public string Summary { get; set; }
 
+        /// <summary>
+        /// Gets or sets the type.
+        /// </summary>
+        /// <value>The type.</value>
         public string Type { get; set; }
 
+        /// <summary>
+        /// Gets or sets the validation.
+        /// </summary>
+        /// <value>The validation.</value>
         public string Validation { get; set; }
     }
 }

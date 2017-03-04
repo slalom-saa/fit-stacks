@@ -16,7 +16,7 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     /// <typeparam name="TCommand">The type of message.</typeparam>
     /// <typeparam name="TResult">The type of result.</typeparam>
-    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand> where TCommand : class
+    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand>, IHandle where TCommand : class
     {
         /// <summary>
         /// Executes the use case given the specified message.
@@ -39,7 +39,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public override async Task Handle(IMessage instance)
+        async Task IHandle.Handle(IMessage instance)
         {
             this.Message = instance;
 
@@ -90,7 +90,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the current <see cref="MessageExecutionContext"/> instance.
         /// </summary>
         /// <value>The current <see cref="MessageExecutionContext"/> instance.</value>
-        protected MessageExecutionContext Context { get; private set; }
+        internal MessageExecutionContext Context { get; private set; }
 
         /// <summary>
         /// Gets the configured <see cref="IDomainFacade"/> instance.
@@ -126,7 +126,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public virtual async Task Handle(IMessage instance)
+        async Task IHandle.Handle(IMessage instance)
         {
             this.Message = instance;
 
@@ -153,7 +153,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public void UseContext(MessageExecutionContext context)
+        void IUseMessageContext.UseContext(MessageExecutionContext context)
         {
             this.Context = context;
         }
@@ -183,7 +183,7 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        protected async Task Complete(IMessage message)
+        internal async Task Complete(IMessage message)
         {
             var steps = new List<IMessageExecutionStep>
             {
@@ -203,7 +203,7 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <param name="message">The current message.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        protected async Task Prepare(IMessage message)
+        internal async Task Prepare(IMessage message)
         {
             var steps = new List<IMessageExecutionStep>
             {
