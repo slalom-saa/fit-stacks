@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging.Pipeline;
 using Slalom.Stacks.Search;
@@ -15,7 +16,7 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     /// <typeparam name="TCommand">The type of message.</typeparam>
     /// <typeparam name="TResult">The type of result.</typeparam>
-    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand>
+    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand> where TCommand : class
     {
         /// <summary>
         /// Executes the use case given the specified message.
@@ -46,7 +47,12 @@ namespace Slalom.Stacks.Messaging
             {
                 try
                 {
-                    var result = await this.ExecuteAsync((TCommand)instance.Body);
+                    TCommand message = instance.Body as TCommand;
+                    if (instance.Body is string)
+                    {
+                        message =  JsonConvert.DeserializeObject<TCommand>((string)instance.Body);
+                    }
+                    var result = await this.ExecuteAsync(message);
 
                     this.Context.Response = result;
                 }
@@ -64,7 +70,7 @@ namespace Slalom.Stacks.Messaging
     /// Defines a use case actor that performs a defined function.
     /// </summary>
     /// <typeparam name="TCommand">The type of message.</typeparam>
-    public abstract class UseCase<TCommand> : IHandle, IUseMessageContext
+    public abstract class UseCase<TCommand> : IHandle, IUseMessageContext where TCommand : class
     {
         /// <summary>
         /// Gets the configured <see cref="IComponentContext"/> instance.
@@ -120,7 +126,12 @@ namespace Slalom.Stacks.Messaging
             {
                 try
                 {
-                    await this.ExecuteAsync((TCommand)instance.Body);
+                    TCommand message = instance.Body as TCommand;
+                    if (instance.Body is string)
+                    {
+                        message = JsonConvert.DeserializeObject<TCommand>((string)instance.Body);
+                    }
+                    await this.ExecuteAsync(message);
                 }
                 catch (Exception exception)
                 {

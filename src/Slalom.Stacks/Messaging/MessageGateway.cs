@@ -82,7 +82,7 @@ namespace Slalom.Stacks.Messaging
             {
                 throw new InvalidOperationException("No endpoint could be found for the request.");
             }
-            
+
             var request = _requestContext.Value.Resolve(path, message, parentContext?.Request);
             await Task.WhenAll(_requests.Value.Select(e => e.Append(new RequestEntry(request))));
 

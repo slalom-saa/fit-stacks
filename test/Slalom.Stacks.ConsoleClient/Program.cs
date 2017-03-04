@@ -11,6 +11,7 @@ using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
 {
@@ -37,11 +38,15 @@ namespace Slalom.Stacks.ConsoleClient
                     //var comments = typeof(AddProductCommand).GetProperty("Name").GetComments();
                     //Console.WriteLine(comments);
 
+                    //Console.WriteLine(stack.GetServices().ToJson());
+
+
                     //var service = stack.CreatePublicRegistry("http://localhost");
                     //Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
 
-
+                    //stack.Send("catalog/products/add", JsonConvert.SerializeObject(new AddProductCommand("asdf", "description"))).Wait();
                     stack.Send("catalog/products/add", new AddProductCommand("asdf", "description")).Wait();
+                    //stack.Send("catalog/products/add", new AddProductCommand("asdf", "description")).Wait();
 
                     Console.WriteLine("Complete");
                     Console.ReadKey();

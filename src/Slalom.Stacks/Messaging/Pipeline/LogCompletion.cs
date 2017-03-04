@@ -41,7 +41,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
                 }
                 else if (context.ValidationErrors?.Any() ?? false)
                 {
-                    _logger.Verbose("Execution completed with validation errors while executing \"" + name + "\": " + String.Join("; ", context.ValidationErrors.Select(e => e.Type + ": " + e.Message)), instance);
+                    _logger.Error("Execution completed with validation errors while executing \"" + name + "\": " + String.Join("; ", context.ValidationErrors.Select(e => e.Type + ": " + e.Message)), instance);
                 }
                 else
                 {
