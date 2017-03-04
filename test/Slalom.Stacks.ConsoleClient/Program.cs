@@ -23,6 +23,14 @@ namespace Slalom.Stacks.ConsoleClient
         }
     }
 
+    public class Send2 : UseCase<AddProductEvent>
+    {
+        public override void Execute(AddProductEvent command)
+        {
+            Console.WriteLine("SSS2");
+        }
+    }
+
     public class Program
     {
 

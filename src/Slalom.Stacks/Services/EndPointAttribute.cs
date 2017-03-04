@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Linq;
 
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Services
 {
     /// <summary>
     /// Indicates the path the endPoint.
     /// </summary>
     /// <seealso cref="System.Attribute" />
     [AttributeUsage(AttributeTargets.Class)]
-    public class EndPoint : Attribute
+    public class EndPointAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EndPoint"/> class.
+        /// Initializes a new instance of the <see cref="EndPointAttribute"/> class.
         /// </summary>
         /// <param name="path">The path.</param>
-        public EndPoint(string path)
+        public EndPointAttribute(string path)
         {
             this.Path = path;
         }

@@ -25,7 +25,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>Returns the path for the type.</returns>
         public static string GetPath(this Type type)
         {
-            return type.GetAllAttributes<EndPoint>().Select(e => e.Path).FirstOrDefault();
+            return type.GetAllAttributes<EndPointAttribute>().Select(e => e.Path).FirstOrDefault();
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>Returns the path for the type.</returns>
         public static int GetVersion(this Type type)
         {
-            return type.GetAllAttributes<EndPoint>().FirstOrDefault()?.Version ?? 1;
+            return type.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Version ?? 1;
         }
 
         private static ConcurrentDictionary<Assembly, XDocument> _commentsCache = new ConcurrentDictionary<Assembly, XDocument>();

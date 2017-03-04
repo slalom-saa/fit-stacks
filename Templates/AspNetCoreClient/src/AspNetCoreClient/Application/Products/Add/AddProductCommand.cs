@@ -6,11 +6,11 @@ using Slalom.Stacks.Messaging;
 
 namespace AspNetCoreClient.Application.Products.Add
 {
-    public class AddProductCommand : Command
+    public class AddProductCommand
     {
     }
 
-    [Path("products/add")]
+    [EndPoint("products/add")]
     public class AddProduct : UseCase<AddProductCommand>
     {
         public override void Execute(AddProductCommand command)

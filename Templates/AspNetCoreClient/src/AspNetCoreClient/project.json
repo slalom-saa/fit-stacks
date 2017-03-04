@@ -5,7 +5,7 @@
   },
 
   "dependencies": {
-    "Slalom.Stacks.Web.AspNetCore": "1.4.61"
+    "Slalom.Stacks.Web.AspNetCore": "1.4.9"
   },
 
   "frameworks": {

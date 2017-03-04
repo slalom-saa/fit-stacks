@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Slalom.Stacks.ConsoleClient.Domain.Products;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Exceptions;
+using Slalom.Stacks.Services;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
 {
