@@ -23,4 +23,21 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
             return new AddProductEvent(target.Name, target.Description);
         }
     }
+
+    /// <summary>
+    /// Adds a product to the product catalog.
+    /// </summary>
+    [EndPoint("catalog/products/add", Version = 2)]
+    public class AddProduct2 : UseCase<AddProductCommand, AddProductEvent>
+    {
+        /// <inheritdoc />
+        public override async Task<AddProductEvent> ExecuteAsync(AddProductCommand command)
+        {
+            var target = new Product(command.Name, command.Description);
+
+            await this.Domain.Add(target);
+
+            return new AddProductEvent(target.Name, target.Description);
+        }
+    }
 }

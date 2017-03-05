@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Services;
@@ -33,12 +34,22 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public async Task<MessageResult> Dispatch(RequestContext request, EndPoint endPoint, MessageExecutionContext parentContext)
+        public async Task<MessageResult> Dispatch(RequestContext request, EndPoint endPoint, MessageExecutionContext parentContext, TimeSpan? timeout = null)
         {
             var executionContext = _executionContext.Resolve();
             var handler = _components.Resolve(Type.GetType(endPoint.Type));
 
-            var context = new MessageExecutionContext(request, endPoint, executionContext, parentContext);
+            CancellationTokenSource source;
+            if (timeout.HasValue || endPoint.Timeout.HasValue)
+            {
+                source = new CancellationTokenSource(timeout ?? endPoint.Timeout.Value);
+            }
+            else
+            {
+                source = new CancellationTokenSource();
+            }
+
+            var context = new MessageExecutionContext(request, endPoint, executionContext, source.Token, parentContext);
 
             (handler as IUseMessageContext)?.UseContext(context);
 

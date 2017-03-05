@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
@@ -11,15 +12,15 @@ namespace Slalom.Stacks.Messaging.Validation
     /// <summary>
     /// Validates a message using input, security and business rules.
     /// </summary>
-    public class CommandValidator<TCommand> : ICommandValidator
+    public class MessageValidator<TCommand> : IMessageValidator where TCommand : class
     {
         private readonly IEnumerable<IValidate<TCommand>> _rules;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandValidator{TCommand}"/> class.
+        /// Initializes a new instance of the <see cref="MessageValidator{TCommand}"/> class.
         /// </summary>
         /// <param name="rules">The rules for the message.</param>
-        public CommandValidator(IEnumerable<IValidate<TCommand>> rules)
+        public MessageValidator(IEnumerable<IValidate<TCommand>> rules)
         {
             Argument.NotNull(rules, nameof(rules));
 
@@ -30,13 +31,18 @@ namespace Slalom.Stacks.Messaging.Validation
         /// Validates the specified message.
         /// </summary>
         /// <param name="command">The message to validate.</param>
+        /// <param name="context">The current context.</param>
         /// <returns>The <see cref="ValidationError">messages</see> returned from validation routines.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
-        public Task<IEnumerable<ValidationError>> Validate(object command)
+        public Task<IEnumerable<ValidationError>> Validate(object command, MessageExecutionContext context)
         {
             Argument.NotNull(command, nameof(command));
 
-            var instance = (TCommand)command;
+            TCommand instance = command as TCommand;
+            if (instance == null && command is String)
+            {
+                instance = (TCommand)JsonConvert.DeserializeObject((string)command, Type.GetType(context.EndPoint.RequestType));
+            }
 
             var input = this.CheckInputRules(instance).ToList();
             if (input.Any())
@@ -50,7 +56,7 @@ namespace Slalom.Stacks.Messaging.Validation
                 return Task.FromResult(security.WithType(ValidationType.Security));
             }
 
-            var business = this.CheckBusinessRules(instance).ToList();
+            var business = this.CheckBusinessRules(instance, context).ToList();
             if (business.Any())
             {
                 return Task.FromResult(business.WithType(ValidationType.Business));
@@ -63,12 +69,17 @@ namespace Slalom.Stacks.Messaging.Validation
         /// Checks all discovered business rules for validation errors.
         /// </summary>
         /// <param name="command">The message to validate.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
+        /// <param name="context">The context.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        protected virtual IEnumerable<ValidationError> CheckBusinessRules(TCommand command)
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
+        protected virtual IEnumerable<ValidationError> CheckBusinessRules(TCommand command, MessageExecutionContext context)
         {
             foreach (var rule in _rules.OfType<IBusinessRule<TCommand>>())
             {
+                if (rule is IUseMessageContext)
+                {
+                    ((IUseMessageContext)rule).UseContext(context);
+                }
                 var result = (rule.Validate(command)).ToList();
                 if (result.Any())
                 {

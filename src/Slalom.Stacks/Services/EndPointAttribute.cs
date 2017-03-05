@@ -26,6 +26,12 @@ namespace Slalom.Stacks.Services
         public string Path { get; set; }
 
         /// <summary>
+        /// Gets or sets the endpoint timeout in milliseconds.
+        /// </summary>
+        /// <value>The endpoint timeout in milliseconds.</value>
+        public double Timeout { get; set; }
+
+        /// <summary>
         /// Gets or sets the version number.
         /// </summary>
         /// <value>The version number.</value>

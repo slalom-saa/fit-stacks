@@ -55,9 +55,13 @@ namespace Slalom.Stacks.Messaging
                     {
                         message = JsonConvert.DeserializeObject<TCommand>((string)instance.Body);
                     }
-                    var result = await this.ExecuteAsync(message);
 
-                    this.Context.Response = result;
+                    if (!this.Context.CancellationToken.IsCancellationRequested)
+                    {
+                        var result = await this.ExecuteAsync(message);
+
+                        this.Context.Response = result;
+                    }
                 }
                 catch (Exception exception)
                 {
@@ -209,7 +213,10 @@ namespace Slalom.Stacks.Messaging
                     {
                         message = JsonConvert.DeserializeObject<TCommand>((string)instance.Body);
                     }
-                    await this.ExecuteAsync(message);
+                    if (!this.Context.CancellationToken.IsCancellationRequested)
+                    {
+                        await this.ExecuteAsync(message);
+                    }
                 }
                 catch (Exception exception)
                 {

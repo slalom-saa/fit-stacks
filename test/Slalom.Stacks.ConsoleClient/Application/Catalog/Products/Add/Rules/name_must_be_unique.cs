@@ -12,6 +12,8 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add.Rules
     {
         public override async Task<ValidationError> ValidateAsync(AddProductCommand instance)
         {
+            Console.WriteLine(this.Context.Started);
+
             if (await this.Domain.Exists<Product>(e => e.Name.Value == instance.Name))
             {
                 return "A product name must be unique.";

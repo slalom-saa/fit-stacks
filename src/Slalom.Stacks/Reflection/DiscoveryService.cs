@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Validation;
-using Microsoft.Extensions.DependencyModel;
 
 namespace Slalom.Stacks.Reflection
 {

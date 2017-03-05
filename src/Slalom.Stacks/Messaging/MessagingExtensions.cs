@@ -13,21 +13,6 @@ namespace Slalom.Stacks.Messaging
     public static class MessagingExtensions
     {
         /// <summary>
-        /// Adds messaging types found in the specified type assemblies.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="types">The types to use to get the assemblies.</param>
-        /// <returns>The current instance for method chaining.</returns>
-        public static Stack AddMessagingTypes(this Stack instance, params Type[] types)
-        {
-            instance.Use(builder =>
-            {
-                builder.RegisterModule(new MessagingTypesModule(types.Select(e => e.GetTypeInfo().Assembly).ToArray()));
-            });
-            return instance;
-        }
-
-        /// <summary>
         /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
         /// <param name="instance">The this instance.</param>

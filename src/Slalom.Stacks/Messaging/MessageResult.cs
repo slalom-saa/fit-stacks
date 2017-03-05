@@ -24,6 +24,7 @@ namespace Slalom.Stacks.Messaging
             this.Response = context.Response;
             this.ValidationErrors = context.ValidationErrors.ToList();
             //this.RequestId = context.Request.Message.Id;
+            this.IsCancelled = context.CancellationToken.IsCancellationRequested;
         }
 
         /// <summary>
@@ -31,6 +32,8 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The date and time completed.</value>
         public DateTimeOffset? Completed { get; }
+
+        public bool IsCancelled { get; }
 
         /// <summary>
         /// Gets the correlation identifier.

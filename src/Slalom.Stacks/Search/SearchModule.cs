@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reflection;
 using Autofac;
 using Slalom.Stacks.Configuration;
@@ -13,20 +14,16 @@ namespace Slalom.Stacks.Search
     /// <seealso cref="Autofac.Module" />
     internal class SearchModule : Module
     {
+        private readonly Stack _stack;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchModule" /> class.
         /// </summary>
-        /// <param name="assemblies">The assemblies to probe for needed components.</param>
-        public SearchModule(Assembly[] assemblies)
+        /// <param name="stack">The current stack.</param>
+        public SearchModule(Stack stack)
         {
-            this.Assemblies = assemblies;
+            _stack = stack;
         }
-
-        /// <summary>
-        /// Gets or sets the assemblies.
-        /// </summary>
-        /// <value>The assemblies.</value>
-        public Assembly[] Assemblies { get; set; }
 
         /// <summary>
         /// Override to add registrations to the container.
@@ -56,7 +53,7 @@ namespace Slalom.Stacks.Search
                 .PropertiesAutowired()
                 .InstancePerDependency();
 
-            builder.RegisterAssemblyTypes(this.Assemblies)
+            builder.RegisterAssemblyTypes(_stack.Assemblies.ToArray())
                 .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(ISearchIndex<>)))
                 .As(instance =>
                 {

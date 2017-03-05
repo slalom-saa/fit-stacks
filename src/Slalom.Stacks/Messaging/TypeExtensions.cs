@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Reflection;
+using System.Xml.XPath;
 using System.Linq;
 using System.Xml.Linq;
 using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Validation;
-using System.Xml.XPath;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -18,27 +18,7 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     public static class TypeExtensions
     {
-        /// <summary>
-        /// Gets the path for the endPoint.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>Returns the path for the type.</returns>
-        public static string GetPath(this Type type)
-        {
-            return type.GetAllAttributes<EndPointAttribute>().Select(e => e.Path).FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Gets the version for the endPoint.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>Returns the path for the type.</returns>
-        public static int GetVersion(this Type type)
-        {
-            return type.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Version ?? 1;
-        }
-
-        private static ConcurrentDictionary<Assembly, XDocument> _commentsCache = new ConcurrentDictionary<Assembly, XDocument>();
+        private static readonly ConcurrentDictionary<Assembly, XDocument> _commentsCache = new ConcurrentDictionary<Assembly, XDocument>();
 
         public static XDocument GetComments(this Assembly assembly)
         {
@@ -91,6 +71,16 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <summary>
+        /// Gets the path for the endPoint.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>Returns the path for the type.</returns>
+        public static string GetPath(this Type type)
+        {
+            return type.GetAllAttributes<EndPointAttribute>().Select(e => e.Path).FirstOrDefault();
+        }
+
+        /// <summary>
         /// Gets the type of the request.
         /// </summary>
         /// <param name="type">The type.</param>
@@ -119,6 +109,31 @@ namespace Slalom.Stacks.Messaging
             var input = type.GetRequestType();
 
             return type.Assembly.SafelyGetTypes(typeof(IValidate<>).MakeGenericType(input));
+        }
+
+        /// <summary>
+        /// Gets the timeout for the endPoint.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>Returns the timeout for the type.</returns>
+        public static TimeSpan? GetTimeout(this Type type)
+        {
+            var attribute = type.GetAllAttributes<EndPointAttribute>().FirstOrDefault();
+            if (attribute != null && attribute.Timeout > 0)
+            {
+                return TimeSpan.FromMilliseconds(attribute.Timeout);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the version for the endPoint.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>Returns the path for the type.</returns>
+        public static int GetVersion(this Type type)
+        {
+            return type.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Version ?? 1;
         }
 
         /// <summary>

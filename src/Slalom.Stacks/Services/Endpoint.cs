@@ -26,6 +26,7 @@ namespace Slalom.Stacks.Services
             this.RequestProperties = endpoint.GetInputProperties().ToList();
             this.Summary = endpoint.GetComments();
             this.RootPath = rootPath;
+            this.Timeout = endpoint.GetTimeout();
         }
 
         /// <summary>
@@ -71,6 +72,12 @@ namespace Slalom.Stacks.Services
         /// </summary>
         /// <value>The summary.</value>
         public string Summary { get; set; }
+
+        /// <summary>
+        /// Gets or sets the endpoint timeout.
+        /// </summary>
+        /// <value>The endpoint timeout.</value>
+        public TimeSpan? Timeout { get; set; }
 
         /// <summary>
         /// Gets or sets the endPoint type.

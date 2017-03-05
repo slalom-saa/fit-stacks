@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Slalom.Stacks.Runtime;
+using System.Threading;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Validation;
+using ExecutionContext = Slalom.Stacks.Runtime.ExecutionContext;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -21,14 +22,18 @@ namespace Slalom.Stacks.Messaging
         /// <param name="request">The request.</param>
         /// <param name="endPoint">The current endpoint.</param>
         /// <param name="executionContext">The execution.</param>
+        /// <param name="cancellationToken">The cancellation.</param>
         /// <param name="parent">The parent.</param>
-        public MessageExecutionContext(RequestContext request, Services.EndPoint endPoint, ExecutionContext executionContext, MessageExecutionContext parent = null)
+        public MessageExecutionContext(RequestContext request, Services.EndPoint endPoint, ExecutionContext executionContext, CancellationToken cancellationToken, MessageExecutionContext parent = null)
         {
             this.Request = request;
             this.EndPoint = endPoint;
             this.Parent = parent;
             this.ExecutionContext = executionContext;
+            this.CancellationToken  = cancellationToken;
         }
+
+        public CancellationToken CancellationToken { get; }
 
         /// <summary>
         /// Gets the date and time that execution completed.

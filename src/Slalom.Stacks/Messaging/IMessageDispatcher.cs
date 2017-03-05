@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Slalom.Stacks.Services;
 
@@ -21,7 +22,8 @@ namespace Slalom.Stacks.Messaging
         /// <param name="request">The request.</param>
         /// <param name="endPoint">The end point.</param>
         /// <param name="parentContext">The parent context.</param>
+        /// <param name="timeout">The timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task<MessageResult> Dispatch(RequestContext request, EndPoint endPoint, MessageExecutionContext parentContext);
+        Task<MessageResult> Dispatch(RequestContext request, EndPoint endPoint, MessageExecutionContext parentContext, TimeSpan? timeout = null);
     }
 }

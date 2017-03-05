@@ -12,7 +12,7 @@ namespace Slalom.Stacks.Validation
         /// Gets the validation error message.
         /// </summary>
         /// <value>The validation error message.</value>
-        public ValidationError ValidationError => new ValidationError(this.Code, this.Message, this.HelpUrl);
+        public ValidationError ValidationError => new ValidationError(this.Code, this.Message);
 
         /// <summary>
         /// Gets the message.
@@ -25,12 +25,6 @@ namespace Slalom.Stacks.Validation
         /// </summary>
         /// <value>The code.</value>
         public string Code { get; set; }
-
-        /// <summary>
-        /// Gets or sets the help URL.
-        /// </summary>
-        /// <value>The help URL.</value>
-        public string HelpUrl { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationAttribute"/> class.

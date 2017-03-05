@@ -11,25 +11,12 @@ using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.TestKit;
 using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
 {
-    public class Send : UseCase<AddProductEvent>
-    {
-        public override void Execute(AddProductEvent command)
-        {
-            Console.WriteLine("SSS");
-        }
-    }
-
-    public class Send2 : UseCase<AddProductEvent>
-    {
-        public override void Execute(AddProductEvent command)
-        {
-            Console.WriteLine("SSS2");
-        }
-    }
+   
 
     public class Program
     {
@@ -39,8 +26,11 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-                using (var stack = new Stack())
+                using (var stack = new Stack(typeof(TestStack)))
                 {
+                    stack.Include(typeof(AddProduct));
+                    
+
                     stack.UseSimpleConsoleLogging();
 
                     //var comments = typeof(AddProductCommand).GetProperty("Name").GetComments();
@@ -52,9 +42,15 @@ namespace Slalom.Stacks.ConsoleClient
                     //var service = stack.CreatePublicRegistry("http://localhost");
                     //Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
 
-                    stack.Send("catalog/products/add", new AddProductCommand("asdf", "description").ToJson()).Wait();
-                    stack.Send("catalog/products/add", new AddProductCommand("asdf", "description")).Wait();
-                    stack.Send(new AddProductCommand("asdf", "description")).Wait();
+                    stack.Send("catalog/products/add", new AddProductCommand(null, "description").ToJson()).Wait();
+                    //stack.Send("catalog/products/add", new AddProductCommand("asdf", "description")).Wait();
+                    //stack.Send(new AddProductCommand("asdf", "description")).Wait();
+
+
+                    //var service = stack.GetServices().Find("v2/catalog/products/add");
+
+                    Console.WriteLine(stack.GetServices().ToJson());
+
 
                     Console.WriteLine("Complete");
                     Console.ReadKey();
