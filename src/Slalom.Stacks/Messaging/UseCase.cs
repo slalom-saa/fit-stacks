@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Autofac;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Slalom.Stacks.Domain;
@@ -49,10 +50,10 @@ namespace Slalom.Stacks.Messaging
             {
                 try
                 {
-                    TCommand message = instance.Body as TCommand;
+                    var message = instance.Body as TCommand;
                     if (instance.Body is string)
                     {
-                        message =  JsonConvert.DeserializeObject<TCommand>((string)instance.Body);
+                        message = JsonConvert.DeserializeObject<TCommand>((string)instance.Body);
                     }
                     var result = await this.ExecuteAsync(message);
 
@@ -75,16 +76,34 @@ namespace Slalom.Stacks.Messaging
     public abstract class UseCase<TCommand> : IHandle, IUseMessageContext where TCommand : class
     {
         /// <summary>
+        /// Gets the configured <see cref="IDomainFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade"/> instance.</value>    
+        public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
+
+        /// <summary>
         /// Gets the message that is being executed.
         /// </summary>
         /// <value>The message that is being executed.</value>
         public IMessage Message { get; protected internal set; }
 
         /// <summary>
+        /// Gets the configured <see cref="ISearchFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade"/> instance.</value>
+        public ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
+
+        /// <summary>
+        /// Gets the user making the request.
+        /// </summary>
+        /// <value>The user making the request.</value>
+        public IPrincipal User => this.Context.Request.User;
+
+        /// <summary>
         /// Gets the configured <see cref="IComponentContext"/> instance.
         /// </summary>
         /// <value>The configured <see cref="IComponentContext"/> instance.</value>
-        protected IComponentContext Components { get; set; }
+        internal IComponentContext Components { get; set; }
 
         /// <summary>
         /// Gets the current <see cref="MessageExecutionContext"/> instance.
@@ -93,16 +112,15 @@ namespace Slalom.Stacks.Messaging
         internal MessageExecutionContext Context { get; private set; }
 
         /// <summary>
-        /// Gets the configured <see cref="IDomainFacade"/> instance.
+        /// Adds the raised event that will fire on completion.
         /// </summary>
-        /// <value>The configured <see cref="IDomainFacade"/> instance.</value>    
-        protected IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
+        /// <param name="instance">The instance to raise.</param>
+        public void AddRaisedEvent(Event instance)
+        {
+            Argument.NotNull(instance, nameof(instance));
 
-        /// <summary>
-        /// Gets the configured <see cref="ISearchFacade"/> instance.
-        /// </summary>
-        /// <value>The configured <see cref="ISearchFacade"/> instance.</value>
-        protected ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
+            this.Context.AddRaisedEvent(instance);
+        }
 
         /// <summary>
         /// Executes the use case given the specified message.
@@ -125,57 +143,16 @@ namespace Slalom.Stacks.Messaging
             return Task.FromResult(0);
         }
 
-        /// <inheritdoc />
-        async Task IHandle.Handle(IMessage instance)
-        {
-            this.Message = instance;
-
-            await this.Prepare(instance);
-
-            if (!this.Context.ValidationErrors.Any())
-            {
-                try
-                {
-                    TCommand message = instance.Body as TCommand;
-                    if (instance.Body is string)
-                    {
-                        message = JsonConvert.DeserializeObject<TCommand>((string)instance.Body);
-                    }
-                    await this.ExecuteAsync(message);
-                }
-                catch (Exception exception)
-                {
-                    this.Context.SetException(exception);
-                }
-            }
-
-            await this.Complete(instance);
-        }
-
-        /// <inheritdoc />
-        void IUseMessageContext.UseContext(MessageExecutionContext context)
-        {
-            this.Context = context;
-        }
-
         /// <summary>
-        /// Validates the specified message.
+        /// Sends the specified message.
         /// </summary>
-        /// <param name="command">The message to validate.</param>
-        /// <returns>Any validation errors.</returns>
-        public virtual IEnumerable<ValidationError> Validate(TCommand command)
+        /// <param name="message">The message.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        protected Task<MessageResult> Send(object message)
         {
-            yield break;
-        }
+            var stream = this.Components.Resolve<IMessageGateway>();
 
-        /// <summary>
-        /// Validates the specified message.
-        /// </summary>
-        /// <param name="command">The message to validate.</param>
-        /// <returns>Any validation errors.</returns>
-        public virtual Task<IEnumerable<ValidationError>> ValidateAsync(TCommand command)
-        {
-            return Task.FromResult(this.Validate(command));
+            return stream.Send(message, this.Context);
         }
 
         /// <summary>
@@ -216,16 +193,37 @@ namespace Slalom.Stacks.Messaging
             }
         }
 
-        /// <summary>
-        /// Sends the specified message.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        protected Task<MessageResult> Send(object message)
+        /// <inheritdoc />
+        async Task IHandle.Handle(IMessage instance)
         {
-            var stream = this.Components.Resolve<IMessageGateway>();
+            this.Message = instance;
 
-            return stream.Send(message, this.Context);
+            await this.Prepare(instance);
+
+            if (!this.Context.ValidationErrors.Any())
+            {
+                try
+                {
+                    var message = instance.Body as TCommand;
+                    if (instance.Body is string)
+                    {
+                        message = JsonConvert.DeserializeObject<TCommand>((string)instance.Body);
+                    }
+                    await this.ExecuteAsync(message);
+                }
+                catch (Exception exception)
+                {
+                    this.Context.SetException(exception);
+                }
+            }
+
+            await this.Complete(instance);
+        }
+
+        /// <inheritdoc />
+        void IUseMessageContext.UseContext(MessageExecutionContext context)
+        {
+            this.Context = context;
         }
     }
 }
