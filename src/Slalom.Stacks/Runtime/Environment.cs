@@ -4,22 +4,18 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Runtime
 {
-    /// <summary>
-    /// Represents the environment request and contains information about machine execution. This information is otherwise lost
-    /// when processing is multi-threaded or distributed.
-    /// </summary>
-    public class ExecutionContext : IExecutionContext
+    public class Environment : IEnvironmentContext
     {
         [ThreadStatic]
-        private static ExecutionContext current;
+        private static Environment current;
 
         private readonly IConfiguration _configuration;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExecutionContext"/> class.
+        /// Initializes a new instance of the <see cref="Runtime.Environment"/> class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
-        public ExecutionContext(IConfiguration configuration)
+        public Environment(IConfiguration configuration)
         {
             Argument.NotNull(configuration, nameof(configuration));
 
@@ -27,16 +23,16 @@ namespace Slalom.Stacks.Runtime
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExecutionContext" /> class.
+        /// Initializes a new instance of the <see cref="Runtime.Environment" /> class.
         /// </summary>
         /// <param name="applicationName">The mame of the application.</param>
         /// <param name="environment">The current environment. (Development, Quality Assurance, Production)</param>
         /// <param name="machineName">The name of the machine.</param>
         /// <param name="threadId">The current thread identifier.</param>
-        protected ExecutionContext(string applicationName, string environment, string machineName, int threadId)
+        protected Environment(string applicationName, string environment, string machineName, int threadId)
         {
             this.MachineName = machineName;
-            this.Environment = environment;
+            this.EnvironmentName = environment;
             this.ApplicationName = applicationName;
             this.ThreadId = threadId;
         }
@@ -51,7 +47,7 @@ namespace Slalom.Stacks.Runtime
         /// Gets the name of the environment.
         /// </summary>
         /// <value>The name of the environment.</value>
-        public string Environment { get; }
+        public string EnvironmentName { get; }
 
         /// <summary>
         /// Gets the name of the machine.
@@ -63,7 +59,7 @@ namespace Slalom.Stacks.Runtime
         /// Gets a null execution request.
         /// </summary>
         /// <value>A null execution request.</value>
-        public static ExecutionContext Null => new NullExecutionContext();
+        public static Environment Null => new NullEnvironment();
 
         /// <summary>
         /// Gets the thread identifier.
@@ -72,9 +68,9 @@ namespace Slalom.Stacks.Runtime
         public int ThreadId { get; }
 
         /// <inheritdoc />
-        public ExecutionContext Resolve()
+        public Environment Resolve()
         {
-            return current ?? (current = new ExecutionContext(_configuration?["Application"],
+            return current ?? (current = new Environment(_configuration?["Application"],
                                    _configuration?["Environment"],
                                    System.Environment.MachineName,
                                    System.Environment.CurrentManagedThreadId));

@@ -13,20 +13,16 @@ namespace Slalom.Stacks.Messaging.Persistence
         /// Initializes a new instance of the <see cref="ResponseEntry"/> class.
         /// </summary>
         /// <param name="context">The completed context.</param>
-        public ResponseEntry(MessageExecutionContext context)
+        public ResponseEntry(ExecutionContext context)
         {
             this.CorrelationId = context.Request.CorrelationId;
             this.MessageId = context.Request.Message.Id;
             this.Completed = context.Completed;
-            this.EndPoint = context.EndPoint.Type;
+            this.EndPoint = context.EndPoint.ServiceType;
             this.Exception = context.Exception;
             this.IsSuccessful = context.IsSuccessful;
             this.Started = context.Started;
             this.ValidationErrors = context.ValidationErrors;
-            this.MachineName = context.ExecutionContext.MachineName;
-            this.ThreadId = context.ExecutionContext.ThreadId;
-            this.ApplicationName = context.ExecutionContext.ApplicationName;
-            this.Environment = context.ExecutionContext.Environment;
             this.TimeStamp = DateTimeOffset.Now;
             if (this.Completed.HasValue)
             {
@@ -34,14 +30,6 @@ namespace Slalom.Stacks.Messaging.Persistence
             }
         }
 
-        public DateTimeOffset TimeStamp { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the application.
-        /// </summary>
-        /// <value>The name of the application.</value>
-        public string ApplicationName { get; set; }
-            
         /// <summary>
         /// Gets the completion date and time.
         /// </summary>
@@ -61,10 +49,10 @@ namespace Slalom.Stacks.Messaging.Persistence
         public TimeSpan Elapsed { get; set; }
 
         /// <summary>
-        /// Gets or sets the environment.
+        /// Gets the type of the endPoint.
         /// </summary>
-        /// <value>The environment.</value>
-        public string Environment { get; set; }
+        /// <value>The type of the endPoint.</value>
+        public string EndPoint { get; }
 
         /// <summary>
         /// Gets the exception, if any.
@@ -79,22 +67,10 @@ namespace Slalom.Stacks.Messaging.Persistence
         public bool IsSuccessful { get; }
 
         /// <summary>
-        /// Gets or sets the name of the machine.
-        /// </summary>
-        /// <value>The name of the machine.</value>
-        public string MachineName { get; set; }
-
-        /// <summary>
         /// Gets the message identifier.
         /// </summary>
         /// <value>The message identifier.</value>
         public string MessageId { get; }
-
-        /// <summary>
-        /// Gets the type of the endPoint.
-        /// </summary>
-        /// <value>The type of the endPoint.</value>
-        public string EndPoint { get; }
 
         /// <summary>
         /// Gets the start date and time.
@@ -102,11 +78,7 @@ namespace Slalom.Stacks.Messaging.Persistence
         /// <value>The start date and time.</value>
         public DateTimeOffset Started { get; }
 
-        /// <summary>
-        /// Gets or sets the thread identifier.
-        /// </summary>
-        /// <value>The thread identifier.</value>
-        public int ThreadId { get; set; }
+        public DateTimeOffset TimeStamp { get; set; }
 
         /// <summary>
         /// Gets or sets the validation errors that were raised, if any.

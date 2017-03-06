@@ -15,8 +15,8 @@ namespace Slalom.Stacks.Messaging
         public Message(object body)
         {
             this.Body = body;
-            this.MessageType = body.GetType();
-            this.Name = this.MessageType.Name;
+            this.MessageType = body?.GetType();
+            this.Name = this.MessageType?.Name;
         }
 
         /// <inheritdoc />

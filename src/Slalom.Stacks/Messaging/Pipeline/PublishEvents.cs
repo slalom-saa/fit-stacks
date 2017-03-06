@@ -26,7 +26,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
         }
 
         /// <inheritdoc />
-        public async Task Execute(IMessage message, MessageExecutionContext context)
+        public async Task Execute(IMessage message, ExecutionContext context)
         {
             if (context.IsSuccessful)
             {

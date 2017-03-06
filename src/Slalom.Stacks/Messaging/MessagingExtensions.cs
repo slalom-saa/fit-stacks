@@ -58,7 +58,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         public static Task<MessageResult> Send(this Stack instance, string path, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageGateway>().Send(path, "{}", timeout: timeout);
+            return instance.Container.Resolve<IMessageGateway>().Send(path, null, timeout: timeout);
         }
 
         /// <summary>

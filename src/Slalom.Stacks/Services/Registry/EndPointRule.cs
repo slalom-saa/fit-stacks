@@ -2,7 +2,7 @@
 using System.Linq;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Services
+namespace Slalom.Stacks.Services.Registry
 {
     /// <summary>
     /// Contains information about an endpoint rule.

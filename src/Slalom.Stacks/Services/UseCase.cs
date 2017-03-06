@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using Autofac;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using Autofac;
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Pipeline;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Services
 {
     /// <summary>
     /// Defines a use case actor that performs a defined function.
     /// </summary>
     /// <typeparam name="TCommand">The type of message.</typeparam>
     /// <typeparam name="TResult">The type of result.</typeparam>
-    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand>, IHandle where TCommand : class
+    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand>, IHandle<TCommand> where TCommand : class
     {
         /// <summary>
         /// Executes the use case given the specified message.
@@ -40,25 +40,17 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        async Task IHandle.Handle(IMessage instance)
+        async Task IHandle<TCommand>.Handle(TCommand instance)
         {
-            this.Message = instance;
-
-            await this.Prepare(instance);
+            await this.Prepare();
 
             if (!this.Context.ValidationErrors.Any())
             {
                 try
                 {
-                    var message = instance.Body as TCommand;
-                    if (instance.Body is string)
-                    {
-                        message = JsonConvert.DeserializeObject<TCommand>((string)instance.Body);
-                    }
-
                     if (!this.Context.CancellationToken.IsCancellationRequested)
                     {
-                        var result = await this.ExecuteAsync(message);
+                        var result = await this.ExecuteAsync(instance);
 
                         this.Context.Response = result;
                     }
@@ -69,7 +61,7 @@ namespace Slalom.Stacks.Messaging
                 }
             }
 
-            await this.Complete(instance);
+            await this.Complete();
         }
     }
 
@@ -77,7 +69,7 @@ namespace Slalom.Stacks.Messaging
     /// Defines a use case actor that performs a defined function.
     /// </summary>
     /// <typeparam name="TCommand">The type of message.</typeparam>
-    public abstract class UseCase<TCommand> : IHandle, IUseMessageContext where TCommand : class
+    public abstract class UseCase<TCommand> : Service, IHandle<TCommand> where TCommand : class
     {
         /// <summary>
         /// Gets the configured <see cref="IDomainFacade"/> instance.
@@ -85,11 +77,7 @@ namespace Slalom.Stacks.Messaging
         /// <value>The configured <see cref="IDomainFacade"/> instance.</value>    
         public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
 
-        /// <summary>
-        /// Gets the message that is being executed.
-        /// </summary>
-        /// <value>The message that is being executed.</value>
-        public IMessage Message { get; protected internal set; }
+        public Request Request => this.Context.Request;
 
         /// <summary>
         /// Gets the configured <see cref="ISearchFacade"/> instance.
@@ -108,12 +96,6 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The configured <see cref="IComponentContext"/> instance.</value>
         internal IComponentContext Components { get; set; }
-
-        /// <summary>
-        /// Gets the current <see cref="MessageExecutionContext"/> instance.
-        /// </summary>
-        /// <value>The current <see cref="MessageExecutionContext"/> instance.</value>
-        internal MessageExecutionContext Context { get; private set; }
 
         /// <summary>
         /// Adds the raised event that will fire on completion.
@@ -162,9 +144,8 @@ namespace Slalom.Stacks.Messaging
         /// <summary>
         /// Completes the specified message.
         /// </summary>
-        /// <param name="message">The message.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        internal async Task Complete(IMessage message)
+        internal async Task Complete()
         {
             var steps = new List<IMessageExecutionStep>
             {
@@ -175,16 +156,15 @@ namespace Slalom.Stacks.Messaging
             };
             foreach (var step in steps)
             {
-                await step.Execute(message, this.Context);
+                await step.Execute(this.Request.Message, this.Context);
             }
         }
 
         /// <summary>
         /// Prepares the usecase for execution.
         /// </summary>
-        /// <param name="message">The current message.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        internal async Task Prepare(IMessage message)
+        internal async Task Prepare()
         {
             var steps = new List<IMessageExecutionStep>
             {
@@ -193,29 +173,21 @@ namespace Slalom.Stacks.Messaging
             };
             foreach (var step in steps)
             {
-                await step.Execute(message, this.Context);
+                await step.Execute(this.Request.Message, this.Context);
             }
         }
 
-        /// <inheritdoc />
-        async Task IHandle.Handle(IMessage instance)
+        async Task IHandle<TCommand>.Handle(TCommand instance)
         {
-            this.Message = instance;
-
-            await this.Prepare(instance);
+            await this.Prepare();
 
             if (!this.Context.ValidationErrors.Any())
             {
                 try
                 {
-                    var message = instance.Body as TCommand;
-                    if (instance.Body is string)
-                    {
-                        message = JsonConvert.DeserializeObject<TCommand>((string)instance.Body);
-                    }
                     if (!this.Context.CancellationToken.IsCancellationRequested)
                     {
-                        await this.ExecuteAsync(message);
+                        await this.ExecuteAsync(instance);
                     }
                 }
                 catch (Exception exception)
@@ -224,13 +196,7 @@ namespace Slalom.Stacks.Messaging
                 }
             }
 
-            await this.Complete(instance);
-        }
-
-        /// <inheritdoc />
-        void IUseMessageContext.UseContext(MessageExecutionContext context)
-        {
-            this.Context = context;
+            await this.Complete();
         }
     }
 }

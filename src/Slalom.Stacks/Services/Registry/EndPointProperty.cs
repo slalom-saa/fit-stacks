@@ -2,7 +2,7 @@ using System.Reflection;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Services
+namespace Slalom.Stacks.Services.Registry
 {
     /// <summary>
     /// A property that is used in an endpoint.

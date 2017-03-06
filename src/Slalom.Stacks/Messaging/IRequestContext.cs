@@ -10,8 +10,8 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <param name="path">The request path.</param>
         /// <param name="message">The request message.</param>
-        /// <param name="parentContext">The parent context.</param>
+        /// <param name="parent">The parent context.</param>
         /// <returns>Returns the current request context.</returns>
-        RequestContext Resolve(string path, object message, RequestContext parentContext = null);
+        Request Resolve(string path, object message, Request parent = null);
     }
 }

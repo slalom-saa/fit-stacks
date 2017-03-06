@@ -34,7 +34,7 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <param name="context">The current context.</param>
         /// <returns>The <see cref="ValidationError">messages</see> returned from validation routines.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
-        public Task<IEnumerable<ValidationError>> Validate(object command, MessageExecutionContext context)
+        public Task<IEnumerable<ValidationError>> Validate(object command, ExecutionContext context)
         {
             Argument.NotNull(command, nameof(command));
 
@@ -72,13 +72,13 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <param name="context">The context.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
-        protected virtual IEnumerable<ValidationError> CheckBusinessRules(TCommand command, MessageExecutionContext context)
+        protected virtual IEnumerable<ValidationError> CheckBusinessRules(TCommand command, ExecutionContext context)
         {
             foreach (var rule in _rules.OfType<IBusinessRule<TCommand>>())
             {
-                if (rule is IUseMessageContext)
+                if (rule is IUseContext)
                 {
-                    ((IUseMessageContext)rule).UseContext(context);
+                    ((IUseContext)rule).UseContext(context);
                 }
                 var result = (rule.Validate(command)).ToList();
                 if (result.Any())

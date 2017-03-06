@@ -5,14 +5,14 @@ namespace Slalom.Stacks.Runtime
     /// <summary>
     /// Represents an execution request.  Intended to implement the null object pattern.
     /// </summary>
-    /// <seealso cref="ExecutionContext" />
+    /// <seealso cref="Environment" />
     /// <seealso href="http://bit.ly/29e2gRR">Wikipedia: Null Object pattern</seealso>
-    public class NullExecutionContext : ExecutionContext
+    public class NullEnvironment : Environment
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NullExecutionContext"/> class.
+        /// Initializes a new instance of the <see cref="NullEnvironment"/> class.
         /// </summary>
-        public NullExecutionContext()
+        public NullEnvironment()
             : base("", "", "", 0)
         {
         }

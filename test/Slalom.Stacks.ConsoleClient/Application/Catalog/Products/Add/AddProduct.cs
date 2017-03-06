@@ -4,6 +4,7 @@ using Slalom.Stacks.ConsoleClient.Domain.Products;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Exceptions;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Registry;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
 {

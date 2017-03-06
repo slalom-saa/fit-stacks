@@ -27,7 +27,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
         }
 
         /// <inheritdoc />
-        public async Task Execute(IMessage message, MessageExecutionContext context)
+        public async Task Execute(IMessage message, ExecutionContext context)
         {
             var validator = (IMessageValidator)_components.Resolve(typeof(MessageValidator<>).MakeGenericType(Type.GetType(context.EndPoint.RequestType)));
             var results = await validator.Validate(message.Body, context);

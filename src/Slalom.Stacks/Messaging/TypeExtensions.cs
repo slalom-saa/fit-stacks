@@ -9,6 +9,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
@@ -63,7 +64,6 @@ namespace Slalom.Stacks.Messaging
 
         public static IEnumerable<EndPointProperty> GetInputProperties(this Type type)
         {
-            type = type.GetRequestType();
             foreach (var property in type.GetProperties())
             {
                 yield return new EndPointProperty(property);
@@ -107,8 +107,11 @@ namespace Slalom.Stacks.Messaging
         public static Type[] GetRules(this Type type)
         {
             var input = type.GetRequestType();
-
-            return type.Assembly.SafelyGetTypes(typeof(IValidate<>).MakeGenericType(input));
+            if (input != null)
+            {
+                return type.Assembly.SafelyGetTypes(typeof(IValidate<>).MakeGenericType(input));
+            }
+            return new Type[0];
         }
 
         /// <summary>

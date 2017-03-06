@@ -1,6 +1,6 @@
 ﻿using Autofac;
 
-namespace Slalom.Stacks.Services
+namespace Slalom.Stacks.Services.Registry
 {
     public static class ServiceRegistryExtensions
     {

@@ -6,6 +6,7 @@ using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Messaging.Persistence;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
@@ -35,7 +36,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public virtual async Task Publish(Event instance, MessageExecutionContext parentContext = null)
+        public virtual async Task Publish(Event instance, ExecutionContext parentContext = null)
         {
             Argument.NotNull(instance, nameof(instance));
 
@@ -54,7 +55,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public async Task Publish(IEnumerable<Event> instances, MessageExecutionContext context = null)
+        public async Task Publish(IEnumerable<Event> instances, ExecutionContext context = null)
         {
             Argument.NotNull(instances, nameof(instances));
 
@@ -65,13 +66,13 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public Task<MessageResult> Send(object instance, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
+        public Task<MessageResult> Send(object instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
             return this.Send(null, instance, parentContext, timeout);
         }
 
         /// <inheritdoc />
-        public virtual async Task<MessageResult> Send(string path, object instance, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
+        public virtual async Task<MessageResult> Send(string path, object instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
             var message = new Message(instance);
 
@@ -94,13 +95,8 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public virtual async Task<MessageResult> Send(string path, string command, MessageExecutionContext parentContext = null, TimeSpan? timeout = null)
+        public virtual async Task<MessageResult> Send(string path, string command, ExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
-            if (string.IsNullOrWhiteSpace(command))
-            {
-                command = "{}";
-            }
-
             var endPoint = _services.Value.Find(path);
             if (endPoint == null)
             {
@@ -119,7 +115,7 @@ namespace Slalom.Stacks.Messaging
             return await dispatch.Dispatch(request, endPoint, parentContext);
         }
 
-        protected virtual IEnumerable<IMessageDispatcher> GetDispatchers(Services.EndPoint endPoint)
+        protected virtual IEnumerable<IMessageDispatcher> GetDispatchers(EndPointMetaData endPoint)
         {
             return _dispatchers.Value.Where(e => e.CanDispatch(endPoint));
         }

@@ -5,7 +5,7 @@ using System.Reflection;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Reflection;
 
-namespace Slalom.Stacks.Services
+namespace Slalom.Stacks.Services.Registry
 {
     /// <summary>
     /// A simple service registration implementation.
@@ -16,7 +16,7 @@ namespace Slalom.Stacks.Services
         /// Gets or sets the services.
         /// </summary>
         /// <value>The services.</value>
-        public List<Service> Services { get; set; } = new List<Service>();
+        public List<ServiceHost> Services { get; set; } = new List<ServiceHost>();
 
         /// <summary>
         /// Creates a public registry from the current service registry.
@@ -26,7 +26,7 @@ namespace Slalom.Stacks.Services
         public ServiceRegistry CreatePublicRegistry(string path)
         {
             var target = new ServiceRegistry();
-            foreach (var service in this.Services.Where(e => e.Path == Service.LocalPath))
+            foreach (var service in this.Services.Where(e => e.Path == ServiceHost.LocalPath))
             {
                 target.Services.Add(service.CreatePublicService(path));
             }
@@ -38,9 +38,9 @@ namespace Slalom.Stacks.Services
         /// </summary>
         /// <param name="message">The endPoint.</param>
         /// <returns>Services that are registered to take the specified endPoint.</returns>
-        public IEnumerable<EndPoint> Find(IMessage message)
+        public IEnumerable<EndPointMetaData> Find(IMessage message)
         {
-            return this.Services.SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.MessageType.AssemblyQualifiedName);
+            return this.Services.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.MessageType.AssemblyQualifiedName);
         }
 
         /// <summary>
@@ -48,12 +48,12 @@ namespace Slalom.Stacks.Services
         /// </summary>
         /// <param name="path">The path.</param>
         /// <returns>Returns the endPoint registered at the specified path.</returns>
-        public EndPoint Find(string path)
+        public EndPointMetaData Find(string path)
         {
-            var target = this.Services.SelectMany(e => e.EndPoints).FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
+            var target = this.Services.SelectMany(e => e.Services).SelectMany(e=>e.EndPoints).FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
             if (target == null)
             {
-                target = this.Services.SelectMany(e => e.EndPoints).Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
+                target = this.Services.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
             }
 
             return target;
@@ -65,15 +65,16 @@ namespace Slalom.Stacks.Services
         /// <param name="assemblies">The assemblies to use to search.</param>
         public void RegisterLocal(Assembly[] assemblies)
         {
-            var service = new Service();
-            foreach (var endpoint in assemblies.SafelyGetTypes(typeof(UseCase<>)))
+            var host = new ServiceHost();
+            foreach (var service in assemblies.SafelyGetTypes(typeof(IHandle<>)))
             {
-                if (!endpoint.IsGenericType && !endpoint.IsDynamic())
+                if (!service.IsGenericType && !service.IsDynamic())
                 {
-                    service.EndPoints.Add(new EndPoint(endpoint));
+                    host.Add(service);
+                    //collection.EndPoints.AddRange(EndPoint.Create(service));
                 }
             }
-            this.Services.Add(service);
+            this.Services.Add(host);
         }
 
         public void IncludeRemoteServices(string path, ServiceRegistry remote)
@@ -84,12 +85,13 @@ namespace Slalom.Stacks.Services
             }
         }
 
-        public EndPoint Find(Type endPoint)
+        public EndPointMetaData Find(Type endPoint)
         {
-            return this.Services.SelectMany(e => e.EndPoints).FirstOrDefault(e => e.Type == endPoint.AssemblyQualifiedName);
+            return null;
+            //return this.Services.SelectMany(e => e.EndPoints).FirstOrDefault(e => e.Type == endPoint.AssemblyQualifiedName);
         }
 
-        public EndPoint Find(string path, IMessage instance)
+        public EndPointMetaData Find(string path, IMessage instance)
         {
             if (path != null)
             {

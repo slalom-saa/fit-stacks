@@ -28,11 +28,11 @@ namespace Slalom.Stacks.Messaging.Pipeline
         }
 
         /// <inheritdoc />
-        public Task Execute(IMessage instance, MessageExecutionContext context)
+        public Task Execute(IMessage instance, ExecutionContext context)
         {
             var tasks = new List<Task> { _actions.Append(new ResponseEntry(context)) };
 
-            var name = context.Request.Message.GetType().FullName;
+            var name = context.Request.Message.Name;
             if (!context.IsSuccessful)
             {
                 if (context.Exception != null)

@@ -4,6 +4,7 @@ using Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock;
 using Slalom.Stacks.ConsoleClient.Domain.Shipping;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Registry;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Inventory.Products.Stock
 {

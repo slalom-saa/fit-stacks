@@ -13,7 +13,7 @@ namespace Slalom.Stacks.Messaging.Persistence
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestEntry" /> class.
         /// </summary>
-        public RequestEntry(RequestContext request)
+        public RequestEntry(Request request)
         {
             try
             {
@@ -29,7 +29,7 @@ namespace Slalom.Stacks.Messaging.Persistence
             if (request.Message is IMessage)
             {
                 var message = (IMessage)request.Message;
-                this.MessageType = message.MessageType.FullName;
+                this.MessageType = message.MessageType?.FullName;
                 this.MessageId = message.Id;
                 this.TimeStamp = message.TimeStamp;
             }
@@ -42,7 +42,7 @@ namespace Slalom.Stacks.Messaging.Persistence
             this.Path = request.Path;
             this.SourceAddress = request.SourceAddress;
             this.CorrelationId = request.CorrelationId;
-            this.Parent = (request.ParentContext?.Message as IMessage)?.Id;
+            this.Parent = (request.Parent?.Message as IMessage)?.Id;
         }
 
         /// <summary>

@@ -3,33 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Validation;
-using ExecutionContext = Slalom.Stacks.Runtime.ExecutionContext;
+using Environment = Slalom.Stacks.Runtime.Environment;
 
 namespace Slalom.Stacks.Messaging
 {
-    /// <summary>
-    /// The message execution context to track information about the execution.
-    /// </summary>
-    public class MessageExecutionContext
+    public class ExecutionContext
     {
         private readonly List<Event> _raisedEvents = new List<Event>();
         private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageExecutionContext" /> class.
+        /// Initializes a new instance of the <see cref="ExecutionContext" /> class.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="endPoint">The current endpoint.</param>
-        /// <param name="executionContext">The execution.</param>
         /// <param name="cancellationToken">The cancellation.</param>
         /// <param name="parent">The parent.</param>
-        public MessageExecutionContext(RequestContext request, Services.EndPoint endPoint, ExecutionContext executionContext, CancellationToken cancellationToken, MessageExecutionContext parent = null)
+        public ExecutionContext(Request request, EndPointMetaData endPoint, CancellationToken cancellationToken, ExecutionContext parent = null)
         {
             this.Request = request;
             this.EndPoint = endPoint;
             this.Parent = parent;
-            this.ExecutionContext = executionContext;
             this.CancellationToken  = cancellationToken;
         }
 
@@ -45,19 +41,13 @@ namespace Slalom.Stacks.Messaging
         /// Gets the registry entry.
         /// </summary>
         /// <value>The registry entry.</value>
-        public Services.EndPoint EndPoint { get; }
+        public EndPointMetaData EndPoint { get; }
 
         /// <summary>
         /// Gets the raised exception, if any.
         /// </summary>
         /// <value>The raised exception, if any.</value>
         public Exception Exception { get; private set; }
-
-        /// <summary>
-        /// Gets the execution context.
-        /// </summary>
-        /// <value>The execution context.</value>
-        public ExecutionContext ExecutionContext { get; }
 
         /// <summary>
         /// Gets a value indicating whether the execution was successful.
@@ -69,7 +59,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the parent context.
         /// </summary>
         /// <value>The parent context.</value>
-        public MessageExecutionContext Parent { get; }
+        public ExecutionContext Parent { get; }
 
         /// <summary>
         /// Gets any raised events.
@@ -81,7 +71,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the request context.
         /// </summary>
         /// <value>The request context.</value>
-        public RequestContext Request { get; }
+        public Request Request { get; }
 
         /// <summary>
         /// Gets or sets the response.

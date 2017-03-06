@@ -15,7 +15,7 @@ namespace Slalom.Stacks.Messaging.Validation
     /// <typeparam name="TValue">The message type.</typeparam>
     /// <seealso cref="Slalom.Stacks.Messaging.Validation.IBusinessRule{TValue}" />
     /// <seealso cref="IBusinessRule{TCommand}" />
-    public abstract class BusinessRule<TValue> : IBusinessRule<TValue>, IUseMessageContext
+    public abstract class BusinessRule<TValue> : IBusinessRule<TValue>, IUseContext
     {
         /// <summary>
         /// Gets the configured <see cref="IDomainFacade"/>.
@@ -54,11 +54,11 @@ namespace Slalom.Stacks.Messaging.Validation
             throw new NotImplementedException();
         }
 
-        public void UseContext(MessageExecutionContext context)
+        public void UseContext(ExecutionContext context)
         {
             this.Context = context;
         }
 
-        public MessageExecutionContext Context { get; set; }
+        public ExecutionContext Context { get; set; }
     }
 }

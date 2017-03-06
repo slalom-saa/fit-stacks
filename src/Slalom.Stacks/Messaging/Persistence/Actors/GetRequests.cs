@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Registry;
 
 namespace Slalom.Stacks.Messaging.Persistence.Actors
 {
-    [EndPoint("_systems/requests")]
-    public class GetRequests : UseCase<GetRequestsCommand, IEnumerable<RequestEntry>>
+    [EndPoint("_systems/messaging/requests")]
+    public class GetRequests : SystemService<GetRequestsCommand, IEnumerable<RequestEntry>>
     {
         private readonly IRequestStore _source;
 
@@ -14,9 +15,9 @@ namespace Slalom.Stacks.Messaging.Persistence.Actors
             _source = source;
         }
 
-        public override Task<IEnumerable<RequestEntry>> ExecuteAsync(GetRequestsCommand command)
+        public override Task<IEnumerable<RequestEntry>> Execute(GetRequestsCommand instance)
         {
-            return _source.GetEntries(command.Start, command.End);
+            return _source.GetEntries(instance.Start, instance.End);
         }
     }
 }

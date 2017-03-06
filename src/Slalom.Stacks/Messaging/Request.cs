@@ -7,10 +7,10 @@ using Slalom.Stacks.Utilities.NewId;
 namespace Slalom.Stacks.Messaging
 {
     /// <summary>
-    /// Default (local) request context and resolver.
+    /// Represents a message request and default request context.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Messaging.IRequestContext" />
-    public class RequestContext : IRequestContext
+    public class Request : IRequestContext
     {
         private static string sourceAddress;
 
@@ -30,7 +30,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets the parent context.
         /// </summary>
         /// <value>The parent context.</value>
-        public RequestContext ParentContext { get; private set; }
+        public Request Parent { get; private set; }
 
         /// <summary>
         /// Gets the requested path.
@@ -58,9 +58,9 @@ namespace Slalom.Stacks.Messaging
         public ClaimsPrincipal User { get; private set; }
 
         /// <inheritdoc />
-        public RequestContext Resolve(string path, object message, RequestContext parentContext = null)
+        public Request Resolve(string path, object message, Request parent = null)
         {
-            return new RequestContext
+            return new Request
             {
                 CorrelationId = this.GetCorrelationId(),
                 SourceAddress = this.GetSourceIPAddress(),
@@ -68,7 +68,7 @@ namespace Slalom.Stacks.Messaging
                 User = ClaimsPrincipal.Current,
                 Path = path,
                 Message = (message as IMessage) ?? new Message(message),
-                ParentContext = parentContext
+                Parent = parent
             };
         }
      

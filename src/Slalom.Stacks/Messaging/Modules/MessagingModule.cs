@@ -8,6 +8,7 @@ using Slalom.Stacks.Messaging.Pipeline;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Validation;
 using Module = Autofac.Module;
 
@@ -57,7 +58,7 @@ namespace Slalom.Stacks.Messaging.Modules
                        e.Instance.RegisterLocal(_stack.Assemblies.ToArray());
                    });
 
-            builder.Register(c => new RequestContext())
+            builder.Register(c => new Request())
                 .As<IRequestContext>();
 
             builder.RegisterType<NullRequestStore>().As<IRequestStore>().SingleInstance();
@@ -73,7 +74,7 @@ namespace Slalom.Stacks.Messaging.Modules
                   .AllPropertiesAutowired();
 
             builder.RegisterAssemblyTypes(_stack.Assemblies.ToArray())
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandle)))
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandle<>)))
                    .As(instance => instance.GetBaseAndContractTypes())
                    .AsSelf()
                    .AllPropertiesAutowired();
@@ -88,7 +89,7 @@ namespace Slalom.Stacks.Messaging.Modules
                         .AllPropertiesAutowired();
 
                     b.RegisterAssemblyTypes(args.NewItems.OfType<Assembly>().ToArray())
-                           .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandle)))
+                           .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IHandle<>)))
                            .As(instance => instance.GetBaseAndContractTypes())
                            .AsSelf()
                            .AllPropertiesAutowired();

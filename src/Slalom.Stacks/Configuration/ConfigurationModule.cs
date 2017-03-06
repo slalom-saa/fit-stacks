@@ -14,6 +14,7 @@ using Slalom.Stacks.Messaging.Modules;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
+using Environment = Slalom.Stacks.Runtime.Environment;
 using Module = Autofac.Module;
 
 namespace Slalom.Stacks.Configuration
@@ -62,8 +63,8 @@ namespace Slalom.Stacks.Configuration
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new NullCachingModule());
 
-            builder.Register(c => new ExecutionContext(c.Resolve<IConfiguration>()))
-                .As<IExecutionContext>();
+            builder.Register(c => new Environment(c.Resolve<IConfiguration>()))
+                .As<IEnvironmentContext>();
 
 
             builder.Register(c => new DiscoveryService(c.Resolve<ILogger>()))
