@@ -12,7 +12,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
     /// Adds a product to the product catalog.
     /// </summary>
     [EndPoint("catalog/products/add")]
-    public class AddProduct : UseCase<AddProductCommand>
+    public class AddProduct : Service<AddProductCommand>
     {
         /// <inheritdoc />
         public override async Task ExecuteAsync(AddProductCommand command)
@@ -29,7 +29,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
     /// Adds a product to the product catalog.
     /// </summary>
     [EndPoint("catalog/products/add", Version = 2)]
-    public class AddProduct2 : UseCase<AddProductCommand>
+    public class AddProduct2 : Service<AddProductCommand>
     {
         /// <inheritdoc />
         public override async Task ExecuteAsync(AddProductCommand command)

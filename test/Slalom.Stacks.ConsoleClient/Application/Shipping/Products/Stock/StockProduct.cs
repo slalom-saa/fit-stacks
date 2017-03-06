@@ -9,7 +9,7 @@ using Slalom.Stacks.Services.Registry;
 namespace Slalom.Stacks.ConsoleClient.Application.Inventory.Products.Stock
 {
     [EndPoint("shipping/products/stock")]
-    public class StockProduct : UseCase<StockProductCommand, StockProductEvent>
+    public class StockProduct : Service<StockProductCommand, StockProductEvent>
     {
         public override async Task<StockProductEvent> ExecuteAsync(StockProductCommand command)
         {

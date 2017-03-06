@@ -87,7 +87,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>Type.</returns>
         public static Type GetRequestType(this Type type)
         {
-            var actorType = type?.GetBaseAndContractTypes().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(UseCase<>));
+            var actorType = type?.GetBaseAndContractTypes().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(Service<>));
 
             return actorType != null ? actorType.GetGenericArguments()[0] : null;
         }
@@ -99,7 +99,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>The response type.</returns>
         public static Type GetResponseType(this Type type)
         {
-            var actorType = type?.GetBaseAndContractTypes().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(UseCase<,>));
+            var actorType = type?.GetBaseAndContractTypes().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(Service<,>));
 
             return actorType != null ? actorType.GetGenericArguments()[1] : null;
         }

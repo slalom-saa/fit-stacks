@@ -8,7 +8,7 @@ using Slalom.Stacks.Services.Registry;
 namespace Slalom.Stacks.Messaging.Persistence.Actors
 {
     [EndPoint("_systems/events")]
-    public class GetEvents : UseCase<GetEventsCommand, IEnumerable<Event>>
+    public class GetEvents : Service<GetEventsCommand, IEnumerable<Event>>
     {
         private readonly IEventStore _events;
 
