@@ -64,7 +64,7 @@ namespace Slalom.Stacks.Configuration
 
             builder.Register(c => new ExecutionContext(c.Resolve<IConfiguration>()))
                 .As<IExecutionContext>();
-                   
+
 
             builder.Register(c => new DiscoveryService(c.Resolve<ILogger>()))
                    .As<IDiscoverTypes>()

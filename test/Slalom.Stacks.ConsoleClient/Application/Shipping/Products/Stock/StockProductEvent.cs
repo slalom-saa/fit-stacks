@@ -2,7 +2,7 @@
 
 namespace Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock
 {
-    public class StockProductEvent : Event
+    public class StockProductEvent : EventData
     {
         public StockProductEvent(string productId, int quantity)
         {

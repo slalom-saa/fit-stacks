@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Messaging.Logging
+namespace Slalom.Stacks.Messaging.Persistence
 {
     /// <summary>
     /// An entry to capture the response, or action, of a request.
@@ -18,9 +16,9 @@ namespace Slalom.Stacks.Messaging.Logging
         public ResponseEntry(MessageExecutionContext context)
         {
             this.CorrelationId = context.Request.CorrelationId;
-            //this.MessageId = context.Request.Message.Id;
+            this.MessageId = context.Request.Message.Id;
             this.Completed = context.Completed;
-            this.Service = context.EndPoint.Type;
+            this.EndPoint = context.EndPoint.Type;
             this.Exception = context.Exception;
             this.IsSuccessful = context.IsSuccessful;
             this.Started = context.Started;
@@ -29,29 +27,14 @@ namespace Slalom.Stacks.Messaging.Logging
             this.ThreadId = context.ExecutionContext.ThreadId;
             this.ApplicationName = context.ExecutionContext.ApplicationName;
             this.Environment = context.ExecutionContext.Environment;
+            this.TimeStamp = DateTimeOffset.Now;
             if (this.Completed.HasValue)
             {
                 this.Elapsed = this.Completed.Value - this.Started;
             }
-
-            if (context.Response is IEvent)
-            {
-                //var target = (IEvent)context.Response;
-                //this.EventType = target.GetType().FullName;
-                //this.EventId = target.Id;
-                //try
-                //{
-                //    this.EventBody = JsonConvert.SerializeObject(target, new JsonSerializerSettings
-                //    {
-                //        ContractResolver = new EventContractResolver()
-                //    });
-                //}
-                //catch
-                //{
-                //    this.EventBody = "{ \"Error\" : \"Serialization failed.\" }";
-                //}
-            }
         }
+
+        public DateTimeOffset TimeStamp { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the application.
@@ -84,24 +67,6 @@ namespace Slalom.Stacks.Messaging.Logging
         public string Environment { get; set; }
 
         /// <summary>
-        /// Gets or sets the event body.
-        /// </summary>
-        /// <value>The event body.</value>
-        public string EventBody { get; set; }
-
-        /// <summary>
-        /// Gets or sets the event identifier.
-        /// </summary>
-        /// <value>The event identifier.</value>
-        public string EventId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the type of the event.
-        /// </summary>
-        /// <value>The type of the event.</value>
-        public string EventType { get; set; }
-
-        /// <summary>
         /// Gets the exception, if any.
         /// </summary>
         /// <value>The exception, if any.</value>
@@ -129,7 +94,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Gets the type of the endPoint.
         /// </summary>
         /// <value>The type of the endPoint.</value>
-        public string Service { get; }
+        public string EndPoint { get; }
 
         /// <summary>
         /// Gets the start date and time.

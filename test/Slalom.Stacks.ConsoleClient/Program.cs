@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.ConsoleClient.Application.Products.Add;
-using Slalom.Stacks.ConsoleClient.Aspects;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.TestKit;
@@ -16,40 +14,33 @@ using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
 {
-   
+
+    public class A : UseCase<ProductAdded>
+    {
+        public override void Execute(ProductAdded command)
+        {
+            Console.WriteLine("ADSFADF");
+        }
+    }
 
     public class Program
     {
-
-
         public static void Main(string[] args)
         {
             try
             {
-                using (var stack = new Stack(typeof(TestStack)))
+                using (var stack = new Stack())
                 {
-                    stack.Include(typeof(AddProduct));
+                    stack.UseInMemoryPersistence();
                     
 
-                    stack.UseSimpleConsoleLogging();
+                    stack.Send(new AddProductCommand("name", "des")).Wait();
+                   // stack.Send(new AddProductCommand("nameasd", "desss")).Wait();
+                  //  stack.Send(new AddProductCommand("namfe", "adsfdes")).Wait();
 
-                    //var comments = typeof(AddProductCommand).GetProperty("Name").GetComments();
-                    //Console.WriteLine(comments);
-
-                    //Console.WriteLine(stack.GetServices().ToJson());
-
-
-                    //var service = stack.CreatePublicRegistry("http://localhost");
-                    //Console.WriteLine(JsonConvert.SerializeObject(service, Formatting.Indented));
-
-                    stack.Send("catalog/products/add", new AddProductCommand(null, "description").ToJson()).Wait();
-                    //stack.Send("catalog/products/add", new AddProductCommand("asdf", "description")).Wait();
-                    //stack.Send(new AddProductCommand("asdf", "description")).Wait();
+                    Console.WriteLine(stack.Send("_systems/requests").Result.Response.ToJson());
 
 
-                    //var service = stack.GetServices().Find("v2/catalog/products/add");
-
-                    Console.WriteLine(stack.GetServices().ToJson());
 
 
                     Console.WriteLine("Complete");

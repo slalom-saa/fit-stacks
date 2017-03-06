@@ -119,7 +119,7 @@ namespace Slalom.Stacks.Messaging
         /// Adds the raised event that will fire on completion.
         /// </summary>
         /// <param name="instance">The instance to raise.</param>
-        public void AddRaisedEvent(Event instance)
+        public void AddRaisedEvent(EventData instance)
         {
             Argument.NotNull(instance, nameof(instance));
 

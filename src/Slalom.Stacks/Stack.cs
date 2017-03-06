@@ -24,6 +24,7 @@ namespace Slalom.Stacks
         /// <param name="markers">Item markers used to identify assemblies.</param>
         public Stack(params object[] markers)
         {
+            this.Include(this.GetType());
             this.Include(markers);
 
             var builder = new ContainerBuilder();

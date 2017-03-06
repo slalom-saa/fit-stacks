@@ -11,16 +11,16 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
     /// Adds a product to the product catalog.
     /// </summary>
     [EndPoint("catalog/products/add")]
-    public class AddProduct : UseCase<AddProductCommand, AddProductEvent>
+    public class AddProduct : UseCase<AddProductCommand>
     {
         /// <inheritdoc />
-        public override async Task<AddProductEvent> ExecuteAsync(AddProductCommand command)
+        public override async Task ExecuteAsync(AddProductCommand command)
         {
             var target = new Product(command.Name, command.Description);
 
             await this.Domain.Add(target);
 
-            return new AddProductEvent(target.Name, target.Description);
+            this.AddRaisedEvent(new ProductAdded(target.Name, target.Description));
         }
     }
 
@@ -28,16 +28,16 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
     /// Adds a product to the product catalog.
     /// </summary>
     [EndPoint("catalog/products/add", Version = 2)]
-    public class AddProduct2 : UseCase<AddProductCommand, AddProductEvent>
+    public class AddProduct2 : UseCase<AddProductCommand>
     {
         /// <inheritdoc />
-        public override async Task<AddProductEvent> ExecuteAsync(AddProductCommand command)
+        public override async Task ExecuteAsync(AddProductCommand command)
         {
             var target = new Product(command.Name, command.Description);
 
             await this.Domain.Add(target);
 
-            return new AddProductEvent(target.Name, target.Description);
+            this.AddRaisedEvent(new ProductAdded(target.Name, target.Description));
         }
     }
 }

@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Utilities.NewId;
 
-namespace Slalom.Stacks.Messaging.Logging
+namespace Slalom.Stacks.Messaging.Persistence
 {
     /// <summary>
     /// Represents a request log entry - something that tracks the request at the application level.
@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Messaging.Logging
         {
             try
             {
-                this.MessageBody = JsonConvert.SerializeObject(request.Message, new JsonSerializerSettings
+                this.MessageBody = JsonConvert.SerializeObject(request.Message.Body, new JsonSerializerSettings
                 {
                     ContractResolver = new CommandContractResolver()
                 });

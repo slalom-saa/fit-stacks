@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Slalom.Stacks.Messaging.Persistence;
 using Slalom.Stacks.Messaging.Pipeline;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
@@ -58,6 +59,11 @@ namespace Slalom.Stacks.Messaging.Modules
 
             builder.Register(c => new RequestContext())
                 .As<IRequestContext>();
+
+            builder.RegisterType<NullRequestStore>().As<IRequestStore>().SingleInstance();
+            builder.RegisterType<NullResponseStore>().As<IResponseStore>().SingleInstance();
+
+            builder.RegisterType<NullEventStore>().As<IEventStore>().SingleInstance();
 
             builder.RegisterGeneric(typeof(MessageValidator<>));
 

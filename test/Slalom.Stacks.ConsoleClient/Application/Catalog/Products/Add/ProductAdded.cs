@@ -5,15 +5,14 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
     /// <summary>
     /// Event that is raised when a product is added to the product catalog.
     /// </summary>
-    /// <seealso cref="Slalom.Stacks.Messaging.Event" />
-    public class AddProductEvent : Event
+    public class ProductAdded : EventData
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AddProductEvent"/> class.
+        /// Initializes a new instance of the <see cref="ProductAdded"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="description">The description.</param>
-        public AddProductEvent(string name, string description)
+        public ProductAdded(string name, string description)
         {
             this.Name = name;
             this.Description = description;

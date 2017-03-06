@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Slalom.Stacks.Logging;
-using Slalom.Stacks.Runtime;
 
-namespace Slalom.Stacks.Messaging.Logging
+namespace Slalom.Stacks.Messaging.Persistence
 {
     /// <summary>
     /// Defines a contract for storing logs.  A log is a history of commands that were executed.  Diagnostic logging is done with
@@ -17,5 +17,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <param name="entry">The log entry to append.</param>
         /// <returns>A task for asynchronous programming.</returns>
         Task Append(RequestEntry entry);
+
+        Task<IEnumerable<RequestEntry>> GetEntries(DateTimeOffset? start, DateTimeOffset? end);
     }
 }

@@ -105,9 +105,9 @@ namespace Slalom.Stacks.Messaging
         /// Adds the raised event.
         /// </summary>
         /// <param name="instance">The instance.</param>
-        public void AddRaisedEvent(Event instance)
+        public void AddRaisedEvent(EventData instance)
         {
-            _raisedEvents.Add(instance);
+            _raisedEvents.Add(new Event(instance));
         }
 
         /// <summary>

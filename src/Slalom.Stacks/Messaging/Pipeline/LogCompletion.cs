@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Logging;
-using Slalom.Stacks.Messaging.Logging;
+using Slalom.Stacks.Messaging.Persistence;
 
 namespace Slalom.Stacks.Messaging.Pipeline
 {
@@ -14,7 +14,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
     /// <seealso cref="Slalom.Stacks.Messaging.Pipeline.IMessageExecutionStep" />
     public class LogCompletion : IMessageExecutionStep
     {
-        private IEnumerable<IResponseStore> _actions;
+        private IResponseStore _actions;
         private ILogger _logger;
 
         /// <summary>
@@ -23,14 +23,14 @@ namespace Slalom.Stacks.Messaging.Pipeline
         /// <param name="components">The component context.</param>
         public LogCompletion(IComponentContext components)
         {
-            _actions = components.Resolve<IEnumerable<IResponseStore>>();
+            _actions = components.Resolve<IResponseStore>();
             _logger = components.Resolve<ILogger>();
         }
 
         /// <inheritdoc />
         public Task Execute(IMessage instance, MessageExecutionContext context)
         {
-            var tasks = _actions.Select(e => e.Append(new ResponseEntry(context))).ToList();
+            var tasks = new List<Task> { _actions.Append(new ResponseEntry(context)) };
 
             var name = context.Request.Message.GetType().FullName;
             if (!context.IsSuccessful)

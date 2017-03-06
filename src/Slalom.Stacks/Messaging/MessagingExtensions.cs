@@ -4,6 +4,7 @@ using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Messaging.Modules;
+using Slalom.Stacks.Messaging.Persistence;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -22,6 +23,17 @@ namespace Slalom.Stacks.Messaging
         public static Task<MessageResult> Send(this Stack instance, object command, TimeSpan? timeout = null)
         {
             return instance.Container.Resolve<IMessageGateway>().Send(command, timeout: timeout);
+        }
+
+        public static Stack UseInMemoryPersistence(this Stack instance)
+        {
+            instance.Use(builder =>
+            {
+                builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
+                builder.RegisterType<InMemoryRequestStore>().As<IRequestStore>().SingleInstance();
+                builder.RegisterType<InMemoryResponseStore>().As<IResponseStore>().SingleInstance();
+            });
+            return instance;
         }
 
         /// <summary>

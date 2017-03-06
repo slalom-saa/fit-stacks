@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Newtonsoft.Json;
-using Slalom.Stacks.Messaging.Logging;
+using Slalom.Stacks.Messaging.Persistence;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Validation;
 
@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Messaging
     {
         private readonly Lazy<IEnumerable<IMessageDispatcher>> _dispatchers;
         private readonly Lazy<IRequestContext> _requestContext;
-        private readonly Lazy<IEnumerable<IRequestStore>> _requests;
+        private readonly Lazy<IRequestStore> _requests;
         private readonly Lazy<ServiceRegistry> _services;
 
         /// <summary>
@@ -30,21 +30,19 @@ namespace Slalom.Stacks.Messaging
 
             _services = new Lazy<ServiceRegistry>(components.Resolve<ServiceRegistry>);
             _requestContext = new Lazy<IRequestContext>(components.Resolve<IRequestContext>);
-            _requests = new Lazy<IEnumerable<IRequestStore>>(components.ResolveAll<IRequestStore>);
+            _requests = new Lazy<IRequestStore>(components.Resolve<IRequestStore>);
             _dispatchers = new Lazy<IEnumerable<IMessageDispatcher>>(components.ResolveAll<IMessageDispatcher>);
         }
 
         /// <inheritdoc />
-        public virtual async Task Publish(IEvent instance, MessageExecutionContext parentContext = null)
+        public virtual async Task Publish(Event instance, MessageExecutionContext parentContext = null)
         {
             Argument.NotNull(instance, nameof(instance));
 
-            var message = new Message(instance);
+            var request = _requestContext.Value.Resolve(null, instance, parentContext?.Request);
+            await _requests.Value.Append(new RequestEntry(request));
 
-            var request = _requestContext.Value.Resolve(null, message, parentContext?.Request);
-            await Task.WhenAll(_requests.Value.Select(e => e.Append(new RequestEntry(request))));
-
-            var endPoints = _services.Value.Find(message).ToList();
+            var endPoints = _services.Value.Find(instance).ToList();
 
             foreach (var endPoint in endPoints)
             {
@@ -56,7 +54,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public async Task Publish(IEnumerable<IEvent> instances, MessageExecutionContext context = null)
+        public async Task Publish(IEnumerable<Event> instances, MessageExecutionContext context = null)
         {
             Argument.NotNull(instances, nameof(instances));
 
@@ -84,7 +82,7 @@ namespace Slalom.Stacks.Messaging
             }
 
             var request = _requestContext.Value.Resolve(path, message, parentContext?.Request);
-            await Task.WhenAll(_requests.Value.Select(e => e.Append(new RequestEntry(request))));
+            await _requests.Value.Append(new RequestEntry(request));
 
             var dispatch = this.GetDispatchers(endPoint).FirstOrDefault();
             if (dispatch == null)
@@ -110,7 +108,7 @@ namespace Slalom.Stacks.Messaging
             }
 
             var request = _requestContext.Value.Resolve(path, command, parentContext?.Request);
-            await Task.WhenAll(_requests.Value.Select(e => e.Append(new RequestEntry(request))));
+            await _requests.Value.Append(new RequestEntry(request));
 
             var dispatch = this.GetDispatchers(endPoint).FirstOrDefault();
             if (dispatch == null)

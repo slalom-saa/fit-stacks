@@ -8,7 +8,7 @@ using Slalom.Stacks.Serialization;
 namespace Slalom.Stacks.Messaging.Serialization
 {
     /// <summary>
-    /// A JSON Contract Resolver for <see cref="IEvent"/> instances.
+    /// A JSON Contract Resolver for <see cref="Event"/> instances.
     /// </summary>
     public class EventContractResolver : BaseContractResolver
     {
