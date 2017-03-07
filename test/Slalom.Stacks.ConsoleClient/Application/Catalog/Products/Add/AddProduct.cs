@@ -12,10 +12,10 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
     /// Adds a product to the product catalog.
     /// </summary>
     [EndPoint("catalog/products/add")]
-    public class AddProduct : Service<AddProductCommand>
+    public class AddProduct : EndPoint<AddProductCommand>
     {
         /// <inheritdoc />
-        public override async Task ExecuteAsync(AddProductCommand command)
+        public override async Task ReceiveAsync(AddProductCommand command)
         {
             var target = new Product(command.Name, command.Description);
 
@@ -29,16 +29,16 @@ namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
     /// Adds a product to the product catalog.
     /// </summary>
     [EndPoint("catalog/products/add", Version = 2)]
-    public class AddProduct2 : Service<AddProductCommand>
+    public class AddProduct2 : EndPoint<AddProductCommand, ProductAdded>
     {
         /// <inheritdoc />
-        public override async Task ExecuteAsync(AddProductCommand command)
+        public override async Task<ProductAdded> ReceiveAsync(AddProductCommand command)
         {
             var target = new Product(command.Name, command.Description);
 
             await this.Domain.Add(target);
 
-            this.AddRaisedEvent(new ProductAdded(target.Name, target.Description));
+            return new ProductAdded(target.Name, target.Description);
         }
     }
 }

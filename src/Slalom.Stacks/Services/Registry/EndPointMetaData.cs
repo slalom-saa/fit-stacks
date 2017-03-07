@@ -92,7 +92,7 @@ namespace Slalom.Stacks.Services.Registry
         /// <returns>EndPoint.</returns>
         public static IEnumerable<EndPointMetaData> Create(Type service, string rootPath = ServiceHost.LocalPath)
         {
-            var interfaces = service.GetInterfaces().Where(e => e.IsGenericType && e.GetGenericTypeDefinition() == typeof(IHandle<>));
+            var interfaces = service.GetInterfaces().Where(e => e.IsGenericType && e.GetGenericTypeDefinition() == typeof(IEndPoint<>));
             if (interfaces.Any())
             {
                 var path = service.GetPath();
@@ -102,7 +102,7 @@ namespace Slalom.Stacks.Services.Registry
 
                 foreach (var item in interfaces)
                 {
-                    var method = item.GetMethod("Handle");
+                    var method = item.GetMethod("Receive");
                     var requestType = method.GetParameters().FirstOrDefault()?.ParameterType;
 
                     var endPoint = new EndPointMetaData

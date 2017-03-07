@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging.Persistence;
+using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Messaging.Pipeline
 {
@@ -14,8 +15,9 @@ namespace Slalom.Stacks.Messaging.Pipeline
     /// <seealso cref="Slalom.Stacks.Messaging.Pipeline.IMessageExecutionStep" />
     public class LogCompletion : IMessageExecutionStep
     {
-        private IResponseStore _actions;
-        private ILogger _logger;
+        private readonly IResponseStore _actions;
+        private readonly IEnvironmentContext _environmentContext;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogCompletion"/> class.
@@ -25,12 +27,13 @@ namespace Slalom.Stacks.Messaging.Pipeline
         {
             _actions = components.Resolve<IResponseStore>();
             _logger = components.Resolve<ILogger>();
+            _environmentContext = components.Resolve<IEnvironmentContext>();
         }
 
         /// <inheritdoc />
         public Task Execute(IMessage instance, ExecutionContext context)
         {
-            var tasks = new List<Task> { _actions.Append(new ResponseEntry(context)) };
+            var tasks = new List<Task> { _actions.Append(new ResponseEntry(context, _environmentContext.Resolve())) };
 
             var name = context.Request.Message.Name;
             if (!context.IsSuccessful)
@@ -41,7 +44,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
                 }
                 else if (context.ValidationErrors?.Any() ?? false)
                 {
-                    _logger.Error("Execution completed with validation errors while executing \"" + name + "\": " + String.Join("; ", context.ValidationErrors.Select(e => e.Type + ": " + e.Message)), instance);
+                    _logger.Error("Execution completed with validation errors while executing \"" + name + "\": " + string.Join("; ", context.ValidationErrors.Select(e => e.Type + ": " + e.Message)), instance);
                 }
                 else
                 {

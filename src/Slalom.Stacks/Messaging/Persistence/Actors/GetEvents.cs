@@ -8,7 +8,7 @@ using Slalom.Stacks.Services.Registry;
 namespace Slalom.Stacks.Messaging.Persistence.Actors
 {
     [EndPoint("_systems/events")]
-    public class GetEvents : Service<GetEventsCommand, IEnumerable<Event>>
+    public class GetEvents : EndPoint<GetEventsCommand, IEnumerable<Event>>
     {
         private readonly IEventStore _events;
 
@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Messaging.Persistence.Actors
             _events = events;
         }
 
-        public override Task<IEnumerable<Event>> ExecuteAsync(GetEventsCommand command)
+        public override Task<IEnumerable<Event>> ReceiveAsync(GetEventsCommand command)
         {
             return _events.GetEvents(command.Start, command.End);
         }

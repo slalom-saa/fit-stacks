@@ -17,6 +17,14 @@ using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
 {
+    public class A : EndPoint<ProductAdded>
+    {
+        public override void Receive(ProductAdded command)
+        {
+            Console.WriteLine("...");
+        }
+    }
+
     public class Program
     {
         public static void Main(string[] args)
@@ -27,11 +35,11 @@ namespace Slalom.Stacks.ConsoleClient
                 {
                     stack.UseInMemoryPersistence();
 
-                    //stack.UseSimpleConsoleLogging();
+                    stack.UseSimpleConsoleLogging();
 
                     stack.Send(new AddProductCommand("adf", "Adf")).Wait();
 
-                    Console.WriteLine(stack.Send("_systems/messaging/responses").Result.ToJson());
+                    //Console.WriteLine(stack.Send("_systems/events").Result.ToJson());
 
 
                     Console.WriteLine("Complete");

@@ -12,9 +12,9 @@ using Service = Slalom.Stacks.Services.Service;
 namespace Slalom.Stacks.Configuration.Actors
 {
     [EndPoint("_systems/components")]
-    public class GetComponents : Service, IHandle<string>
+    public class GetComponents : Service, IEndPoint<string>
     {
-        public Task Handle(string message)
+        public Task Receive(string message)
         {
             return Console.Out.WriteLineAsync(message);
         }

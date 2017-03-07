@@ -1,15 +1,14 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 using Newtonsoft.Json;
 using Slalom.Stacks.Serialization;
+using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Messaging
 {
-    /// <summary>
-    /// Represents a message request and default request context.
-    /// </summary>
-    /// <seealso cref="Slalom.Stacks.Messaging.IRequestContext" />
     public class Request : IRequestContext
     {
         private static string sourceAddress;
@@ -58,7 +57,7 @@ namespace Slalom.Stacks.Messaging
         public ClaimsPrincipal User { get; private set; }
 
         /// <inheritdoc />
-        public Request Resolve(string path, object message, Request parent = null)
+        public Request Resolve(object message, EndPointMetaData endPoint, Request parent = null)
         {
             return new Request
             {
@@ -66,12 +65,31 @@ namespace Slalom.Stacks.Messaging
                 SourceAddress = this.GetSourceIPAddress(),
                 SessionId = this.GetSession(),
                 User = ClaimsPrincipal.Current,
-                Path = path,
-                Message = (message as IMessage) ?? new Message(message),
-                Parent = parent
+                Parent = parent,
+                Message = this.GetMessage(message, endPoint)
             };
         }
-     
+
+        private IMessage GetMessage(object message, EndPointMetaData endPoint)
+        {
+            if (message == null)
+            {
+                return new Message(JsonConvert.DeserializeObject("{}", Type.GetType(endPoint.RequestType)));
+            }
+            if (message.GetType().AssemblyQualifiedName == endPoint.RequestType)
+            {
+                return new Message(message);
+            }
+            if (message is String && endPoint.RequestType == typeof(String).AssemblyQualifiedName)
+            {
+                return new Message(JsonConvert.DeserializeObject((string)message, Type.GetType(endPoint.RequestType)));
+            }
+            else
+            {
+                return new Message(JsonConvert.DeserializeObject(JsonConvert.SerializeObject(message), Type.GetType(endPoint.RequestType)));
+            }
+        }
+
         /// <summary>
         /// Gets the current correlation ID.
         /// </summary>

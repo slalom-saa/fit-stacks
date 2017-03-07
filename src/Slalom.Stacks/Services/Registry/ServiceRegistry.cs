@@ -66,7 +66,7 @@ namespace Slalom.Stacks.Services.Registry
         public void RegisterLocal(Assembly[] assemblies)
         {
             var host = new ServiceHost();
-            foreach (var service in assemblies.SafelyGetTypes(typeof(IHandle<>)))
+            foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint<>)))
             {
                 if (!service.IsGenericType && !service.IsDynamic())
                 {

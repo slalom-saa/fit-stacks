@@ -14,9 +14,9 @@ namespace Slalom.Stacks.UnitTests.Services.Registry
 {
     public class EndPointTests
     {
-        public class EndPointService : Service, IHandle<string>
+        public class EndPointService : Service, IEndPoint<string>
         {
-            public Task Handle(string message)
+            public Task Receive(string message)
             {
                 return Task.FromResult(0);
             }

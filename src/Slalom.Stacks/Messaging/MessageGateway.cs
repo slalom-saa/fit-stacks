@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Autofac;
 using Newtonsoft.Json;
@@ -40,13 +41,13 @@ namespace Slalom.Stacks.Messaging
         {
             Argument.NotNull(instance, nameof(instance));
 
-            var request = _requestContext.Value.Resolve(null, instance, parentContext?.Request);
-            await _requests.Value.Append(new RequestEntry(request));
-
             var endPoints = _services.Value.Find(instance).ToList();
 
             foreach (var endPoint in endPoints)
             {
+                var request = _requestContext.Value.Resolve(instance, endPoint, parentContext?.Request);
+                await _requests.Value.Append(new RequestEntry(request));
+
                 foreach (var dispatcher in this.GetDispatchers(endPoint))
                 {
                     await dispatcher.Dispatch(request, endPoint, parentContext);
@@ -82,7 +83,7 @@ namespace Slalom.Stacks.Messaging
                 throw new InvalidOperationException("No endpoint could be found for the request.");
             }
 
-            var request = _requestContext.Value.Resolve(path, message, parentContext?.Request);
+            var request = _requestContext.Value.Resolve(message, endPoint, parentContext?.Request);
             await _requests.Value.Append(new RequestEntry(request));
 
             var dispatch = this.GetDispatchers(endPoint).FirstOrDefault();
@@ -103,7 +104,7 @@ namespace Slalom.Stacks.Messaging
                 throw new InvalidOperationException("No endpoint could be found for the request.");
             }
 
-            var request = _requestContext.Value.Resolve(path, command, parentContext?.Request);
+            var request = _requestContext.Value.Resolve(command, endPoint, parentContext?.Request);
             await _requests.Value.Append(new RequestEntry(request));
 
             var dispatch = this.GetDispatchers(endPoint).FirstOrDefault();

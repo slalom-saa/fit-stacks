@@ -7,7 +7,7 @@ using Slalom.Stacks.Messaging.Persistence;
 namespace Slalom.Stacks.Messaging.Pipeline
 {
     /// <summary>
-    /// The publish events step of the usecase execution pipeline.
+    /// The publish events step of the Service execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Messaging.Pipeline.IMessageExecutionStep" />
     public class PublishEvents : IMessageExecutionStep

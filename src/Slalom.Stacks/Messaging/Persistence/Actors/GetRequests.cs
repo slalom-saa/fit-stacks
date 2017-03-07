@@ -6,7 +6,7 @@ using Slalom.Stacks.Services.Registry;
 namespace Slalom.Stacks.Messaging.Persistence.Actors
 {
     [EndPoint("_systems/messaging/requests")]
-    public class GetRequests : Service<GetRequestsCommand, IEnumerable<RequestEntry>>
+    public class GetRequests : EndPoint<GetRequestsCommand, IEnumerable<RequestEntry>>
     {
         private readonly IRequestStore _source;
 
@@ -15,7 +15,7 @@ namespace Slalom.Stacks.Messaging.Persistence.Actors
             _source = source;
         }
 
-        public override Task<IEnumerable<RequestEntry>> ExecuteAsync(GetRequestsCommand instance)
+        public override Task<IEnumerable<RequestEntry>> ReceiveAsync(GetRequestsCommand instance)
         {
             return _source.GetEntries(instance.Start, instance.End);
         }

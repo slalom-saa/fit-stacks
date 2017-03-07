@@ -7,7 +7,7 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Pipeline
 {
     /// <summary>
-    /// The log startup step of the usecase execution pipeline.
+    /// The log startup step of the Service execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Messaging.Pipeline.IMessageExecutionStep" />
     public class LogStart : IMessageExecutionStep
@@ -28,7 +28,18 @@ namespace Slalom.Stacks.Messaging.Pipeline
         /// <inheritdoc />
         public Task Execute(IMessage message, ExecutionContext context)
         {
-            _logger.Verbose("Executing \"" + message.MessageType.FullName + "\" at path \"" + context.Request.Path + "\".");
+            if (message.Body != null && context.Request.Path != null)
+            {
+                _logger.Verbose("Executing \"" + message.Name + "\" at path \"" + context.Request.Path + "\".");
+            }
+            else if (message.Body != null)
+            {
+                _logger.Verbose("Executing \"" + message.Name + ".");
+            }
+            else
+            {
+                _logger.Verbose("Executing message at path \"" + context.Request.Path + "\".");
+            }
 
             return Task.FromResult(0);
         }

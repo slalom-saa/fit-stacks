@@ -18,6 +18,7 @@ namespace Slalom.Stacks.Messaging
     {
         private readonly IComponentContext _components;
         private readonly IEnvironmentContext _environmentContext;
+        private IRequestContext _requestContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalMessageDispatcher"/> class.
@@ -27,6 +28,7 @@ namespace Slalom.Stacks.Messaging
         {
             _components = components;
             _environmentContext = components.Resolve<IEnvironmentContext>();
+            _requestContext = components.Resolve<IRequestContext>();
         }
 
         /// <inheritdoc />
@@ -51,27 +53,13 @@ namespace Slalom.Stacks.Messaging
             var context = new ExecutionContext(request, endPoint, source.Token, parentContext);
 
             var handler = _components.Resolve(Type.GetType(endPoint.ServiceType));
-            var service = handler as Service;
+            var service = handler as IService;
             if (service != null)
             {
-                service.Request = request;
                 service.Context = context;
             }
 
-            var message = request.Message.Body;
-            if (message == null)
-            {
-                message = JsonConvert.DeserializeObject("{}", Type.GetType(endPoint.RequestType));
-            }
-            else if (message.GetType().AssemblyQualifiedName != endPoint.RequestType)
-            {
-                if (message is String)
-                {
-                    message = JsonConvert.DeserializeObject((string)message, Type.GetType(endPoint.RequestType));
-                }
-            }
-
-            await (Task)typeof(IHandle<>).MakeGenericType(Type.GetType(endPoint.RequestType)).GetMethod("Handle").Invoke(handler, new object[] { message });
+            await (Task)typeof(IEndPoint<>).MakeGenericType(Type.GetType(endPoint.RequestType)).GetMethod("Receive").Invoke(handler, new object[] { request.Message.Body });
 
             return new MessageResult(context);
         }
