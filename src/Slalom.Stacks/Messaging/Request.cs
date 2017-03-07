@@ -80,7 +80,7 @@ namespace Slalom.Stacks.Messaging
             {
                 return new Message(message);
             }
-            if (message is String && endPoint.RequestType == typeof(String).AssemblyQualifiedName)
+            if (message is String && endPoint.RequestType != typeof(String).AssemblyQualifiedName)
             {
                 return new Message(JsonConvert.DeserializeObject((string)message, Type.GetType(endPoint.RequestType)));
             }

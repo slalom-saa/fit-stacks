@@ -35,11 +35,11 @@ namespace Slalom.Stacks.ConsoleClient
                 {
                     stack.UseInMemoryPersistence();
 
-                    stack.UseSimpleConsoleLogging();
+                    //stack.UseSimpleConsoleLogging();
 
                     stack.Send(new AddProductCommand("adf", "Adf")).Wait();
 
-                    //Console.WriteLine(stack.Send("_systems/events").Result.ToJson());
+                    Console.WriteLine(stack.Send("_systems/messaging/requests", "").Result.ToJson());
 
 
                     Console.WriteLine("Complete");
