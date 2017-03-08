@@ -126,18 +126,18 @@ namespace Slalom.Stacks.Messaging
         {
             if (sourceAddress == null)
             {
-                try
-                {
-                    using (var client = new HttpClient())
-                    {
-                        var response = client.GetAsync("http://ipinfo.io/ip").Result;
-                        sourceAddress = response.Content.ReadAsStringAsync().Result.Trim();
-                    }
-                }
-                catch
-                {
+                //try
+                //{
+                //    using (var client = new HttpClient())
+                //    {
+                //        var response = client.GetAsync("http://ipinfo.io/ip").Result;
+                //        sourceAddress = response.Content.ReadAsStringAsync().Result.Trim();
+                //    }
+                //}
+                //catch
+                //{
                     sourceAddress = "127.0.0.1";
-                }
+                //}
             }
             return sourceAddress;
         }

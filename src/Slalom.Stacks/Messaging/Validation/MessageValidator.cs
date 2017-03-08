@@ -50,7 +50,7 @@ namespace Slalom.Stacks.Messaging.Validation
                 return Task.FromResult(input.WithType(ValidationType.Input));
             }
 
-            var security = this.CheckSecurityRules(instance).ToList();
+            var security = this.CheckSecurityRules(instance, context).ToList();
             if (security.Any())
             {
                 return Task.FromResult(security.WithType(ValidationType.Security));
@@ -126,10 +126,14 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <param name="command">The message to validate.</param>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="command" /> argument is null.</exception>
         /// <returns>A task for asynchronous programming.</returns>
-        protected virtual IEnumerable<ValidationError> CheckSecurityRules(TCommand command)
+        protected virtual IEnumerable<ValidationError> CheckSecurityRules(TCommand command, ExecutionContext context)
         {
             foreach (var rule in _rules.OfType<ISecurityRule<TCommand>>())
             {
+                if (rule is IUseContext)
+                {
+                    ((IUseContext)rule).UseContext(context);
+                }
                 var result = (rule.Validate(command)).ToList();
                 if (result.Any())
                 {

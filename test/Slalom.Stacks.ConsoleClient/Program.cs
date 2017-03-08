@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
@@ -11,10 +12,12 @@ using Slalom.Stacks.ConsoleClient.Application.Products.Add;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Serialization;
+using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.TestKit;
 using Slalom.Stacks.Text;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient
 {
@@ -25,6 +28,17 @@ namespace Slalom.Stacks.ConsoleClient
             Console.WriteLine("..ss.");
 
             return Task.FromResult(0);
+        }
+    }
+
+    public class s_rule : SecurityRule<AddProductCommand>
+    {
+        public override IEnumerable<ValidationError> Validate(AddProductCommand instance)
+        {
+            if (!this.User.Identity.IsAuthenticated)
+            {
+                yield return "allo";
+            }
         }
     }
 
@@ -42,8 +56,9 @@ namespace Slalom.Stacks.ConsoleClient
 
                     stack.Send(new AddProductCommand("adf", "Adf")).Wait();
 
-                    Console.WriteLine(stack.Send("_systems/messaging/requests").Result.ToJson());
-                    Console.WriteLine(stack.Send("_systems/events").Result.ToJson());
+                    Console.WriteLine(stack.Send("_systems/messaging/requests").Result.Response.ToJson());
+                    Console.WriteLine(stack.Send("_systems/messaging/responses").Result.Response.ToJson());
+                    Console.WriteLine(stack.Send("_systems/events").Result.Response.ToJson());
 
 
                     Console.WriteLine("Complete");
