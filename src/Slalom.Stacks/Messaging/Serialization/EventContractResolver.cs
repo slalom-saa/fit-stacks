@@ -8,7 +8,7 @@ using Slalom.Stacks.Serialization;
 namespace Slalom.Stacks.Messaging.Serialization
 {
     /// <summary>
-    /// A JSON Contract Resolver for <see cref="Event"/> instances.
+    /// A JSON Contract Resolver for <see cref="EventMessage"/> instances.
     /// </summary>
     public class EventContractResolver : BaseContractResolver
     {
@@ -27,7 +27,7 @@ namespace Slalom.Stacks.Messaging.Serialization
                 return prop;
             }
             var declaringType = (member as PropertyInfo)?.DeclaringType;
-            if (declaringType == typeof(Event))
+            if (declaringType == typeof(EventMessage))
             {
                 prop.Ignored = true;
                 return prop;

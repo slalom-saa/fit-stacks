@@ -15,7 +15,7 @@ namespace Slalom.Stacks.Messaging
         /// <param name="instance">The event instances.</param>
         /// <param name="context">The current context.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task Publish(Event instance, ExecutionContext context = null);
+        Task Publish(EventMessage instance, ExecutionContext context = null);
 
         /// <summary>
         /// Publishes the specified events to the configured publish-subscribe endPoint.
@@ -23,7 +23,7 @@ namespace Slalom.Stacks.Messaging
         /// <param name="instances">The event instances.</param>
         /// <param name="context">The current context.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task Publish(IEnumerable<Event> instances, ExecutionContext context = null);
+        Task Publish(IEnumerable<EventMessage> instances, ExecutionContext context = null);
 
         /// <summary>
         /// Sends the specified command to the configured point-to-point endPoint.

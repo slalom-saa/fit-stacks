@@ -17,9 +17,9 @@ namespace Slalom.Stacks.Messaging.Persistence
         /// <summary>
         /// The in-memory items.
         /// </summary>
-        protected readonly List<Event> Instances = new List<Event>();
+        protected readonly List<EventMessage> Instances = new List<EventMessage>();
 
-        public Task<IEnumerable<Event>> GetEvents(DateTimeOffset? start, DateTimeOffset? end)
+        public Task<IEnumerable<EventMessage>> GetEvents(DateTimeOffset? start, DateTimeOffset? end)
         {
             CacheLock.EnterReadLock();
             try
@@ -34,7 +34,7 @@ namespace Slalom.Stacks.Messaging.Persistence
             }
         }
 
-        public Task Append(Event instance)
+        public Task Append(EventMessage instance)
         {
             Argument.NotNull(instance, nameof(instance));
 

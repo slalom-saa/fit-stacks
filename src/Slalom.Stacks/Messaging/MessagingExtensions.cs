@@ -30,8 +30,8 @@ namespace Slalom.Stacks.Messaging
             instance.Use(builder =>
             {
                 builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
-                builder.RegisterType<InMemoryRequestStore>().As<IRequestStore>().SingleInstance();
-                builder.RegisterType<InMemoryResponseStore>().As<IResponseStore>().SingleInstance();
+                builder.RegisterType<InMemoryRequestLog>().As<IRequestLog>().SingleInstance();
+                builder.RegisterType<InMemoryResponseLog>().As<IResponseLog>().SingleInstance();
             });
             return instance;
         }

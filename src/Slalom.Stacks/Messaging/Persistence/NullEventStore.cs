@@ -7,12 +7,12 @@ namespace Slalom.Stacks.Messaging.Persistence
 {
     public class NullEventStore : IEventStore
     {
-        public Task<IEnumerable<Event>> GetEvents(DateTimeOffset? start, DateTimeOffset? end)
+        public Task<IEnumerable<EventMessage>> GetEvents(DateTimeOffset? start, DateTimeOffset? end)
         {
-            return Task.FromResult(new Event[0].AsEnumerable());
+            return Task.FromResult(new EventMessage[0].AsEnumerable());
         }
 
-        public Task Append(Event instance)
+        public Task Append(EventMessage instance)
         {
             return Task.FromResult(0);
         }

@@ -7,7 +7,7 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Persistence
 {
-    public class InMemoryRequestStore : IRequestStore
+    public class InMemoryRequestLog : IRequestLog
     {
         /// <summary>
         /// The lock for the instances.
@@ -20,14 +20,19 @@ namespace Slalom.Stacks.Messaging.Persistence
         protected readonly List<RequestEntry> Instances = new List<RequestEntry>();
 
 
-        public Task Append(RequestEntry entry)
+        public Task Append(Request entry)
         {
             Argument.NotNull(entry, nameof(entry));
+
+            if (entry.Path?.StartsWith("_system") ?? false)
+            {
+                return Task.FromResult(0);
+            }
 
             CacheLock.EnterWriteLock();
             try
             {
-                Instances.Add(entry);
+                Instances.Add(new RequestEntry(entry));
             }
             finally
             {

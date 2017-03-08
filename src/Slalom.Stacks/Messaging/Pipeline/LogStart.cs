@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Logging;
+using Slalom.Stacks.Messaging.Persistence;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Pipeline
@@ -13,21 +14,25 @@ namespace Slalom.Stacks.Messaging.Pipeline
     public class LogStart : IMessageExecutionStep
     {
         private readonly ILogger _logger;
+        private readonly IRequestLog _requests;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogStart"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public LogStart(ILogger logger)
+        public LogStart(ILogger logger, IRequestLog requests)
         {
             Argument.NotNull(logger, nameof(logger));
 
             _logger = logger;
+            _requests = requests;
         }
 
         /// <inheritdoc />
-        public Task Execute(IMessage message, ExecutionContext context)
+        public async Task Execute(IMessage message, ExecutionContext context)
         {
+            //await _requests.Append(new RequestEntry(context.Request)).ConfigureAwait(false);
+
             if (message.Body != null && context.Request.Path != null)
             {
                 _logger.Verbose("Executing \"" + message.Name + "\" at path \"" + context.Request.Path + "\".");
@@ -40,8 +45,6 @@ namespace Slalom.Stacks.Messaging.Pipeline
             {
                 _logger.Verbose("Executing message at path \"" + context.Request.Path + "\".");
             }
-
-            return Task.FromResult(0);
         }
     }
 }

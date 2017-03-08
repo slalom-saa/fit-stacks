@@ -30,7 +30,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
         {
             if (context.IsSuccessful)
             {
-                foreach (var instance in context.RaisedEvents.Union(new[] { context.Response as Event }).Where(e => e != null))
+                foreach (var instance in context.RaisedEvents.Union(new[] { context.Response as EventMessage }).Where(e => e != null))
                 {
                     await _eventStore.Append(instance);
 

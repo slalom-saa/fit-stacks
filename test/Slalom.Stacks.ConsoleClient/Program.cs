@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Configuration.Actors;
+using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
 using Slalom.Stacks.ConsoleClient.Application.Products.Add;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
@@ -17,11 +18,13 @@ using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
 {
-    public class A : EndPoint<ProductAdded>
+    public class A : IHandle<ProductAdded>
     {
-        public override void Receive(ProductAdded command)
+        public Task Handle(ProductAdded command)
         {
-            Console.WriteLine("...");
+            Console.WriteLine("..ss.");
+
+            return Task.FromResult(0);
         }
     }
 
@@ -39,7 +42,8 @@ namespace Slalom.Stacks.ConsoleClient
 
                     stack.Send(new AddProductCommand("adf", "Adf")).Wait();
 
-                    Console.WriteLine(stack.Send("_systems/messaging/requests", "").Result.ToJson());
+                    Console.WriteLine(stack.Send("_systems/messaging/requests").Result.ToJson());
+                    Console.WriteLine(stack.Send("_systems/events").Result.ToJson());
 
 
                     Console.WriteLine("Complete");

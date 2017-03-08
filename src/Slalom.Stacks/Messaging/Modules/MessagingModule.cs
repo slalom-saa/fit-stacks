@@ -61,8 +61,8 @@ namespace Slalom.Stacks.Messaging.Modules
             builder.Register(c => new Request())
                 .As<IRequestContext>();
 
-            builder.RegisterType<NullRequestStore>().As<IRequestStore>().SingleInstance();
-            builder.RegisterType<NullResponseStore>().As<IResponseStore>().SingleInstance();
+            builder.RegisterType<NullRequestLog>().As<IRequestLog>().SingleInstance();
+            builder.RegisterType<NullResponseLog>().As<IResponseLog>().SingleInstance();
 
             builder.RegisterType<NullEventStore>().As<IEventStore>().SingleInstance();
 
@@ -74,7 +74,7 @@ namespace Slalom.Stacks.Messaging.Modules
                   .AllPropertiesAutowired();
 
             builder.RegisterAssemblyTypes(_stack.Assemblies.ToArray())
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>)))
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IHandle<>)))
                    .As(instance => instance.GetBaseAndContractTypes())
                    .AsSelf()
                    .AllPropertiesAutowired();
@@ -89,7 +89,7 @@ namespace Slalom.Stacks.Messaging.Modules
                         .AllPropertiesAutowired();
 
                     b.RegisterAssemblyTypes(args.NewItems.OfType<Assembly>().ToArray())
-                           .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>)))
+                           .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IHandle<>)))
                            .As(instance => instance.GetBaseAndContractTypes())
                            .AsSelf()
                            .AllPropertiesAutowired();

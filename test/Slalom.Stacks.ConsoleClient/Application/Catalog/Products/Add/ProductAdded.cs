@@ -1,14 +1,14 @@
 ﻿using Slalom.Stacks.Messaging;
 
-namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
+namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
 {
     /// <summary>
-    /// Event that is raised when a product is added to the product catalog.
+    /// EventMessage that is raised when a product is added to the product catalog.
     /// </summary>
-    public class ProductAdded : EventData
+    public class ProductAdded : Event
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProductAdded"/> class.
+        /// Initializes a new instance of the <see cref="ProductAdded" /> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="description">The description.</param>

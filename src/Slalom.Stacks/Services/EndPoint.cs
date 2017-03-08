@@ -12,6 +12,31 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services
 {
+    public class SystemEndPoint<T> : EndPoint<T> where T : class
+    {
+        internal override Task Prepare()
+        {
+            return Task.FromResult(0);
+        }
+
+        internal override Task Complete()
+        {
+            return Task.FromResult(0);
+        }
+    }
+    public class SystemEndPoint<T, R> : EndPoint<T, R> where T : class where R : class
+    {
+        internal override Task Prepare()
+        {
+            return Task.FromResult(0);
+        }
+
+        internal override Task Complete()
+        {
+            return Task.FromResult(0);
+        }
+    }
+
     public interface IService
     {
         Request Request { get; }
@@ -31,7 +56,7 @@ namespace Slalom.Stacks.Services
         /// Adds the raised event that will fire on completion.
         /// </summary>
         /// <param name="instance">The instance to raise.</param>
-        public void AddRaisedEvent(EventData instance)
+        public void AddRaisedEvent(Event instance)
         {
             Argument.NotNull(instance, nameof(instance));
 
@@ -72,7 +97,7 @@ namespace Slalom.Stacks.Services
         /// Completes the specified message.
         /// </summary>
         /// <returns>A task for asynchronous programming.</returns>
-        internal async Task Complete()
+        internal virtual async Task Complete()
         {
             var steps = new List<IMessageExecutionStep>
             {
@@ -91,7 +116,7 @@ namespace Slalom.Stacks.Services
         /// Prepares the usecase for execution.
         /// </summary>
         /// <returns>A task for asynchronous programming.</returns>
-        internal async Task Prepare()
+        internal virtual async Task Prepare()
         {
             var steps = new List<IMessageExecutionStep>
             {
@@ -144,9 +169,9 @@ namespace Slalom.Stacks.Services
 
                         context.Response = result;
 
-                        if (result is EventData)
+                        if (result is Event)
                         {
-                            this.AddRaisedEvent(result as EventData);
+                            this.AddRaisedEvent(result as Event);
                         }
                     }
                 }

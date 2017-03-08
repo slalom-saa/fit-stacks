@@ -15,7 +15,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
     /// <seealso cref="Slalom.Stacks.Messaging.Pipeline.IMessageExecutionStep" />
     public class LogCompletion : IMessageExecutionStep
     {
-        private readonly IResponseStore _actions;
+        private readonly IResponseLog _actions;
         private readonly IEnvironmentContext _environmentContext;
         private readonly ILogger _logger;
 
@@ -25,7 +25,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
         /// <param name="components">The component context.</param>
         public LogCompletion(IComponentContext components)
         {
-            _actions = components.Resolve<IResponseStore>();
+            _actions = components.Resolve<IResponseLog>();
             _logger = components.Resolve<ILogger>();
             _environmentContext = components.Resolve<IEnvironmentContext>();
         }

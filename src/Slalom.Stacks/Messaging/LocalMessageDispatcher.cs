@@ -38,6 +38,17 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
+        public async Task<MessageResult> Dispatch(Request request, ExecutionContext context)
+        {
+            var handlers = _components.ResolveAll(typeof(IHandle<>).MakeGenericType(request.Message.MessageType));
+            foreach (var handler in handlers)
+            {
+                typeof(IHandle<>).MakeGenericType(request.Message.MessageType).GetMethod("Handle").Invoke(handler, new[] { request.Message.Body });
+            }
+            return new MessageResult(context);
+        }
+
+        /// <inheritdoc />
         public async Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null)
         {
             CancellationTokenSource source;

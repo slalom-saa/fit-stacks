@@ -8,9 +8,9 @@ namespace Slalom.Stacks.Messaging.Persistence.Actors
     [EndPoint("_systems/messaging/responses")]
     public class GetResponses : EndPoint<GetResponsesCommand, IEnumerable<ResponseEntry>>
     {
-        private readonly IResponseStore _source;
+        private readonly IResponseLog _source;
 
-        public GetResponses(IResponseStore source)
+        public GetResponses(IResponseLog source)
         {
             _source = source;
         }

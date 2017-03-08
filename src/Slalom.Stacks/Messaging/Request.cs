@@ -66,12 +66,18 @@ namespace Slalom.Stacks.Messaging
                 SessionId = this.GetSession(),
                 User = ClaimsPrincipal.Current,
                 Parent = parent,
+                Path = endPoint.Path,
                 Message = this.GetMessage(message, endPoint)
             };
         }
 
         private IMessage GetMessage(object message, EndPointMetaData endPoint)
         {
+            if (message is IMessage)
+            {
+                return (IMessage)message;
+            }
+
             if (message == null)
             {
                 return new Message(JsonConvert.DeserializeObject("{}", Type.GetType(endPoint.RequestType)));
@@ -82,6 +88,10 @@ namespace Slalom.Stacks.Messaging
             }
             if (message is String && endPoint.RequestType != typeof(String).AssemblyQualifiedName)
             {
+                if (String.IsNullOrWhiteSpace((string)message))
+                {
+                    message = "{}";
+                }
                 return new Message(JsonConvert.DeserializeObject((string)message, Type.GetType(endPoint.RequestType)));
             }
             else
@@ -130,6 +140,19 @@ namespace Slalom.Stacks.Messaging
                 }
             }
             return sourceAddress;
+        }
+
+        public Request Resolve(EventMessage instance, Request parent)
+        {
+            return new Request
+            {
+                CorrelationId = parent.CorrelationId,
+                SourceAddress = parent.SourceAddress,
+                SessionId = parent.SessionId,
+                User = parent.User,
+                Parent = parent,
+                Message = instance
+            };
         }
     }
 }

@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Messaging.Persistence
 {
-    public class NullRequestStore : IRequestStore
+    public class NullResponseLog : IResponseLog
     {
-        public Task Append(RequestEntry entry)
+        public Task Append(ResponseEntry entry)
         {
             return Task.FromResult(0);
         }
 
-        public Task<IEnumerable<RequestEntry>> GetEntries(DateTimeOffset? start, DateTimeOffset? end)
+        public Task<IEnumerable<ResponseEntry>> GetEntries(DateTimeOffset? start, DateTimeOffset? end)
         {
             throw new NotImplementedException();
         }

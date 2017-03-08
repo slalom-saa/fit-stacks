@@ -26,5 +26,7 @@ namespace Slalom.Stacks.Messaging
         /// <param name="timeout">The timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
         Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null);
+
+        Task<MessageResult> Dispatch(Request request, ExecutionContext context);
     }
 }

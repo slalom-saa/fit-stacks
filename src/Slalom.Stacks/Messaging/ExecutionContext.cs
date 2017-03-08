@@ -11,7 +11,7 @@ namespace Slalom.Stacks.Messaging
 {
     public class ExecutionContext
     {
-        private readonly List<Event> _raisedEvents = new List<Event>();
+        private readonly List<EventMessage> _raisedEvents = new List<EventMessage>();
         private readonly List<ValidationError> _validationErrors = new List<ValidationError>();
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Slalom.Stacks.Messaging
         /// Gets any raised events.
         /// </summary>
         /// <value>The raised events.</value>
-        public IEnumerable<Event> RaisedEvents => _raisedEvents.AsEnumerable();
+        public IEnumerable<EventMessage> RaisedEvents => _raisedEvents.AsEnumerable();
 
         /// <summary>
         /// Gets the request context.
@@ -95,9 +95,9 @@ namespace Slalom.Stacks.Messaging
         /// Adds the raised event.
         /// </summary>
         /// <param name="instance">The instance.</param>
-        public void AddRaisedEvent(EventData instance)
+        public void AddRaisedEvent(Event instance)
         {
-            _raisedEvents.Add(new Event(instance));
+            _raisedEvents.Add(new EventMessage(this.Request.Message.Id, instance));
         }
 
         /// <summary>

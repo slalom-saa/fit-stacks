@@ -7,7 +7,7 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Persistence
 {
-    public class InMemoryResponseStore : IResponseStore
+    public class InMemoryResponseLog : IResponseLog
     {
         /// <summary>
         /// The lock for the instances.

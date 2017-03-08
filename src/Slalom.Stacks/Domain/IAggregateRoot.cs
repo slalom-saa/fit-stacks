@@ -21,6 +21,6 @@ namespace Slalom.Stacks.Domain
         /// Commits and returns the raised events.
         /// </summary>
         /// <returns>The events that were raised.</returns>
-        IEnumerable<Event> CommitEvents();
+        IEnumerable<EventMessage> CommitEvents();
     }
 }
