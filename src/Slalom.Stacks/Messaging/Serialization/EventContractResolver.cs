@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Serialization;
 
 namespace Slalom.Stacks.Messaging.Serialization

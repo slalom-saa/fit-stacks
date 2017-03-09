@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Slalom.Stacks.Messaging.Persistence
+namespace Slalom.Stacks.Messaging.Logging
 {
     public interface IRequestLog
     {

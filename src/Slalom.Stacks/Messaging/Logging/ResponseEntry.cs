@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Slalom.Stacks.Validation;
 using Environment = Slalom.Stacks.Runtime.Environment;
 
-namespace Slalom.Stacks.Messaging.Persistence
+namespace Slalom.Stacks.Messaging.Logging
 {
     /// <summary>
     /// An entry to capture the response, or action, of a request.

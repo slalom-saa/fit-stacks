@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Logging;
-using Slalom.Stacks.Messaging.Persistence;
+using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Pipeline

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Messaging.Pipeline;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Validation;

@@ -15,7 +15,7 @@ namespace Slalom.Stacks.Messaging.Validation
     /// <typeparam name="TValue">The message type.</typeparam>
     /// <seealso cref="Slalom.Stacks.Messaging.Validation.IBusinessRule{TValue}" />
     /// <seealso cref="IBusinessRule{TCommand}" />
-    public abstract class BusinessRule<TValue> : IBusinessRule<TValue>, IUseContext
+    public abstract class BusinessRule<TValue> : IBusinessRule<TValue>, IUseExecutionContext
     {
         /// <summary>
         /// Gets the configured <see cref="IDomainFacade"/>.

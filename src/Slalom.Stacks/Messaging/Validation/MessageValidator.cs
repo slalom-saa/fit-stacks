@@ -76,9 +76,9 @@ namespace Slalom.Stacks.Messaging.Validation
         {
             foreach (var rule in _rules.OfType<IBusinessRule<TCommand>>())
             {
-                if (rule is IUseContext)
+                if (rule is IUseExecutionContext)
                 {
-                    ((IUseContext)rule).UseContext(context);
+                    ((IUseExecutionContext)rule).UseContext(context);
                 }
                 var result = (rule.Validate(command)).ToList();
                 if (result.Any())
@@ -130,9 +130,9 @@ namespace Slalom.Stacks.Messaging.Validation
         {
             foreach (var rule in _rules.OfType<ISecurityRule<TCommand>>())
             {
-                if (rule is IUseContext)
+                if (rule is IUseExecutionContext)
                 {
-                    ((IUseContext)rule).UseContext(context);
+                    ((IUseExecutionContext)rule).UseContext(context);
                 }
                 var result = (rule.Validate(command)).ToList();
                 if (result.Any())

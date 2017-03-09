@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using Slalom.Stacks.Messaging.Serialization;
 using Slalom.Stacks.Utilities.NewId;
 
-namespace Slalom.Stacks.Messaging.Persistence
+namespace Slalom.Stacks.Messaging.Logging
 {
     /// <summary>
     /// Represents a request log entry - something that tracks the request at the application level.

@@ -3,8 +3,9 @@ using System.Reflection;
 using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
+using Slalom.Stacks.Messaging.Events;
+using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Modules;
-using Slalom.Stacks.Messaging.Persistence;
 
 namespace Slalom.Stacks.Messaging
 {

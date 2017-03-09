@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Registry;
 
-namespace Slalom.Stacks.Messaging.Persistence.Actors
+namespace Slalom.Stacks.Messaging.Logging.EndPoints
 {
     [EndPoint("_systems/messaging/responses")]
     public class GetResponses : EndPoint<GetResponsesCommand, IEnumerable<ResponseEntry>>

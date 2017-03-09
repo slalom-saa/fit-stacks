@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Registry;
 
-namespace Slalom.Stacks.Messaging.Persistence.Actors
+namespace Slalom.Stacks.Messaging.Events.EndPoints
 {
     [EndPoint("_systems/events")]
     public class GetEvents : EndPoint<GetEventsCommand, IEnumerable<EventMessage>>

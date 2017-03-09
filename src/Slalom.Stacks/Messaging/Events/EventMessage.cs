@@ -1,4 +1,4 @@
-﻿namespace Slalom.Stacks.Messaging
+﻿namespace Slalom.Stacks.Messaging.Events
 {
     public abstract class Event
     {

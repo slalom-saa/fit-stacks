@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Messaging.Persistence
+namespace Slalom.Stacks.Messaging.Logging
 {
     public class InMemoryResponseLog : IResponseLog
     {

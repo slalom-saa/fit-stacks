@@ -1,8 +1,8 @@
 using System;
 
-namespace Slalom.Stacks.Messaging.Persistence.Actors
+namespace Slalom.Stacks.Messaging.Logging.EndPoints
 {
-    public class GetResponsesCommand
+    public class GetRequestsCommand
     {
         public DateTimeOffset? End { get; set; }
 

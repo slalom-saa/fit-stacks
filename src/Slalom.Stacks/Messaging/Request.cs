@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using Newtonsoft.Json;
+using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Utilities.NewId;

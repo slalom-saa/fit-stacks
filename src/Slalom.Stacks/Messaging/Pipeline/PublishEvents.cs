@@ -2,7 +2,7 @@
 using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Stacks.Messaging.Persistence;
+using Slalom.Stacks.Messaging.Events;
 
 namespace Slalom.Stacks.Messaging.Pipeline
 {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Events;
 
 namespace Slalom.Stacks.TestKit
 {
