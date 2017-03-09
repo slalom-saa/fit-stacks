@@ -29,7 +29,7 @@ namespace Slalom.Stacks.Services.Registry
             return new ServiceHost
             {
                 Path = path,
-                //EndPoints = this.EndPoints.Where(e => e.Path != null).Select(e => e.Copy(path)).ToList()
+                Services = this.Services.Where(e => e.Path != null && !e.Path.StartsWith("_")).Select(e => e.Copy(path)).ToList()
             };
         }
 

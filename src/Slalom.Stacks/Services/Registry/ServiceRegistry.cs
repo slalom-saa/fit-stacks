@@ -16,7 +16,7 @@ namespace Slalom.Stacks.Services.Registry
         /// Gets or sets the services.
         /// </summary>
         /// <value>The services.</value>
-        public List<ServiceHost> Services { get; set; } = new List<ServiceHost>();
+        public List<ServiceHost> Hosts { get; set; } = new List<ServiceHost>();
 
         /// <summary>
         /// Creates a public registry from the current service registry.
@@ -26,9 +26,9 @@ namespace Slalom.Stacks.Services.Registry
         public ServiceRegistry CreatePublicRegistry(string path)
         {
             var target = new ServiceRegistry();
-            foreach (var service in this.Services.Where(e => e.Path == ServiceHost.LocalPath))
+            foreach (var service in this.Hosts.Where(e => e.Path == ServiceHost.LocalPath))
             {
-                target.Services.Add(service.CreatePublicService(path));
+                target.Hosts.Add(service.CreatePublicService(path));
             }
             return target;
         }
@@ -40,7 +40,7 @@ namespace Slalom.Stacks.Services.Registry
         /// <returns>Services that are registered to take the specified endPoint.</returns>
         public IEnumerable<EndPointMetaData> Find(IMessage message)
         {
-            return this.Services.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.MessageType.AssemblyQualifiedName);
+            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.MessageType.AssemblyQualifiedName);
         }
 
         /// <summary>
@@ -50,10 +50,10 @@ namespace Slalom.Stacks.Services.Registry
         /// <returns>Returns the endPoint registered at the specified path.</returns>
         public EndPointMetaData Find(string path)
         {
-            var target = this.Services.SelectMany(e => e.Services).SelectMany(e=>e.EndPoints).FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
+            var target = this.Hosts.SelectMany(e => e.Services).SelectMany(e=>e.EndPoints).FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
             if (target == null)
             {
-                target = this.Services.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
+                target = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
             }
 
             return target;
@@ -74,14 +74,14 @@ namespace Slalom.Stacks.Services.Registry
                     //collection.EndPoints.AddRange(EndPoint.Create(service));
                 }
             }
-            this.Services.Add(host);
+            this.Hosts.Add(host);
         }
 
-        public void IncludeRemoteServices(string path, ServiceRegistry remote)
+        public void Include(ServiceRegistry remote)
         {
-            foreach (var service in remote.CreatePublicRegistry(path).Services)
+            foreach (var host in remote.Hosts)
             {
-                this.Services.Add(service);
+                this.Hosts.Add(host);
             }
         }
 

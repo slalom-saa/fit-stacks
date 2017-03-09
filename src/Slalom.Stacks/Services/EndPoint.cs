@@ -67,13 +67,14 @@ namespace Slalom.Stacks.Services
         /// <summary>
         /// Sends the specified message.
         /// </summary>
+        /// <param name="path">The path.</param>
         /// <param name="message">The message.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        protected Task<MessageResult> Send(object message)
+        protected Task<MessageResult> Send(string path, object message)
         {
             var stream = this.Components.Resolve<IMessageGateway>();
 
-            return stream.Send(message, this.Context);
+            return stream.Send(path, message, this.Context);
         }
 
         /// <summary>
@@ -209,7 +210,7 @@ namespace Slalom.Stacks.Services
             this.Receive(command);
             return Task.FromResult(0);
         }
-       
+
 
         async Task IEndPoint<TCommand>.Receive(TCommand instance)
         {

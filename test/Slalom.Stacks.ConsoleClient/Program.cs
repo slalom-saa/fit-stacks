@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Configuration.Actors;
@@ -31,19 +32,29 @@ namespace Slalom.Stacks.ConsoleClient
         }
     }
 
-    public class s_rule : SecurityRule<AddProductCommand>
-    {
-        public override IEnumerable<ValidationError> Validate(AddProductCommand instance)
-        {
-            if (!this.User.Identity.IsAuthenticated)
-            {
-                yield return "allo";
-            }
-        }
-    }
+    //public class b : BusinessRule<AddProductCommand>
+    //{
+    //    public override IEnumerable<ValidationError> Validate(AddProductCommand instance)
+    //    {
+    //        yield return "XXX";
+    //    }
+    //}
+
+    //public class s_rule : SecurityRule<AddProductCommand>
+    //{
+    //    public override IEnumerable<ValidationError> Validate(AddProductCommand instance)
+    //    {
+    //        //if (!this.User.Identity.IsAuthenticated)
+    //        //{
+    //        //    yield return "allo";
+    //        //}
+    //        yield break;
+    //    }
+    //}
 
     public class Program
     {
+        [STAThread]
         public static void Main(string[] args)
         {
             try
@@ -54,11 +65,13 @@ namespace Slalom.Stacks.ConsoleClient
 
                     //stack.UseSimpleConsoleLogging();
 
-                    stack.Send(new AddProductCommand("adf", "Adf")).Wait();
+                    Clipboard.SetText(stack.GetServices().CreatePublicRegistry("http://localhost").ToJson());
 
-                    Console.WriteLine(stack.Send("_systems/messaging/requests").Result.Response.ToJson());
-                    Console.WriteLine(stack.Send("_systems/messaging/responses").Result.Response.ToJson());
-                    Console.WriteLine(stack.Send("_systems/events").Result.Response.ToJson());
+                    //stack.Send(new AddProductCommand("adf", "Adf")).Wait();
+
+                    //Console.WriteLine(stack.Send("_systems/messaging/requests").Result.Response.ToJson());
+                    //Console.WriteLine(stack.Send("_systems/messaging/responses").Result.Response.ToJson());
+                    //Console.WriteLine(stack.Send("_systems/events").Result.Response.ToJson());
 
 
                     Console.WriteLine("Complete");

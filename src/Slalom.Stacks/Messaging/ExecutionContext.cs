@@ -30,6 +30,13 @@ namespace Slalom.Stacks.Messaging
             this.CancellationToken  = cancellationToken;
         }
 
+        public ExecutionContext(Request request, ExecutionContext context)
+        {
+            this.Request = request;
+            this.Parent = context.Parent;
+            this.CancellationToken = context.CancellationToken;
+        }
+
         public CancellationToken CancellationToken { get; }
 
         /// <summary>

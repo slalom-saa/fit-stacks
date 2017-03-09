@@ -14,6 +14,10 @@ namespace Slalom.Stacks.Services.Registry
             this.EndPoints = EndPointMetaData.Create(service).ToList();
         }
 
+        public ServiceMetaData()
+        {
+        }
+
         /// <summary>
         /// Gets or sets the end points.
         /// </summary>
@@ -23,5 +27,15 @@ namespace Slalom.Stacks.Services.Registry
         public string Path { get; set; }
 
         public string RootPath { get; set; }
+
+        public ServiceMetaData Copy(string path)
+        {
+            return new ServiceMetaData
+            {
+                Path = this.Path,
+                RootPath = path,
+                EndPoints = this.EndPoints.Select(e => e.Copy(path)).ToList()
+            };
+        }
     }
 }
