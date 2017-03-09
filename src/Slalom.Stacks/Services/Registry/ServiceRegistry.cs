@@ -33,14 +33,9 @@ namespace Slalom.Stacks.Services.Registry
             return target;
         }
 
-        /// <summary>
-        /// Finds services based on the specified endPoint.
-        /// </summary>
-        /// <param name="message">The endPoint.</param>
-        /// <returns>Services that are registered to take the specified endPoint.</returns>
-        public IEnumerable<EndPointMetaData> Find(IMessage message)
+        public IEnumerable<EndPointMetaData> Find(Command command)
         {
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.MessageType.AssemblyQualifiedName);
+            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == command.GetType().AssemblyQualifiedName);
         }
 
         /// <summary>
@@ -50,12 +45,16 @@ namespace Slalom.Stacks.Services.Registry
         /// <returns>Returns the endPoint registered at the specified path.</returns>
         public EndPointMetaData Find(string path)
         {
+            if (String.IsNullOrWhiteSpace(path))
+            {
+                return null;
+            }
+
             var target = this.Hosts.SelectMany(e => e.Services).SelectMany(e=>e.EndPoints).FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
             if (target == null)
             {
                 target = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
             }
-
             return target;
         }
 
@@ -71,7 +70,6 @@ namespace Slalom.Stacks.Services.Registry
                 if (!service.IsGenericType && !service.IsDynamic())
                 {
                     host.Add(service);
-                    //collection.EndPoints.AddRange(EndPoint.Create(service));
                 }
             }
             this.Hosts.Add(host);
@@ -85,22 +83,22 @@ namespace Slalom.Stacks.Services.Registry
             }
         }
 
-        public EndPointMetaData Find(Type endPoint)
+        public EndPointMetaData Find(string path, Command command)
         {
-            return null;
-            //return this.Services.SelectMany(e => e.EndPoints).FirstOrDefault(e => e.Type == endPoint.AssemblyQualifiedName);
-        }
-
-        public EndPointMetaData Find(string path, IMessage instance)
-        {
-            if (path != null)
+            var target = this.Find(path);
+            if (target == null)
             {
-                return this.Find(path);
+                target = this.Find(command).FirstOrDefault();
             }
-            else
+            if (target == null)
             {
-                return this.Find(instance).OrderBy(e => e.Version).LastOrDefault();
+                var attribute = command.GetType().GetAllAttributes<CommandAttribute>().FirstOrDefault();
+                if (attribute != null)
+                {
+                    target = this.Find(attribute.Path);
+                }
             }
+            return target;
         }
     }
 }

@@ -1,12 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock;
 using Slalom.Stacks.ConsoleClient.Domain.Shipping;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Registry;
 
-namespace Slalom.Stacks.ConsoleClient.Application.Inventory.Products.Stock
+namespace Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock
 {
     [EndPoint("shipping/products/stock")]
     public class StockProduct : EndPoint<StockProductCommand, StockProductEvent>

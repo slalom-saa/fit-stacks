@@ -60,23 +60,21 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public Task<MessageResult> Send(object instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
+        public Task<MessageResult> Send(Command instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
-            return this.Send(null, instance, parentContext, timeout);
+            return this.Send((string) null, (Command) instance, parentContext, timeout);
         }
 
         /// <inheritdoc />
-        public virtual async Task<MessageResult> Send(string path, object instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
+        public virtual async Task<MessageResult> Send(string path, Command instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
-            var message = new Message(instance);
-
-            var endPoint = _services.Value.Find(path, message);
+            var endPoint = _services.Value.Find(path, instance);
             if (endPoint == null)
             {
                 throw new InvalidOperationException("No endpoint could be found for the request.");
             }
 
-            var request = _requestContext.Value.Resolve(message, endPoint, parentContext?.Request);
+            var request = _requestContext.Value.Resolve(instance, endPoint, parentContext?.Request);
             await _requests.Value.Append(request);
 
             var dispatch = this.GetDispatchers(endPoint).FirstOrDefault();

@@ -58,7 +58,7 @@ namespace Slalom.Stacks.Messaging
         public ClaimsPrincipal User { get; private set; }
 
         /// <inheritdoc />
-        public Request Resolve(object message, EndPointMetaData endPoint, Request parent = null)
+        public Request Resolve(Command command, EndPointMetaData endPoint, Request parent = null)
         {
             return new Request
             {
@@ -68,36 +68,44 @@ namespace Slalom.Stacks.Messaging
                 User = ClaimsPrincipal.Current,
                 Parent = parent,
                 Path = endPoint.Path,
-                Message = this.GetMessage(message, endPoint)
+                Message = this.GetMessage(command, endPoint)    
             };
         }
 
-        private IMessage GetMessage(object message, EndPointMetaData endPoint)
+        /// <inheritdoc />
+        public Request Resolve(string command, EndPointMetaData endPoint, Request parent = null)
         {
-            if (message is IMessage)
+            return new Request
             {
-                return (IMessage)message;
-            }
+                CorrelationId = this.GetCorrelationId(),
+                SourceAddress = this.GetSourceIPAddress(),
+                SessionId = this.GetSession(),
+                User = ClaimsPrincipal.Current,
+                Parent = parent,
+                Path = endPoint.Path,
+                Message = this.GetMessage(command, endPoint)
+            };
+        }
 
+        private IMessage GetMessage(string message, EndPointMetaData endPoint)
+        {
             if (message == null)
             {
                 return new Message(JsonConvert.DeserializeObject("{}", Type.GetType(endPoint.RequestType)));
             }
-            if (message.GetType().AssemblyQualifiedName == endPoint.RequestType)
+            return new Message(JsonConvert.DeserializeObject(message, Type.GetType(endPoint.RequestType)));
+        }
+
+        private IMessage GetMessage(Command command, EndPointMetaData endPoint)
+        {
+            if (command.GetType().AssemblyQualifiedName == endPoint.RequestType)
             {
-                return new Message(message);
-            }
-            if (message is String && endPoint.RequestType != typeof(String).AssemblyQualifiedName)
-            {
-                if (String.IsNullOrWhiteSpace((string)message))
-                {
-                    message = "{}";
-                }
-                return new Message(JsonConvert.DeserializeObject((string)message, Type.GetType(endPoint.RequestType)));
+                return new Message(command);
             }
             else
             {
-                return new Message(JsonConvert.DeserializeObject(JsonConvert.SerializeObject(message), Type.GetType(endPoint.RequestType)));
+                var content = JsonConvert.SerializeObject(command);
+                return new Message(JsonConvert.DeserializeObject(content, Type.GetType(endPoint.RequestType)));
             }
         }
 
@@ -137,7 +145,7 @@ namespace Slalom.Stacks.Messaging
                 //}
                 //catch
                 //{
-                    sourceAddress = "127.0.0.1";
+                sourceAddress = "127.0.0.1";
                 //}
             }
             return sourceAddress;

@@ -70,7 +70,7 @@ namespace Slalom.Stacks.Services
         /// <param name="path">The path.</param>
         /// <param name="message">The message.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        protected Task<MessageResult> Send(string path, object message)
+        protected Task<MessageResult> Send(string path, Command message)
         {
             var stream = this.Components.Resolve<IMessageGateway>();
 

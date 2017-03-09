@@ -9,7 +9,6 @@ using Autofac;
 using Newtonsoft.Json;
 using Slalom.Stacks.Configuration.Actors;
 using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
-using Slalom.Stacks.ConsoleClient.Application.Products.Add;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Serialization;
@@ -22,6 +21,11 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient
 {
+    [Command("catalog/products/add")]
+    public class AddCommand : Command
+    {
+    }
+
     public class A : IHandle<ProductAdded>
     {
         public Task Handle(ProductAdded command)
@@ -65,7 +69,10 @@ namespace Slalom.Stacks.ConsoleClient
 
                     //stack.UseSimpleConsoleLogging();
 
-                    Clipboard.SetText(stack.GetServices().CreatePublicRegistry("http://localhost").ToJson());
+
+                    Console.WriteLine(stack.Send(new AddCommand()).Result.ToJson());
+
+                    //Clipboard.SetText(stack.GetServices().CreatePublicRegistry("http://localhost").ToJson());
 
                     //stack.Send(new AddProductCommand("adf", "Adf")).Wait();
 

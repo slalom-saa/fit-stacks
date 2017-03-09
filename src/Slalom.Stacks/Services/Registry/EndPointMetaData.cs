@@ -110,7 +110,7 @@ namespace Slalom.Stacks.Services.Registry
                         Path = path,
                         ServiceType = service.AssemblyQualifiedName,
                         RequestType = requestType?.AssemblyQualifiedName,
-                        ResponseType = method.ReturnType.AssemblyQualifiedName,
+                        ResponseType = service.BaseType?.GetGenericArguments().ElementAtOrDefault(1)?.AssemblyQualifiedName,
                         Rules = requestType?.GetRules().Select(e => new EndPointRule { Name = e.Name }).ToList(),
                         Version = version,
                         RequestProperties = requestType?.GetInputProperties().ToList(),

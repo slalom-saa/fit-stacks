@@ -5,7 +5,8 @@ namespace Slalom.Stacks.Messaging
 {
     public interface IRequestContext
     {
-        Request Resolve(object message, EndPointMetaData endPoint, Request parent = null);
+        Request Resolve(Command command, EndPointMetaData endPoint, Request parent = null);
+        Request Resolve(string command, EndPointMetaData endPoint, Request parent = null);
         Request Resolve(EventMessage instance, Request parent);
     }
 }
