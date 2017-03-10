@@ -1,7 +1,6 @@
-﻿using System;
-using Autofac;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using Slalom.Stacks.Messaging.Events;
 
 namespace Slalom.Stacks.Messaging.Pipeline
@@ -12,13 +11,13 @@ namespace Slalom.Stacks.Messaging.Pipeline
     /// <seealso cref="Slalom.Stacks.Messaging.Pipeline.IMessageExecutionStep" />
     public class PublishEvents : IMessageExecutionStep
     {
+        private readonly IEventStore _eventStore;
         private readonly IMessageGateway _messageGateway;
-        private IEventStore _eventStore;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PublishEvents"/> class.
+        /// Initializes a new instance of the <see cref="PublishEvents" /> class.
         /// </summary>
-        /// <param name="components">The components.</param>
+        /// <param name="components">The current component context.</param>
         public PublishEvents(IComponentContext components)
         {
             _messageGateway = components.Resolve<IMessageGateway>();
@@ -30,7 +29,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
         {
             if (context.IsSuccessful)
             {
-                foreach (var instance in context.RaisedEvents.Union(new[] { context.Response as EventMessage }).Where(e => e != null))
+                foreach (var instance in context.RaisedEvents.Union(new[] {context.Response as EventMessage}).Where(e => e != null))
                 {
                     await _eventStore.Append(instance);
 

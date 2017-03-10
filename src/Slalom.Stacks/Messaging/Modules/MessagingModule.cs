@@ -45,7 +45,7 @@ namespace Slalom.Stacks.Messaging.Modules
                    .As<IMessageGateway>()
                    .SingleInstance();
 
-            builder.RegisterType<LocalMessageDispatcher>().As<IMessageDispatcher>();
+            builder.RegisterType<MessageDispatcher>().As<IMessageDispatcher>();
 
             builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))

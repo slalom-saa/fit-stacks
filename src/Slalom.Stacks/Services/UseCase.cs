@@ -13,13 +13,6 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services
 {
-    //public abstract class SystemEndPoint<T> : Service, IEndPoint<T> where T : class
-    //{
-    //    public abstract Task Receive(T instance);
-
-    //    public abstract void 
-    //}
-
     public abstract class SystemEndPoint<T, R> : Service, IEndPoint<T> where T : class where R : class
     {
         public async Task Receive(T instance)
@@ -126,7 +119,7 @@ namespace Slalom.Stacks.Services
         }
     }
 
-    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand>, IEndPoint<TCommand> where TCommand : class where TResult : class
+    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand>, IEndPoint<TCommand> where TCommand : Command where TResult : class
     {
         /// <summary>
         /// Executes the use case given the specified message.
@@ -181,9 +174,59 @@ namespace Slalom.Stacks.Services
         }
     }
 
-    public abstract class UseCase<TCommand> : Service, IEndPoint<TCommand> where TCommand : class
+    public abstract class UseCase<TCommand> : Service, IEndPoint<TCommand> where TCommand : Command
     {
+        /// <summary>
+        /// Executes the use case given the specified message.
+        /// </summary>
+        /// <param name="command">The message containing the input.</param>
+        /// <returns>The message result.</returns>
+        public virtual void Execute(TCommand command)
+        {
+            throw new NotImplementedException($"The execution methods for the {this.GetType().Name} use case actor have not been implemented.");
+        }
 
+        /// <summary>
+        /// Executes the use case given the specified message.
+        /// </summary>
+        /// <param name="command">The message containing the input.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public virtual Task ExecuteAsync(TCommand command)
+        {
+            this.Execute(command);
+
+            return Task.FromResult(0);
+        }
+
+
+        async Task IEndPoint<TCommand>.Receive(TCommand instance)
+        {
+            await this.Prepare();
+
+            var context = ((IService)this).Context;
+
+            if (!context.ValidationErrors.Any())
+            {
+                try
+                {
+                    if (!context.CancellationToken.IsCancellationRequested)
+                    {
+                        await this.ExecuteAsync(instance);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    context.SetException(exception);
+                }
+            }
+
+            await this.Complete();
+        }
+    }
+
+
+    public abstract class EventUseCase<TCommand> : Service, IEndPoint<TCommand> where TCommand : Event
+    {
         /// <summary>
         /// Executes the use case given the specified message.
         /// </summary>

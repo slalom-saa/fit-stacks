@@ -28,5 +28,5 @@ namespace Slalom.Stacks.Messaging
         Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null);
 
         Task<MessageResult> Dispatch(Request request, ExecutionContext context);
-    }
+    }   
 }

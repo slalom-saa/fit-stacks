@@ -1,10 +1,12 @@
 ﻿using System;
 using Autofac;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Registry;
@@ -15,17 +17,17 @@ namespace Slalom.Stacks.Messaging
     /// A local <see cref="IMessageDispatcher"/> implementation.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Messaging.IMessageDispatcher" />
-    public class LocalMessageDispatcher : IMessageDispatcher
+    public class MessageDispatcher : IMessageDispatcher
     {
         private readonly IComponentContext _components;
         private readonly IEnvironmentContext _environmentContext;
         private IRequestContext _requestContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LocalMessageDispatcher"/> class.
+        /// Initializes a new instance of the <see cref="MessageDispatcher"/> class.
         /// </summary>
         /// <param name="components">The configured <see cref="IComponentContext"/>.</param>
-        public LocalMessageDispatcher(IComponentContext components)
+        public MessageDispatcher(IComponentContext components)
         {
             _components = components;
             _environmentContext = components.Resolve<IEnvironmentContext>();

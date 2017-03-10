@@ -31,7 +31,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
         /// <inheritdoc />
         public async Task Execute(IMessage message, ExecutionContext context)
         {
-            //await _requests.Append(new RequestEntry(context.Request)).ConfigureAwait(false);
+            await _requests.Append(context.Request).ConfigureAwait(false);
 
             if (message.Body != null && context.Request.Path != null)
             {

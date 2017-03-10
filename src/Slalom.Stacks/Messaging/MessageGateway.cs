@@ -45,6 +45,11 @@ namespace Slalom.Stacks.Messaging
             var request = _requestContext.Value.Resolve(instance, context.Request);
             await _requests.Value.Append(request);
 
+            var endPoints = _services.Value.Find(instance);
+            foreach (var endPoint in endPoints)
+            {
+                _dispatchers.Value.ToList().ForEach(e => e.Dispatch(request, endPoint, context));
+            }
             _dispatchers.Value.ToList().ForEach(e => e.Dispatch(request, context));
         }
 
@@ -75,7 +80,7 @@ namespace Slalom.Stacks.Messaging
             }
 
             var request = _requestContext.Value.Resolve(instance, endPoint, parentContext?.Request);
-            await _requests.Value.Append(request);
+            //await _requests.Value.Append(request);
 
             var dispatch = this.GetDispatchers(endPoint).FirstOrDefault();
             if (dispatch == null)
@@ -96,7 +101,7 @@ namespace Slalom.Stacks.Messaging
             }
 
             var request = _requestContext.Value.Resolve(command, endPoint, parentContext?.Request);
-            await _requests.Value.Append(request);
+            //await _requests.Value.Append(request);
 
             var dispatch = this.GetDispatchers(endPoint).FirstOrDefault();
             if (dispatch == null)

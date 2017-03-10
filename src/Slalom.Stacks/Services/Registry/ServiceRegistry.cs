@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Reflection;
 
 namespace Slalom.Stacks.Services.Registry
@@ -56,6 +57,11 @@ namespace Slalom.Stacks.Services.Registry
                 target = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
             }
             return target;
+        }
+
+        public IEnumerable<EndPointMetaData> Find(EventMessage instance)
+        {
+            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == instance.MessageType.AssemblyQualifiedName);
         }
 
         /// <summary>
