@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Threading.Tasks;
 using Autofac;
+using System.Linq;
+using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Events;
@@ -13,57 +12,27 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services
 {
-    public abstract class SystemEndPoint<T, R> : Service, IEndPoint<T> where T : class where R : class
+    public abstract class SystemEndPoint<T, R> : Service, IEndPoint<T>
     {
+        public abstract Task<R> Execute(T instance);
+
         public async Task Receive(T instance)
         {
             var result = await this.Execute(instance);
 
-            ((IService) this).Context.Response = result;
+            ((IService)this).Context.Response = result;
         }
-
-        public abstract Task<R> Execute(T instance);
     }
 
     public interface IService
     {
-        Request Request { get; }
-
         ExecutionContext Context { get; set; }
+
+        Request Request { get; }
     }
 
     public abstract class Service : IService
     {
-        public Request Request => ((IService)this).Context.Request;
-
-        ExecutionContext IService.Context { get; set; }
-
-        private ExecutionContext Context => ((IService)this).Context;
-
-        /// <summary>
-        /// Adds the raised event that will fire on completion.
-        /// </summary>
-        /// <param name="instance">The instance to raise.</param>
-        public void AddRaisedEvent(Event instance)
-        {
-            Argument.NotNull(instance, nameof(instance));
-
-            this.Context.AddRaisedEvent(instance);
-        }
-
-        /// <summary>
-        /// Sends the specified message.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <param name="message">The message.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        protected Task<MessageResult> Send(string path, Command message)
-        {
-            var stream = this.Components.Resolve<IMessageGateway>();
-
-            return stream.Send(path, message, this.Context);
-        }
-
         /// <summary>
         /// Gets the configured <see cref="IDomainFacade"/> instance.
         /// </summary>
@@ -81,6 +50,48 @@ namespace Slalom.Stacks.Services
         /// </summary>
         /// <value>The configured <see cref="IComponentContext"/> instance.</value>
         internal IComponentContext Components { get; set; }
+
+        private ExecutionContext Context => ((IService)this).Context;
+
+        public Request Request => ((IService)this).Context.Request;
+
+        ExecutionContext IService.Context { get; set; }
+
+        /// <summary>
+        /// Adds the raised event that will fire on completion.
+        /// </summary>
+        /// <param name="instance">The instance to raise.</param>
+        public void AddRaisedEvent(Event instance)
+        {
+            Argument.NotNull(instance, nameof(instance));
+
+            this.Context.AddRaisedEvent(instance);
+        }
+
+        /// <summary>
+        /// Sends the specified message.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="command">The command.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        protected Task<MessageResult> Send(string path, Command command)
+        {
+            var messages = this.Components.Resolve<IMessageGateway>();
+
+            return messages.Send(path, command, this.Context);
+        }
+
+        /// <summary>
+        /// Sends the specified message.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        protected Task<MessageResult> Send(Command command)
+        {
+            var messages = this.Components.Resolve<IMessageGateway>();
+
+            return messages.Send(command, this.Context);
+        }
 
         /// <summary>
         /// Completes the specified message.
@@ -198,7 +209,6 @@ namespace Slalom.Stacks.Services
             return Task.FromResult(0);
         }
 
-
         async Task IEndPoint<TCommand>.Receive(TCommand instance)
         {
             await this.Prepare();
@@ -224,7 +234,6 @@ namespace Slalom.Stacks.Services
         }
     }
 
-
     public abstract class EventUseCase<TCommand> : Service, IEndPoint<TCommand> where TCommand : Event
     {
         /// <summary>
@@ -248,7 +257,6 @@ namespace Slalom.Stacks.Services
 
             return Task.FromResult(0);
         }
-
 
         async Task IEndPoint<TCommand>.Receive(TCommand instance)
         {
