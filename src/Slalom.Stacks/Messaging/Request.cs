@@ -68,7 +68,7 @@ namespace Slalom.Stacks.Messaging
                 User = ClaimsPrincipal.Current,
                 Parent = parent,
                 Path = endPoint.Path,
-                Message = this.GetMessage(command, endPoint)    
+                Message = this.GetMessage(command, endPoint)
             };
         }
 
@@ -98,14 +98,18 @@ namespace Slalom.Stacks.Messaging
 
         private IMessage GetMessage(Command command, EndPointMetaData endPoint)
         {
-            if (command.GetType().AssemblyQualifiedName == endPoint.RequestType)
+            if (command != null && command.GetType().AssemblyQualifiedName == endPoint.RequestType)
             {
                 return new Message(command);
             }
-            else
+            else if (command != null)
             {
                 var content = JsonConvert.SerializeObject(command);
                 return new Message(JsonConvert.DeserializeObject(content, Type.GetType(endPoint.RequestType)));
+            }
+            else
+            {
+                return new Message(JsonConvert.DeserializeObject("{}", Type.GetType(endPoint.RequestType)));
             }
         }
 

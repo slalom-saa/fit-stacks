@@ -7,9 +7,9 @@ using Slalom.Stacks.Services.Registry;
 namespace Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock
 {
     [EndPoint("shipping/products/stock")]
-    public class StockProduct : EndPoint<StockProductCommand, StockProductEvent>
+    public class StockProduct : UseCase<StockProductCommand, StockProductEvent>
     {
-        public override async Task<StockProductEvent> ReceiveAsync(StockProductCommand command)
+        public override async Task<StockProductEvent> ExecuteAsync(StockProductCommand command)
         {
             var target = (await this.Domain.Find<StockItem>(e => e.ProductId == command.ProductId)).FirstOrDefault();
             if (target == null)

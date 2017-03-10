@@ -35,6 +35,11 @@ namespace Slalom.Stacks.Text
             }
         }
 
+        public static void OutputToJson(this object instance)
+        {
+            Console.WriteLine(instance.ToJson());
+        }
+
         public static string ToJson(this object instance)
         {
             return JsonConvert.SerializeObject(instance, Formatting.Indented);

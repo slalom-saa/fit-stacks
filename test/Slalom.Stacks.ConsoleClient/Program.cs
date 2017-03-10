@@ -21,20 +21,32 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient
 {
-    [Command("catalog/products/add")]
-    public class AddCommand : Command
+
+    public class Go
     {
     }
 
-    public class A : IHandle<ProductAdded>
+    public class There
     {
-        public Task Handle(ProductAdded command)
-        {
-            Console.WriteLine("..ss.");
+    }
 
+
+    public class S : Service, IEndPoint<Go, There>, IEndPoint<There>
+    {
+        [EndPoint("go")]
+        public Task<There> Receive(Go instance)
+        {
+            return Task.FromResult(new There());
+        }
+
+        [EndPoint("there")]
+        public Task Receive(There instance)
+        {
             return Task.FromResult(0);
         }
     }
+
+
 
     //public class b : BusinessRule<AddProductCommand>
     //{
@@ -67,19 +79,11 @@ namespace Slalom.Stacks.ConsoleClient
                 {
                     stack.UseInMemoryPersistence();
 
-                    //stack.UseSimpleConsoleLogging();
+                    stack.Send("go").Result.OutputToJson();
 
+                    stack.Send(new AddProductCommand("name", "")).Result.OutputToJson();
 
-                    Console.WriteLine(stack.Send(new AddCommand()).Result.ToJson());
-
-                    //Clipboard.SetText(stack.GetServices().CreatePublicRegistry("http://localhost").ToJson());
-
-                    //stack.Send(new AddProductCommand("adf", "Adf")).Wait();
-
-                    //Console.WriteLine(stack.Send("_systems/messaging/requests").Result.Response.ToJson());
-                    //Console.WriteLine(stack.Send("_systems/messaging/responses").Result.Response.ToJson());
-                    //Console.WriteLine(stack.Send("_systems/events").Result.Response.ToJson());
-
+                    Clipboard.SetText(stack.Send("_systems/messaging/requests").Result.ToJson());
 
                     Console.WriteLine("Complete");
                     Console.ReadKey();

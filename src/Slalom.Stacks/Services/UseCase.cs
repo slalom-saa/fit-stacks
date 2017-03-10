@@ -13,29 +13,23 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services
 {
-    public class SystemEndPoint<T> : EndPoint<T> where T : class
+    //public abstract class SystemEndPoint<T> : Service, IEndPoint<T> where T : class
+    //{
+    //    public abstract Task Receive(T instance);
+
+    //    public abstract void 
+    //}
+
+    public abstract class SystemEndPoint<T, R> : Service, IEndPoint<T> where T : class where R : class
     {
-        internal override Task Prepare()
+        public async Task Receive(T instance)
         {
-            return Task.FromResult(0);
+            var result = await this.Execute(instance);
+
+            ((IService) this).Context.Response = result;
         }
 
-        internal override Task Complete()
-        {
-            return Task.FromResult(0);
-        }
-    }
-    public class SystemEndPoint<T, R> : EndPoint<T, R> where T : class where R : class
-    {
-        internal override Task Prepare()
-        {
-            return Task.FromResult(0);
-        }
-
-        internal override Task Complete()
-        {
-            return Task.FromResult(0);
-        }
+        public abstract Task<R> Execute(T instance);
     }
 
     public interface IService
@@ -132,14 +126,14 @@ namespace Slalom.Stacks.Services
         }
     }
 
-    public abstract class EndPoint<TCommand, TResult> : EndPoint<TCommand>, IEndPoint<TCommand> where TCommand : class where TResult : class
+    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand>, IEndPoint<TCommand> where TCommand : class where TResult : class
     {
         /// <summary>
         /// Executes the use case given the specified message.
         /// </summary>
         /// <param name="command">The message containing the input.</param>
         /// <returns>The message result.</returns>
-        public new virtual TResult Receive(TCommand command)
+        public new virtual TResult Execute(TCommand command)
         {
             throw new NotImplementedException($"The execution methods for the {this.GetType().Name} use case actor have not been implemented.");
         }
@@ -149,9 +143,9 @@ namespace Slalom.Stacks.Services
         /// </summary>
         /// <param name="command">The message containing the input.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public new virtual Task<TResult> ReceiveAsync(TCommand command)
+        public new virtual Task<TResult> ExecuteAsync(TCommand command)
         {
-            return Task.FromResult(this.Receive(command));
+            return Task.FromResult(this.Execute(command));
         }
 
         /// <inheritdoc />
@@ -167,7 +161,7 @@ namespace Slalom.Stacks.Services
                 {
                     if (!context.CancellationToken.IsCancellationRequested)
                     {
-                        var result = await this.ReceiveAsync(instance);
+                        var result = await this.ExecuteAsync(instance);
 
                         context.Response = result;
 
@@ -187,7 +181,7 @@ namespace Slalom.Stacks.Services
         }
     }
 
-    public abstract class EndPoint<TCommand> : Service, IEndPoint<TCommand> where TCommand : class
+    public abstract class UseCase<TCommand> : Service, IEndPoint<TCommand> where TCommand : class
     {
 
         /// <summary>
@@ -195,7 +189,7 @@ namespace Slalom.Stacks.Services
         /// </summary>
         /// <param name="command">The message containing the input.</param>
         /// <returns>The message result.</returns>
-        public virtual void Receive(TCommand command)
+        public virtual void Execute(TCommand command)
         {
             throw new NotImplementedException($"The execution methods for the {this.GetType().Name} use case actor have not been implemented.");
         }
@@ -205,9 +199,10 @@ namespace Slalom.Stacks.Services
         /// </summary>
         /// <param name="command">The message containing the input.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public virtual Task ReceiveAsync(TCommand command)
+        public virtual Task ExecuteAsync(TCommand command)
         {
-            this.Receive(command);
+            this.Execute(command);
+
             return Task.FromResult(0);
         }
 
@@ -224,7 +219,7 @@ namespace Slalom.Stacks.Services
                 {
                     if (!context.CancellationToken.IsCancellationRequested)
                     {
-                        await this.ReceiveAsync(instance);
+                        await this.ExecuteAsync(instance);
                     }
                 }
                 catch (Exception exception)

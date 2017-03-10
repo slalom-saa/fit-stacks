@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Slalom.Stacks.Messaging;
+using System.Reflection;
+using Slalom.Stacks.Reflection;
 
 namespace Slalom.Stacks.Services.Registry
 {
@@ -46,6 +48,8 @@ namespace Slalom.Stacks.Services.Registry
         /// <value>The root path.</value>
         public string RootPath { get; set; }
 
+        public MethodInfo EndPointType { get; set; }
+
         public List<EndPointRule> Rules { get; set; }
 
         /// <summary>
@@ -89,10 +93,10 @@ namespace Slalom.Stacks.Services.Registry
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="rootPath">The root path.</param>
-        /// <returns>EndPoint.</returns>
+        /// <returns>UseCase.</returns>
         public static IEnumerable<EndPointMetaData> Create(Type service, string rootPath = ServiceHost.LocalPath)
         {
-            var interfaces = service.GetInterfaces().Where(e => e.IsGenericType && e.GetGenericTypeDefinition() == typeof(IEndPoint<>));
+            var interfaces = service.GetInterfaces().Where(e => e.IsGenericType && (e.GetGenericTypeDefinition() == typeof(IEndPoint<>) || e.GetGenericTypeDefinition() == typeof(IEndPoint<,>))).ToList();
             if (interfaces.Any())
             {
                 var path = service.GetPath();
@@ -103,22 +107,34 @@ namespace Slalom.Stacks.Services.Registry
                 foreach (var item in interfaces)
                 {
                     var method = item.GetMethod("Receive");
-                    var requestType = method.GetParameters().FirstOrDefault()?.ParameterType;
-
-                    var endPoint = new EndPointMetaData
+                    if (method.DeclaringType != null)
                     {
-                        Path = path,
-                        ServiceType = service.AssemblyQualifiedName,
-                        RequestType = requestType?.AssemblyQualifiedName,
-                        ResponseType = service.BaseType?.GetGenericArguments().ElementAtOrDefault(1)?.AssemblyQualifiedName,
-                        Rules = requestType?.GetRules().Select(e => new EndPointRule { Name = e.Name }).ToList(),
-                        Version = version,
-                        RequestProperties = requestType?.GetInputProperties().ToList(),
-                        Summary = summary,
-                        RootPath = rootPath,
-                        Timeout = timeout
-                    };
-                    yield return endPoint;
+                        var map = service.GetInterfaceMap(method.DeclaringType);
+                        var index = Array.IndexOf(map.InterfaceMethods, method);
+                        var m = map.TargetMethods[index];
+                        var attribute = m?.GetCustomAttributes<EndPointAttribute>().FirstOrDefault();
+                        if (!String.IsNullOrWhiteSpace(attribute?.Path))
+                        {
+                            path = attribute.Path;
+                        }
+
+                        var requestType = method.GetParameters().FirstOrDefault()?.ParameterType;
+                        var endPoint = new EndPointMetaData
+                        {
+                            Path = path,
+                            ServiceType = service.AssemblyQualifiedName,
+                            RequestType = requestType?.AssemblyQualifiedName,
+                            ResponseType = service.BaseType?.GetGenericArguments().ElementAtOrDefault(1)?.AssemblyQualifiedName,
+                            Rules = requestType?.GetRules().Select(e => new EndPointRule {Name = e.Name}).ToList(),
+                            Version = version,
+                            RequestProperties = requestType?.GetInputProperties().ToList(),
+                            Summary = summary,
+                            RootPath = rootPath,
+                            Timeout = timeout,
+                            EndPointType = method
+                        };
+                        yield return endPoint;
+                    }
                 }
             }
         }

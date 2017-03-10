@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -72,8 +73,8 @@ namespace Slalom.Stacks.Messaging
             {
                 service.Context = context;
             }
-
-            await (Task)typeof(IEndPoint<>).MakeGenericType(Type.GetType(endPoint.RequestType)).GetMethod("Receive").Invoke(handler, new object[] { request.Message.Body });
+            
+            await (Task)endPoint.EndPointType.Invoke(handler, new object[] { request.Message.Body });
 
             return new MessageResult(context);
         }

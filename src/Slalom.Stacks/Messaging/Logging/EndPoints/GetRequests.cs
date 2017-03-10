@@ -15,7 +15,7 @@ namespace Slalom.Stacks.Messaging.Logging.EndPoints
             _source = source;
         }
 
-        public override Task<IEnumerable<RequestEntry>> ReceiveAsync(GetRequestsCommand instance)
+        public override Task<IEnumerable<RequestEntry>> Execute(GetRequestsCommand instance)
         {
             return _source.GetEntries(instance.Start, instance.End);
         }

@@ -15,6 +15,6 @@ namespace Slalom.Stacks.Messaging
 
     public interface IEndPoint<TRequest, TResponse>
     {
-        Task<TResponse> Handle(TRequest instance);
+        Task<TResponse> Receive(TRequest instance);
     }
 }
