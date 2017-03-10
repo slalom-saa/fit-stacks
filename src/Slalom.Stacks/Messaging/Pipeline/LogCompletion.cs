@@ -40,20 +40,20 @@ namespace Slalom.Stacks.Messaging.Pipeline
             {
                 if (context.Exception != null)
                 {
-                    _logger.Error(context.Exception, "An unhandled exception was raised while executing \"" + name + "\".", instance);
+                    _logger.Error(context.Exception, "An unhandled exception was raised while executing \"" + name + "\".", context);
                 }
                 else if (context.ValidationErrors?.Any() ?? false)
                 {
-                    _logger.Error("Execution completed with validation errors while executing \"" + name + "\": " + string.Join("; ", context.ValidationErrors.Select(e => e.Type + ": " + e.Message)), instance);
+                    _logger.Error("Execution completed with validation errors while executing \"" + name + "\": " + string.Join("; ", context.ValidationErrors.Select(e => e.Type + ": " + e.Message)), context);
                 }
                 else
                 {
-                    _logger.Error("Execution completed unsuccessfully while executing \"" + name + "\".", instance);
+                    _logger.Error("Execution completed unsuccessfully while executing \"" + name + "\".", context);
                 }
             }
             else
             {
-                _logger.Verbose("Successfully executed \"" + name + "\".", instance);
+                _logger.Verbose("Successfully executed \"" + name + "\".", context);
             }
 
             return Task.WhenAll(tasks);
