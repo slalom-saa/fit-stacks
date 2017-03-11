@@ -1,6 +1,10 @@
-﻿param (
+﻿<#
+.SYNOPSIS
+    Packages the Stacks packages.
+#>
+param (
     $Configuration = "DEBUG",
-    $IncrementVersion = $true
+    $IncrementVersion = $false
 )
 
 function Increment-Version() {

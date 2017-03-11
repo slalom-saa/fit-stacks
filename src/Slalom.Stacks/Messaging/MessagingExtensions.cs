@@ -3,6 +3,8 @@ using System.Reflection;
 using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
+using Slalom.Stacks.Messaging.Events;
+using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Modules;
 
 namespace Slalom.Stacks.Messaging
@@ -13,30 +15,26 @@ namespace Slalom.Stacks.Messaging
     public static class MessagingExtensions
     {
         /// <summary>
-        /// Adds messaging types found in the specified type assemblies.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="types">The types to use to get the assemblies.</param>
-        /// <returns>The current instance for method chaining.</returns>
-        public static Stack AddMessagingTypes(this Stack instance, params Type[] types)
-        {
-            instance.Use(builder =>
-            {
-                builder.RegisterModule(new MessagingTypesModule(types.Select(e => e.GetTypeInfo().Assembly).ToArray()));
-            });
-            return instance;
-        }
-
-        /// <summary>
         /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
         /// <param name="instance">The this instance.</param>
         /// <param name="command">The command to send.</param>
         /// <param name="timeout">The request timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public static Task<MessageResult> Send(this Stack instance, ICommand command, TimeSpan? timeout = null)
+        public static Task<MessageResult> Send(this Stack instance, Command command, TimeSpan? timeout = null)
         {
             return instance.Container.Resolve<IMessageGateway>().Send(command, timeout: timeout);
+        }
+
+        public static Stack UseInMemoryLogging(this Stack instance)
+        {
+            instance.Use(builder =>
+            {
+                builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
+                builder.RegisterType<InMemoryRequestLog>().As<IRequestLog>().SingleInstance();
+                builder.RegisterType<InMemoryResponseLog>().As<IResponseLog>().SingleInstance();
+            });
+            return instance;
         }
 
         /// <summary>
@@ -47,7 +45,7 @@ namespace Slalom.Stacks.Messaging
         /// <param name="command">The command to send.</param>
         /// <param name="timeout">The request timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public static Task<MessageResult> Send(this Stack instance, string path, ICommand command, TimeSpan? timeout = null)
+        public static Task<MessageResult> Send(this Stack instance, string path, Command command, TimeSpan? timeout = null)
         {
             return instance.Container.Resolve<IMessageGateway>().Send(path, command, timeout: timeout);
         }
@@ -61,7 +59,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         public static Task<MessageResult> Send(this Stack instance, string path, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageGateway>().Send(path, "{}", timeout: timeout);
+            return instance.Container.Resolve<IMessageGateway>().Send(path, (Command)null, timeout: timeout);
         }
 
         /// <summary>

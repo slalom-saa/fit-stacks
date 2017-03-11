@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using Autofac;
 using System.Linq;
@@ -13,6 +14,7 @@ using Slalom.Stacks.Messaging.Modules;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
+using Environment = Slalom.Stacks.Runtime.Environment;
 using Module = Autofac.Module;
 
 namespace Slalom.Stacks.Configuration
@@ -23,15 +25,15 @@ namespace Slalom.Stacks.Configuration
     /// <seealso cref="Autofac.Module" />
     internal class ConfigurationModule : Module
     {
-        private readonly Assembly[] _assemblies;
+        private readonly Stack _stack;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigurationModule"/> class.
+        /// Initializes a new instance of the <see cref="ConfigurationModule" /> class.
         /// </summary>
-        /// <param name="assemblies">The assemblies.</param>
-        public ConfigurationModule(Assembly[] assemblies)
+        /// <param name="stack">The current stack.</param>
+        public ConfigurationModule(Stack stack)
         {
-            _assemblies = assemblies;
+            _stack = stack;
         }
 
         /// <summary>
@@ -53,17 +55,17 @@ namespace Slalom.Stacks.Configuration
                    }).As<IConfiguration>()
                    .SingleInstance();
 
-            builder.RegisterModule(new DomainModule(_assemblies));
-            builder.RegisterModule(new MessagingModule(_assemblies));
-            builder.RegisterModule(new SearchModule(_assemblies));
+            builder.RegisterModule(new DomainModule(_stack));
+            builder.RegisterModule(new MessagingModule(_stack));
+            builder.RegisterModule(new SearchModule(_stack));
             builder.RegisterModule(new RuntimeModule());
 
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new NullCachingModule());
 
-            builder.Register(c => new ExecutionContext(c.Resolve<IConfiguration>()))
-                .As<IExecutionContext>();
-                   
+            builder.Register(c => new Environment(c.Resolve<IConfiguration>()))
+                .As<IEnvironmentContext>();
+
 
             builder.Register(c => new DiscoveryService(c.Resolve<ILogger>()))
                    .As<IDiscoverTypes>()

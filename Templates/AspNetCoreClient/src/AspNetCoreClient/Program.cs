@@ -15,6 +15,8 @@ namespace AspNetCoreClient
         {
             using (var stack = new Stack())
             {
+                stack.UseAkkaMessaging();
+                
                 stack.RunWebHost();
             }
         }

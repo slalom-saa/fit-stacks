@@ -13,7 +13,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
     public class HandleException : IMessageExecutionStep
     {
         /// <inheritdoc />
-        public Task Execute(IMessage message, MessageExecutionContext context)
+        public Task Execute(IMessage message, ExecutionContext context)
         {
             var exception = context.Exception;
             var validationException = exception as ValidationException;

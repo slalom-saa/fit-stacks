@@ -1,29 +1,30 @@
 ﻿using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Autofac;
-using Newtonsoft.Json;
-using Slalom.Stacks.ConsoleClient.Application.Products.Add;
-using Slalom.Stacks.ConsoleClient.Aspects;
-using Slalom.Stacks.Documentation;
-using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Logging;
-using Slalom.Stacks.Messaging.Serialization;
+using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
 {
     public class Program
     {
+        [STAThread]
         public static void Main(string[] args)
         {
             try
             {
-                using (var stack = new DocumentStack(typeof(AddProduct)))
+                using (var stack = new Stack())
                 {
-                    stack.WriteToConsole();
+                    stack.UseInMemoryLogging();
+
+                    stack.Send("v1/items/add").Wait();
+
+                    //stack.Send("_systems/messaging/responses").Result.OutputToJson();
+
+                    Console.WriteLine("Complete");
+                    Console.ReadKey();
                 }
             }
             catch (Exception exception)

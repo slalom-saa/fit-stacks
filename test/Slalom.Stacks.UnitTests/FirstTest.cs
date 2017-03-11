@@ -1,8 +1,8 @@
 ﻿using System;
 using FluentAssertions;
 using System.Linq;
-using Slalom.Stacks.ConsoleClient.Application.Inventory.Products.Stock;
-using Slalom.Stacks.ConsoleClient.Application.Products.Add;
+using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
+using Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock;
 using Slalom.Stacks.ConsoleClient.Domain.Products;
 using Slalom.Stacks.ConsoleClient.Domain.Shipping;
 using Slalom.Stacks.TestKit;

@@ -13,11 +13,11 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestEntry" /> class.
         /// </summary>
-        public RequestEntry(RequestContext request)
+        public RequestEntry(Request request)
         {
             try
             {
-                this.MessageBody = JsonConvert.SerializeObject(request.Message, new JsonSerializerSettings
+                this.MessageBody = JsonConvert.SerializeObject(request.Message.Body, new JsonSerializerSettings
                 {
                     ContractResolver = new CommandContractResolver()
                 });
@@ -26,15 +26,23 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.MessageBody = "{ \"Error\" : \"Serialization failed.\" }";
             }
-            //this.MessageType = request.Message.EndPointType.FullName;
-            //this.MessageId = request.Message.Id;
-            //this.TimeStamp = request.Message.TimeStamp;
-            //this.SessionId = request.SessionId;
-            //this.UserName = request.User?.Identity?.Name;
-            //this.Path = request.Path;
-            //this.SourceAddress = request.SourceAddress;
-            //this.CorrelationId = request.CorrelationId;
-            //this.Parent = request.ParentContext?.Message.Id;
+            if (request.Message is IMessage)
+            {
+                var message = (IMessage)request.Message;
+                this.MessageType = message.MessageType?.FullName;
+                this.MessageId = message.Id;
+                this.TimeStamp = message.TimeStamp;
+            }
+            else
+            {
+                this.MessageType = request.Message.GetType().FullName;
+            }
+            this.SessionId = request.SessionId;
+            this.UserName = request.User?.Identity?.Name;
+            this.Path = request.Path;
+            this.SourceAddress = request.SourceAddress;
+            this.CorrelationId = request.CorrelationId;
+            this.Parent = (request.Parent?.Message as IMessage)?.Id;
         }
 
         /// <summary>

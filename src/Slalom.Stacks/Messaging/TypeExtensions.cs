@@ -4,59 +4,22 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Reflection;
+using System.Xml.XPath;
 using System.Linq;
 using System.Xml.Linq;
 using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Validation;
-using System.Xml.XPath;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
 {
-    public class Comments
-    {
-        public string Summary { get; set; }
-        public string Value { get; set; }
-        public string Remarks { get; set; }
-
-        public Comments(XNode node)
-        {
-            this.Summary = node.XPathSelectElement("summary")?.Value.Trim();
-            this.Value = node.XPathSelectElement("value")?.Value.Trim();
-            this.Remarks = node.XPathSelectElement("remarks")?.Value.Trim();
-        }
-
-        public Comments()
-        {
-        }
-    }
-
     /// <summary>
     /// Extensions for types within messaging.
     /// </summary>
     public static class TypeExtensions
     {
-        /// <summary>
-        /// Gets the path for the endPoint.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>Returns the path for the type.</returns>
-        public static string GetPath(this Type type)
-        {
-            return type.GetAllAttributes<PathAttribute>().Select(e => e.Path).FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Gets the version for the endPoint.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>Returns the path for the type.</returns>
-        public static int GetVersion(this Type type)
-        {
-            return type.GetAllAttributes<PathAttribute>().FirstOrDefault()?.Version ?? 1;
-        }
-
-        private static ConcurrentDictionary<Assembly, XDocument> _commentsCache = new ConcurrentDictionary<Assembly, XDocument>();
+        private static readonly ConcurrentDictionary<Assembly, XDocument> _commentsCache = new ConcurrentDictionary<Assembly, XDocument>();
 
         public static XDocument GetComments(this Assembly assembly)
         {
@@ -79,15 +42,13 @@ namespace Slalom.Stacks.Messaging
                 var node = document.XPathSelectElement("//member[@name=\"T:" + type.FullName + "\"]");
                 if (node != null)
                 {
-                    return node.XPathSelectElement("summary").Value.Trim();
+                    return node.XPathSelectElement("summary")?.Value.Trim();
                 }
             }
             return null;
         }
 
-
-
-        public static Comments GetComments(this PropertyInfo property)
+        public static string GetComments(this PropertyInfo property)
         {
             var document = property.DeclaringType.Assembly.GetComments();
             if (document != null)
@@ -95,41 +56,38 @@ namespace Slalom.Stacks.Messaging
                 var node = document.XPathSelectElement("//member[@name=\"P:" + property.DeclaringType.FullName + "." + property.Name + "\"]");
                 if (node != null)
                 {
-                    return new Comments(node);
+                    return node.XPathSelectElement("summary")?.Value.Trim();
                 }
             }
-            return new Comments();
+            return null;
         }
 
         public static IEnumerable<EndPointProperty> GetInputProperties(this Type type)
         {
-            type = type.GetRequestType();
             foreach (var property in type.GetProperties())
             {
                 yield return new EndPointProperty(property);
             }
         }
 
-        public static IEnumerable<EndPointProperty> GetOutputProperties(this Type type)
+        /// <summary>
+        /// Gets the path for the endPoint.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>Returns the path for the type.</returns>
+        public static string GetPath(this Type type)
         {
-            type = type.GetResponseType();
-            if (type != null)
-            {
-                foreach (var property in type.GetProperties())
-                {
-                    yield return new EndPointProperty(property);
-                }
-            }
+            return type.GetAllAttributes<EndPointAttribute>().Select(e => e.Path).FirstOrDefault();
         }
 
         /// <summary>
         /// Gets the type of the request.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns>EndPointType.</returns>
+        /// <returns>Type.</returns>
         public static Type GetRequestType(this Type type)
         {
-            var actorType = type?.GetInterfaces().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(IHandle<>));
+            var actorType = type?.GetBaseAndContractTypes().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(UseCase<>));
 
             return actorType != null ? actorType.GetGenericArguments()[0] : null;
         }
@@ -149,18 +107,36 @@ namespace Slalom.Stacks.Messaging
         public static Type[] GetRules(this Type type)
         {
             var input = type.GetRequestType();
-
-            return type.Assembly.SafelyGetTypes(typeof(IValidate<>).MakeGenericType(input));
+            if (input != null)
+            {
+                return type.Assembly.SafelyGetTypes(typeof(IValidate<>).MakeGenericType(input));
+            }
+            return new Type[0];
         }
 
         /// <summary>
-        /// Determines whether the type handles commands.
+        /// Gets the timeout for the endPoint.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns><c>true</c> if the type handles commands; otherwise, <c>false</c>.</returns>
-        public static bool IsCommandHandler(this Type type)
+        /// <returns>Returns the timeout for the type.</returns>
+        public static TimeSpan? GetTimeout(this Type type)
         {
-            return typeof(ICommand).IsAssignableFrom(type.GetRequestType());
+            var attribute = type.GetAllAttributes<EndPointAttribute>().FirstOrDefault();
+            if (attribute != null && attribute.Timeout > 0)
+            {
+                return TimeSpan.FromMilliseconds(attribute.Timeout);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the version for the endPoint.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>Returns the path for the type.</returns>
+        public static int GetVersion(this Type type)
+        {
+            return type.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Version ?? 1;
         }
 
         /// <summary>

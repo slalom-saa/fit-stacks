@@ -2,25 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Runtime;
 
 namespace Slalom.Stacks.Logging
 {
     /// <summary>
-    /// A composite <see cref="ILogger"/> implemenation that uses the component requestContext to use all registered loggers.
+    /// A composite <see cref="ILogger"/> implemenation that uses the component context to use all registered loggers.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Logging.ILogger" />
     public class CompositeLogger : ILogger
     {
-        private readonly IComponentContext _context;
+        private readonly IComponentContext _components;
+        private readonly IEnvironmentContext _environment;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeLogger"/> class.
+        /// Initializes a new instance of the <see cref="CompositeLogger" /> class.
         /// </summary>
-        /// <param name="context">The requestContext.</param>
-        public CompositeLogger(IComponentContext context)
+        /// <param name="components">The configured component context.</param>
+        /// <param name="environment">The environment.</param>
+        public CompositeLogger(IComponentContext components, IEnvironmentContext environment)
         {
-            _context = context;
+            _components = components;
+            _environment = environment;
+        }
+
+        private object[] CreateProperties(IEnumerable<object> original)
+        {
+            return original.Union(new[]
+            {
+                _environment.Resolve()
+            }).ToArray();
         }
 
         /// <summary>
@@ -33,7 +44,7 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Debug(exception, template, properties);
+                logger.Debug(exception, template, this.CreateProperties(properties));
             }
         }
 
@@ -46,7 +57,7 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Debug(template, properties);
+                logger.Debug(template, this.CreateProperties(properties));
             }
         }
 
@@ -67,7 +78,7 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Error(exception, template, properties);
+                logger.Error(exception, template, this.CreateProperties(properties));
             }
         }
 
@@ -80,7 +91,7 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Error(template, properties);
+                logger.Error(template, this.CreateProperties(properties));
             }
         }
 
@@ -94,7 +105,7 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Fatal(exception, template, properties);
+                logger.Fatal(exception, template, this.CreateProperties(properties));
             }
         }
 
@@ -107,7 +118,7 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Fatal(template, properties);
+                logger.Fatal(template, this.CreateProperties(properties));
             }
         }
 
@@ -121,7 +132,7 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Information(exception, template, properties);
+                logger.Information(exception, template, this.CreateProperties(properties));
             }
         }
 
@@ -134,7 +145,7 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Information(template, properties);
+                logger.Information(template, this.CreateProperties(properties));
             }
         }
 
@@ -148,7 +159,7 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Verbose(exception, template, properties);
+                logger.Verbose(exception, template, this.CreateProperties(properties));
             }
         }
 
@@ -161,7 +172,7 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Verbose(template, properties);
+                logger.Verbose(template, this.CreateProperties(properties));
             }
         }
 
@@ -175,7 +186,7 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Warning(exception, template, properties);
+                logger.Warning(exception, template, this.CreateProperties(properties));
             }
         }
 
@@ -188,13 +199,13 @@ namespace Slalom.Stacks.Logging
         {
             foreach (var logger in this.GetLoggers())
             {
-                logger.Warning(template, properties);
+                logger.Warning(template, this.CreateProperties(properties));
             }
         }
 
         private IEnumerable<ILogger> GetLoggers()
         {
-            return _context.ResolveAll<ILogger>().ToList().Where(e => e != this);
+            return _components.ResolveAll<ILogger>().ToList().Where(e => e != this);
         }
     }
 }
