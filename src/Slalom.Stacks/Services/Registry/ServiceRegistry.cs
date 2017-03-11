@@ -36,6 +36,10 @@ namespace Slalom.Stacks.Services.Registry
 
         public IEnumerable<EndPointMetaData> Find(Command command)
         {
+            if (command == null)
+            {
+                return Enumerable.Empty<EndPointMetaData>();
+            }
             return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == command.GetType().AssemblyQualifiedName);
         }
 
@@ -92,16 +96,19 @@ namespace Slalom.Stacks.Services.Registry
         public EndPointMetaData Find(string path, Command command)
         {
             var target = this.Find(path);
-            if (target == null)
+            if (command != null)
             {
-                target = this.Find(command).FirstOrDefault();
-            }
-            if (target == null)
-            {
-                var attribute = command.GetType().GetAllAttributes<CommandAttribute>().FirstOrDefault();
-                if (attribute != null)
+                if (target == null)
                 {
-                    target = this.Find(attribute.Path);
+                    target = this.Find(command).FirstOrDefault();
+                }
+                if (target == null)
+                {
+                    var attribute = command.GetType().GetAllAttributes<CommandAttribute>().FirstOrDefault();
+                    if (attribute != null)
+                    {
+                        target = this.Find(attribute.Path);
+                    }
                 }
             }
             return target;

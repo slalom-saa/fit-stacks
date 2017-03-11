@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Slalom.Stacks.Documentation;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Services;
@@ -15,16 +16,9 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-                using (var stack = new Stack())
+                using (var stack = new DocumentStack())
                 {
-                    stack.UseInMemoryLogging();
-
-                    stack.Send("v1/items/add").Wait();
-
-                    //stack.Send("_systems/messaging/responses").Result.OutputToJson();
-
-                    Console.WriteLine("Complete");
-                    Console.ReadKey();
+                    stack.WriteToConsole();
                 }
             }
             catch (Exception exception)
