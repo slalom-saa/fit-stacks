@@ -4,10 +4,10 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
-    /// Defines a contract for security validation rules.
+    /// Validates an object instance based on security rules.
     /// </summary>
-    /// <typeparam name="TCommand">The type of message to validate.</typeparam>
-    public interface ISecurityRule<in TCommand> : IValidate<TCommand> where TCommand : ICommand
+    /// <typeparam name="TValue">The type to validate.</typeparam>
+    public interface ISecurityRule<in TValue> : IValidate<TValue>
     {
     }
 }

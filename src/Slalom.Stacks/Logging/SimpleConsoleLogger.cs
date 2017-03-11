@@ -24,9 +24,12 @@ namespace Slalom.Stacks.Logging
         public void Debug(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "DEBUG", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "DEBUG", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(builder.ToString());
@@ -37,7 +40,7 @@ namespace Slalom.Stacks.Logging
         public void Debug(string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "DEBUG", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "DEBUG", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -49,9 +52,12 @@ namespace Slalom.Stacks.Logging
         public void Error(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "ERROR", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "ERROR", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(builder.ToString());
@@ -62,7 +68,7 @@ namespace Slalom.Stacks.Logging
         public void Error(string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "ERROR", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "ERROR", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Red;
@@ -74,9 +80,12 @@ namespace Slalom.Stacks.Logging
         public void Fatal(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "FATAL", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "FATAL", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(builder.ToString());
@@ -87,7 +96,7 @@ namespace Slalom.Stacks.Logging
         public void Fatal(string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "FATAL", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "FATAL", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Red;
@@ -99,9 +108,12 @@ namespace Slalom.Stacks.Logging
         public void Information(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "INFO", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "INFO", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(builder.ToString());
@@ -112,7 +124,7 @@ namespace Slalom.Stacks.Logging
         public void Information(string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "INFO", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "INFO", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.White;
@@ -124,9 +136,12 @@ namespace Slalom.Stacks.Logging
         public void Verbose(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "VERBOSE", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "VERBOSE", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.Write(builder.ToString());
@@ -137,7 +152,7 @@ namespace Slalom.Stacks.Logging
         public void Verbose(string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "VERBOSE", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "VERBOSE", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -149,9 +164,12 @@ namespace Slalom.Stacks.Logging
         public void Warning(Exception exception, string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "WARN", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "WARN", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
-            builder.AppendLine("- " + exception);
+            if (exception != null)
+            {
+                builder.AppendLine("- " + exception);
+            }
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write(builder.ToString());
@@ -162,7 +180,7 @@ namespace Slalom.Stacks.Logging
         public void Warning(string template, params object[] properties)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("[{0}][{1}][{2}]", "WARN", DateTime.UtcNow, Environment.CurrentManagedThreadId);
+            builder.AppendFormat("[{0}][{1}][Thread {2:0000}]", "WARN", DateTime.UtcNow, Environment.CurrentManagedThreadId);
             builder.AppendLine(template);
             builder.AppendLine(Separater);
             Console.ForegroundColor = ConsoleColor.Yellow;

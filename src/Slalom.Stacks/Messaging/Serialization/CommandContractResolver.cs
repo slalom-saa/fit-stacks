@@ -23,11 +23,11 @@ namespace Slalom.Stacks.Messaging.Serialization
         {
             var prop = base.CreateProperty(member, memberSerialization);
             var declaringType = (member as PropertyInfo)?.DeclaringType;
-            if (declaringType == typeof(Command))
-            {
-                prop.Ignored = true;
-                return prop;
-            }
+            //if (declaringType == typeof(Command))
+            //{
+            //    prop.Ignored = true;
+            //    return prop;
+            //}
             return prop;
         }
     }

@@ -1,7 +1,10 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Reflection;
 using Autofac;
+using System.Linq;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
@@ -21,24 +24,12 @@ namespace Slalom.Stacks
         /// <param name="markers">Item markers used to identify assemblies.</param>
         public Stack(params object[] markers)
         {
-            this.Assemblies = markers.Select(e =>
-            {
-                var type = e as Type;
-                if (type != null)
-                {
-                    return type.GetTypeInfo().Assembly;
-                }
-                var assembly = e as Assembly;
-                if (assembly != null)
-                {
-                    return assembly;
-                }
-                return e.GetType().GetTypeInfo().Assembly;
-            }).Distinct().ToArray();
+            this.Include(this.GetType());
+            this.Include(markers);
 
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new ConfigurationModule(this.Assemblies));
+            builder.RegisterModule(new ConfigurationModule(this));
 
             this.Container = builder.Build();
         }
@@ -47,7 +38,12 @@ namespace Slalom.Stacks
         /// Gets the assemblies that are used for loading components.
         /// </summary>
         /// <value>The assemblies that are used for loading components.</value>
-        public Assembly[] Assemblies { get; }
+        public ObservableCollection<Assembly> Assemblies { get; } = new ObservableCollection<Assembly>();
+
+        /// <summary>
+        /// Gets the configured <see cref="IContainer" />.
+        /// </summary>
+        public IContainer Container { get; }
 
         /// <summary>
         /// Gets the configured <see cref="IDomainFacade" />.
@@ -56,21 +52,57 @@ namespace Slalom.Stacks
         public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
 
         /// <summary>
-        /// Gets the configured <see cref="ISearchFacade" />.
-        /// </summary>
-        /// <value>The configured <see cref="ISearchFacade" />.</value>
-        public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
-
-        /// <summary>
         /// Gets the configured <see cref="ILogger" />.
         /// </summary>
         /// <value>The configured <see cref="ILogger" />.</value>
         public ILogger Logger => this.Container.Resolve<ILogger>();
 
         /// <summary>
-        /// Gets the configured <see cref="IContainer" />.
+        /// Gets the configured <see cref="ISearchFacade" />.
         /// </summary>
-        public IContainer Container { get; }
+        /// <value>The configured <see cref="ISearchFacade" />.</value>
+        public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
+
+        public void Include(params object[] markers)
+        {
+            if (!markers?.Any() ?? true)
+            {
+                var current = Assembly.GetEntryAssembly();
+                var list = new List<Assembly>
+                {
+                    current
+                };
+                foreach (var assembly in Directory.GetFiles(Path.GetDirectoryName(current.Location), current.GetName().Name.Split('.')[0] + "*.dll"))
+                {
+                    list.Add(Assembly.LoadFrom(assembly));
+                }
+                foreach (var source in list.Distinct())
+                {
+                    this.Assemblies.Add(source);
+                }
+            }
+            else
+            {
+                var current = markers.Select(e =>
+                {
+                    var type = e as Type;
+                    if (type != null)
+                    {
+                        return type.GetTypeInfo().Assembly;
+                    }
+                    var assembly = e as Assembly;
+                    if (assembly != null)
+                    {
+                        return assembly;
+                    }
+                    return e.GetType().GetTypeInfo().Assembly;
+                }).Distinct();
+                foreach (var item in current)
+                {
+                    this.Assemblies.Add(item);
+                }
+            }
+        }
 
         #region IDisposable Implementation
 

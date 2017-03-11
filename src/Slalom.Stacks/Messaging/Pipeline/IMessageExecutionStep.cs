@@ -15,6 +15,6 @@ namespace Slalom.Stacks.Messaging.Pipeline
         /// <param name="message">The message to execute.</param>
         /// <param name="context">The execution context.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        Task Execute(IMessage message, MessageExecutionContext context);
+        Task Execute(IMessage message, ExecutionContext context);
     }
 }

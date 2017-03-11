@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace Slalom.Stacks.Reflection
     /// </summary>
     public static class TypeExtensions
     {
+        private static readonly ConcurrentDictionary<Assembly, Type[]> _loadedTypes = new ConcurrentDictionary<Assembly, Type[]>();
+
         /// <summary>
         /// Returns all custom attributes of the specified type.
         /// </summary>
@@ -27,6 +30,19 @@ namespace Slalom.Stacks.Reflection
             }
             while (type != null);
 
+            return target.AsEnumerable();
+        }
+
+        /// <summary>
+        /// Returns all custom attributes of the specified type.
+        /// </summary>
+        /// <typeparam name="T">The attribute type</typeparam>
+        /// <param name="type">The instance.</param>
+        /// <returns>Returns all custom attributes of the specified type.</returns>
+        public static IEnumerable<T> GetAllAttributes<T>(this MethodInfo method) where T : Attribute
+        {
+            var target = new List<T>();
+            target.AddRange(method.GetCustomAttributes<T>());
             return target.AsEnumerable();
         }
 
@@ -52,65 +68,6 @@ namespace Slalom.Stacks.Reflection
             {
                 yield return currentType;
                 currentType = currentType.GetTypeInfo().BaseType;
-            }
-        }
-
-        /// <summary>
-        /// Safely gets all types when some referenced assemblies may not be available.
-        /// </summary>
-        /// <param name="assemblies">The instance.</param>
-        /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
-        public static Type[] SafelyGetTypes<T>(this IEnumerable<Assembly> assemblies)
-        {
-            return SafelyGetTypes(assemblies, typeof(T));
-        }
-
-        /// <summary>
-        /// Safely gets all types when some referenced assemblies may not be available.
-        /// </summary>
-        /// <param name="assemblies">The instance.</param>
-        /// <param name="type">The parent type.</param>
-        /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
-        public static Type[] SafelyGetTypes(this IEnumerable<Assembly> assemblies, Type type)
-        {
-            if (type.GetTypeInfo().IsGenericTypeDefinition)
-            {
-                return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => e.GetBaseAndContractTypes().Any(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == type)).ToArray();
-            }
-            else
-            {
-                return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => (type.IsAssignableFrom(e))).ToArray();
-            }
-        }
-
-        /// <summary>
-        /// Safely gets all types when some referenced assemblies may not be available.
-        /// </summary>
-        /// <param name="assemblies">The instance.</param>
-        /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
-        public static Type[] SafelyGetTypes(this IEnumerable<Assembly> assemblies)
-        {
-            return assemblies.SelectMany(e => e.SafelyGetTypes()).ToArray();
-        }
-
-        /// <summary>
-        /// Safely gets all types when some referenced assemblies may not be available.
-        /// </summary>
-        /// <param name="assembly">The instance.</param>
-        /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
-        public static Type[] SafelyGetTypes(this Assembly assembly)
-        {
-            try
-            {
-                return assembly.GetTypes().Where(e => e != null).ToArray();
-            }
-            catch (ReflectionTypeLoadException exception)
-            {
-                return exception.Types.Where(x => x != null).ToArray();
-            }
-            catch
-            {
-                return new Type[0];
             }
         }
 
@@ -141,6 +98,76 @@ namespace Slalom.Stacks.Reflection
 
                 currentTypeInfo = currentTypeInfo.BaseType.GetTypeInfo();
             }
+        }
+
+        /// <summary>
+        /// Safely gets all types when some referenced assemblies may not be available.
+        /// </summary>
+        /// <param name="assemblies">The instance.</param>
+        /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
+        public static Type[] SafelyGetTypes<T>(this IEnumerable<Assembly> assemblies)
+        {
+            return SafelyGetTypes(assemblies, typeof(T));
+        }
+
+        /// <summary>
+        /// Safely gets all types when some referenced assemblies may not be available.
+        /// </summary>
+        /// <param name="assemblies">The instance.</param>
+        /// <param name="type">The parent type.</param>
+        /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
+        public static Type[] SafelyGetTypes(this IEnumerable<Assembly> assemblies, Type type)
+        {
+            if (type.GetTypeInfo().IsGenericTypeDefinition)
+            {
+                return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => e.GetBaseAndContractTypes().Any(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == type)).ToArray();
+            }
+            return assemblies.SelectMany(e => e.SafelyGetTypes()).Where(e => e != null && type.IsAssignableFrom(e)).ToArray();
+        }
+
+        /// <summary>
+        /// Safely gets all types when some referenced assemblies may not be available.
+        /// </summary>
+        /// <param name="assemblies">The instance.</param>
+        /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
+        public static Type[] SafelyGetTypes(this IEnumerable<Assembly> assemblies)
+        {
+            return assemblies.SelectMany(e => e.SafelyGetTypes()).ToArray();
+        }
+
+        /// <summary>
+        /// Safely gets all types when some referenced assemblies may not be available.
+        /// </summary>
+        /// <param name="assembly">The instance.</param>
+        /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
+        public static Type[] SafelyGetTypes(this Assembly assembly)
+        {
+            return _loadedTypes.GetOrAdd(assembly, a =>
+            {
+                try
+                {
+                    return assembly.GetTypes().Where(e => e != null).ToArray();
+                }
+                catch (ReflectionTypeLoadException exception)
+                {
+                    return exception.Types.Where(x => x != null).ToArray();
+                }
+                catch
+                {
+                    return new Type[0];
+                }
+            });
+        }
+
+        /// <summary>
+        /// Safely gets all types when some referenced assemblies may not be available.
+        /// </summary>
+        /// <param name="assembly">The instance.</param>
+        /// <param name="type">The parent type.</param>
+        /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
+        public static Type[] SafelyGetTypes(this Assembly assembly, Type type)
+        {
+            return assembly.SafelyGetTypes().Where(e => e != null && type.IsAssignableFrom(e)).ToArray();
         }
 
         private static IEnumerable<Type> GetTypeAndGeneric(Type type)

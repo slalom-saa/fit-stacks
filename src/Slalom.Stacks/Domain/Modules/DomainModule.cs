@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using Autofac;
@@ -14,16 +15,17 @@ namespace Slalom.Stacks.Domain.Modules
     /// </summary>
     internal class DomainModule : Module
     {
+        private readonly Stack _stack;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="DomainModule"/> class.
+        /// Initializes a new instance of the <see cref="DomainModule" /> class.
         /// </summary>
-        /// <param name="assemblies">The assemblies.</param>
-        public DomainModule(params Assembly[] assemblies)
+        /// <param name="stack">The stack.</param>
+        public DomainModule(Stack stack)
         {
-            this._assemblies = assemblies;
+            _stack = stack;
         }
 
-        private Assembly[] _assemblies;
 
         /// <summary>
         /// Override to add registrations to the container.

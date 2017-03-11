@@ -8,21 +8,33 @@ namespace Slalom.Stacks.Messaging
     public interface IMessage
     {
         /// <summary>
-        /// Gets the message identifier.
+        /// Gets the message body.
         /// </summary>
-        /// <value>The message identifier.</value>
-        string Id { get; }
+        /// <value>The body or content of the message.</value>
+        object Body { get; }
 
         /// <summary>
-        /// Gets the message timestamp.
+        /// Gets the message identifier.
         /// </summary>
-        /// <value>The message timestamp.</value>
-        DateTimeOffset TimeStamp { get; }
+        /// <value>The Id of the message.</value>
+        string Id { get; }
 
         /// <summary>
         /// Gets the message type.
         /// </summary>
-        /// <value>The message type.</value>
-        Type Type { get; }
+        /// <value>The type of the message.</value>
+        Type MessageType { get; }
+
+        /// <summary>
+        /// Gets the messge name.
+        /// </summary>
+        /// <value>The name of the message.</value>
+        string Name { get; }
+
+        /// <summary>
+        /// Gets the message timestamp.
+        /// </summary>
+        /// <value>When the message was created.</value>
+        DateTimeOffset TimeStamp { get; }
     }
 }

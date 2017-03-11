@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Slalom.Stacks.Text
 {
@@ -32,6 +33,16 @@ namespace Slalom.Stacks.Text
                     return Convert.ToBase64String(outStream.ToArray());
                 }
             }
+        }
+
+        public static void OutputToJson(this object instance)
+        {
+            Console.WriteLine(instance.ToJson());
+        }
+
+        public static string ToJson(this object instance)
+        {
+            return JsonConvert.SerializeObject(instance, Formatting.Indented);
         }
 
         /// <summary>

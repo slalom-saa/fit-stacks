@@ -1,4 +1,8 @@
-﻿param (
+﻿<#
+.SYNOPSIS
+    Packages the Stacks packages.
+#>
+param (
     $Configuration = "DEBUG",
     $IncrementVersion = $true
 )
@@ -14,8 +18,7 @@ function Increment-Version() {
     $json = ConvertTo-Json $json -Depth 100
 
 
-    $json = Format-Json $json
-
+    $json = Format-Json $json    
     $json | Out-File  -FilePath $jsonpath
 }
 
@@ -54,7 +57,7 @@ function Go ($Path) {
 Push-Location $PSScriptRoot
 
 Go ..\src\Slalom.Stacks
-Go ..\src\Slalom.Stacks.TestStack
+Go ..\src\Slalom.Stacks.TestKit
 
 Pop-Location
 

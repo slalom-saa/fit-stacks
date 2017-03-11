@@ -7,14 +7,15 @@
     "Slalom.Stacks": {
       "target": "project"
     },
-    "Slalom.Stacks.TestStack": {
+    "Slalom.Stacks.TestKit": {
       "target": "project"
     },
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Microsoft.DotNet.InternalAbstractions": "1.0.0",
     "FluentAssertions": "4.19.0",
     "xunit": "2.2.0",
-    "xunit.runner.visualstudio": "2.2.0"
+    "xunit.runner.visualstudio": "2.2.0",
+    "Slalom.Stacks.ConsoleClient": "1.0.0-*"
   },
   "testRunner": "xunit",
   "frameworks": {

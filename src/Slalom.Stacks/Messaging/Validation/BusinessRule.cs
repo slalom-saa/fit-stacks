@@ -10,11 +10,12 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
-    /// Performs business validation on a message.
+    /// Base class for business validation rule.
     /// </summary>
-    /// <typeparam name="TCommand">The message type.</typeparam>
+    /// <typeparam name="TValue">The message type.</typeparam>
+    /// <seealso cref="Slalom.Stacks.Messaging.Validation.IBusinessRule{TValue}" />
     /// <seealso cref="IBusinessRule{TCommand}" />
-    public abstract class BusinessRule<TCommand> : IBusinessRule<TCommand> where TCommand : ICommand
+    public abstract class BusinessRule<TValue> : IBusinessRule<TValue>, IUseExecutionContext
     {
         /// <summary>
         /// Gets the configured <see cref="IDomainFacade"/>.
@@ -29,7 +30,7 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
         /// <exception cref="System.NotImplementedException">Thrown when neither validate methods are implemented.</exception>
-        public virtual IEnumerable<ValidationError> Validate(TCommand instance)
+        public virtual IEnumerable<ValidationError> Validate(TValue instance)
         {
             Argument.NotNull(instance, nameof(instance));
 
@@ -48,9 +49,16 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <param name="instance">The instance to validate.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="System.NotImplementedException">Thrown when neither validate methods are implemented.</exception>
-        public virtual Task<ValidationError> ValidateAsync(TCommand instance)
+        public virtual Task<ValidationError> ValidateAsync(TValue instance)
         {
             throw new NotImplementedException();
         }
+
+        public void UseContext(ExecutionContext context)
+        {
+            this.Context = context;
+        }
+
+        public ExecutionContext Context { get; set; }
     }
 }

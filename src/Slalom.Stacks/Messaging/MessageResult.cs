@@ -15,15 +15,16 @@ namespace Slalom.Stacks.Messaging
         /// Initializes a new instance of the <see cref="MessageResult" /> class.
         /// </summary>
         /// <param name="context">The completed context.</param>
-        public MessageResult(MessageExecutionContext context)
+        public MessageResult(ExecutionContext context)
         {
-            this.CorrelationId = context.RequestContext.CorrelationId;
+            this.CorrelationId = context.Request.CorrelationId;
             this.Started = DateTimeOffset.UtcNow;
             this.Completed = context.Completed;
             this.RaisedException = context.Exception;
             this.Response = context.Response;
             this.ValidationErrors = context.ValidationErrors.ToList();
-            this.RequestId = context.RequestContext.Message.Id;
+            //this.RequestId = context.Request.Message.Id;
+            this.IsCancelled = context.CancellationToken.IsCancellationRequested;
         }
 
         /// <summary>
@@ -31,6 +32,8 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The date and time completed.</value>
         public DateTimeOffset? Completed { get; }
+
+        public bool IsCancelled { get; }
 
         /// <summary>
         /// Gets the correlation identifier.
@@ -65,7 +68,7 @@ namespace Slalom.Stacks.Messaging
         /// <summary>
         /// Gets the actor response.
         /// </summary>
-        public object Response { get; }
+        public object Response { get; set; }
 
         /// <summary>
         /// Gets or sets the date and time started.

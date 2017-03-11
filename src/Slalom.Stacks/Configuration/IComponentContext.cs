@@ -4,7 +4,7 @@
 //namespace Slalom.Stacks.Configuration
 //{
 //    /// <summary>
-//    /// RequestContext that registers and resolves components.
+//    /// Request that registers and resolves components.
 //    /// </summary>
 //    public interface IComponentContext
 //    {
@@ -21,7 +21,7 @@
 //        /// </summary>
 //        /// <param name="type">The type to resolve.</param>
 //        /// <returns>The resolved instance.</returns>
-//        object Resolve(Type type);
+//        object Resolve(EndPointType type);
 
 //        /// <summary>
 //        /// Resolves an instance of the specified type from the requestContext.
@@ -35,7 +35,7 @@
 //        /// </summary>
 //        /// <param name="type">The type to resolve.</param>
 //        /// <returns>The resolved instances.</returns>
-//        IEnumerable<object> ResolveAll(Type type);
+//        IEnumerable<object> ResolveAll(EndPointType type);
 
 //        /// <summary>
 //        /// Resolves all instances of the specified type.

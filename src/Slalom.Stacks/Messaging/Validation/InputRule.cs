@@ -6,10 +6,10 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Messaging.Validation
 {
     /// <summary>
-    /// Represents an input validation rule set that should be run as a single unit.
+    /// Validates an object instance based on input rules.
     /// </summary>
     /// <typeparam name="TCommand">The type of message.</typeparam>
-    public abstract class InputRule<TCommand> : IInputRule<TCommand> where TCommand : ICommand
+    public abstract class InputRule<TCommand> : IInputRule<TCommand>
     {
         /// <summary>
         /// Validates the specified message instance.

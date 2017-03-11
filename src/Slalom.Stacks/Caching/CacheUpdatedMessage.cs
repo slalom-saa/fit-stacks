@@ -16,14 +16,14 @@ namespace Slalom.Stacks.Caching
         /// </summary>
         /// <param name="keysUpdated">The keys that were updated.</param>
         public CacheUpdatedMessage(IEnumerable<string> keysUpdated)
+            : base(keysUpdated)
         {
-            this.KeysUpdated = keysUpdated?.ToArray();
         }
 
         /// <summary>
         /// Gets the keys updated.
         /// </summary>
         /// <value>The keys updated.</value>
-        public IEnumerable<string> KeysUpdated { get; }
+        public IEnumerable<string> KeysUpdated => this.Body as IEnumerable<string>;
     }
 }

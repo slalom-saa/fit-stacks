@@ -17,13 +17,13 @@ namespace Slalom.Stacks.Messaging.Validation
         /// <param name="type">The error type.</param>
         /// <returns>A collection containing all of the errors with the correct type set.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        public static IEnumerable<ValidationError> WithType(this IEnumerable<ValidationError> instance, ValidationErrorType type)
+        public static IEnumerable<ValidationError> WithType(this IEnumerable<ValidationError> instance, ValidationType type)
         {
             Argument.NotNull(instance, nameof(instance));
 
             var instances = instance as ValidationError[] ?? instance.ToArray();
 
-            foreach (var item in instances.Where(e=>e.ErrorType == ValidationErrorType.None))
+            foreach (var item in instances.Where(e=>e.Type == ValidationType.None))
             {
                 item.WithType(type);
             }

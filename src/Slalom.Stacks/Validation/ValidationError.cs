@@ -21,7 +21,7 @@ namespace Slalom.Stacks.Validation
         /// </summary>
         /// <param name="message">The message text.</param>
         public ValidationError(string message)
-            : this(null, message, ValidationErrorType.None)
+            : this(null, message, ValidationType.None)
         {
         }
 
@@ -30,7 +30,7 @@ namespace Slalom.Stacks.Validation
         /// </summary>
         /// <param name="message">The message text.</param>
         /// <param name="type">The validation type.</param>
-        public ValidationError(string message, ValidationErrorType type)
+        public ValidationError(string message, ValidationType type)
             : this(null, message, type)
         {
         }
@@ -41,7 +41,7 @@ namespace Slalom.Stacks.Validation
         /// <param name="code">The message code for client consumption.</param>
         /// <param name="message">The message text.</param>
         public ValidationError(string code, string message)
-            : this(code, message, ValidationErrorType.None)
+            : this(code, message, ValidationType.None)
         {
         }
 
@@ -51,35 +51,11 @@ namespace Slalom.Stacks.Validation
         /// <param name="code">The message code for client consumption.</param>
         /// <param name="message">The message text.</param>
         /// <param name="type">The validation type.</param>
-        public ValidationError(string code, string message, ValidationErrorType type)
-            : this(code, message, null, type)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationError"/> class.
-        /// </summary>
-        /// <param name="code">The message code for client consumption.</param>
-        /// <param name="message">The message text.</param>
-        /// <param name="helpUrl">The help URL.</param>
-        public ValidationError(string code, string message, string helpUrl)
-            : this(code, message, helpUrl, ValidationErrorType.None)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationError"/> class.
-        /// </summary>
-        /// <param name="code">The message code for client consumption.</param>
-        /// <param name="message">The message text.</param>
-        /// <param name="helpUrl">The help URL.</param>
-        /// <param name="type">The validation type.</param>
-        public ValidationError(string code, string message, string helpUrl, ValidationErrorType type)
+        public ValidationError(string code, string message, ValidationType type)
         {
             this.Code = code;
             this.Message = message;
-            this.HelpUrl = helpUrl;
-            this.ErrorType = type;
+            this.Type = type;
         }
 
         /// <summary>
@@ -99,30 +75,22 @@ namespace Slalom.Stacks.Validation
         public string Message { get; private set; }
 
         /// <summary>
-        /// Gets the help URL.
-        /// </summary>
-        /// <value>
-        /// The help URL.
-        /// </value>
-        public string HelpUrl { get; private set; }
-
-        /// <summary>
         /// Gets validation type.
         /// </summary>
         /// <value>
         /// The validation type.
         /// </value>
         [JsonConverter(typeof(StringEnumConverter))]
-        public ValidationErrorType ErrorType { get; private set; }
+        public ValidationType Type { get; private set; }
 
         /// <summary>
         /// Adds the type to the message.
         /// </summary>
         /// <param name="type">The type of validation.</param>
         /// <returns>The current instance.</returns>
-        public ValidationError WithType(ValidationErrorType type)
+        public ValidationError WithType(ValidationType type)
         {
-            this.ErrorType = type;
+            this.Type = type;
 
             return this;
         }
