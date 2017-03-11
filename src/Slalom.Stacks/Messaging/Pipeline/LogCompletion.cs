@@ -40,7 +40,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
             {
                 if (context.Exception != null)
                 {
-                    _logger.Error(context.Exception, "An unhandled exception was _raised while executing \"" + name + "\".", context);
+                    _logger.Error(context.Exception, "An unhandled exception was raised while executing \"" + name + "\".", context);
                 }
                 else if (context.ValidationErrors?.Any() ?? false)
                 {
