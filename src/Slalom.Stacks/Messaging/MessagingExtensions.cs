@@ -26,7 +26,7 @@ namespace Slalom.Stacks.Messaging
             return instance.Container.Resolve<IMessageGateway>().Send(command, timeout: timeout);
         }
 
-        public static Stack UseInMemoryPersistence(this Stack instance)
+        public static Stack UseInMemoryLogging(this Stack instance)
         {
             instance.Use(builder =>
             {

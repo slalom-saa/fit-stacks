@@ -17,7 +17,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.UseInMemoryPersistence();
+                    stack.UseInMemoryLogging();
 
                     stack.Send("v1/items/add").Wait();
 

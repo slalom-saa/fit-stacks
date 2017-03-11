@@ -5,7 +5,9 @@
   },
 
   "dependencies": {
-    "Slalom.Products": "1.0.0-*"
+    "Slalom.Products": "1.0.0-*",
+    "Slalom.Stacks.Messaging.Akka": "1.4.28",
+    "Slalom.Stacks.Web.AspNetCore": "1.4.17"
   },
 
   "frameworks": {
