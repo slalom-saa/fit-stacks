@@ -29,7 +29,7 @@ namespace ConsoleClient
         {
             using (var stack = new Stack(typeof(AddProduct), typeof(AddProductHost)))
             {
-                stack.UseInMemoryPersistence();
+                stack.UseInMemoryLogging();
 
                 stack.UseAkkaMessaging();
 

@@ -8,7 +8,7 @@
     "FluentAssertions": "4.19.0",
     "xunit": "2.2.0",
     "xunit.runner.visualstudio": "2.2.0",
-    "Slalom.Stacks.TestKit": "1.4.91"
+    "Slalom.Stacks.TestKit": "1.5.1"
   },
   "frameworks": {
     "net461": {

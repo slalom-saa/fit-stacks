@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "buildOptions": {
     "emitEntryPoint": true
@@ -6,8 +6,8 @@
 
   "dependencies": {
     "Slalom.Products": "1.0.0-*",
-    "Slalom.Stacks.Messaging.Akka": "1.4.28",
-    "Slalom.Stacks.Web.AspNetCore": "1.4.17"
+    "Slalom.Stacks.Messaging.Akka": "1.5.0",
+    "Slalom.Stacks.Web.AspNetCore": "1.5.0"
   },
 
   "frameworks": {
