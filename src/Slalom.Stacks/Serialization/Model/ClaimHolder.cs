@@ -3,7 +3,7 @@ using System.Security.Claims;
 namespace Slalom.Stacks.Serialization.Model
 {
     /// <summary>
-    /// Type used to hold a <see cref="Claim"/>  for serialization.
+    /// EndPointType used to hold a <see cref="Claim"/>  for serialization.
     /// </summary>
     public class ClaimHolder
     {

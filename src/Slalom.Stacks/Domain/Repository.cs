@@ -9,9 +9,9 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Domain
 {
     /// <summary>
-    /// A default <see href="http://bit.ly/2dVQsXu">Repository</see> for an <see cref="IAggregateRoot"/>.
+    /// A default <see href="http://bit.ly/2dVQsXu">Repository</see> for an <see cref="IAggregateRoot" />.
     /// </summary>
-    /// <typeparam name="TRoot">The type of <see cref="IAggregateRoot"/>.</typeparam>
+    /// <typeparam name="TRoot">The type of <see cref="IAggregateRoot" />.</typeparam>
     /// <seealso href="http://bit.ly/2dVQsXu">Domain-Driven Design: Tackling Complexity in the Heart of Software</seealso>
     public class Repository<TRoot> : IRepository<TRoot> where TRoot : IAggregateRoot
     {
@@ -107,6 +107,16 @@ namespace Slalom.Stacks.Domain
             this.Logger.Verbose($"Updating {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
 
             return _context.Update(instances);
+        }
+
+        /// <inheritdoc />
+        public Task<bool> Exists(string id)
+        {
+            Argument.NotNullOrWhiteSpace(id, nameof(id));
+
+            this.Logger.Verbose($"Checking to see if items of type {typeof(TRoot)} exist using {_context.GetType()}.");
+
+            return _context.Exists<TRoot>(id);
         }
     }
 }

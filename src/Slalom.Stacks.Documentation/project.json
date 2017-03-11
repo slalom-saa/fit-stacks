@@ -1,0 +1,44 @@
+﻿{
+  "version": "1.4.60-*",
+  "authors": [
+    "Slalom Architect Academy"
+  ],
+  "packOptions": {
+    "tags": [
+      "slalom",
+      "stacks",
+      "blocks",
+      "documentation"
+    ],
+    "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+    "requireLicenseAcceptance": true,
+    "summary": "The Documentation library for Stacks.",
+    "files": {
+      "include": [
+        "Tools",
+        "Lib"
+      ]
+    }
+  },
+
+  "dependencies": {
+    "Slalom.Stacks": "1.4.60-*"
+  },
+
+  "buildOptions": {
+    "additionalArguments": [
+      "/ruleset:../../assets/stacks.ruleset",
+      "/additionalfile:../../assets/stylecop.json"
+    ],
+    "xmlDoc": true
+  },
+
+  "frameworks": {
+    "net461": {
+      "dependencies": {
+
+      },
+      "imports": "dnxcore50"
+    }
+  }
+}

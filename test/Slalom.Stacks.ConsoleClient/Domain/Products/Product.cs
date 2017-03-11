@@ -1,4 +1,5 @@
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient.Domain.Products
 {
@@ -13,5 +14,24 @@ namespace Slalom.Stacks.ConsoleClient.Domain.Products
             this.Name = name;
             this.Description = description;
         }
+
+        public ProductState State { get; private set; }
+
+        public void Publish()
+        {
+            if (this.State != ProductState.Draft)
+            {
+                throw new ValidationException("A non-draft product cannot be published.");
+            }
+            this.State = ProductState.Published;
+        }
+    }
+
+    public enum ProductState
+    {
+        None,
+        Draft,
+        Published,
+        Retired
     }
 }

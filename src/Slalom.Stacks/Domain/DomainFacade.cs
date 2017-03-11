@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Autofac;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Autofac;
 using Slalom.Stacks.Caching;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Domain
 {
     /// <summary>
-    /// A default <see cref="IDomainFacade"/> implementation.
+    /// A default <see cref="IDomainFacade" /> implementation.
     /// </summary>
     /// <seealso cref="IDomainFacade" />
     public class DomainFacade : IDomainFacade
@@ -47,7 +47,7 @@ namespace Slalom.Stacks.Domain
                 return;
             }
 
-            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+            var repository = (IRepository<TAggregateRoot>) _instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
             if (repository == null)
             {
@@ -73,7 +73,7 @@ namespace Slalom.Stacks.Domain
         /// <inheritdoc />
         public async Task Clear<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
         {
-            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+            var repository = (IRepository<TAggregateRoot>) _instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
             if (repository == null)
             {
@@ -88,7 +88,7 @@ namespace Slalom.Stacks.Domain
         /// <inheritdoc />
         public Task<bool> Exists<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot
         {
-            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+            var repository = (IRepository<TAggregateRoot>) _instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
             if (repository == null)
             {
@@ -107,7 +107,7 @@ namespace Slalom.Stacks.Domain
                 return target;
             }
 
-            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+            var repository = (IRepository<TAggregateRoot>) _instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
             if (repository == null)
             {
@@ -127,7 +127,7 @@ namespace Slalom.Stacks.Domain
         /// <inheritdoc />
         public Task<IEnumerable<TAggregateRoot>> Find<TAggregateRoot>(Expression<Func<TAggregateRoot, bool>> expression) where TAggregateRoot : IAggregateRoot
         {
-            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+            var repository = (IRepository<TAggregateRoot>) _instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
             if (repository == null)
             {
@@ -140,7 +140,7 @@ namespace Slalom.Stacks.Domain
         /// <inheritdoc />
         public Task<IEnumerable<TAggregateRoot>> Find<TAggregateRoot>() where TAggregateRoot : IAggregateRoot
         {
-            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+            var repository = (IRepository<TAggregateRoot>) _instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
             if (repository == null)
             {
@@ -163,7 +163,7 @@ namespace Slalom.Stacks.Domain
                 return;
             }
 
-            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+            var repository = (IRepository<TAggregateRoot>) _instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
             if (repository == null)
             {
@@ -200,7 +200,7 @@ namespace Slalom.Stacks.Domain
                 return;
             }
 
-            var repository = (IRepository<TAggregateRoot>)_instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+            var repository = (IRepository<TAggregateRoot>) _instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
 
             if (repository == null)
             {
@@ -222,6 +222,19 @@ namespace Slalom.Stacks.Domain
         public Task Update<TAggregateRoot>(List<TAggregateRoot> instances) where TAggregateRoot : IAggregateRoot
         {
             return this.Update(instances.ToArray());
+        }
+
+        /// <inheritdoc />
+        public Task<bool> Exists<TAggregateRoot>(string id) where TAggregateRoot : IAggregateRoot
+        {
+            var repository = (IRepository<TAggregateRoot>) _instances.GetOrAdd(typeof(TAggregateRoot), t => _componentContext.Resolve<IRepository<TAggregateRoot>>());
+
+            if (repository == null)
+            {
+                throw new InvalidOperationException($"No repository has been registered for type {typeof(TAggregateRoot)}.");
+            }
+
+            return repository.Exists(id);
         }
     }
 }
