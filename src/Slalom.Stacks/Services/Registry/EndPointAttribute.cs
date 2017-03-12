@@ -20,6 +20,12 @@ namespace Slalom.Stacks.Services.Registry
         }
 
         /// <summary>
+        /// Gets or sets the endpoint name.
+        /// </summary>
+        /// <value>The endpoint name.</value>
+        public string Name { get; set; }
+
+        /// <summary>
         /// Gets the path.
         /// </summary>
         /// <value>The name.</value>

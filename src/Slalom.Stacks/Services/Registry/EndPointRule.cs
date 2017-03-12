@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq;
+using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Validation;
+using Slalom.Stacks.Text;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.Registry
@@ -9,6 +12,27 @@ namespace Slalom.Stacks.Services.Registry
     /// </summary>
     public class EndPointRule
     {
+        public EndPointRule(Type type)
+        {
+            this.Name = type.Name.ToSentence();
+            var baseType = type.BaseType?.GetGenericTypeDefinition();
+            if (baseType == typeof(BusinessRule<>))
+            {
+                this.RuleType = ValidationType.Business;
+            }
+            if (baseType == typeof(SecurityRule<>))
+            {
+                this.RuleType = ValidationType.Security;
+            }
+            if (baseType == typeof(InputRule<>))
+            {
+                this.RuleType = ValidationType.Input;
+            }
+            this.Comments = type.GetComments();
+        }
+
+        public Comments Comments { get; set; }
+
         /// <summary>
         /// Gets or sets the name.
         /// </summary>

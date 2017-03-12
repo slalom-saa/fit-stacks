@@ -20,6 +20,7 @@ namespace Slalom.Stacks.ConsoleClient
                 {
                     stack.WriteToConsole();
                 }
+                Environment.Exit(0);
             }
             catch (Exception exception)
             {

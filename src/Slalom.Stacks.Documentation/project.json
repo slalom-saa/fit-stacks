@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.4.60-*",
   "authors": [
     "Slalom Architect Academy"
@@ -22,7 +22,9 @@
   },
 
   "dependencies": {
-    "Slalom.Stacks": "1.4.60-*"
+    "DocumentFormat.OpenXml": "2.5.0",
+    "WindowsBase": "4.6.1055",
+    "Slalom.Stacks": { "target": "project" }
   },
 
   "buildOptions": {

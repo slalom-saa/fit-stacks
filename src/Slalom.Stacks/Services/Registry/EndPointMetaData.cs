@@ -4,6 +4,7 @@ using System.Linq;
 using Slalom.Stacks.Messaging;
 using System.Reflection;
 using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.Services.Registry
 {
@@ -125,10 +126,10 @@ namespace Slalom.Stacks.Services.Registry
                             ServiceType = service.AssemblyQualifiedName,
                             RequestType = requestType?.AssemblyQualifiedName,
                             ResponseType = service.BaseType?.GetGenericArguments().ElementAtOrDefault(1)?.AssemblyQualifiedName,
-                            Rules = requestType?.GetRules().Select(e => new EndPointRule {Name = e.Name}).ToList(),
+                            Rules = requestType?.GetRules().Select(e => new EndPointRule(e)).ToList(),
                             Version = version,
                             RequestProperties = requestType?.GetInputProperties().ToList(),
-                            Summary = summary,
+                            Summary = summary?.Summary,
                             RootPath = rootPath,
                             Timeout = timeout,
                             EndPointType = method

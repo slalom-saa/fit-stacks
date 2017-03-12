@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.Documentation
 {
@@ -16,36 +17,92 @@ namespace Slalom.Stacks.Documentation
 
         public void WriteToConsole()
         {
+            //var services = this.GetServices();
+            //var path = @"C:\source\Stacks\Core\src\Slalom.Stacks.Documentation\output.docx";
+            //using (var package = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            //{
+            //    // Add a new main document part. 
+            //    package.AddMainDocumentPart();
+            //    package.MainDocumentPart.Document =
+            //           new Document(new Body());
+
+            //    foreach (var endPoint in services.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).OrderBy(e => e.Path))
+            //    {
+            //        var paragraph = package.MainDocumentPart.Document.Body.AppendChild(new Paragraph());
+
+            //        // Create the Document DOM. 
+            //        var run = new Run(
+            //            new DocumentFormat.OpenXml.Wordprocessing.Text(endPoint.ServiceType));
+
+            //        var properties = new RunProperties(
+            //            new RunFonts()
+            //            {
+            //                Ascii = "Arial"
+            //            });
+
+            //        run.PrependChild(properties);
+            //        paragraph.AppendChild(run);
+            //    }
+            //    package.MainDocumentPart.Document.Save();
+            //}
+
+            //return;
+
+
             var services = this.GetServices();
-            foreach (var endPoint in services.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).OrderBy(e => e.Path))
+            var path = @"C:\source\Stacks\Core\src\Slalom.Stacks.Documentation\output.docx";
+            using (var document = new WordDocument(path))
             {
-                Console.WriteLine($"{endPoint.EndPointType.Name}] - {endPoint.Path}");
-                if (endPoint.Summary != null)
+                foreach (var service in services.Hosts.SelectMany(e => e.Services).OrderBy(e => e.Path))
                 {
-                    Console.WriteLine($"  {endPoint.Summary}");
-                }
-                Console.WriteLine($"  Input[{endPoint.RequestType}]");
-                foreach (var property in endPoint.RequestProperties)
-                {
-                    Console.WriteLine($"    {property.Name}[{property.Type}] - {property.Summary}");
-                    if (property.Validation != null)
+                    if (service.Path.StartsWith("_"))
                     {
-                        Console.WriteLine($"      {property.Validation}: {property.Validation}");
+                        continue;
+                    }
+
+                    foreach (var endPoint in service.EndPoints)
+                    {
+                        var name = service.Name.ToTitle();
+                        if (endPoint.Version > 1)
+                        {
+                            name += " (version " + endPoint.Version + ")";
+                        }
+                        document.Append(name, "Heading 2");
+                        document.Append("v" + endPoint.Version + "/" + service.Path, "Endpoint Path");
+
+                        if (endPoint.Summary != null)
+                        {
+                            document.Append(service.EndPoints.First().Summary);
+                        }
+                        document.Append("Parameters", "Heading 3");
+
+                        document.Append(endPoint.RequestProperties);
+
+                        //document.NewTable();
+                        //document.AppendRows("Name", "Type", "Description", "Validation");
+                        ////document.Append("Input", "Heading3");
+                        //foreach (var property in endPoint.RequestProperties)
+                        //{
+                        //    document.AppendRows(property.Name, Type.GetType(property.Type).Name, property.Summary, property.Validation);
+                        //}
+                        document.Append("Rules", "Heading 3");
+                        var table = document.AppendTable(1500, 8500);
+                        table.AppendRow("Type", "Summary");
+                        foreach (var property in endPoint.RequestProperties)
+                        {
+                            if (property.Validation != null)
+                            {
+                                table.AppendRow("Input", property.Validation);
+                            }
+                        }
+                        foreach (var rule in endPoint.Rules)
+                        {
+                            table.AppendRow(rule.RuleType.ToString(), rule.Comments?.Summary);
+                        }
                     }
                 }
-                Console.WriteLine($"  Output[{endPoint.ResponseType}]");
-                //foreach (var property in endPoint)
-                //{
-                //    Console.WriteLine($"    {property.Name}[{property.PropertyType}] - {property.Comments.Value}");
-                //}
-                if (endPoint.Rules.Any())
-                {
-                    Console.WriteLine("  Rules");
-                    foreach (var rule in endPoint.Rules)
-                    {
-                        Console.WriteLine($"    {rule.RuleType}: {rule.Name}");
-                    }
-                }
+                document.Save();
+                document.Open();
             }
         }
     }

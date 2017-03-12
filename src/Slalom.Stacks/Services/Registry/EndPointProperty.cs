@@ -1,5 +1,6 @@
 using System.Reflection;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Text;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.Registry
@@ -17,7 +18,7 @@ namespace Slalom.Stacks.Services.Registry
         {
             this.Name = property.Name;
             this.Type = property.PropertyType.FullName;
-            this.Summary = property.GetComments();
+            this.Comments = property.GetComments();
             var validation = property.GetCustomAttribute<ValidationAttribute>(true);
             if (validation != null)
             {
@@ -32,10 +33,10 @@ namespace Slalom.Stacks.Services.Registry
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the summary.
+        /// Gets or sets the comments.
         /// </summary>
-        /// <value>The summary.</value>
-        public string Summary { get; set; }
+        /// <value>The comments.</value>
+        public Comments Comments { get; set; }
 
         /// <summary>
         /// Gets or sets the type.
