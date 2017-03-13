@@ -8,10 +8,24 @@ using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Messaging.Pipeline;
 using Slalom.Stacks.Search;
+using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services
 {
+    public class CheckHealthCommand
+    {
+    }
+
+    [EndPoint("_systems/health")]
+    public class CheckHealth : SystemEndPoint<CheckHealth>
+    {
+        public override Task Execute(CheckHealth instance)
+        {
+            return Task.FromResult(0);
+        }
+    }
+
     public abstract class SystemEndPoint<T, R> : Service, IEndPoint<T>
     {
         public abstract Task<R> Execute(T instance);
@@ -21,6 +35,16 @@ namespace Slalom.Stacks.Services
             var result = await this.Execute(instance);
 
             ((IService)this).Context.Response = result;
+        }
+    }
+
+    public abstract class SystemEndPoint<T> : Service, IEndPoint<T>
+    {
+        public abstract Task Execute(T instance);
+
+        public Task Receive(T instance)
+        {
+            return this.Execute(instance);
         }
     }
 
