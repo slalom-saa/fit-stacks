@@ -18,7 +18,9 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new DocumentStack())
                 {
-                    stack.WriteToConsole();
+                    var path = @"C:\source\Stacks\Core\src\Slalom.Stacks.Documentation\output.docx";
+
+                    stack.CreateWordDocument(path);
                 }
                 Environment.Exit(0);
             }

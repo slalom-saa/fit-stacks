@@ -6,6 +6,7 @@
 
   "dependencies": {
     "Slalom.Products": "1.0.0-*",
+    "Slalom.Stacks.Documentation": "1.5.2",
     "Slalom.Stacks.Messaging.Akka": "1.5.0",
     "Slalom.Stacks.Web.AspNetCore": "1.5.0"
   },
