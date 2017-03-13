@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Events;
 
 namespace Slalom.Stacks.TestKit
 {
     public class TestStack : Stack
     {
-        public readonly List<Event> RaisedEvents = new List<Event>();
+        public readonly List<EventMessage> RaisedEvents = new List<EventMessage>();
 
         public TestStack() : base(new StackFrame(1).GetMethod().DeclaringType)
         {
@@ -36,7 +37,7 @@ namespace Slalom.Stacks.TestKit
             }
         }
 
-        public Task HandleAsync(Event instance)
+        public Task HandleAsync(EventMessage instance)
         {
             RaisedEvents.Add(instance);
 
@@ -45,7 +46,7 @@ namespace Slalom.Stacks.TestKit
 
         public MessageResult LastResult { get; set; }
 
-        public MessageResult Send(ICommand command)
+        public MessageResult Send(Command command)
         {
             return this.LastResult = base.Container.Resolve<IMessageGateway>().Send(command).Result;
         }

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
-using Slalom.Stacks.Messaging;
+﻿using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.ConsoleClient.Application.Inventory.Products.Stock
+namespace Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock
 {
     public class StockProductCommand : Command
     {

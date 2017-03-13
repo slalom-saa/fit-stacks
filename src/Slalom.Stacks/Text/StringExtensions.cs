@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace Slalom.Stacks.Text
 {
@@ -35,24 +36,14 @@ namespace Slalom.Stacks.Text
             }
         }
 
-        /// <summary>
-        /// Converts the pascal string to a sentence.
-        /// </summary>
-        /// <param name="instance">The this instance.</param>
-        /// <returns>Returns a new sentance string.</returns>
-        public static string ToSentence(this string instance)
+        public static void OutputToJson(this object instance)
         {
-            return Regex.Replace(instance, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToLower(m.Value[1])}");
+            Console.WriteLine(instance.ToJson());
         }
 
-        /// <summary>
-        /// Converts the pascal string to a title.
-        /// </summary>
-        /// <param name="instance">The this instance.</param>
-        /// <returns>Returns a new title string.</returns>
-        public static string ToTitle(this string instance)
+        public static string ToJson(this object instance)
         {
-            return Regex.Replace(instance, "[a-z][A-Z]", m => $"{m.Value[0]} {m.Value[1]}");
+            return JsonConvert.SerializeObject(instance, Formatting.Indented);
         }
 
         /// <summary>
@@ -100,6 +91,16 @@ namespace Slalom.Stacks.Text
                 throw new ArgumentNullException(nameof(instance));
             }
             return string.Concat(instance.Select((x, i) => i > 0 && char.IsUpper(x) ? delimiter + x.ToString() : x.ToString())).ToLowerInvariant();
+        }
+
+        public static string ToTitle(this string instance)
+        {
+            return Regex.Replace(instance, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToUpper(m.Value[1])}");
+        }
+
+        public static string ToSentence(this string instance)
+        {
+            return instance.Replace("_", " ");
         }
 
         /// <summary>

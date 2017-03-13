@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Slalom.Stacks.Messaging.Events;
+using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Pipeline;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Validation;
 using Module = Autofac.Module;
 
 namespace Slalom.Stacks.Messaging.Modules
@@ -16,16 +21,15 @@ namespace Slalom.Stacks.Messaging.Modules
     /// <seealso cref="Autofac.Module" />
     internal class MessagingModule : Module
     {
+        private readonly Stack _stack;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MessagingModule"/> class.
         /// </summary>
-        /// <param name="assemblies">The assemblies used to probe.</param>
-        public MessagingModule(Assembly[] assemblies)
+        public MessagingModule(Stack stack)
         {
-            this._assemblies = assemblies;
+            _stack = stack;
         }
-
-        private Assembly[] _assemblies;
 
         /// <summary>
         /// Override to add registrations to the container.
@@ -41,9 +45,9 @@ namespace Slalom.Stacks.Messaging.Modules
                    .As<IMessageGateway>()
                    .SingleInstance();
 
-            builder.RegisterType<LocalMessageDispatcher>().As<IMessageDispatcher>();
+            builder.RegisterType<MessageDispatcher>().As<IMessageDispatcher>();
 
-            builder.RegisterAssemblyTypes(_assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
+            builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 
@@ -52,15 +56,45 @@ namespace Slalom.Stacks.Messaging.Modules
                 .SingleInstance()
                 .OnActivated(e =>
                    {
-                       e.Instance.RegisterLocal(this._assemblies);
+                       e.Instance.RegisterLocal(_stack.Assemblies.ToArray());
                    });
 
-            builder.Register(c => new RequestContext())
+            builder.Register(c => new Request())
                 .As<IRequestContext>();
 
-            builder.RegisterGeneric(typeof(CommandValidator<>));
+            builder.RegisterType<NullRequestLog>().As<IRequestLog>().SingleInstance();
+            builder.RegisterType<NullResponseLog>().As<IResponseLog>().SingleInstance();
 
-            builder.RegisterModule(new MessagingTypesModule(this._assemblies));
+            builder.RegisterType<NullEventStore>().As<IEventStore>().SingleInstance();
+
+            builder.RegisterGeneric(typeof(MessageValidator<>));
+
+            builder.RegisterAssemblyTypes(_stack.Assemblies.ToArray())
+                  .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidate<>)))
+                  .As(instance => instance.GetBaseAndContractTypes())
+                  .AllPropertiesAutowired();
+
+            builder.RegisterAssemblyTypes(_stack.Assemblies.ToArray())
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IHandle<>)))
+                   .AsBaseAndContractTypes().AsSelf()
+                   .AllPropertiesAutowired();
+
+            _stack.Assemblies.CollectionChanged += (sender, args) =>
+            {
+                _stack.Use(b =>
+                {
+                    b.RegisterAssemblyTypes(args.NewItems.OfType<Assembly>().ToArray())
+                        .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidate<>)))
+                        .AsBaseAndContractTypes()
+                        .AllPropertiesAutowired();
+
+                    b.RegisterAssemblyTypes(args.NewItems.OfType<Assembly>().ToArray())
+                           .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IHandle<>)))
+                           .AsBaseAndContractTypes()
+                           .AsSelf()
+                           .AllPropertiesAutowired();
+                });
+            };
         }
     }
 }

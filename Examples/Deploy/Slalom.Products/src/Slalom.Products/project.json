@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0-*",
+  "dependencies": {
+    "Slalom.Stacks": "1.5.2"
+  },
+  "frameworks": {
+    "net461": {
+      "dependencies": {
+      },
+      "imports": "dnxcore50"
+    }
+  },
+  "buildOptions": {
+    "xmlDoc": true
+  }
+}

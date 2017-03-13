@@ -1,30 +1,28 @@
 ﻿using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Autofac;
-using Newtonsoft.Json;
-using Slalom.Stacks.ConsoleClient.Application.Products.Add;
-using Slalom.Stacks.ConsoleClient.Aspects;
 using Slalom.Stacks.Documentation;
-using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Logging;
-using Slalom.Stacks.Messaging.Serialization;
+using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
 {
     public class Program
     {
+        [STAThread]
         public static void Main(string[] args)
         {
             try
             {
-                using (var stack = new DocumentStack(typeof(AddProduct)))
+                using (var stack = new DocumentStack())
                 {
-                    stack.WriteToConsole();
+                    var path = @"C:\source\Stacks\Core\src\Slalom.Stacks.Documentation\output.docx";
+
+                    stack.CreateWordDocument(path);
                 }
+                Environment.Exit(0);
             }
             catch (Exception exception)
             {

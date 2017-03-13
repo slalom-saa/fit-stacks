@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Slalom.Products": {
+      "target": "project"
+    },
+    "FluentAssertions": "4.19.0",
+    "xunit": "2.2.0",
+    "xunit.runner.visualstudio": "2.2.0",
+    "Slalom.Stacks.TestKit": "1.5.2"  },
+  "frameworks": {
+    "net461": {
+      "dependencies": {
+
+      },
+      "imports": "dnxcore50"
+    }
+  }
+}

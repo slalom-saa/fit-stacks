@@ -11,14 +11,14 @@ namespace Slalom.Stacks.Messaging.Exceptions
     public class ChainFailedException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChainFailedException"/> class.
+        /// Initializes a new instance of the <see cref="ChainFailedException" /> class.
         /// </summary>
-        /// <param name="currentMessage">The current message.</param>
+        /// <param name="request">The current request.</param>
         /// <param name="child">The child execution result.</param>
-        public ChainFailedException(IMessage currentMessage, MessageResult child)
-            : base($"Failed to complete message {currentMessage.Id} because of a failed dependent message {child.RequestId}.", child.RaisedException ?? new ValidationException(child.ValidationErrors.ToArray()))
+        public ChainFailedException(Request request, MessageResult child)
+            : base($"Failed to complete message {request.Message.Id} because of a failed dependent message {child.RequestId}.", child.RaisedException ?? new ValidationException(child.ValidationErrors.ToArray()))
         {
-            this.CurrentMessage = currentMessage;
+            this.Request = request;
             this.Child = child;
         }
 
@@ -29,9 +29,9 @@ namespace Slalom.Stacks.Messaging.Exceptions
         public MessageResult Child { get; }
 
         /// <summary>
-        /// Gets the current message.
+        /// Gets the current request.
         /// </summary>
-        /// <value>The current message.</value>
-        public IMessage CurrentMessage { get; }
+        /// <value>The current request.</value>
+        public Request Request { get; }
     }
 }

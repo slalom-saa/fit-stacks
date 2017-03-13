@@ -52,33 +52,9 @@ namespace Slalom.Stacks.Validation
         /// <param name="message">The message text.</param>
         /// <param name="type">The validation type.</param>
         public ValidationError(string code, string message, ValidationType type)
-            : this(code, message, null, type)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationError"/> class.
-        /// </summary>
-        /// <param name="code">The message code for client consumption.</param>
-        /// <param name="message">The message text.</param>
-        /// <param name="helpUrl">The help URL.</param>
-        public ValidationError(string code, string message, string helpUrl)
-            : this(code, message, helpUrl, ValidationType.None)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationError"/> class.
-        /// </summary>
-        /// <param name="code">The message code for client consumption.</param>
-        /// <param name="message">The message text.</param>
-        /// <param name="helpUrl">The help URL.</param>
-        /// <param name="type">The validation type.</param>
-        public ValidationError(string code, string message, string helpUrl, ValidationType type)
         {
             this.Code = code;
             this.Message = message;
-            this.HelpUrl = helpUrl;
             this.Type = type;
         }
 
@@ -97,14 +73,6 @@ namespace Slalom.Stacks.Validation
         /// The message text.
         /// </value>
         public string Message { get; private set; }
-
-        /// <summary>
-        /// Gets the help URL.
-        /// </summary>
-        /// <value>
-        /// The help URL.
-        /// </value>
-        public string HelpUrl { get; private set; }
 
         /// <summary>
         /// Gets validation type.

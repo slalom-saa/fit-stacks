@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Slalom.Stacks.Messaging.Serialization;
+using System.Reflection;
 using Slalom.Stacks.Validation;
+using Environment = Slalom.Stacks.Runtime.Environment;
 
 namespace Slalom.Stacks.Messaging.Logging
 {
@@ -12,53 +12,33 @@ namespace Slalom.Stacks.Messaging.Logging
     public class ResponseEntry
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ResponseEntry"/> class.
+        /// Initializes a new instance of the <see cref="ResponseEntry" /> class.
         /// </summary>
         /// <param name="context">The completed context.</param>
-        public ResponseEntry(MessageExecutionContext context)
+        /// <param name="environment">The environment.</param>
+        public ResponseEntry(ExecutionContext context, Environment environment)
         {
             this.CorrelationId = context.Request.CorrelationId;
-            //this.MessageId = context.Request.Message.Id;
+            this.MessageId = context.Request.Message.Id;
             this.Completed = context.Completed;
-            this.Service = context.EndPoint.EndPointType;
+            this.Service = context.EndPoint.ServiceType;
             this.Exception = context.Exception;
             this.IsSuccessful = context.IsSuccessful;
             this.Started = context.Started;
             this.ValidationErrors = context.ValidationErrors;
-            this.MachineName = context.ExecutionContext.MachineName;
-            this.ThreadId = context.ExecutionContext.ThreadId;
-            this.ApplicationName = context.ExecutionContext.ApplicationName;
-            this.Environment = context.ExecutionContext.Environment;
+            this.TimeStamp = DateTimeOffset.Now;
+            this.MachineName = environment.MachineName;
+            this.ApplicationName = environment.ApplicationName;
+            this.EnvironmentName = environment.EnvironmentName;
+            this.ThreadId = environment.ThreadId;
             if (this.Completed.HasValue)
             {
                 this.Elapsed = this.Completed.Value - this.Started;
             }
-
-            if (context.Response is IEvent)
-            {
-                var target = (IEvent)context.Response;
-                this.EventType = target.GetType().FullName;
-                this.EventId = target.Id;
-                try
-                {
-                    this.EventBody = JsonConvert.SerializeObject(target, new JsonSerializerSettings
-                    {
-                        ContractResolver = new EventContractResolver()
-                    });
-                }
-                catch
-                {
-                    this.EventBody = "{ \"Error\" : \"Serialization failed.\" }";
-                }
-            }
         }
 
-        /// <summary>
-        /// Gets or sets the name of the application.
-        /// </summary>
-        /// <value>The name of the application.</value>
         public string ApplicationName { get; set; }
-            
+
         /// <summary>
         /// Gets the completion date and time.
         /// </summary>
@@ -77,29 +57,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <value>The time elapsed from start to end.</value>
         public TimeSpan Elapsed { get; set; }
 
-        /// <summary>
-        /// Gets or sets the environment.
-        /// </summary>
-        /// <value>The environment.</value>
-        public string Environment { get; set; }
-
-        /// <summary>
-        /// Gets or sets the event body.
-        /// </summary>
-        /// <value>The event body.</value>
-        public string EventBody { get; set; }
-
-        /// <summary>
-        /// Gets or sets the event identifier.
-        /// </summary>
-        /// <value>The event identifier.</value>
-        public string EventId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the type of the event.
-        /// </summary>
-        /// <value>The type of the event.</value>
-        public string EventType { get; set; }
+        public string EnvironmentName { get; set; }
 
         /// <summary>
         /// Gets the exception, if any.
@@ -113,10 +71,6 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <value><c>true</c> if execution was; otherwise, <c>false</c>.</value>
         public bool IsSuccessful { get; }
 
-        /// <summary>
-        /// Gets or sets the name of the machine.
-        /// </summary>
-        /// <value>The name of the machine.</value>
         public string MachineName { get; set; }
 
         /// <summary>
@@ -137,11 +91,9 @@ namespace Slalom.Stacks.Messaging.Logging
         /// <value>The start date and time.</value>
         public DateTimeOffset Started { get; }
 
-        /// <summary>
-        /// Gets or sets the thread identifier.
-        /// </summary>
-        /// <value>The thread identifier.</value>
         public int ThreadId { get; set; }
+
+        public DateTimeOffset TimeStamp { get; set; }
 
         /// <summary>
         /// Gets or sets the validation errors that were raised, if any.

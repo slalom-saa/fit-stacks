@@ -5,6 +5,7 @@
   },
 
   "dependencies": {
+    "Slalom.Stacks.Messaging.Akka": "1.4.7",
     "Slalom.Stacks.Web.AspNetCore": "1.4.9"
   },
 

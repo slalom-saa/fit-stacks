@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Events;
 
 namespace Slalom.Stacks.Domain
 {
@@ -21,6 +22,6 @@ namespace Slalom.Stacks.Domain
         /// Commits and returns the raised events.
         /// </summary>
         /// <returns>The events that were raised.</returns>
-        IEnumerable<Event> CommitEvents();
+        IEnumerable<EventMessage> CommitEvents();
     }
 }

@@ -1,11 +1,12 @@
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.ConsoleClient.Application.Products.Add
+namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
 {
     /// <summary>
     /// Adds a product to the product catalog.
     /// </summary>
+    [Command("catalog/products/add")]
     public class AddProductCommand : Command
     {
         /// <summary>

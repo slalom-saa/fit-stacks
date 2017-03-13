@@ -4,6 +4,8 @@ using System.Reflection;
 using Autofac;
 using System.Linq;
 using Autofac.Builder;
+using Autofac.Features.Scanning;
+using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Validation;
 
 #pragma warning disable 618
@@ -15,6 +17,19 @@ namespace Slalom.Stacks
     /// </summary>
     public static class StackExtensions
     {
+        /// <summary>
+        /// Specifies how a type from a scanned assembly is mapped to a service.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> AsBaseAndContractTypes<TLimit, TScanningActivatorData, TRegistrationStyle>(this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration) where TScanningActivatorData : ScanningActivatorData
+        {
+            return registration.As(instance => instance.GetBaseAndContractTypes());
+        }
+
         /// <summary>
         /// Autowires properties of registered instances.
         /// </summary>
