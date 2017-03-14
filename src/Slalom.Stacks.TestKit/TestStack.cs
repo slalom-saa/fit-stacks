@@ -6,8 +6,10 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Events;
+using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks.TestKit
 {
@@ -67,5 +69,23 @@ namespace Slalom.Stacks.TestKit
                 builder.RegisterInstance(instance.EntityContext).As<IEntityContext>();
             });
         }
+
+        /// <summary>
+        /// Gets the configured <see cref="IDomainFacade" />.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade" />.</value>
+        public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
+
+        /// <summary>
+        /// Gets the configured <see cref="ILogger" />.
+        /// </summary>
+        /// <value>The configured <see cref="ILogger" />.</value>
+        public ILogger Logger => this.Container.Resolve<ILogger>();
+
+        /// <summary>
+        /// Gets the configured <see cref="ISearchFacade" />.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade" />.</value>
+        public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
     }
 }

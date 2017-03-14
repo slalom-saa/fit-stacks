@@ -32,6 +32,12 @@ namespace Slalom.Stacks.Services.Registry
         public string Path { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this endpoint is public.
+        /// </summary>
+        /// <value><c>true</c> if public; otherwise, <c>false</c>.</value>
+        public bool Public { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets the endpoint timeout in milliseconds.
         /// </summary>
         /// <value>The endpoint timeout in milliseconds.</value>

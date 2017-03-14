@@ -25,6 +25,8 @@ namespace Slalom.Stacks.Services.Registry
         /// <value>The path.</value>
         public string Path { get; set; }
 
+        public bool Public { get; set; }
+
         /// <summary>
         /// Gets or sets the input properties.
         /// </summary>
@@ -114,9 +116,12 @@ namespace Slalom.Stacks.Services.Registry
                         var index = Array.IndexOf(map.InterfaceMethods, method);
                         var m = map.TargetMethods[index];
                         var attribute = m?.GetCustomAttributes<EndPointAttribute>().FirstOrDefault();
-                        if (!String.IsNullOrWhiteSpace(attribute?.Path))
+                        if (attribute != null)
                         {
-                            path = attribute.Path;
+                            if (!String.IsNullOrWhiteSpace(attribute.Path))
+                            {
+                                path = attribute.Path;
+                            }
                         }
 
                         var requestType = method.GetParameters().FirstOrDefault()?.ParameterType;
@@ -132,7 +137,8 @@ namespace Slalom.Stacks.Services.Registry
                             Summary = summary?.Summary,
                             RootPath = rootPath,
                             Timeout = timeout,
-                            EndPointType = method
+                            EndPointType = method,
+                            Public = service.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Public ?? true
                         };
                         yield return endPoint;
                     }
