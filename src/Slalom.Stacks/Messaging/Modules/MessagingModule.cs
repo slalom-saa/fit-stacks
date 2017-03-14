@@ -47,6 +47,8 @@ namespace Slalom.Stacks.Messaging.Modules
 
             builder.RegisterType<MessageDispatcher>().As<IMessageDispatcher>();
 
+            builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
+
             builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
