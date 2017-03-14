@@ -28,9 +28,13 @@ namespace ConsoleClient
     {
         public static void Main(string[] args)
         {
-            using (var stack = new DocumentStack(typeof(AddProduct), typeof(AddProductHost)))
+            using (var stack = new Stack(typeof(AddProduct), typeof(AddProductHost)))
             {
-                stack.CreateWordDocument();
+                //stack.UseSqlServerLogging();
+
+                stack.UseAkkaMessaging();
+
+                stack.RunWebHost();
             }
         }
     }

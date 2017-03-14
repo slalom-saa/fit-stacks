@@ -26,7 +26,7 @@ namespace Slalom.Products.WebHost
         {
         }
 
-        public override int Retries => 0;
+        public override int Retries => 3;
     }
 
     public class Program
