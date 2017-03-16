@@ -46,18 +46,26 @@ namespace Slalom.Stacks.Documentation
                         document.Append(endPoint.RequestProperties);
 
                         document.Append("Rules", "Heading 3");
-                        var table = document.AppendTable(1500, 8500);
-                        table.AppendRow("Type", "Summary");
-                        foreach (var property in endPoint.RequestProperties)
+
+                        if (endPoint.RequestProperties.Any(e => e.Validation != null) || endPoint.Rules.Any())
                         {
-                            if (property.Validation != null)
+                            var table = document.AppendTable(1500, 8500);
+                            table.AppendRow("Type", "Summary");
+                            foreach (var property in endPoint.RequestProperties)
                             {
-                                table.AppendRow("Input", property.Validation);
+                                if (property.Validation != null)
+                                {
+                                    table.AppendRow("Input", property.Validation);
+                                }
+                            }
+                            foreach (var rule in endPoint.Rules)
+                            {
+                                table.AppendRow(rule.RuleType.ToString(), rule.Comments?.Summary);
                             }
                         }
-                        foreach (var rule in endPoint.Rules)
+                        else
                         {
-                            table.AppendRow(rule.RuleType.ToString(), rule.Comments?.Summary);
+                            document.Append("None");
                         }
                     }
                 }

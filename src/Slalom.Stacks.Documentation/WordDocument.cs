@@ -33,12 +33,19 @@ namespace Slalom.Stacks.Documentation
 
         public void Append(IEnumerable<EndPointProperty> requestProperties)
         {
-            var table = new DocumentTable(_document, 2500, 2500, 5000);
-            table.AppendRow("Name", "Type", "Description");
-
-            foreach (var property in requestProperties)
+            if (requestProperties.Any())
             {
-                table.AppendRow(property.Name, Type.GetType(property.Type).Name, property.Comments?.Value);
+                var table = new DocumentTable(_document, 2500, 2500, 5000);
+                table.AppendRow("Name", "Type", "Description");
+
+                foreach (var property in requestProperties)
+                {
+                    table.AppendRow(property.Name, Type.GetType(property.Type).Name, property.Comments?.Value);
+                }
+            }
+            else
+            {
+                this.Append("None");
             }
         }
 
