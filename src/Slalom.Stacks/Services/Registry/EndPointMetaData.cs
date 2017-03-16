@@ -4,6 +4,7 @@ using System.Linq;
 using Slalom.Stacks.Messaging;
 using System.Reflection;
 using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.Services.Registry
 {
@@ -23,6 +24,8 @@ namespace Slalom.Stacks.Services.Registry
         /// </summary>
         /// <value>The path.</value>
         public string Path { get; set; }
+
+        public bool Public { get; set; }
 
         /// <summary>
         /// Gets or sets the input properties.
@@ -113,9 +116,12 @@ namespace Slalom.Stacks.Services.Registry
                         var index = Array.IndexOf(map.InterfaceMethods, method);
                         var m = map.TargetMethods[index];
                         var attribute = m?.GetCustomAttributes<EndPointAttribute>().FirstOrDefault();
-                        if (!String.IsNullOrWhiteSpace(attribute?.Path))
+                        if (attribute != null)
                         {
-                            path = attribute.Path;
+                            if (!String.IsNullOrWhiteSpace(attribute.Path))
+                            {
+                                path = attribute.Path;
+                            }
                         }
 
                         var requestType = method.GetParameters().FirstOrDefault()?.ParameterType;
@@ -125,13 +131,14 @@ namespace Slalom.Stacks.Services.Registry
                             ServiceType = service.AssemblyQualifiedName,
                             RequestType = requestType?.AssemblyQualifiedName,
                             ResponseType = service.BaseType?.GetGenericArguments().ElementAtOrDefault(1)?.AssemblyQualifiedName,
-                            Rules = requestType?.GetRules().Select(e => new EndPointRule {Name = e.Name}).ToList(),
+                            Rules = requestType?.GetRules().Select(e => new EndPointRule(e)).ToList(),
                             Version = version,
                             RequestProperties = requestType?.GetInputProperties().ToList(),
-                            Summary = summary,
+                            Summary = summary?.Summary,
                             RootPath = rootPath,
                             Timeout = timeout,
-                            EndPointType = method
+                            EndPointType = method,
+                            Public = service.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Public ?? true
                         };
                         yield return endPoint;
                     }

@@ -26,11 +26,10 @@ namespace Slalom.Stacks.Messaging
             return instance.Container.Resolve<IMessageGateway>().Send(command, timeout: timeout);
         }
 
-        public static Stack UseInMemoryLogging(this Stack instance)
+        public static Stack UseInMemoryRequestLogging(this Stack instance)
         {
             instance.Use(builder =>
             {
-                builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
                 builder.RegisterType<InMemoryRequestLog>().As<IRequestLog>().SingleInstance();
                 builder.RegisterType<InMemoryResponseLog>().As<IResponseLog>().SingleInstance();
             });

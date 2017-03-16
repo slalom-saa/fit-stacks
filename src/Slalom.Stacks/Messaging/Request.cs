@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Net;
-using System.Net.Http;
 using System.Security.Claims;
 using Newtonsoft.Json;
 using Slalom.Stacks.Messaging.Events;
@@ -65,7 +63,7 @@ namespace Slalom.Stacks.Messaging
                 CorrelationId = this.GetCorrelationId(),
                 SourceAddress = this.GetSourceIPAddress(),
                 SessionId = this.GetSession(),
-                User = ClaimsPrincipal.Current,
+                User = this.GetUser(),
                 Parent = parent,
                 Path = endPoint.Path,
                 Message = this.GetMessage(command, endPoint)
@@ -80,37 +78,25 @@ namespace Slalom.Stacks.Messaging
                 CorrelationId = this.GetCorrelationId(),
                 SourceAddress = this.GetSourceIPAddress(),
                 SessionId = this.GetSession(),
-                User = ClaimsPrincipal.Current,
+                User = this.GetUser(),
                 Parent = parent,
                 Path = endPoint.Path,
                 Message = this.GetMessage(command, endPoint)
             };
         }
 
-        private IMessage GetMessage(string message, EndPointMetaData endPoint)
+        /// <inheritdoc />
+        public Request Resolve(EventMessage instance, Request parent)
         {
-            if (message == null)
+            return new Request
             {
-                return new Message(JsonConvert.DeserializeObject("{}", Type.GetType(endPoint.RequestType)));
-            }
-            return new Message(JsonConvert.DeserializeObject(message, Type.GetType(endPoint.RequestType)));
-        }
-
-        private IMessage GetMessage(Command command, EndPointMetaData endPoint)
-        {
-            if (command != null && command.GetType().AssemblyQualifiedName == endPoint.RequestType)
-            {
-                return new Message(command);
-            }
-            else if (command != null)
-            {
-                var content = JsonConvert.SerializeObject(command);
-                return new Message(JsonConvert.DeserializeObject(content, Type.GetType(endPoint.RequestType)));
-            }
-            else
-            {
-                return new Message(JsonConvert.DeserializeObject("{}", Type.GetType(endPoint.RequestType)));
-            }
+                CorrelationId = parent.CorrelationId,
+                SourceAddress = parent.SourceAddress,
+                SessionId = parent.SessionId,
+                User = parent.User,
+                Parent = parent,
+                Message = instance
+            };
         }
 
         /// <summary>
@@ -155,17 +141,36 @@ namespace Slalom.Stacks.Messaging
             return sourceAddress;
         }
 
-        public Request Resolve(EventMessage instance, Request parent)
+        /// <summary>
+        /// Gets the current user.
+        /// </summary>
+        /// <returns>Returns the current user.</returns>
+        protected virtual ClaimsPrincipal GetUser()
         {
-            return new Request
+            return ClaimsPrincipal.Current;
+        }
+
+        private IMessage GetMessage(string message, EndPointMetaData endPoint)
+        {
+            if (message == null)
             {
-                CorrelationId = parent.CorrelationId,
-                SourceAddress = parent.SourceAddress,
-                SessionId = parent.SessionId,
-                User = parent.User,
-                Parent = parent,
-                Message = instance
-            };
+                return new Message(JsonConvert.DeserializeObject("{}", Type.GetType(endPoint.RequestType)));
+            }
+            return new Message(JsonConvert.DeserializeObject(message, Type.GetType(endPoint.RequestType)));
+        }
+
+        private IMessage GetMessage(Command command, EndPointMetaData endPoint)
+        {
+            if (command != null && command.GetType().AssemblyQualifiedName == endPoint.RequestType)
+            {
+                return new Message(command);
+            }
+            if (command != null)
+            {
+                var content = JsonConvert.SerializeObject(command);
+                return new Message(JsonConvert.DeserializeObject(content, Type.GetType(endPoint.RequestType)));
+            }
+            return new Message(JsonConvert.DeserializeObject("{}", Type.GetType(endPoint.RequestType)));
         }
     }
 }

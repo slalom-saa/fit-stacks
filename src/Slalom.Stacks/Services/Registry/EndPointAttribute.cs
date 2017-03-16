@@ -20,10 +20,22 @@ namespace Slalom.Stacks.Services.Registry
         }
 
         /// <summary>
+        /// Gets or sets the endpoint name.
+        /// </summary>
+        /// <value>The endpoint name.</value>
+        public string Name { get; set; }
+
+        /// <summary>
         /// Gets the path.
         /// </summary>
         /// <value>The name.</value>
         public string Path { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this endpoint is public.
+        /// </summary>
+        /// <value><c>true</c> if public; otherwise, <c>false</c>.</value>
+        public bool Public { get; set; } = true;
 
         /// <summary>
         /// Gets or sets the endpoint timeout in milliseconds.

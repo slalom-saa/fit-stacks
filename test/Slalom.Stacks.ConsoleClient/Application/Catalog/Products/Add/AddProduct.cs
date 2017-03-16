@@ -25,7 +25,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
     /// <summary>
     /// Adds a product to the product catalog.
     /// </summary>
-    [EndPoint("catalog/products/add", Version = 2)]
+    [EndPoint("catalog/products/add", Version = 2, Name = "Add Product")]
     public class AddProduct2 : UseCase<AddProductCommand, ProductAdded>
     {
         /// <inheritdoc />

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Reflection;
 
 namespace Slalom.Stacks.Services.Registry
 {
@@ -12,6 +13,13 @@ namespace Slalom.Stacks.Services.Registry
             this.Path = service.GetPath();
             this.RootPath = rootPath;
             this.EndPoints = EndPointMetaData.Create(service).ToList();
+            this.ServiceType = service;
+            this.Name = service.Name;
+            var attribute = service.GetAllAttributes<EndPointAttribute>().FirstOrDefault();
+            if (attribute != null)
+            {
+                this.Name = attribute.Name ?? this.Name;
+            }
         }
 
         public ServiceMetaData()
@@ -27,6 +35,10 @@ namespace Slalom.Stacks.Services.Registry
         public string Path { get; set; }
 
         public string RootPath { get; set; }
+
+        public Type ServiceType { get; set; }
+
+        public string Name { get; set; }
 
         public ServiceMetaData Copy(string path)
         {

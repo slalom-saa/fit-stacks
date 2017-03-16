@@ -16,10 +16,16 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-                using (var stack = new DocumentStack())
+                using (var stack = new Stack())
                 {
-                    stack.WriteToConsole();
+                    stack.Send("_systems/services").Result.OutputToJson();
+
+
+                    //var path = @"C:\source\Stacks\Core\src\Slalom.Stacks.Documentation\output.docx";
+
+                    //stack.CreateWordDocument(path);
                 }
+                Environment.Exit(0);
             }
             catch (Exception exception)
             {

@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace Slalom.Stacks.Text
@@ -90,6 +91,16 @@ namespace Slalom.Stacks.Text
                 throw new ArgumentNullException(nameof(instance));
             }
             return string.Concat(instance.Select((x, i) => i > 0 && char.IsUpper(x) ? delimiter + x.ToString() : x.ToString())).ToLowerInvariant();
+        }
+
+        public static string ToTitle(this string instance)
+        {
+            return Regex.Replace(instance, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToUpper(m.Value[1])}");
+        }
+
+        public static string ToSentence(this string instance)
+        {
+            return instance.Replace("_", " ");
         }
 
         /// <summary>

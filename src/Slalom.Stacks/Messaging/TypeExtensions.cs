@@ -14,6 +14,20 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
 {
+
+    public class Comments
+    {
+        public string Summary { get; set; }
+
+        public string Value { get; set; }
+
+        public Comments(XNode node)
+        {
+            this.Summary = node.XPathSelectElement("summary")?.Value.Trim();
+            this.Value = node.XPathSelectElement("value")?.Value.Trim();
+        }
+    }
+
     /// <summary>
     /// Extensions for types within messaging.
     /// </summary>
@@ -34,7 +48,7 @@ namespace Slalom.Stacks.Messaging
             });
         }
 
-        public static string GetComments(this Type type)
+        public static Comments GetComments(this Type type)
         {
             var document = type.Assembly.GetComments();
             if (document != null)
@@ -42,13 +56,13 @@ namespace Slalom.Stacks.Messaging
                 var node = document.XPathSelectElement("//member[@name=\"T:" + type.FullName + "\"]");
                 if (node != null)
                 {
-                    return node.XPathSelectElement("summary")?.Value.Trim();
+                    return new Comments(node);
                 }
             }
             return null;
         }
 
-        public static string GetComments(this PropertyInfo property)
+        public static Comments GetComments(this PropertyInfo property)
         {
             var document = property.DeclaringType.Assembly.GetComments();
             if (document != null)
@@ -56,7 +70,7 @@ namespace Slalom.Stacks.Messaging
                 var node = document.XPathSelectElement("//member[@name=\"P:" + property.DeclaringType.FullName + "." + property.Name + "\"]");
                 if (node != null)
                 {
-                    return node.XPathSelectElement("summary")?.Value.Trim();
+                    return new Comments(node);
                 }
             }
             return null;
@@ -106,12 +120,7 @@ namespace Slalom.Stacks.Messaging
 
         public static Type[] GetRules(this Type type)
         {
-            var input = type.GetRequestType();
-            if (input != null)
-            {
-                return type.Assembly.SafelyGetTypes(typeof(IValidate<>).MakeGenericType(input));
-            }
-            return new Type[0];
+            return type.Assembly.SafelyGetTypes(typeof(IValidate<>).MakeGenericType(type));
         }
 
         /// <summary>

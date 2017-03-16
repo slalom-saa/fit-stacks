@@ -1,12 +1,13 @@
-﻿{
+{
   "dependencies": {
-    "Microsoft.AspNetCore.Diagnostics": "1.0.0",
-    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.0.1",
-    "Microsoft.Extensions.Logging.Console": "1.0.0",
+    "Microsoft.AspNetCore.Diagnostics": "1.1.1",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.1",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.1.1",
+    "Microsoft.Extensions.Logging.Console": "1.1.1",
     "Slalom.Products": "1.0.0-*",
-    "Slalom.Stacks.Messaging.Akka": "1.4.28",
-    "Slalom.Stacks.Web.AspNetCore": "1.4.17"
+    "Slalom.Stacks.Logging.SqlServer": "1.5.2",
+    "Slalom.Stacks.Messaging.Akka": "1.5.2",
+    "Slalom.Stacks.Web.AspNetCore": "1.5.8"
   },
 
   "tools": {

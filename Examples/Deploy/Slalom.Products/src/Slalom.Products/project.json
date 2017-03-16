@@ -1,7 +1,7 @@
 {
   "version": "1.0.0-*",
   "dependencies": {
-    "Slalom.Stacks": "1.4.97"
+    "Slalom.Stacks": "1.5.13"
   },
   "frameworks": {
     "net461": {

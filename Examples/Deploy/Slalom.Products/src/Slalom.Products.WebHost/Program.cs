@@ -11,6 +11,7 @@ using Slalom.Stacks.Messaging.Application;
 using Slalom.Stacks.Text;
 using Slalom.Stacks.Web.AspNetCore;
 using Autofac;
+using Slalom.Stacks.Logging.SqlServer;
 using Slalom.Stacks.Messaging.Routing;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Services.Registry;
@@ -25,7 +26,7 @@ namespace Slalom.Products.WebHost
         {
         }
 
-        public override int Retries => 0;
+        public override int Retries => 3;
     }
 
     public class Program
@@ -34,7 +35,7 @@ namespace Slalom.Products.WebHost
         {
             using (var stack = new Stack(typeof(AddProduct), typeof(AddProductHost)))
             {
-                stack.UseInMemoryPersistence();
+                stack.UseSqlServerLogging();
 
                 stack.UseAkkaMessaging();
 

@@ -12,16 +12,33 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Products.Application.Catalog.Products.Add
 {
-    [EndPoint("catalog/products/add", Timeout = 5000)]
+    /// <summary>
+    /// Yada yada yada.
+    /// </summary>
+    [EndPoint("catalog/products/add", Timeout = 1000)]
     public class AddProduct : UseCase<AddProductCommand, string>
     {
-        private int _count;
+        private int? _count;
+
+        private async Task<int> GetCount()
+        {
+            if (_count == null)
+            {
+
+                await Task.Delay(500);
+                _count = 0;
+
+            }
+            _count = _count + 1;
+
+            return _count.Value;
+        }
 
         public override async Task<string> ExecuteAsync(AddProductCommand command)
         {
-            _count++;
+            var count = await GetCount();
 
-            if (_count > 2)
+            if (count > 3)
             {
                 throw new Exception("Asdfasdf");
             }
@@ -30,7 +47,7 @@ namespace Slalom.Products.Application.Catalog.Products.Add
 
             await this.Domain.Add(target);
 
-            var stock = await this.Send(new StockProductCommand());
+            var stock = await this.Send("shipping/products/stock", new StockProductCommand());
             if (!stock.IsSuccessful)
             {
                 // rollback 
@@ -40,7 +57,7 @@ namespace Slalom.Products.Application.Catalog.Products.Add
 
             this.AddRaisedEvent(new AddProductEvent(target.Id, target.Name));
 
-            return "Added " + _count;
+            return "Added " + count;
         }
     }
 }
