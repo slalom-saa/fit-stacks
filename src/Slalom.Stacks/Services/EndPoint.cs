@@ -6,7 +6,45 @@ using Slalom.Stacks.Messaging.Events;
 
 namespace Slalom.Stacks.Services
 {
-    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand>, IEndPoint<TCommand> where TCommand : Command where TResult : class
+    public abstract class EndPoint<TMessage> : Service, IEndPoint<TMessage>
+    {
+        public virtual void Receive(TMessage instance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task ReceiveAsync(TMessage instance)
+        {
+            this.Receive(instance);
+            return Task.FromResult(0);
+        }
+
+        Task IEndPoint<TMessage>.Receive(TMessage instance)
+        {
+            return this.ReceiveAsync(instance);
+        }
+    }
+
+    public abstract class EndPoint<TMessage, TResponse> : Service, IEndPoint<TMessage, TResponse>
+    {
+        public virtual TResponse Receive(TMessage instance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<TResponse> ReceiveAsync(TMessage instance)
+        {
+           return Task.FromResult(this.Receive(instance));
+           
+        }
+
+        Task<TResponse> IEndPoint<TMessage, TResponse>.Receive(TMessage instance)
+        {
+            return this.ReceiveAsync(instance);
+        }
+    }
+
+    public abstract class UseCase<TCommand, TResult> : UseCase<TCommand>, IEndPoint<TCommand> where TCommand : class where TResult : class
     {
         /// <summary>
         /// Executes the use case given the specified message.
@@ -61,7 +99,7 @@ namespace Slalom.Stacks.Services
         }
     }
 
-    public abstract class UseCase<TCommand> : Service, IEndPoint<TCommand> where TCommand : Command
+    public abstract class UseCase<TCommand> : Service, IEndPoint<TCommand> where TCommand : class
     {
         /// <summary>
         /// Executes the use case given the specified message.

@@ -34,13 +34,13 @@ namespace Slalom.Stacks.Services.Registry
             return target;
         }
 
-        public IEnumerable<EndPointMetaData> Find(Command command)
+        public IEnumerable<EndPointMetaData> Find(object message)
         {
-            if (command == null)
+            if (message == null)
             {
                 return Enumerable.Empty<EndPointMetaData>();
             }
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == command.GetType().AssemblyQualifiedName);
+            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.GetType());
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Slalom.Stacks.Services.Registry
 
         public IEnumerable<EndPointMetaData> Find(EventMessage instance)
         {
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == instance.MessageType.AssemblyQualifiedName);
+            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == instance.MessageType);
         }
 
         /// <summary>
@@ -75,9 +75,9 @@ namespace Slalom.Stacks.Services.Registry
         public void RegisterLocal(Assembly[] assemblies)
         {
             var host = new ServiceHost();
-            foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint<>)))
+            foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint<>)).Union(assemblies.SafelyGetTypes(typeof(IEndPoint<,>))).Distinct())
             {
-                if (!service.IsGenericType && !service.IsDynamic())
+                if (!service.IsGenericType && !service.IsDynamic() && !service.IsAbstract)
                 {
                     host.Add(service);
                 }
@@ -93,18 +93,18 @@ namespace Slalom.Stacks.Services.Registry
             }
         }
 
-        public EndPointMetaData Find(string path, Command command)
+        public EndPointMetaData Find(string path, object message)
         {
             var target = this.Find(path);
-            if (command != null)
+            if (message != null)
             {
                 if (target == null)
                 {
-                    target = this.Find(command).FirstOrDefault();
+                    target = this.Find(message).FirstOrDefault();
                 }
                 if (target == null)
                 {
-                    var attribute = command.GetType().GetAllAttributes<CommandAttribute>().FirstOrDefault();
+                    var attribute = message.GetType().GetAllAttributes<CommandAttribute>().FirstOrDefault();
                     if (attribute != null)
                     {
                         target = this.Find(attribute.Path);

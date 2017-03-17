@@ -69,7 +69,7 @@ namespace Slalom.Stacks.Messaging
 
             var context = new ExecutionContext(request, endPoint, source.Token, parentContext);
 
-            var handler = _components.Resolve(Type.GetType(endPoint.ServiceType));
+            var handler = _components.Resolve(endPoint.ServiceType);
             var service = handler as IService;
             if (service != null)
             {

@@ -56,7 +56,7 @@ namespace Slalom.Stacks.Messaging
         public ClaimsPrincipal User { get; private set; }
 
         /// <inheritdoc />
-        public Request Resolve(Command command, EndPointMetaData endPoint, Request parent = null)
+        public Request Resolve(object message, EndPointMetaData endPoint, Request parent = null)
         {
             return new Request
             {
@@ -66,7 +66,7 @@ namespace Slalom.Stacks.Messaging
                 User = this.GetUser(),
                 Parent = parent,
                 Path = endPoint.Path,
-                Message = this.GetMessage(command, endPoint)
+                Message = this.GetMessage(message, endPoint)
             };
         }
 
@@ -154,23 +154,23 @@ namespace Slalom.Stacks.Messaging
         {
             if (message == null)
             {
-                return new Message(JsonConvert.DeserializeObject("{}", Type.GetType(endPoint.RequestType)));
+                return new Message(JsonConvert.DeserializeObject("{}", endPoint.RequestType));
             }
-            return new Message(JsonConvert.DeserializeObject(message, Type.GetType(endPoint.RequestType)));
+            return new Message(JsonConvert.DeserializeObject(message, endPoint.RequestType));
         }
 
-        private IMessage GetMessage(Command command, EndPointMetaData endPoint)
+        private IMessage GetMessage(object message, EndPointMetaData endPoint)
         {
-            if (command != null && command.GetType().AssemblyQualifiedName == endPoint.RequestType)
+            if (message != null && message.GetType() == endPoint.RequestType)
             {
-                return new Message(command);
+                return new Message(message);
             }
-            if (command != null)
+            if (message != null)
             {
-                var content = JsonConvert.SerializeObject(command);
-                return new Message(JsonConvert.DeserializeObject(content, Type.GetType(endPoint.RequestType)));
+                var content = JsonConvert.SerializeObject(message);
+                return new Message(JsonConvert.DeserializeObject(content, endPoint.RequestType));
             }
-            return new Message(JsonConvert.DeserializeObject("{}", Type.GetType(endPoint.RequestType)));
+            return new Message(JsonConvert.DeserializeObject("{}", endPoint.RequestType));
         }
     }
 }

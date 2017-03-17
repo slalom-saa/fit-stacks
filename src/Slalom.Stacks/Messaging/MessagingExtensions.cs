@@ -18,12 +18,12 @@ namespace Slalom.Stacks.Messaging
         /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
         /// <param name="instance">The this instance.</param>
-        /// <param name="command">The command to send.</param>
+        /// <param name="message">The command to send.</param>
         /// <param name="timeout">The request timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public static Task<MessageResult> Send(this Stack instance, Command command, TimeSpan? timeout = null)
+        public static Task<MessageResult> Send(this Stack instance, object message, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageGateway>().Send(command, timeout: timeout);
+            return instance.Container.Resolve<IMessageGateway>().Send(message, timeout: timeout);
         }
 
         public static Stack UseInMemoryRequestLogging(this Stack instance)
@@ -41,12 +41,12 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <param name="instance">The this instance.</param>
         /// <param name="path">The path.</param>
-        /// <param name="command">The command to send.</param>
+        /// <param name="message">The command to send.</param>
         /// <param name="timeout">The request timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public static Task<MessageResult> Send(this Stack instance, string path, Command command, TimeSpan? timeout = null)
+        public static Task<MessageResult> Send(this Stack instance, string path, object message, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageGateway>().Send(path, command, timeout: timeout);
+            return instance.Container.Resolve<IMessageGateway>().Send(path, message, timeout: timeout);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Slalom.Stacks.Messaging
         /// <returns>A task for asynchronous programming.</returns>
         public static Task<MessageResult> Send(this Stack instance, string path, TimeSpan? timeout = null)
         {
-            return instance.Container.Resolve<IMessageGateway>().Send(path, (Command)null, timeout: timeout);
+            return instance.Container.Resolve<IMessageGateway>().Send(path, null, timeout: timeout);
         }
 
         /// <summary>

@@ -12,23 +12,28 @@ namespace Slalom.Stacks.ConsoleClient
 {
     public class Program
     {
-        public class Product : AggregateRoot
+        public class HelloWorldRequest
         {
-        }
+            public string Name { get; }
 
-        public class AddProductCommand : Command
-        {
-        }
-
-        public class AddProduct : UseCase<AddProductCommand, string>
-        {
-            public override async Task<string> ExecuteAsync(AddProductCommand command)
+            public HelloWorldRequest(string name)
             {
-                var target = new Product();
+                this.Name = name;
+            }
+        }
 
-                await this.Domain.Add(target);
+        public class HelloWorldResponse
+        {
+            public string Goto { get; set; }
+        }
 
-                return target.Id;
+        public class HelloWorld : EndPoint<HelloWorldRequest, string>
+        {
+            public override string Receive(HelloWorldRequest instance)
+            {
+                Console.WriteLine("Hello");
+
+                return "a";
             }
         }
 
@@ -39,7 +44,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.Send(new AddProductCommand()).Result.OutputToJson();
+                    stack.Send(new HelloWorldRequest("name")).Result.OutputToJson();
                 }
             }
             catch (Exception exception)

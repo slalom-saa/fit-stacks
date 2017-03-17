@@ -83,7 +83,7 @@ namespace Slalom.Stacks.Messaging.Logging
         /// Gets the type of the endPoint.
         /// </summary>
         /// <value>The type of the endPoint.</value>
-        public string Service { get; }
+        public Type Service { get; }
 
         /// <summary>
         /// Gets the start date and time.

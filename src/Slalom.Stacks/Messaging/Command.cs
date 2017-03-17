@@ -14,8 +14,4 @@ namespace Slalom.Stacks.Messaging
             this.Path = path;
         }
     }
-
-    public abstract class Command
-    {
-    }
 }

@@ -37,13 +37,13 @@ namespace Slalom.Stacks.Services.Registry
         /// Gets or sets the input type.
         /// </summary>
         /// <value>The input type.</value>
-        public string RequestType { get; set; }
+        public Type RequestType { get; set; }
 
         /// <summary>
         /// Gets or sets the output type.
         /// </summary>
         /// <value>The output type.</value>
-        public string ResponseType { get; set; }
+        public Type ResponseType { get; set; }
 
         /// <summary>
         /// Gets or sets the root path.
@@ -71,7 +71,7 @@ namespace Slalom.Stacks.Services.Registry
         /// Gets or sets the endPoint type.
         /// </summary>
         /// <value>The endPoint type.</value>
-        public string ServiceType { get; set; }
+        public Type ServiceType { get; set; }
 
         /// <summary>
         /// Gets or sets the version number.
@@ -96,7 +96,7 @@ namespace Slalom.Stacks.Services.Registry
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="rootPath">The root path.</param>
-        /// <returns>UseCase.</returns>
+        /// <returns>EndPoint.</returns>
         public static IEnumerable<EndPointMetaData> Create(Type service, string rootPath = ServiceHost.LocalPath)
         {
             var interfaces = service.GetInterfaces().Where(e => e.IsGenericType && (e.GetGenericTypeDefinition() == typeof(IEndPoint<>) || e.GetGenericTypeDefinition() == typeof(IEndPoint<,>))).ToList();
@@ -128,9 +128,9 @@ namespace Slalom.Stacks.Services.Registry
                         var endPoint = new EndPointMetaData
                         {
                             Path = path,
-                            ServiceType = service.AssemblyQualifiedName,
-                            RequestType = requestType?.AssemblyQualifiedName,
-                            ResponseType = service.BaseType?.GetGenericArguments().ElementAtOrDefault(1)?.AssemblyQualifiedName,
+                            ServiceType = service,
+                            RequestType = requestType,
+                            ResponseType = service.BaseType?.GetGenericArguments().ElementAtOrDefault(1),
                             Rules = requestType?.GetRules().Select(e => new EndPointRule(e)).ToList(),
                             Version = version,
                             RequestProperties = requestType?.GetInputProperties().ToList(),

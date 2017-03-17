@@ -65,13 +65,13 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public Task<MessageResult> Send(Command instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
+        public Task<MessageResult> Send(object message, ExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
-            return this.Send((string) null, (Command) instance, parentContext, timeout);
+            return this.Send((string) null, message, parentContext, timeout);
         }
 
         /// <inheritdoc />
-        public virtual async Task<MessageResult> Send(string path, Command instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
+        public virtual async Task<MessageResult> Send(string path, object instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
             var endPoint = _services.Value.Find(path, instance);
             if (endPoint == null)

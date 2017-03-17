@@ -51,25 +51,25 @@ namespace Slalom.Stacks.Services
         /// Sends the specified message.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <param name="command">The command.</param>
+        /// <param name="message">The command.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        protected Task<MessageResult> Send(string path, Command command)
+        protected Task<MessageResult> Send(string path, object message)
         {
             var messages = this.Components.Resolve<IMessageGateway>();
 
-            return messages.Send(path, command, this.Context);
+            return messages.Send(path, message, this.Context);
         }
 
         /// <summary>
         /// Sends the specified message.
         /// </summary>
-        /// <param name="command">The command.</param>
+        /// <param name="message">The command.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        protected Task<MessageResult> Send(Command command)
+        protected Task<MessageResult> Send(object message)
         {
             var messages = this.Components.Resolve<IMessageGateway>();
 
-            return messages.Send(command, this.Context);
+            return messages.Send(message, this.Context);
         }
 
         /// <summary>
