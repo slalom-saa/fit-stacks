@@ -13,10 +13,11 @@ namespace Slalom.Products.Application.Catalog.Products.Add.Rules
         /// <inheritdoc />
         public override async Task<ValidationError> ValidateAsync(AddProductCommand instance)
         {
-            if (await this.Domain.Exists<Product>(e => e.Name == instance.Name))
-            {
-                return "A product name must be unique.";
-            }
+            //if (await this.Domain.Exists<Product>(e => e.Name == instance.Name))
+            //{
+            //    return "A product name must be unique.";
+            //}
+            //return null;
             return null;
         }
     }

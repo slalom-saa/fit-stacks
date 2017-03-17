@@ -15,7 +15,7 @@ namespace Slalom.Stacks.Messaging
         }
     }
 
-    public class Command
+    public abstract class Command
     {
     }
 }

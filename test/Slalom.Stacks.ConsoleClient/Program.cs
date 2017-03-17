@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Slalom.Stacks.Documentation;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Services;
@@ -11,6 +12,26 @@ namespace Slalom.Stacks.ConsoleClient
 {
     public class Program
     {
+        public class Product : AggregateRoot
+        {
+        }
+
+        public class AddProductCommand : Command
+        {
+        }
+
+        public class AddProduct : UseCase<AddProductCommand, string>
+        {
+            public override async Task<string> ExecuteAsync(AddProductCommand command)
+            {
+                var target = new Product();
+
+                await this.Domain.Add(target);
+
+                return target.Id;
+            }
+        }
+
         [STAThread]
         public static void Main(string[] args)
         {
@@ -18,14 +39,8 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.Send("_systems/services").Result.OutputToJson();
-
-
-                    //var path = @"C:\source\Stacks\Core\src\Slalom.Stacks.Documentation\output.docx";
-
-                    //stack.CreateWordDocument(path);
+                    stack.Send(new AddProductCommand()).Result.OutputToJson();
                 }
-                Environment.Exit(0);
             }
             catch (Exception exception)
             {

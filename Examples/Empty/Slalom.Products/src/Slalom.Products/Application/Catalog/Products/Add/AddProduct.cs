@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Products.Application.Catalog.Integration;
+using Slalom.Products.Application.Catalog.Interfaces;
 using Slalom.Products.Domain.Catalog.Products;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Exceptions;
@@ -13,28 +13,41 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Products.Application.Catalog.Products.Add
 {
     /// <summary>
-    /// Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
+    /// Yada yada yada.
     /// </summary>
     [EndPoint("catalog/products/add", Timeout = 1000)]
     public class AddProduct : UseCase<AddProductCommand, string>
     {
-        private int _count = 0;
+        private int? _count;
 
+        private async Task<int> GetCount()
+        {
+            if (_count == null)
+            {
 
-        /// <inheritdoc />
+                await Task.Delay(500);
+                _count = 0;
+
+            }
+            _count = _count + 1;
+
+            return _count.Value;
+        }
+
         public override async Task<string> ExecuteAsync(AddProductCommand command)
         {
-            Console.WriteLine(_count++);
-            if (_count > 2)
+            var count = await GetCount();
+
+            if (count > 3)
             {
-                throw new Exception("Greater than 2.");
+                throw new Exception("Asdfasdf");
             }
 
             var target = new Product(command.Name);
 
             await this.Domain.Add(target);
 
-            var stock = await this.Send(new StockProductCommand(target.Id, 5));
+            var stock = await this.Send("shipping/products/stock", new StockProductCommand());
             if (!stock.IsSuccessful)
             {
                 // rollback 
@@ -44,7 +57,7 @@ namespace Slalom.Products.Application.Catalog.Products.Add
 
             this.AddRaisedEvent(new AddProductEvent(target.Id, target.Name));
 
-            return target.Id;
+            return "Added " + count;
         }
     }
 }

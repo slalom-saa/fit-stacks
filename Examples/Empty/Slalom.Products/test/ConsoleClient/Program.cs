@@ -13,9 +13,17 @@ namespace ConsoleClient
         {
             using (var stack = new Stack(typeof(AddProduct), typeof(Program)))
             {
-                stack.UseAkkaMessaging();
+                stack.UseInMemoryRequestLogging();
 
-                stack.RunWebHost();
+                //stack.UseAkkaMessaging();
+
+                //stack.RunWebHost();
+
+
+                stack.Send(new AddProductCommand("name")).Wait();
+
+
+                stack.Send("_systems/messaging/responses").Result.OutputToJson();
             }
         }
     }
