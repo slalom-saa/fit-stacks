@@ -1,13 +1,66 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Events;
+using Slalom.Stacks.Messaging.Pipeline;
+using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks.Services
 {
-    public abstract class EndPoint<TMessage> : Service, IEndPoint<TMessage>
+    public abstract class EndPoint : IEndPoint<object>
     {
+        ExecutionContext IEndPoint.Context { get; set; }
+
+        private ExecutionContext Context => ((IService)this).Context;
+
+        public Request Request => ((IService)this).Context.Request;
+
+        /// <summary>
+        /// Gets the configured <see cref="IComponentContext"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IComponentContext"/> instance.</value>
+        internal IComponentContext Components { get; set; }
+
+        public virtual void Receive()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task ReceiveAsync()
+        {
+            this.Receive();
+            return Task.FromResult(0);
+        }
+
+        Task IEndPoint<object>.Receive(object instance)
+        {
+            return this.ReceiveAsync();
+        }
+
+        protected void Respond(object instance)
+        {
+            ((IService) this).Context.Response = instance;
+        }
+    }
+
+    public abstract class EndPoint<TMessage> : IEndPoint<TMessage>
+    {
+        ExecutionContext IEndPoint.Context { get; set; }
+
+        private ExecutionContext Context => ((IService)this).Context;
+
+        public Request Request => ((IService)this).Context.Request;
+
+        /// <summary>
+        /// Gets the configured <see cref="IComponentContext"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IComponentContext"/> instance.</value>
+        internal IComponentContext Components { get; set; }
+
         public virtual void Receive(TMessage instance)
         {
             throw new NotImplementedException();
@@ -25,8 +78,20 @@ namespace Slalom.Stacks.Services
         }
     }
 
-    public abstract class EndPoint<TMessage, TResponse> : Service, IEndPoint<TMessage, TResponse>
+    public abstract class EndPoint<TMessage, TResponse> : IEndPoint<TMessage, TResponse>
     {
+        ExecutionContext IEndPoint.Context { get; set; }
+
+        private ExecutionContext Context => ((IService)this).Context;
+
+        public Request Request => ((IService)this).Context.Request;
+
+        /// <summary>
+        /// Gets the configured <see cref="IComponentContext"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IComponentContext"/> instance.</value>
+        internal IComponentContext Components { get; set; }
+
         public virtual TResponse Receive(TMessage instance)
         {
             throw new NotImplementedException();
@@ -54,6 +119,42 @@ namespace Slalom.Stacks.Services
         public new virtual TResult Execute(TCommand command)
         {
             throw new NotImplementedException($"The execution methods for the {this.GetType().Name} use case actor have not been implemented.");
+        }
+
+        /// <summary>
+        /// Completes the specified message.
+        /// </summary>
+        /// <returns>A task for asynchronous programming.</returns>
+        internal virtual async Task Complete()
+        {
+            var steps = new List<IMessageExecutionStep>
+            {
+                this.Components.Resolve<HandleException>(),
+                this.Components.Resolve<Complete>(),
+                this.Components.Resolve<PublishEvents>(),
+                this.Components.Resolve<LogCompletion>()
+            };
+            foreach (var step in steps)
+            {
+                await step.Execute(this.Request.Message, this.Context);
+            }
+        }
+
+        /// <summary>
+        /// Prepares the usecase for execution.
+        /// </summary>
+        /// <returns>A task for asynchronous programming.</returns>
+        internal virtual async Task Prepare()
+        {
+            var steps = new List<IMessageExecutionStep>
+            {
+                this.Components.Resolve<LogStart>(),
+                this.Components.Resolve<ValidateMessage>()
+            };
+            foreach (var step in steps)
+            {
+                await step.Execute(this.Request.Message, this.Context);
+            }
         }
 
         /// <summary>
@@ -97,10 +198,36 @@ namespace Slalom.Stacks.Services
 
             await this.Complete();
         }
+
+        private ExecutionContext Context => ((IService)this).Context;
     }
 
     public abstract class UseCase<TCommand> : Service, IEndPoint<TCommand> where TCommand : class
     {
+        ExecutionContext IEndPoint.Context { get; set; }
+
+        private ExecutionContext Context => ((IService)this).Context;
+
+        public Request Request => ((IService)this).Context.Request;
+
+        /// <summary>
+        /// Gets the configured <see cref="IComponentContext"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IComponentContext"/> instance.</value>
+        internal IComponentContext Components { get; set; }
+
+        /// <summary>
+        /// Gets the configured <see cref="IDomainFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade"/> instance.</value>    
+        public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
+
+        /// <summary>
+        /// Gets the configured <see cref="ISearchFacade"/> instance.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade"/> instance.</value>
+        public ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
+
         /// <summary>
         /// Executes the use case given the specified message.
         /// </summary>

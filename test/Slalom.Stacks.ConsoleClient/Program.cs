@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Slalom.Stacks.Documentation;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
@@ -44,7 +45,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.Send(new HelloWorldRequest("name")).Result.OutputToJson();
+                    Clipboard.SetText(stack.GetServices().ToJson());
                 }
             }
             catch (Exception exception)
