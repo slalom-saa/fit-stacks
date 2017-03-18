@@ -9,7 +9,7 @@ using Slalom.Stacks.Reflection;
 namespace Slalom.Stacks.Services.Registry
 {
     /// <summary>
-    /// A simple service registration implementation.
+    /// A service registry containing all registered services.
     /// </summary>
     public class ServiceRegistry
     {
@@ -34,13 +34,18 @@ namespace Slalom.Stacks.Services.Registry
             return target;
         }
 
+        /// <summary>
+        /// Finds the specified command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns>IEnumerable&lt;EndPointMetaData&gt;.</returns>
         public IEnumerable<EndPointMetaData> Find(Command command)
         {
             if (command == null)
             {
                 return Enumerable.Empty<EndPointMetaData>();
             }
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == command.GetType().AssemblyQualifiedName);
+            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == command.GetType());
         }
 
         /// <summary>

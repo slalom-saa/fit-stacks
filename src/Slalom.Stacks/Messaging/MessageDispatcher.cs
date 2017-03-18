@@ -76,7 +76,7 @@ namespace Slalom.Stacks.Messaging
                 service.Context = context;
             }
             
-            await (Task)endPoint.EndPointType.Invoke(handler, new object[] { request.Message.Body });
+            await (Task)endPoint.EndPointMethod.Invoke(handler, new object[] { request.Message.Body });
 
             return new MessageResult(context);
         }
