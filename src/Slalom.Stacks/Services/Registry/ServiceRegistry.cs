@@ -45,10 +45,11 @@ namespace Slalom.Stacks.Services.Registry
                 return null;
             }
 
-            var target = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
+            var endPoints = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints);
+            var target = endPoints.FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
             if (target == null)
             {
-                target = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
+                target = endPoints.Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
             }
             return target;
         }
@@ -97,9 +98,9 @@ namespace Slalom.Stacks.Services.Registry
         public void RegisterLocal(Assembly[] assemblies)
         {
             var host = new ServiceHost();
-            foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint<>)))
+            foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint)).Distinct())
             {
-                if (!service.IsGenericType && !service.IsDynamic())
+                if (!service.IsGenericType && !service.IsDynamic() && !service.IsAbstract)
                 {
                     host.Add(service);
                 }

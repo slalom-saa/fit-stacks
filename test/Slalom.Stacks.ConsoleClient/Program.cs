@@ -29,6 +29,7 @@ namespace Slalom.Stacks.ConsoleClient
             public string Goto { get; set; }
         }
 
+        [EndPoint("hello")]
         public class HelloWorld : EndPoint<HelloWorldRequest, string>
         {
             public override string Receive(HelloWorldRequest instance)
@@ -46,7 +47,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.Send("a/b").Result.OutputToJson();
+                    stack.Send("hello").Result.OutputToJson();
                 }
             }
             catch (Exception exception)
