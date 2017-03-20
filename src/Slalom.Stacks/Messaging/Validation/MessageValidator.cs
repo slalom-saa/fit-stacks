@@ -41,7 +41,7 @@ namespace Slalom.Stacks.Messaging.Validation
             TCommand instance = command as TCommand;
             if (instance == null && command is String)
             {
-                instance = (TCommand)JsonConvert.DeserializeObject((string)command, Type.GetType(context.EndPoint.RequestType));
+                instance = (TCommand)JsonConvert.DeserializeObject((string)command, context.EndPoint.RequestType);
             }
 
             var input = this.CheckInputRules(instance).ToList();

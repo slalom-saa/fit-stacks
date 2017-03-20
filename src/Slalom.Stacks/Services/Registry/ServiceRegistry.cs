@@ -14,53 +14,38 @@ namespace Slalom.Stacks.Services.Registry
     public class ServiceRegistry
     {
         /// <summary>
-        /// Gets or sets the services.
+        /// Gets the registered services.
         /// </summary>
-        /// <value>The services.</value>
-        public List<ServiceHost> Hosts { get; set; } = new List<ServiceHost>();
+        /// <value>The registered services.</value>
+        public List<ServiceHost> Hosts { get; } = new List<ServiceHost>();
 
         /// <summary>
-        /// Creates a public registry from the current service registry.
+        /// Finds the endpoint for the specified message.
         /// </summary>
-        /// <param name="path">The path of the public service.</param>
-        /// <returns>The created public registry.</returns>
-        public ServiceRegistry CreatePublicRegistry(string path)
+        /// <param name="message">The message.</param>
+        /// <returns>Returns the endpoint for the specified message.</returns>
+        public IEnumerable<EndPointMetaData> Find(object message)
         {
-            var target = new ServiceRegistry();
-            foreach (var service in this.Hosts.Where(e => e.Path == ServiceHost.LocalPath))
-            {
-                target.Hosts.Add(service.CreatePublicService(path));
-            }
-            return target;
-        }
-
-        /// <summary>
-        /// Finds the specified command.
-        /// </summary>
-        /// <param name="command">The command.</param>
-        /// <returns>IEnumerable&lt;EndPointMetaData&gt;.</returns>
-        public IEnumerable<EndPointMetaData> Find(Command command)
-        {
-            if (command == null)
+            if (message == null)
             {
                 return Enumerable.Empty<EndPointMetaData>();
             }
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == command.GetType());
+            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.GetType());
         }
 
         /// <summary>
-        /// Finds the endPoint registered at the specified path.
+        /// Finds the endpoint for the specified path.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns>Returns the endPoint registered at the specified path.</returns>
+        /// <returns>Returns the endpoint for the specified path.</returns>
         public EndPointMetaData Find(string path)
         {
-            if (String.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrWhiteSpace(path))
             {
                 return null;
             }
 
-            var target = this.Hosts.SelectMany(e => e.Services).SelectMany(e=>e.EndPoints).FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
+            var target = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
             if (target == null)
             {
                 target = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
@@ -68,15 +53,47 @@ namespace Slalom.Stacks.Services.Registry
             return target;
         }
 
-        public IEnumerable<EndPointMetaData> Find(EventMessage instance)
+        /// <summary>
+        /// Finds the endpoint for the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns>Returns the endpoint for the specified message.</returns>
+        public IEnumerable<EndPointMetaData> Find(EventMessage message)
         {
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == instance.MessageType.AssemblyQualifiedName);
+            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.MessageType);
         }
 
         /// <summary>
-        /// Registers local services.
+        /// Finds the endpoint that can handle the specified path.  If there is no path, then the message will be used.
         /// </summary>
-        /// <param name="assemblies">The assemblies to use to search.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="message">The message.</param>
+        /// <returns>Returns the endpoint.</returns>
+        public EndPointMetaData Find(string path, object message)
+        {
+            var target = this.Find(path);
+            if (message != null)
+            {
+                if (target == null)
+                {
+                    target = this.Find(message).FirstOrDefault();
+                }
+                if (target == null)
+                {
+                    var attribute = message.GetType().GetAllAttributes<CommandAttribute>().FirstOrDefault();
+                    if (attribute != null)
+                    {
+                        target = this.Find(attribute.Path);
+                    }
+                }
+            }
+            return target;
+        }
+
+        /// <summary>
+        /// Registers all local services using the specified assemblies.
+        /// </summary>
+        /// <param name="assemblies">The assemblies to use to scan.</param>
         public void RegisterLocal(Assembly[] assemblies)
         {
             var host = new ServiceHost();
@@ -88,35 +105,6 @@ namespace Slalom.Stacks.Services.Registry
                 }
             }
             this.Hosts.Add(host);
-        }
-
-        public void Include(ServiceRegistry remote)
-        {
-            foreach (var host in remote.Hosts)
-            {
-                this.Hosts.Add(host);
-            }
-        }
-
-        public EndPointMetaData Find(string path, Command command)
-        {
-            var target = this.Find(path);
-            if (command != null)
-            {
-                if (target == null)
-                {
-                    target = this.Find(command).FirstOrDefault();
-                }
-                if (target == null)
-                {
-                    var attribute = command.GetType().GetAllAttributes<CommandAttribute>().FirstOrDefault();
-                    if (attribute != null)
-                    {
-                        target = this.Find(attribute.Path);
-                    }
-                }
-            }
-            return target;
         }
     }
 }

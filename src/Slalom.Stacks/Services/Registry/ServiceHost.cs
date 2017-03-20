@@ -19,19 +19,6 @@ namespace Slalom.Stacks.Services.Registry
 
         public List<ServiceMetaData> Services { get; set; } = new List<ServiceMetaData>();
 
-        /// <summary>
-        /// Creates a public service from this instance.
-        /// </summary>
-        /// <param name="path">The service path.</param>
-        /// <returns>The created public service.</returns>
-        public ServiceHost CreatePublicService(string path)
-        {
-            return new ServiceHost
-            {
-                Path = path,
-                Services = this.Services.Where(e => e.Path != null).Select(e => e.Copy(path)).ToList()
-            };
-        }
 
         public void Add(Type service)
         {

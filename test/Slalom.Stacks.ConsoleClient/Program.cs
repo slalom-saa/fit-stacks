@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
 using Slalom.Stacks.Documentation;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Services;
@@ -11,6 +14,31 @@ namespace Slalom.Stacks.ConsoleClient
 {
     public class Program
     {
+        public class HelloWorldRequest
+        {
+            public string Name { get; }
+
+            public HelloWorldRequest(string name)
+            {
+                this.Name = name;
+            }
+        }
+
+        public class HelloWorldResponse
+        {
+            public string Goto { get; set; }
+        }
+
+        public class HelloWorld : EndPoint<HelloWorldRequest, string>
+        {
+            public override string Receive(HelloWorldRequest instance)
+            {
+                Console.WriteLine("Hello");
+
+                return "a";
+            }
+        }
+
         [STAThread]
         public static void Main(string[] args)
         {
@@ -18,14 +46,8 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.Send("_systems/services").Result.OutputToJson();
-
-
-                    //var path = @"C:\source\Stacks\Core\src\Slalom.Stacks.Documentation\output.docx";
-
-                    //stack.CreateWordDocument(path);
+                    stack.Send("a/b").Result.OutputToJson();
                 }
-                Environment.Exit(0);
             }
             catch (Exception exception)
             {

@@ -16,7 +16,7 @@ namespace Slalom.Stacks.Services.Registry
         /// Gets or sets the endpoint method.
         /// </summary>
         /// <value>The endpoint method.</value>
-        public MethodInfo EndPointMethod { get; set; }
+        public MethodInfo Method { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is local.
@@ -126,14 +126,14 @@ namespace Slalom.Stacks.Services.Registry
                             Path = path,
                             ServiceType = service,
                             RequestType = requestType,
-                            ResponseType = service.BaseType?.GetGenericArguments().ElementAtOrDefault(1),
+                            ResponseType = method.ReturnType,
                             Rules = requestType?.GetRules().Select(e => new EndPointRule(e)).ToList(),
                             Version = version,
                             RequestProperties = requestType?.GetInputProperties().ToList(),
                             Summary = summary?.Summary,
                             RootPath = rootPath,
                             Timeout = timeout,
-                            EndPointMethod = method,
+                            Method = method,
                             Public = service.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Public ?? true
                         };
                         yield return endPoint;
