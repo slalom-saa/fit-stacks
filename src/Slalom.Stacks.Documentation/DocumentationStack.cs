@@ -22,7 +22,7 @@ namespace Slalom.Stacks.Documentation
             {
                 foreach (var service in services.Hosts.SelectMany(e => e.Services).OrderBy(e => e.Path))
                 {
-                    if (service.Path.StartsWith("_"))
+                    if (service.Path?.StartsWith("_") ?? true)
                     {
                         continue;
                     }

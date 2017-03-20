@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
 using Slalom.Stacks.Messaging;
-using System.Reflection;
 using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.Services.Registry
 {
@@ -13,6 +12,12 @@ namespace Slalom.Stacks.Services.Registry
     /// </summary>
     public class EndPointMetaData
     {
+        /// <summary>
+        /// Gets or sets the endpoint method.
+        /// </summary>
+        /// <value>The endpoint method.</value>
+        public MethodInfo Method { get; set; }
+
         /// <summary>
         /// Gets a value indicating whether this instance is local.
         /// </summary>
@@ -25,25 +30,29 @@ namespace Slalom.Stacks.Services.Registry
         /// <value>The path.</value>
         public string Path { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the endpoint should be public.
+        /// </summary>
+        /// <value><c>true</c> if public; otherwise, <c>false</c>.</value>
         public bool Public { get; set; }
 
         /// <summary>
-        /// Gets or sets the input properties.
+        /// Gets or sets the request properties.
         /// </summary>
-        /// <value>The input properties.</value>
+        /// <value>The request properties.</value>
         public List<EndPointProperty> RequestProperties { get; set; }
 
         /// <summary>
-        /// Gets or sets the input type.
+        /// Gets or sets the request type.
         /// </summary>
-        /// <value>The input type.</value>
-        public string RequestType { get; set; }
+        /// <value>The request type.</value>
+        public Type RequestType { get; set; }
 
         /// <summary>
-        /// Gets or sets the output type.
+        /// Gets or sets the response type.
         /// </summary>
-        /// <value>The output type.</value>
-        public string ResponseType { get; set; }
+        /// <value>The response type.</value>
+        public Type ResponseType { get; set; }
 
         /// <summary>
         /// Gets or sets the root path.
@@ -51,14 +60,22 @@ namespace Slalom.Stacks.Services.Registry
         /// <value>The root path.</value>
         public string RootPath { get; set; }
 
-        public MethodInfo EndPointType { get; set; }
-
+        /// <summary>
+        /// Gets or sets the rules.
+        /// </summary>
+        /// <value>The rules.</value>
         public List<EndPointRule> Rules { get; set; }
 
         /// <summary>
-        /// Gets or sets the summary.
+        /// Gets or sets the service type.
         /// </summary>
-        /// <value>The summary.</value>
+        /// <value>The service type.</value>
+        public Type ServiceType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the endpoint summary.
+        /// </summary>
+        /// <value>The endpoint summary.</value>
         public string Summary { get; set; }
 
         /// <summary>
@@ -68,35 +85,17 @@ namespace Slalom.Stacks.Services.Registry
         public TimeSpan? Timeout { get; set; }
 
         /// <summary>
-        /// Gets or sets the endPoint type.
+        /// Gets or sets the endpoint version number.
         /// </summary>
-        /// <value>The endPoint type.</value>
-        public string ServiceType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the version number.
-        /// </summary>
-        /// <value>The version number.</value>
+        /// <value>The endpoint version number.</value>
         public int Version { get; set; }
 
         /// <summary>
-        /// Copies this instance using the specified root path.
+        /// Creates endpoint metadata for the specified service.
         /// </summary>
+        /// <param name="service">The owning service.</param>
         /// <param name="rootPath">The root path.</param>
-        /// <returns>Returns the copied instance.</returns>
-        public EndPointMetaData Copy(string rootPath)
-        {
-            var target = (EndPointMetaData)this.MemberwiseClone();
-            target.RootPath = rootPath;
-            return target;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EndPointMetaData" /> class.
-        /// </summary>
-        /// <param name="service">The service.</param>
-        /// <param name="rootPath">The root path.</param>
-        /// <returns>UseCase.</returns>
+        /// <returns>Returns endpoint metadata for the specified service.</returns>
         public static IEnumerable<EndPointMetaData> Create(Type service, string rootPath = ServiceHost.LocalPath)
         {
             var interfaces = service.GetInterfaces().Where(e => e.IsGenericType && (e.GetGenericTypeDefinition() == typeof(IEndPoint<>) || e.GetGenericTypeDefinition() == typeof(IEndPoint<,>))).ToList();
@@ -116,28 +115,25 @@ namespace Slalom.Stacks.Services.Registry
                         var index = Array.IndexOf(map.InterfaceMethods, method);
                         var m = map.TargetMethods[index];
                         var attribute = m?.GetCustomAttributes<EndPointAttribute>().FirstOrDefault();
-                        if (attribute != null)
+                        if (!string.IsNullOrWhiteSpace(attribute?.Path))
                         {
-                            if (!String.IsNullOrWhiteSpace(attribute.Path))
-                            {
-                                path = attribute.Path;
-                            }
+                            path = attribute.Path;
                         }
 
                         var requestType = method.GetParameters().FirstOrDefault()?.ParameterType;
                         var endPoint = new EndPointMetaData
                         {
                             Path = path,
-                            ServiceType = service.AssemblyQualifiedName,
-                            RequestType = requestType?.AssemblyQualifiedName,
-                            ResponseType = service.BaseType?.GetGenericArguments().ElementAtOrDefault(1)?.AssemblyQualifiedName,
+                            ServiceType = service,
+                            RequestType = requestType,
+                            ResponseType = method.ReturnType,
                             Rules = requestType?.GetRules().Select(e => new EndPointRule(e)).ToList(),
                             Version = version,
                             RequestProperties = requestType?.GetInputProperties().ToList(),
                             Summary = summary?.Summary,
                             RootPath = rootPath,
                             Timeout = timeout,
-                            EndPointType = method,
+                            Method = method,
                             Public = service.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Public ?? true
                         };
                         yield return endPoint;

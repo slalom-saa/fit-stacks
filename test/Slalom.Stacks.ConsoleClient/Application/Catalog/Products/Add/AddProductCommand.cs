@@ -7,7 +7,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
     /// Adds a product to the product catalog.
     /// </summary>
     [Command("catalog/products/add")]
-    public class AddProductCommand : Command
+    public class AddProductCommand
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AddProductCommand" /> class.

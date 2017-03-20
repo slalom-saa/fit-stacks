@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using Autofac;
 using Slalom.Stacks.Messaging.Events;
@@ -8,7 +6,6 @@ using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Pipeline;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Validation;
 using Module = Autofac.Module;
@@ -24,7 +21,7 @@ namespace Slalom.Stacks.Messaging.Modules
         private readonly Stack _stack;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingModule"/> class.
+        /// Initializes a new instance of the <see cref="MessagingModule" /> class.
         /// </summary>
         public MessagingModule(Stack stack)
         {
@@ -34,32 +31,31 @@ namespace Slalom.Stacks.Messaging.Modules
         /// <summary>
         /// Override to add registrations to the container.
         /// </summary>
-        /// <param name="builder">The builder through which components can be
-        /// registered.</param>
+        /// <param name="builder">
+        /// The builder through which components can be
+        /// registered.
+        /// </param>
         /// <remarks>Note that the ContainerBuilder parameter is unique to this module.</remarks>
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
 
             builder.Register(c => new MessageGateway(c.Resolve<IComponentContext>()))
-                   .As<IMessageGateway>()
-                   .SingleInstance();
+                .As<IMessageGateway>()
+                .SingleInstance();
 
-            builder.RegisterType<MessageDispatcher>().As<IMessageDispatcher>();
+            builder.RegisterType<LocalDispatcher>().As<ILocalMessageDispatcher>();
 
             builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
 
-            builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
+            builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] {typeof(IMessageExecutionStep).GetTypeInfo().Assembly}).ToArray())
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 
             builder.Register(c => new ServiceRegistry())
                 .AsSelf()
                 .SingleInstance()
-                .OnActivated(e =>
-                   {
-                       e.Instance.RegisterLocal(_stack.Assemblies.ToArray());
-                   });
+                .OnActivated(e => { e.Instance.RegisterLocal(_stack.Assemblies.ToArray()); });
 
             builder.Register(c => new Request())
                 .As<IRequestContext>();
@@ -72,14 +68,14 @@ namespace Slalom.Stacks.Messaging.Modules
             builder.RegisterGeneric(typeof(MessageValidator<>));
 
             builder.RegisterAssemblyTypes(_stack.Assemblies.ToArray())
-                  .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidate<>)))
-                  .As(instance => instance.GetBaseAndContractTypes())
-                  .AllPropertiesAutowired();
+                .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidate<>)))
+                .As(instance => instance.GetBaseAndContractTypes())
+                .AllPropertiesAutowired();
 
             builder.RegisterAssemblyTypes(_stack.Assemblies.ToArray())
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IHandle<>)))
-                   .AsBaseAndContractTypes().AsSelf()
-                   .AllPropertiesAutowired();
+                .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IEndPoint<,>) || x == typeof(IHandle<>)))
+                .AsBaseAndContractTypes().AsSelf()
+                .AllPropertiesAutowired();
 
             _stack.Assemblies.CollectionChanged += (sender, args) =>
             {
@@ -91,10 +87,10 @@ namespace Slalom.Stacks.Messaging.Modules
                         .AllPropertiesAutowired();
 
                     b.RegisterAssemblyTypes(args.NewItems.OfType<Assembly>().ToArray())
-                           .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IHandle<>)))
-                           .AsBaseAndContractTypes()
-                           .AsSelf()
-                           .AllPropertiesAutowired();
+                        .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IEndPoint<,>) || x == typeof(IHandle<>)))
+                        .AsBaseAndContractTypes()
+                        .AsSelf()
+                        .AllPropertiesAutowired();
                 });
             };
         }

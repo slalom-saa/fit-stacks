@@ -9,102 +9,79 @@ using Slalom.Stacks.Reflection;
 namespace Slalom.Stacks.Services.Registry
 {
     /// <summary>
-    /// A simple service registration implementation.
+    /// A service registry containing all registered services.
     /// </summary>
     public class ServiceRegistry
     {
         /// <summary>
-        /// Gets or sets the services.
+        /// Gets the registered services.
         /// </summary>
-        /// <value>The services.</value>
-        public List<ServiceHost> Hosts { get; set; } = new List<ServiceHost>();
+        /// <value>The registered services.</value>
+        public List<ServiceHost> Hosts { get; } = new List<ServiceHost>();
 
         /// <summary>
-        /// Creates a public registry from the current service registry.
+        /// Finds the endpoint for the specified message.
         /// </summary>
-        /// <param name="path">The path of the public service.</param>
-        /// <returns>The created public registry.</returns>
-        public ServiceRegistry CreatePublicRegistry(string path)
+        /// <param name="message">The message.</param>
+        /// <returns>Returns the endpoint for the specified message.</returns>
+        public IEnumerable<EndPointMetaData> Find(object message)
         {
-            var target = new ServiceRegistry();
-            foreach (var service in this.Hosts.Where(e => e.Path == ServiceHost.LocalPath))
-            {
-                target.Hosts.Add(service.CreatePublicService(path));
-            }
-            return target;
-        }
-
-        public IEnumerable<EndPointMetaData> Find(Command command)
-        {
-            if (command == null)
+            if (message == null)
             {
                 return Enumerable.Empty<EndPointMetaData>();
             }
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == command.GetType().AssemblyQualifiedName);
+            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.GetType());
         }
 
         /// <summary>
-        /// Finds the endPoint registered at the specified path.
+        /// Finds the endpoint for the specified path.
         /// </summary>
         /// <param name="path">The path.</param>
-        /// <returns>Returns the endPoint registered at the specified path.</returns>
+        /// <returns>Returns the endpoint for the specified path.</returns>
         public EndPointMetaData Find(string path)
         {
-            if (String.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrWhiteSpace(path))
             {
                 return null;
             }
 
-            var target = this.Hosts.SelectMany(e => e.Services).SelectMany(e=>e.EndPoints).FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
+            var endPoints = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints);
+            var target = endPoints.FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
             if (target == null)
             {
-                target = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
+                target = endPoints.Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
             }
             return target;
         }
 
-        public IEnumerable<EndPointMetaData> Find(EventMessage instance)
+        /// <summary>
+        /// Finds the endpoint for the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns>Returns the endpoint for the specified message.</returns>
+        public IEnumerable<EndPointMetaData> Find(EventMessage message)
         {
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == instance.MessageType.AssemblyQualifiedName);
+            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.MessageType);
         }
 
         /// <summary>
-        /// Registers local services.
+        /// Finds the endpoint that can handle the specified path.  If there is no path, then the message will be used.
         /// </summary>
-        /// <param name="assemblies">The assemblies to use to search.</param>
-        public void RegisterLocal(Assembly[] assemblies)
-        {
-            var host = new ServiceHost();
-            foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint<>)))
-            {
-                if (!service.IsGenericType && !service.IsDynamic())
-                {
-                    host.Add(service);
-                }
-            }
-            this.Hosts.Add(host);
-        }
-
-        public void Include(ServiceRegistry remote)
-        {
-            foreach (var host in remote.Hosts)
-            {
-                this.Hosts.Add(host);
-            }
-        }
-
-        public EndPointMetaData Find(string path, Command command)
+        /// <param name="path">The path.</param>
+        /// <param name="message">The message.</param>
+        /// <returns>Returns the endpoint.</returns>
+        public EndPointMetaData Find(string path, object message)
         {
             var target = this.Find(path);
-            if (command != null)
+            if (message != null)
             {
                 if (target == null)
                 {
-                    target = this.Find(command).FirstOrDefault();
+                    target = this.Find(message).FirstOrDefault();
                 }
                 if (target == null)
                 {
-                    var attribute = command.GetType().GetAllAttributes<CommandAttribute>().FirstOrDefault();
+                    var attribute = message.GetType().GetAllAttributes<CommandAttribute>().FirstOrDefault();
                     if (attribute != null)
                     {
                         target = this.Find(attribute.Path);
@@ -112,6 +89,23 @@ namespace Slalom.Stacks.Services.Registry
                 }
             }
             return target;
+        }
+
+        /// <summary>
+        /// Registers all local services using the specified assemblies.
+        /// </summary>
+        /// <param name="assemblies">The assemblies to use to scan.</param>
+        public void RegisterLocal(Assembly[] assemblies)
+        {
+            var host = new ServiceHost();
+            foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint)).Distinct())
+            {
+                if (!service.IsGenericType && !service.IsDynamic() && !service.IsAbstract)
+                {
+                    host.Add(service);
+                }
+            }
+            this.Hosts.Add(host);
         }
     }
 }

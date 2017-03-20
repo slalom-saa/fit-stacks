@@ -94,29 +94,6 @@ namespace Slalom.Stacks.Messaging
             return type.GetAllAttributes<EndPointAttribute>().Select(e => e.Path).FirstOrDefault();
         }
 
-        /// <summary>
-        /// Gets the type of the request.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>Type.</returns>
-        public static Type GetRequestType(this Type type)
-        {
-            var actorType = type?.GetBaseAndContractTypes().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(UseCase<>));
-
-            return actorType != null ? actorType.GetGenericArguments()[0] : null;
-        }
-
-        /// <summary>
-        /// Gets the type of the response.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The response type.</returns>
-        public static Type GetResponseType(this Type type)
-        {
-            var actorType = type?.GetBaseAndContractTypes().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(UseCase<,>));
-
-            return actorType != null ? actorType.GetGenericArguments()[1] : null;
-        }
 
         public static Type[] GetRules(this Type type)
         {

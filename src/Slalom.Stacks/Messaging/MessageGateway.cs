@@ -18,10 +18,11 @@ namespace Slalom.Stacks.Messaging
     /// </summary>
     public class MessageGateway : IMessageGateway
     {
-        private readonly Lazy<IEnumerable<IMessageDispatcher>> _dispatchers;
+        private readonly Lazy<ILocalMessageDispatcher> _dispatcher;
         private readonly Lazy<IRequestContext> _requestContext;
         private readonly Lazy<IRequestLog> _requests;
         private readonly Lazy<ServiceRegistry> _services;
+        private Lazy<IEnumerable<IRemoteMessageDispatcher>> _dispatchers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageGateway" /> class.
@@ -34,7 +35,8 @@ namespace Slalom.Stacks.Messaging
             _services = new Lazy<ServiceRegistry>(components.Resolve<ServiceRegistry>);
             _requestContext = new Lazy<IRequestContext>(components.Resolve<IRequestContext>);
             _requests = new Lazy<IRequestLog>(components.Resolve<IRequestLog>);
-            _dispatchers = new Lazy<IEnumerable<IMessageDispatcher>>(components.ResolveAll<IMessageDispatcher>);
+            _dispatcher = new Lazy<ILocalMessageDispatcher>(components.Resolve<ILocalMessageDispatcher>);
+            _dispatchers = new Lazy<IEnumerable<IRemoteMessageDispatcher>>(components.ResolveAll<IRemoteMessageDispatcher>);
         }
 
         /// <inheritdoc />
@@ -45,12 +47,12 @@ namespace Slalom.Stacks.Messaging
             var request = _requestContext.Value.Resolve(instance, context.Request);
             await _requests.Value.Append(request);
 
-            var endPoints = _services.Value.Find(instance);
-            foreach (var endPoint in endPoints)
-            {
-                _dispatchers.Value.ToList().ForEach(e => e.Dispatch(request, endPoint, context));
-            }
-            _dispatchers.Value.ToList().ForEach(e => e.Dispatch(request, context));
+            //var endPoints = _services.Value.Find(instance);
+            //foreach (var endPoint in endPoints)
+            //{
+            //    _dispatchers.Value.ToList().ForEach(e => e.Dispatch(request, endPoint, context));
+            //}
+            //_dispatchers.Value.ToList().ForEach(e => e.Dispatch(request, context));
         }
 
         /// <inheritdoc />
@@ -65,56 +67,51 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public Task<MessageResult> Send(Command instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
+        public Task<MessageResult> Send(object message, ExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
-            return this.Send((string) null, (Command) instance, parentContext, timeout);
+            return this.Send((string) null, message, parentContext, timeout);
         }
 
         /// <inheritdoc />
-        public virtual async Task<MessageResult> Send(string path, Command instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
+        public virtual async Task<MessageResult> Send(string path, object instance, ExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
             var endPoint = _services.Value.Find(path, instance);
-            if (endPoint == null)
+            if (endPoint != null)
             {
-                throw new InvalidOperationException("No endpoint could be found for the request.");
+                var request = _requestContext.Value.Resolve(instance, endPoint, parentContext?.Request);
+                return await _dispatcher.Value.Dispatch(request, endPoint, parentContext, timeout);
             }
-
-            var request = _requestContext.Value.Resolve(instance, endPoint, parentContext?.Request);
-            //await _requests.Value.Append(request);
-
-            var dispatch = this.GetDispatchers(endPoint).FirstOrDefault();
-            if (dispatch == null)
+            else
             {
-                throw new InvalidOperationException("No dipatcher could be found that could handle the endpoint.");
+                var request = _requestContext.Value.Resolve(path, instance, parentContext?.Request);
+                var dispatcher = _dispatchers.Value.FirstOrDefault(e => e.CanDispatch(request));
+                if (dispatcher != null)
+                {
+                    return await dispatcher.Dispatch(request, parentContext, timeout);
+                }
             }
-
-            return await dispatch.Dispatch(request, endPoint, parentContext);
+            throw new InvalidOperationException("No endpoint could be found for the request.");
         }
 
         /// <inheritdoc />
         public virtual async Task<MessageResult> Send(string path, string command, ExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
             var endPoint = _services.Value.Find(path);
-            if (endPoint == null)
+            if (endPoint != null)
             {
-                throw new InvalidOperationException("No endpoint could be found for the request.");
+                var request = _requestContext.Value.Resolve(command, endPoint, parentContext?.Request);
+                return await _dispatcher.Value.Dispatch(request, endPoint, parentContext, timeout);
             }
-
-            var request = _requestContext.Value.Resolve(command, endPoint, parentContext?.Request);
-            //await _requests.Value.Append(request);
-
-            var dispatch = this.GetDispatchers(endPoint).FirstOrDefault();
-            if (dispatch == null)
+            else
             {
-                throw new InvalidOperationException("No dipatcher could be found that could handle the endpoint.");
+                var request = _requestContext.Value.Resolve(path, command, parentContext?.Request);
+                var dispatcher = _dispatchers.Value.FirstOrDefault(e => e.CanDispatch(request));
+                if (dispatcher != null)
+                {
+                    return await dispatcher.Dispatch(request, parentContext, timeout);
+                }
             }
-
-            return await dispatch.Dispatch(request, endPoint, parentContext);
-        }
-
-        protected virtual IEnumerable<IMessageDispatcher> GetDispatchers(EndPointMetaData endPoint)
-        {
-            return _dispatchers.Value.Where(e => e.CanDispatch(endPoint));
+            throw new InvalidOperationException("No endpoint could be found for the request.");
         }
     }
 }

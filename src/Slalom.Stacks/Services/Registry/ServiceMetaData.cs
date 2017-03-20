@@ -6,8 +6,16 @@ using Slalom.Stacks.Reflection;
 
 namespace Slalom.Stacks.Services.Registry
 {
+    /// <summary>
+    /// A service in the service registry.
+    /// </summary>
     public class ServiceMetaData
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServiceMetaData"/> class.
+        /// </summary>
+        /// <param name="service">The service type.</param>
+        /// <param name="rootPath">The root path.</param>
         public ServiceMetaData(Type service, string rootPath)
         {
             this.Path = service.GetPath();
@@ -22,6 +30,9 @@ namespace Slalom.Stacks.Services.Registry
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServiceMetaData"/> class.
+        /// </summary>
         public ServiceMetaData()
         {
         }
@@ -32,22 +43,30 @@ namespace Slalom.Stacks.Services.Registry
         /// <value>The end points.</value>
         public List<EndPointMetaData> EndPoints { get; set; } = new List<EndPointMetaData>();
 
+        /// <summary>
+        /// Gets or sets the path.
+        /// </summary>
+        /// <value>The path.</value>
         public string Path { get; set; }
 
+        /// <summary>
+        /// Gets or sets the root path.
+        /// </summary>
+        /// <value>The root path.</value>
         public string RootPath { get; set; }
 
+        /// <summary>
+        /// Gets or sets the service type.
+        /// </summary>
+        /// <value>The service type.</value>
         public Type ServiceType { get; set; }
 
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
+        /// <value>The service name.</value>
         public string Name { get; set; }
 
-        public ServiceMetaData Copy(string path)
-        {
-            return new ServiceMetaData
-            {
-                Path = this.Path,
-                RootPath = path,
-                EndPoints = this.EndPoints.Select(e => e.Copy(path)).ToList()
-            };
-        }
+       
     }
 }
