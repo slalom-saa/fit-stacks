@@ -47,7 +47,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.Send("hello").Result.OutputToJson();
+                    EndPointMetaData.Create(typeof(HelloWorld)).OutputToJson();
                 }
             }
             catch (Exception exception)

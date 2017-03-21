@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Reflection;
 
@@ -13,16 +14,16 @@ namespace Slalom.Stacks.Services.Registry
     public class EndPointMetaData
     {
         /// <summary>
-        /// Gets or sets the endpoint method.
-        /// </summary>
-        /// <value>The endpoint method.</value>
-        public MethodInfo Method { get; set; }
-
-        /// <summary>
         /// Gets a value indicating whether this instance is local.
         /// </summary>
         /// <value><c>true</c> if this instance is local; otherwise, <c>false</c>.</value>
         public bool IsLocal => this.RootPath == ServiceHost.LocalPath;
+
+        /// <summary>
+        /// Gets or sets the endpoint method.
+        /// </summary>
+        /// <value>The endpoint method.</value>
+        public MethodInfo Method { get; set; }
 
         /// <summary>
         /// Gets or sets the relative path.
@@ -126,7 +127,7 @@ namespace Slalom.Stacks.Services.Registry
                             Path = path,
                             ServiceType = service,
                             RequestType = requestType,
-                            ResponseType = method.ReturnType,
+                            ResponseType = GetResponseType(method),
                             Rules = requestType?.GetRules().Select(e => new EndPointRule(e)).ToList(),
                             Version = version,
                             RequestProperties = requestType?.GetInputProperties().ToList(),
@@ -140,6 +141,15 @@ namespace Slalom.Stacks.Services.Registry
                     }
                 }
             }
+        }
+
+        private static Type GetResponseType(MethodInfo method)
+        {
+            if ((bool) method.ReturnType?.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                return method.ReturnType.GetGenericArguments()[0];
+            }
+            return method.ReturnType;
         }
     }
 }
