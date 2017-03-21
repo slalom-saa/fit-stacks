@@ -145,6 +145,10 @@ namespace Slalom.Stacks.Services.Registry
 
         private static Type GetResponseType(MethodInfo method)
         {
+            if (method.ReturnType == typeof(Task))
+            {
+                return null;
+            }
             if ((bool) method.ReturnType?.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
             {
                 return method.ReturnType.GetGenericArguments()[0];

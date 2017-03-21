@@ -30,13 +30,10 @@ namespace Slalom.Stacks.ConsoleClient
         }
 
         [EndPoint("hello")]
-        public class HelloWorld : EndPoint<HelloWorldRequest, string>
+        public class HelloWorld : EndPoint<HelloWorldRequest>
         {
-            public override string Receive(HelloWorldRequest instance)
+            public override void Receive(HelloWorldRequest instance)
             {
-                Console.WriteLine("Hello");
-
-                return "a";
             }
         }
 
