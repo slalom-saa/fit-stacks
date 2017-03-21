@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
 
-namespace Slalom.Stacks.Services.Registry
+namespace Slalom.Stacks.Services
 {
     /// <summary>
     /// Indicates the path the endPoint.
