@@ -30,10 +30,11 @@ namespace Slalom.Stacks.ConsoleClient
         }
 
         [EndPoint("hello")]
-        public class HelloWorld : EndPoint<HelloWorldRequest>
+        public class HelloWorld : EndPoint<HelloWorldRequest, string>
         {
-            public override void Receive(HelloWorldRequest instance)
+            public override string Receive(HelloWorldRequest instance)
             {
+                return "Asdf";
             }
         }
 
@@ -44,7 +45,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    EndPointMetaData.Create(typeof(HelloWorld)).OutputToJson();
+                    stack.Send(new HelloWorldRequest("name")).Result.OutputToJson();
                 }
             }
             catch (Exception exception)
