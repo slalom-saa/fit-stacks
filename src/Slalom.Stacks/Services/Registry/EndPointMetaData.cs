@@ -98,7 +98,7 @@ namespace Slalom.Stacks.Services.Registry
         /// <returns>Returns endpoint metadata for the specified service.</returns>
         public static IEnumerable<EndPointMetaData> Create(Type service, string rootPath = ServiceHost.LocalPath)
         {
-            var interfaces = service.GetInterfaces().Where(e => e.IsGenericType && (e.GetGenericTypeDefinition() == typeof(IEndPoint<>) || e.GetGenericTypeDefinition() == typeof(IEndPoint<,>))).ToList();
+            var interfaces = service.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && (e.GetGenericTypeDefinition() == typeof(IEndPoint<>) || e.GetGenericTypeDefinition() == typeof(IEndPoint<,>))).ToList();
             if (interfaces.Any())
             {
                 var path = service.GetPath();

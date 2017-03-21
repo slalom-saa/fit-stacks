@@ -50,7 +50,7 @@ namespace Slalom.Stacks.Messaging
 
         public static Comments GetComments(this Type type)
         {
-            var document = type.Assembly.GetComments();
+            var document = type.GetTypeInfo().Assembly.GetComments();
             if (document != null)
             {
                 var node = document.XPathSelectElement("//member[@name=\"T:" + type.FullName + "\"]");
@@ -64,7 +64,7 @@ namespace Slalom.Stacks.Messaging
 
         public static Comments GetComments(this PropertyInfo property)
         {
-            var document = property.DeclaringType.Assembly.GetComments();
+            var document = property.DeclaringType.GetTypeInfo().Assembly.GetComments();
             if (document != null)
             {
                 var node = document.XPathSelectElement("//member[@name=\"P:" + property.DeclaringType.FullName + "." + property.Name + "\"]");
@@ -97,7 +97,7 @@ namespace Slalom.Stacks.Messaging
 
         public static Type[] GetRules(this Type type)
         {
-            return type.Assembly.SafelyGetTypes(typeof(IValidate<>).MakeGenericType(type));
+            return type.GetTypeInfo().Assembly.SafelyGetTypes(typeof(IValidate<>).MakeGenericType(type));
         }
 
         /// <summary>

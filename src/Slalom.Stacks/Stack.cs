@@ -55,10 +55,12 @@ namespace Slalom.Stacks
                 {
                     current
                 };
+#if !core
                 foreach (var assembly in Directory.GetFiles(Path.GetDirectoryName(current.Location), current.GetName().Name.Split('.')[0] + "*.dll"))
                 {
                     list.Add(Assembly.LoadFrom(assembly));
                 }
+#endif
                 foreach (var source in list.Distinct())
                 {
                     this.Assemblies.Add(source);
