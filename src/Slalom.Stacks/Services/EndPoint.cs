@@ -99,13 +99,17 @@ namespace Slalom.Stacks.Services
 
         public virtual Task<TResponse> ReceiveAsync(TMessage instance)
         {
-           return Task.FromResult(this.Receive(instance));
-           
+            return Task.FromResult(this.Receive(instance));
+
         }
 
-        Task<TResponse> IEndPoint<TMessage, TResponse>.Receive(TMessage instance)
+        async Task<TResponse> IEndPoint<TMessage, TResponse>.Receive(TMessage instance)
         {
-            return this.ReceiveAsync(instance);
+            var result = await this.ReceiveAsync(instance);
+
+            this.Context.Response = result;
+
+            return result;
         }
     }
 
@@ -161,7 +165,7 @@ namespace Slalom.Stacks.Services
             await this.Complete();
         }
 
-   
+
 
         private ExecutionContext Context => ((IEndPoint)this).Context;
     }

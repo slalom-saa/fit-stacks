@@ -34,9 +34,7 @@ namespace Slalom.Stacks.ConsoleClient
         {
             public override string Receive(HelloWorldRequest instance)
             {
-                Console.WriteLine("Hello");
-
-                return "a";
+                return "Asdf";
             }
         }
 
@@ -47,7 +45,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    EndPointMetaData.Create(typeof(HelloWorld)).OutputToJson();
+                    stack.Send(new HelloWorldRequest("name")).Result.OutputToJson();
                 }
             }
             catch (Exception exception)
