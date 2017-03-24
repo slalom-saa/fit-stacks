@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Reflection;
 
-namespace Slalom.Stacks.Services.Registry
+namespace Slalom.Stacks.Messaging.Registry
 {
     /// <summary>
     /// A service registry containing all registered services.
@@ -100,7 +97,7 @@ namespace Slalom.Stacks.Services.Registry
             var host = new ServiceHost();
             foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint)).Distinct())
             {
-                if (!service.IsGenericType && !service.IsDynamic() && !service.IsAbstract)
+                if (!service.GetTypeInfo().IsGenericType && !service.IsDynamic() && !service.GetTypeInfo().IsAbstract)
                 {
                     host.Add(service);
                 }

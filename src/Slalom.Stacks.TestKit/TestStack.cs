@@ -8,7 +8,6 @@ using Autofac;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks.TestKit
@@ -17,6 +16,7 @@ namespace Slalom.Stacks.TestKit
     {
         public readonly List<EventMessage> RaisedEvents = new List<EventMessage>();
 
+#if !core
         public TestStack() : base(new StackFrame(1).GetMethod().DeclaringType)
         {
             var method = new StackFrame(1).GetMethod();
@@ -38,6 +38,7 @@ namespace Slalom.Stacks.TestKit
                 this.UseScenario(scenario);
             }
         }
+#endif
 
         public Task HandleAsync(EventMessage instance)
         {

@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Reflection;
-using Autofac;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Autofac;
 using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Domain;
-using Slalom.Stacks.Logging;
-using Slalom.Stacks.Search;
+using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Reflection;
+#if core
+using Microsoft.Extensions.DependencyModel;
+#endif
 
 namespace Slalom.Stacks
 {
@@ -44,8 +47,12 @@ namespace Slalom.Stacks
         /// Gets the configured <see cref="IContainer" />.
         /// </summary>
         public IContainer Container { get; }
-       
 
+
+        /// <summary>
+        /// Includes or registers additional assemblies identified by the specified markers.
+        /// </summary>
+        /// <param name="markers">The markers.</param>
         public void Include(params object[] markers)
         {
             if (!markers?.Any() ?? true)
@@ -59,6 +66,27 @@ namespace Slalom.Stacks
                 foreach (var assembly in Directory.GetFiles(Path.GetDirectoryName(current.Location), current.GetName().Name.Split('.')[0] + "*.dll"))
                 {
                     list.Add(Assembly.LoadFrom(assembly));
+                }
+#else
+                var dependencies = DependencyContext.Default;
+                foreach (var compilationLibrary in dependencies.RuntimeLibraries)
+                {
+                    try
+                    {
+                        if (DiscoveryService.Ignores.Any(e => compilationLibrary.Name.StartsWith(e)))
+                        {
+                            continue;
+                        }
+
+                        var assemblyName = new AssemblyName(compilationLibrary.Name);
+
+                        var assembly = Assembly.Load(assemblyName);
+
+                        list.Add(assembly);
+                    }
+                    catch
+                    {
+                    }
                 }
 #endif
                 foreach (var source in list.Distinct())
@@ -87,6 +115,56 @@ namespace Slalom.Stacks
                     this.Assemblies.Add(item);
                 }
             }
+        }
+
+        /// <summary>
+        /// Sends the specified command to the configured point-to-point endPoint.
+        /// </summary>
+        /// <param name="instance">The this instance.</param>
+        /// <param name="message">The command to send.</param>
+        /// <param name="timeout">The request timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<MessageResult> Send(object message, TimeSpan? timeout = null)
+        {
+            return this.Container.Resolve<IMessageGateway>().Send(message, timeout: timeout);
+        }
+
+        /// <summary>
+        /// Sends the specified command to the configured point-to-point endPoint.
+        /// </summary>
+        /// <param name="instance">The this instance.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="message">The command to send.</param>
+        /// <param name="timeout">The request timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<MessageResult> Send(string path, object message, TimeSpan? timeout = null)
+        {
+            return this.Container.Resolve<IMessageGateway>().Send(path, message, timeout: timeout);
+        }
+
+        /// <summary>
+        /// Sends the an empty command to the configured point-to-point endPoint.
+        /// </summary>
+        /// <param name="instance">The this instance.</param>
+        /// <param name="path">The path.</param>
+        /// <param name="timeout">The request timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<MessageResult> Send(string path, TimeSpan? timeout = null)
+        {
+            return this.Container.Resolve<IMessageGateway>().Send(path, null, timeout: timeout);
+        }
+
+        /// <summary>
+        /// Sends the specified command to the configured point-to-point endPoint.
+        /// </summary>
+        /// <param name="instance">The this instance.</param>
+        /// <param name="path">The path to the receiver.</param>
+        /// <param name="command">The serialized command to send.</param>
+        /// <param name="timeout">The request timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public Task<MessageResult> Send(string path, string command, TimeSpan? timeout = null)
+        {
+            return this.Container.Resolve<IMessageGateway>().Send(path, command, timeout: timeout);
         }
 
         #region IDisposable Implementation

@@ -1,12 +1,11 @@
 ﻿using System.Linq;
 using System.Reflection;
 using Autofac;
-using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Messaging.Logging;
 using Slalom.Stacks.Messaging.Pipeline;
+using Slalom.Stacks.Messaging.Registry;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Validation;
 using Module = Autofac.Module;
 
@@ -60,8 +59,9 @@ namespace Slalom.Stacks.Messaging.Modules
             builder.Register(c => new Request())
                 .As<IRequestContext>();
 
-            builder.RegisterType<NullRequestLog>().As<IRequestLog>().SingleInstance();
-            builder.RegisterType<NullResponseLog>().As<IResponseLog>().SingleInstance();
+          builder.RegisterType<InMemoryRequestLog>().As<IRequestLog>().SingleInstance();
+            builder.RegisterType<InMemoryResponseLog>().As<IResponseLog>().SingleInstance();
+        
 
             builder.RegisterType<NullEventStore>().As<IEventStore>().SingleInstance();
 

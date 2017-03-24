@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Reflection;
 
-namespace Slalom.Stacks.Services.Registry
+namespace Slalom.Stacks.Messaging.Registry
 {
     /// <summary>
     /// A service endpoint in the registry.
@@ -112,6 +111,7 @@ namespace Slalom.Stacks.Services.Registry
                     var method = item.GetMethod("Receive");
                     if (method.DeclaringType != null)
                     {
+#if !core
                         var map = service.GetInterfaceMap(method.DeclaringType);
                         var index = Array.IndexOf(map.InterfaceMethods, method);
                         var m = map.TargetMethods[index];
@@ -120,7 +120,7 @@ namespace Slalom.Stacks.Services.Registry
                         {
                             path = attribute.Path;
                         }
-
+#endif
                         var requestType = method.GetParameters().FirstOrDefault()?.ParameterType;
                         var endPoint = new EndPointMetaData
                         {
@@ -143,13 +143,14 @@ namespace Slalom.Stacks.Services.Registry
             }
         }
 
+
         private static Type GetResponseType(MethodInfo method)
         {
             if (method.ReturnType == typeof(Task))
             {
                 return null;
             }
-            if ((bool) method.ReturnType?.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+            if ((bool)method.ReturnType?.GetTypeInfo().IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
             {
                 return method.ReturnType.GetGenericArguments()[0];
             }

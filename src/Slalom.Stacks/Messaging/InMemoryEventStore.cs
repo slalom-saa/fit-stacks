@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Messaging.Events
+namespace Slalom.Stacks.Messaging
 {
     public class InMemoryEventStore : IEventStore
     {

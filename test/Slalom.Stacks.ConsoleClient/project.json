@@ -1,8 +1,8 @@
 {
   "version": "1.0.0-*",
-  //"runtimes": {
-  //  "win10-x64": {}
-  //},
+  "runtimes": {
+    "win10-x64": {}
+  },
   "buildOptions": {
     "preserveCompilationContext": true,
     "emitEntryPoint": true,
@@ -12,31 +12,26 @@
     "Slalom.Stacks": {
       "target": "project"
     },
-    "Slalom.Stacks.Documentation": {
-      "target": "project"
-    },
-    "Slalom.Stacks.TestKit": {
-      "target": "project"
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.1"
     }
   },
   "frameworks": {
-    //"netcoreapp1.0": {
-    //  "imports": [
-    //    "dotnet54",
-    //    "portable-net45+win8"
-    //  ],
+    "netcoreapp1.0": {
+      "imports": [
+        "dotnet54",
+        "portable-net45+win8"
+      ]
+    }
+    //"net461": {
     //  "dependencies": {
-    //    "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.0.0-preview3-final"
+    //  },
+    //  "imports": "dnxcore50",
+    //  "frameworkAssemblies": {
+    //    "System.Windows.Forms": {}
     //  }
     //}
-    "net461": {
-      "dependencies": {
-      },
-      "imports": "dnxcore50",
-      "frameworkAssemblies": {
-        "System.Windows.Forms": {}
-      }
-    }
   },
   "tools": {
     "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.1.0-preview4-final"

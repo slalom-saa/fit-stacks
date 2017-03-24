@@ -7,9 +7,8 @@ using System.Reflection;
 using System.Xml.XPath;
 using System.Linq;
 using System.Xml.Linq;
+using Slalom.Stacks.Messaging.Registry;
 using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging

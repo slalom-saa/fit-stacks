@@ -1,5 +1,4 @@
-using Slalom.Stacks.Messaging.Events;
-using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Messaging.Registry;
 
 namespace Slalom.Stacks.Messaging
 {

@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Slalom.Stacks.Services
+namespace Slalom.Stacks.Messaging
 {
     /// <summary>
     /// Indicates the path the endPoint.
     /// </summary>
     /// <seealso cref="System.Attribute" />
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class EndPointAttribute : Attribute
     {
         /// <summary>

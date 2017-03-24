@@ -5,10 +5,8 @@ using System.Net;
 using System.Threading.Tasks;
 using Autofac;
 using Newtonsoft.Json;
-using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Messaging.Logging;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Messaging.Registry;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging
@@ -79,11 +77,13 @@ namespace Slalom.Stacks.Messaging
             if (endPoint != null)
             {
                 var request = _requestContext.Value.Resolve(instance, endPoint, parentContext?.Request);
+                await _requests.Value.Append(request);
                 return await _dispatcher.Value.Dispatch(request, endPoint, parentContext, timeout);
             }
             else
             {
                 var request = _requestContext.Value.Resolve(path, instance, parentContext?.Request);
+                await _requests.Value.Append(request);
                 var dispatcher = _dispatchers.Value.FirstOrDefault(e => e.CanDispatch(request));
                 if (dispatcher != null)
                 {
@@ -100,11 +100,13 @@ namespace Slalom.Stacks.Messaging
             if (endPoint != null)
             {
                 var request = _requestContext.Value.Resolve(command, endPoint, parentContext?.Request);
+                await _requests.Value.Append(request);
                 return await _dispatcher.Value.Dispatch(request, endPoint, parentContext, timeout);
             }
             else
             {
                 var request = _requestContext.Value.Resolve(path, command, parentContext?.Request);
+                await _requests.Value.Append(request);
                 var dispatcher = _dispatchers.Value.FirstOrDefault(e => e.CanDispatch(request));
                 if (dispatcher != null)
                 {

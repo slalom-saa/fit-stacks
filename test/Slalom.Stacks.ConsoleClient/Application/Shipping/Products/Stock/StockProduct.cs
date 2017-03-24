@@ -1,8 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.ConsoleClient.Domain.Shipping;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock
 {

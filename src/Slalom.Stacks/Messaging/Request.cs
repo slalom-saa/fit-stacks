@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Security.Claims;
 using Newtonsoft.Json;
-using Slalom.Stacks.Messaging.Events;
+using Slalom.Stacks.Messaging.Registry;
 using Slalom.Stacks.Serialization;
-using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Messaging
@@ -81,8 +80,17 @@ namespace Slalom.Stacks.Messaging
                 User = this.GetUser(),
                 Parent = parent,
                 Path = path,
-              //  Message = this.GetMessage(message, endPoint)
+                Message = this.GetMessage(path, message)
             };
+        }
+
+        private IMessage GetMessage(string path, object message)
+        {
+            if (message is IMessage)
+            {
+                return (IMessage)message;
+            }
+            return new Message(message);
         }
 
         /// <inheritdoc />

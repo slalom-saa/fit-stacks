@@ -4,12 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Domain;
-using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Messaging.Pipeline;
 using Slalom.Stacks.Search;
 
-namespace Slalom.Stacks.Services
+namespace Slalom.Stacks.Messaging
 {
     public abstract class EndPoint : IEndPoint<object>
     {
@@ -17,7 +15,7 @@ namespace Slalom.Stacks.Services
 
         private ExecutionContext Context => ((IEndPoint)this).Context;
 
-        public Request Request => Context.Request;
+        public Request Request => this.Context.Request;
 
         /// <summary>
         /// Gets the configured <see cref="IComponentContext"/> instance.
@@ -43,7 +41,7 @@ namespace Slalom.Stacks.Services
 
         protected void Respond(object instance)
         {
-            Context.Response = instance;
+            this.Context.Response = instance;
         }
     }
 
@@ -53,7 +51,7 @@ namespace Slalom.Stacks.Services
 
         private ExecutionContext Context => ((IEndPoint)this).Context;
 
-        public Request Request => Context.Request;
+        public Request Request => this.Context.Request;
 
         /// <summary>
         /// Gets the configured <see cref="IComponentContext"/> instance.
@@ -72,9 +70,22 @@ namespace Slalom.Stacks.Services
             return Task.FromResult(0);
         }
 
-        Task IEndPoint<TMessage>.Receive(TMessage instance)
+        async Task IEndPoint<TMessage>.Receive(TMessage instance)
         {
-            return this.ReceiveAsync(instance);
+            if (!this.Context.ValidationErrors.Any())
+            {
+                try
+                {
+                    if (!this.Context.CancellationToken.IsCancellationRequested)
+                    {
+                        await this.ReceiveAsync(instance);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    this.Context.SetException(exception);
+                }
+            }
         }
     }
 
@@ -84,7 +95,7 @@ namespace Slalom.Stacks.Services
 
         private ExecutionContext Context => ((IEndPoint)this).Context;
 
-        public Request Request => Context.Request;
+        public Request Request => this.Context.Request;
 
         /// <summary>
         /// Gets the configured <see cref="IComponentContext"/> instance.
@@ -103,12 +114,39 @@ namespace Slalom.Stacks.Services
 
         }
 
+        /// <summary>
+        /// Adds an event to be raised when the execution is successful.
+        /// </summary>
+        /// <param name="instance">The event to add.</param>
+        public void AddRaisedEvent(Event instance)
+        {
+            this.Context.AddRaisedEvent(instance);
+        }
+
         async Task<TResponse> IEndPoint<TMessage, TResponse>.Receive(TMessage instance)
         {
-            var result = await this.ReceiveAsync(instance);
+            TResponse result = default(TResponse);
+            if (!this.Context.ValidationErrors.Any())
+            {
+                try
+                {
+                    if (!this.Context.CancellationToken.IsCancellationRequested)
+                    {
+                        result = await this.ReceiveAsync(instance);
 
-            this.Context.Response = result;
+                        this.Context.Response = result;
 
+                        if (result is Event)
+                        {
+                            this.AddRaisedEvent(result as Event);
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    this.Context.SetException(exception);
+                }
+            }
             return result;
         }
     }
@@ -138,8 +176,6 @@ namespace Slalom.Stacks.Services
         /// <inheritdoc />
         async Task IEndPoint<TCommand>.Receive(TCommand instance)
         {
-            await this.Prepare();
-
             if (!this.Context.ValidationErrors.Any())
             {
                 try
@@ -161,8 +197,6 @@ namespace Slalom.Stacks.Services
                     this.Context.SetException(exception);
                 }
             }
-
-            await this.Complete();
         }
 
 
@@ -218,25 +252,6 @@ namespace Slalom.Stacks.Services
         }
 
         /// <summary>
-        /// Completes the specified message.
-        /// </summary>
-        /// <returns>A task for asynchronous programming.</returns>
-        internal virtual async Task Complete()
-        {
-            var steps = new List<IMessageExecutionStep>
-            {
-                this.Components.Resolve<HandleException>(),
-                this.Components.Resolve<Complete>(),
-                this.Components.Resolve<PublishEvents>(),
-                this.Components.Resolve<LogCompletion>()
-            };
-            foreach (var step in steps)
-            {
-                await step.Execute(this.Request.Message, this.Context);
-            }
-        }
-
-        /// <summary>
         /// Sends the specified message.
         /// </summary>
         /// <param name="message">The message.</param>
@@ -246,27 +261,8 @@ namespace Slalom.Stacks.Services
             return this.Components.Resolve<IMessageGateway>().Send(message);
         }
 
-        /// <summary>
-        /// Prepares the usecase for execution.
-        /// </summary>
-        /// <returns>A task for asynchronous programming.</returns>
-        internal virtual async Task Prepare()
-        {
-            var steps = new List<IMessageExecutionStep>
-            {
-                this.Components.Resolve<LogStart>(),
-                this.Components.Resolve<ValidateMessage>()
-            };
-            foreach (var step in steps)
-            {
-                await step.Execute(this.Request.Message, this.Context);
-            }
-        }
-
         async Task IEndPoint<TCommand>.Receive(TCommand instance)
         {
-            await this.Prepare();
-
             if (!this.Context.ValidationErrors.Any())
             {
                 try
@@ -281,8 +277,6 @@ namespace Slalom.Stacks.Services
                     this.Context.SetException(exception);
                 }
             }
-
-            await this.Complete();
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
-using Slalom.Stacks.Messaging.Events;
 
 namespace Slalom.Stacks.Messaging.Pipeline
 {
@@ -25,7 +24,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
         }
 
         /// <inheritdoc />
-        public async Task Execute(IMessage message, ExecutionContext context)
+        public async Task Execute(ExecutionContext context)
         {
             if (context.IsSuccessful)
             {

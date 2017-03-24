@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Slalom.Stacks.Messaging.Events
+namespace Slalom.Stacks.Messaging
 {
     /// <summary>
     /// Defines information about an EventName.

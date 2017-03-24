@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Messaging.Registry;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.TestKit

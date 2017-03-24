@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Slalom.Stacks.Messaging.Events
+namespace Slalom.Stacks.Messaging
 {
     public interface IEventStore
     {

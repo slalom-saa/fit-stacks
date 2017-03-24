@@ -1,6 +1,4 @@
-using Slalom.Stacks.Services.Registry;
-
-namespace Slalom.Stacks.Services
+namespace Slalom.Stacks.Messaging
 {
     [EndPoint("_systems/health")]
     public class CheckHealth : EndPoint

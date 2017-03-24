@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
-using Slalom.Stacks.Messaging;
+using System.Reflection;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Text;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Services.Registry
+namespace Slalom.Stacks.Messaging.Registry
 {
     /// <summary>
     /// Contains information about an endpoint rule.
@@ -15,7 +14,7 @@ namespace Slalom.Stacks.Services.Registry
         public EndPointRule(Type type)
         {
             this.Name = type.Name.ToSentence();
-            var baseType = type.BaseType?.GetGenericTypeDefinition();
+            var baseType = type.GetTypeInfo().BaseType?.GetGenericTypeDefinition();
             if (baseType == typeof(BusinessRule<>))
             {
                 this.RuleType = ValidationType.Business;
