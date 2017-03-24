@@ -4,29 +4,12 @@
 
 ## Getting Started
 1. Create a new .NET Core console application named **HelloWorldService** in **Visual Studio 2015**.
-2. Update the framework in project.json to use **.NET 4.6.1** (other frameworks will be supported soon).  The file should look like:
-```json
-{
-  "version": "1.0.0-*",
-  "buildOptions": {
-    "emitEntryPoint": true,
-    "xmlDoc": true
-  },
-  "dependencies": {
-  },
-  "frameworks": {
-    "net461": {
-      "imports": "dnxcore50"
-    }
-  }
-}
-``` 
-3.	Add the **Slalom.Stacks** NuGet package.  
+2.	Add the **Slalom.Stacks** NuGet package.  
 
 ```
 Install-Package Slalom.Stacks
 ```
-4.	Create a class named **HelloWorldRequest**:
+3.	Create a class named **HelloWorldRequest**:
 ```csharp
 public class HelloWorldRequest
 {
@@ -38,7 +21,7 @@ public class HelloWorldRequest
     }
 }
 ```
-5.	Create an endpoint named **HelloWorld**: 
+4.	Create an endpoint named **HelloWorld**: 
 ```csharp
 public class HelloWorld : EndPoint<HelloWorldRequest>
 {
@@ -48,7 +31,7 @@ public class HelloWorld : EndPoint<HelloWorldRequest>
     }
 }
 ```	
-6.	Initialize a new Stack and send the message:
+5.	Initialize a new Stack and send the message:
 ```csharp
 public static void Main(string[] args)
 {
@@ -58,7 +41,7 @@ public static void Main(string[] args)
     }
 }
 ```	
-7. Run the application.  The output should be:
+6. Run the application.  The output should be:
 ```console
 Hello Fred!
 Press any key to continue...
@@ -66,12 +49,9 @@ Press any key to continue...
 Your final **Program.cs** file should look like:
 ```csharp
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Slalom.Stacks;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Services;
 
 namespace HelloWorldService
 {
@@ -106,4 +86,5 @@ namespace HelloWorldService
 }
 ```
 
-Now, on to [hosting](https://github.com/slalom-saa/stacks-aspnetcore/blob/master/README.md)...
+Now, on to 
+[hosting](https://github.com/slalom-saa/stacks-aspnetcore/blob/master/README.md)...
