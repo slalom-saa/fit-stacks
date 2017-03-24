@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Reflection;
+#if core
+using Microsoft.Extensions.DependencyModel;
+#endif
 
 namespace Slalom.Stacks
 {
@@ -45,6 +49,10 @@ namespace Slalom.Stacks
         public IContainer Container { get; }
 
 
+        /// <summary>
+        /// Includes or registers additional assemblies identified by the specified markers.
+        /// </summary>
+        /// <param name="markers">The markers.</param>
         public void Include(params object[] markers)
         {
             if (!markers?.Any() ?? true)
@@ -58,6 +66,27 @@ namespace Slalom.Stacks
                 foreach (var assembly in Directory.GetFiles(Path.GetDirectoryName(current.Location), current.GetName().Name.Split('.')[0] + "*.dll"))
                 {
                     list.Add(Assembly.LoadFrom(assembly));
+                }
+#else
+                var dependencies = DependencyContext.Default;
+                foreach (var compilationLibrary in dependencies.RuntimeLibraries)
+                {
+                    try
+                    {
+                        if (DiscoveryService.Ignores.Any(e => compilationLibrary.Name.StartsWith(e)))
+                        {
+                            continue;
+                        }
+
+                        var assemblyName = new AssemblyName(compilationLibrary.Name);
+
+                        var assembly = Assembly.Load(assemblyName);
+
+                        list.Add(assembly);
+                    }
+                    catch
+                    {
+                    }
                 }
 #endif
                 foreach (var source in list.Distinct())

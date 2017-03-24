@@ -6,18 +6,21 @@ using System.Reflection;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Validation;
 
+#if core
+using Microsoft.Extensions.DependencyModel;
+#endif
+
 namespace Slalom.Stacks.Reflection
 {
     /// <summary>
-    /// Scans and locates types and assemblies given the current requestContext.
+    /// Scans and locates types and assemblies given the current context.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Reflection.IDiscoverTypes" />
     public class DiscoveryService : IDiscoverTypes
     {
         private static readonly ConcurrentDictionary<Type, List<Type>> Cache = new ConcurrentDictionary<Type, List<Type>>();
 
-        private static readonly string[] Ignores = { "Libuv", "Microsoft.", "NETStandard", "runtime", "xunit" };
-        private readonly ILogger _logger;
+        internal static readonly string[] Ignores = { "Libuv", "Microsoft.", "NETStandard", "runtime", "xunit" };
         private Lazy<List<Assembly>> _assemblies;
 
         /// <summary>
@@ -27,8 +30,6 @@ namespace Slalom.Stacks.Reflection
         public DiscoveryService(ILogger logger)
         {
             Argument.NotNull(logger, nameof(logger));
-
-            _logger = logger;
 
             this.CreateAssemblyFactory(logger);
         }

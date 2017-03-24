@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
-using Slalom.Stacks.Documentation;
-using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Text;
 
@@ -13,12 +8,12 @@ namespace Slalom.Stacks.ConsoleClient
     {
         public class HelloWorldRequest
         {
-            public string Name { get; }
-
             public HelloWorldRequest(string name)
             {
                 this.Name = name;
             }
+
+            public string Name { get; }
         }
 
         public class HelloWorldResponse
@@ -31,7 +26,6 @@ namespace Slalom.Stacks.ConsoleClient
         {
             public override string Receive(HelloWorldRequest instance)
             {
-
                 return "Asdf";
             }
         }

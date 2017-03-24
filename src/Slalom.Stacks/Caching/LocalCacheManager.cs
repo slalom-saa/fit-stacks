@@ -84,7 +84,7 @@ namespace Slalom.Stacks.Caching
             _cacheLock.EnterReadLock();
             try
             {
-                return Task.FromResult((TItem)_instances.Find(e => Identity.GetIdentity(e) == id));
+                return Task.FromResult((TItem)_instances.Find(e => ItemIdentity.GetIdentity(e) == id));
             }
             finally
             {
@@ -102,7 +102,7 @@ namespace Slalom.Stacks.Caching
             _cacheLock.EnterWriteLock();
             try
             {
-                _instances.RemoveAll(e => keys.Contains(Identity.GetIdentity(e)));
+                _instances.RemoveAll(e => keys.Contains(ItemIdentity.GetIdentity(e)));
             }
             finally
             {
@@ -122,8 +122,8 @@ namespace Slalom.Stacks.Caching
             _cacheLock.EnterWriteLock();
             try
             {
-                var ids = instances.Select(e => Identity.GetIdentity(e)).ToList();
-                _instances.RemoveAll(e => ids.Contains(Identity.GetIdentity(e)));
+                var ids = instances.Select(e => ItemIdentity.GetIdentity(e)).ToList();
+                _instances.RemoveAll(e => ids.Contains(ItemIdentity.GetIdentity(e)));
             }
             finally
             {

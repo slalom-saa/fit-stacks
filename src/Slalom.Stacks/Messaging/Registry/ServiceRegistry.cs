@@ -97,7 +97,7 @@ namespace Slalom.Stacks.Messaging.Registry
             var host = new ServiceHost();
             foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint)).Distinct())
             {
-                if (!service.IsGenericType && !service.IsDynamic() && !service.IsAbstract)
+                if (!service.GetTypeInfo().IsGenericType && !service.IsDynamic() && !service.GetTypeInfo().IsAbstract)
                 {
                     host.Add(service);
                 }

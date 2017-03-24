@@ -3,7 +3,7 @@ using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks.Caching
 {
-    internal static class Identity
+    internal static class ItemIdentity
     {
         public static string GetIdentity(object instance)
         {

@@ -111,6 +111,7 @@ namespace Slalom.Stacks.Messaging.Registry
                     var method = item.GetMethod("Receive");
                     if (method.DeclaringType != null)
                     {
+#if !core
                         var map = service.GetInterfaceMap(method.DeclaringType);
                         var index = Array.IndexOf(map.InterfaceMethods, method);
                         var m = map.TargetMethods[index];
@@ -119,7 +120,7 @@ namespace Slalom.Stacks.Messaging.Registry
                         {
                             path = attribute.Path;
                         }
-
+#endif
                         var requestType = method.GetParameters().FirstOrDefault()?.ParameterType;
                         var endPoint = new EndPointMetaData
                         {
@@ -142,13 +143,14 @@ namespace Slalom.Stacks.Messaging.Registry
             }
         }
 
+
         private static Type GetResponseType(MethodInfo method)
         {
             if (method.ReturnType == typeof(Task))
             {
                 return null;
             }
-            if ((bool) method.ReturnType?.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+            if ((bool)method.ReturnType?.GetTypeInfo().IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
             {
                 return method.ReturnType.GetGenericArguments()[0];
             }
