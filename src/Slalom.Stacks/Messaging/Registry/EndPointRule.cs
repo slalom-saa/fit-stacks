@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Linq;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Validation;
 using Slalom.Stacks.Text;
 using Slalom.Stacks.Validation;
 
-namespace Slalom.Stacks.Services.Registry
+namespace Slalom.Stacks.Messaging.Registry
 {
     /// <summary>
     /// Contains information about an endpoint rule.

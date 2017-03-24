@@ -31,7 +31,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
         }
 
         /// <inheritdoc />
-        public Task Execute(IMessage instance, ExecutionContext context)
+        public Task Execute(ExecutionContext context)
         {
             var tasks = new List<Task> { _actions.Append(new ResponseEntry(context, _environmentContext.Resolve())) };
 

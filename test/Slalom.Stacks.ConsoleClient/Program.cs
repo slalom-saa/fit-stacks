@@ -5,9 +5,6 @@ using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
 using Slalom.Stacks.Documentation;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Events;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Registry;
 using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
@@ -34,6 +31,7 @@ namespace Slalom.Stacks.ConsoleClient
         {
             public override string Receive(HelloWorldRequest instance)
             {
+
                 return "Asdf";
             }
         }
@@ -45,7 +43,9 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.Send(new HelloWorldRequest("name")).Result.OutputToJson();
+                    stack.Send(new HelloWorldRequest("name")).Wait();
+
+                    stack.GetResopnses().OutputToJson();
                 }
             }
             catch (Exception exception)

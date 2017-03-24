@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Slalom.Stacks.Messaging.Events;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Messaging.Registry;
 using Slalom.Stacks.Validation;
 using Environment = Slalom.Stacks.Runtime.Environment;
 

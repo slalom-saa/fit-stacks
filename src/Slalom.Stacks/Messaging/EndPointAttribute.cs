@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Slalom.Stacks.Services
+namespace Slalom.Stacks.Messaging
 {
     /// <summary>
     /// Indicates the path the endPoint.

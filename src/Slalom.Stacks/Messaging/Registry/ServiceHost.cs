@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace Slalom.Stacks.Services.Registry
+namespace Slalom.Stacks.Messaging.Registry
 {
     public class ServiceHost
     {

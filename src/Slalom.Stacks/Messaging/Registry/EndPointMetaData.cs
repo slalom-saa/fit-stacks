@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Reflection;
 
-namespace Slalom.Stacks.Services.Registry
+namespace Slalom.Stacks.Messaging.Registry
 {
     /// <summary>
     /// A service endpoint in the registry.

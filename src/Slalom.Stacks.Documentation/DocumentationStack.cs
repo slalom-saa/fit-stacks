@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Messaging.Registry;
 using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.Documentation

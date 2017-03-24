@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Autofac;
 using System.Linq;
 using System.Net;
@@ -6,10 +7,10 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Slalom.Stacks.Messaging.Events;
+using Slalom.Stacks.Messaging.Logging;
+using Slalom.Stacks.Messaging.Pipeline;
+using Slalom.Stacks.Messaging.Registry;
 using Slalom.Stacks.Runtime;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Registry;
 
 namespace Slalom.Stacks.Messaging
 {
@@ -20,8 +21,6 @@ namespace Slalom.Stacks.Messaging
     public class LocalDispatcher : ILocalMessageDispatcher
     {
         private readonly IComponentContext _components;
-        private readonly IEnvironmentContext _environmentContext;
-        private IRequestContext _requestContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocalDispatcher"/> class.
@@ -30,27 +29,35 @@ namespace Slalom.Stacks.Messaging
         public LocalDispatcher(IComponentContext components)
         {
             _components = components;
-            _environmentContext = components.Resolve<IEnvironmentContext>();
-            _requestContext = components.Resolve<IRequestContext>();
         }
 
-        /// <inheritdoc />
-        public bool CanDispatch(EndPointMetaData endPoint)
+        protected virtual async Task Complete(ExecutionContext context)
         {
-            return endPoint.RootPath == ServiceHost.LocalPath;
+            var steps = new List<IMessageExecutionStep>
+            {
+                _components.Resolve<HandleException>(),
+                _components.Resolve<Complete>(),
+                _components.Resolve<PublishEvents>(),
+                _components.Resolve<LogCompletion>()
+            };
+            foreach (var step in steps)
+            {
+                await step.Execute(context);
+            }
         }
 
         /// <inheritdoc />
         public async Task<MessageResult> Dispatch(Request request, ExecutionContext context)
         {
-            context = new ExecutionContext(request, context);
-
             var handlers = _components.ResolveAll(typeof(IHandle<>).MakeGenericType(request.Message.MessageType));
             foreach (var handler in handlers)
             {
-                typeof(IHandle<>).MakeGenericType(request.Message.MessageType).GetMethod("Handle").Invoke(handler, new[] { request.Message.Body });
-            }
+                context = new ExecutionContext(request, context);
 
+                typeof(IHandle<>).MakeGenericType(request.Message.MessageType).GetMethod("Handle").Invoke(handler, new[] { request.Message.Body });
+
+                await this.Complete(context);
+            }
             return new MessageResult(context);
         }
 
@@ -77,6 +84,8 @@ namespace Slalom.Stacks.Messaging
             }
             
             await (Task)endPoint.Method.Invoke(handler, new object[] { request.Message.Body });
+
+            await this.Complete(context);
 
             return new MessageResult(context);
         }

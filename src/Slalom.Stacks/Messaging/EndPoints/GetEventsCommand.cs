@@ -1,6 +1,6 @@
 using System;
 
-namespace Slalom.Stacks.Messaging.Events.EndPoints
+namespace Slalom.Stacks.Messaging.EndPoints
 {
     public class GetEventsCommand
     {

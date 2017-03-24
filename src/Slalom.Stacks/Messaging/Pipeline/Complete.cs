@@ -11,7 +11,7 @@ namespace Slalom.Stacks.Messaging.Pipeline
     public class Complete : IMessageExecutionStep
     {
         /// <inheritdoc />
-        public Task Execute(IMessage message, ExecutionContext context)
+        public Task Execute(ExecutionContext context)
         {
             context.Complete();
 

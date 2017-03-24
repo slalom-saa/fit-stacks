@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Slalom.Stacks.Messaging.Events;
 
 namespace Slalom.Stacks.Messaging
 {

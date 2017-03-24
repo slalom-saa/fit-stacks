@@ -7,8 +7,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Running;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Messaging.Registry;
 using Xunit;
 
 namespace Slalom.Stacks.PerformanceTests

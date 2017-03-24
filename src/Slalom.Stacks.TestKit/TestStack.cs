@@ -8,7 +8,6 @@ using Autofac;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Events;
 using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks.TestKit

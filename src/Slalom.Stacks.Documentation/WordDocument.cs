@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using Slalom.Stacks.Services.Registry;
+using Slalom.Stacks.Messaging.Registry;
 
 namespace Slalom.Stacks.Documentation
 {

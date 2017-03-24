@@ -29,10 +29,11 @@ namespace Slalom.Stacks.Messaging.Pipeline
         }
 
         /// <inheritdoc />
-        public async Task Execute(IMessage message, ExecutionContext context)
+        public async Task Execute(ExecutionContext context)
         {
             await _requests.Append(context.Request).ConfigureAwait(false);
 
+            var message = context.Request.Message;
             if (message.Body != null && context.Request.Path != null)
             {
                 _logger.Verbose("Executing \"" + message.Name + "\" at path \"" + context.Request.Path + "\".");

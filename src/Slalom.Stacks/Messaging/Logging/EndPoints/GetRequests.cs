@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Registry;
 
 namespace Slalom.Stacks.Messaging.Logging.EndPoints
 {
