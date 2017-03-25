@@ -85,6 +85,7 @@ namespace HelloWorldService
     }
 }
 ```
-
-Now, on to 
-[hosting](https://github.com/slalom-saa/stacks-aspnetcore/blob/master/README.md)...
+---
+Now, on to...
+* [hosting](https://github.com/slalom-saa/stacks-aspnetcore/blob/master/README.md)
+* [A more in-depth and real-world look at endpoint](https://github.com/slalom-saa/stacks/blob/develop/documents/EndPoint.md)
