@@ -55,15 +55,15 @@ public class AddProductCommand
     }
 }
 ```
-Let's break the command down.
+The breakdown:
 ```csharp
 class AddProductCommand
 ```
-Because the request changes state, it should end with "Command".
+Requests that change state should end in "Command".
 ```csharp
 public string Name { get; }
 ```
-All properties should be immutable.  There should also be no fields.
+All properties should be immutable.  There should be no fields.  No setter or a private setter should be used.
 ```csharp
 public AddProductCommand(string name)
 {
@@ -74,12 +74,12 @@ All properties should be set in the constructor.  Overrides can be used if a par
 ```csharp
 /// <value>The name of the product to add.</value>
 ```
-Fill out the value comments for the property name.  This will show up in swagger and other discovery documents.
+The value comments should be added for the property name.  This will show up in swagger and other discovery documents.
 Other comments should be added, but will not be used in service documents.
 ```csharp
 [NotNull("Name must be specified.")]
 ```
-Only basic validation should be used to indicate that the command was not serialized or deserialized properly. Most rules should be
+Only basic validation should be used to indicate that the command was not serialized or deserialized properly. Most rules will be
 external.
 
 ---
@@ -101,15 +101,15 @@ public class AddProduct : EndPoint<AddProductCommand, string>
     }
 }
 ```
-Now let's break this down a bit.
+Now let's break this down.
 ```csharp
 class AddProduct
 ```
-This should be the name of the use case.  If there are multiple versions, then append _v2 to the name for version two, etc.
+This should be the name of the use case and service contract.  If there are multiple versions, then append _v2 to the name for version two.  Example here is AddProduct_v2.
 ```csharp
 EndPoint<AddProductCommand, string>
 ```
-The first type argument is the command and the second is the return.
+The first type argument is the command and the second is the return.  There are other ways to do this, but this is optimal for discovery documents, code analysis and testing.
 ```csharp
 /// <summary>
 /// Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
@@ -125,5 +125,19 @@ public override string Receive(AddProductCommand instance)
     return "[Added Product ID]";
 }
 ```
-There are two methods that can be overridden.  The first is the synchronous method here, the other is ReceiveAsync which should be used 
+There are two methods that can be overridden.  The first is the synchronous method as shown here, the other is ReceiveAsync which should be used 
 when needed.
+```csharp
+[EndPoint("catalog/products/add", Name = "Add Product", Timeout = 5000, Version = 1)]
+```
+Endpoint metadata is defined using the attribute.  The only required information is the path 
+which should **not** start with the version.
+
+*Name* - This is used to override the generated name from the class.
+
+*Timeout* - This is used to indicate how long the endpoint should execute for.  It is
+displayed in service manifests and will be used when no other timeout is specified by the host or 
+caller.
+
+*Version* - This is the endpoint version. The default is one.  It is used to determine the target endpoint and is specified 
+by prepending the route with v1, v2, etc.  If no version is specified, then the latest version will be used.
