@@ -42,6 +42,10 @@ In the **add** folder, add a class for the request named **AddProductCommand**.
 ```csharp
 public class AddProductCommand
 {
+    /// <summary>
+    /// Gets the name of the product to be added.
+    /// </summary>
+    /// <value>The name of the product to add.</value>
     [NotNull("Name must be specified.")]
     public string Name { get; }
 
@@ -51,10 +55,75 @@ public class AddProductCommand
     }
 }
 ```
-There are only a few rules for commands:
-1. The class must be immutable.  
-  1.1. Properties should have no setter or use only private setters.  
-  1.2. All properties should be set in the constructor.
-  1.3. Very basic rules are used to validate.  Most logic should exist in external rules.
+Let's break the command down.
+```csharp
+class AddProductCommand
+```
+Because the request changes state, it should end with "Command".
+```csharp
+public string Name { get; }
+```
+All properties should be immutable.  There should also be no fields.
+```csharp
+public AddProductCommand(string name)
+{
+    this.Name = name;
+}
+```
+All properties should be set in the constructor.  Overrides can be used if a parameter is optional.
+```csharp
+/// <value>The name of the product to add.</value>
+```
+Fill out the value comments for the property name.  This will show up in swagger and other discovery documents.
+Other comments should be added, but will not be used in service documents.
+```csharp
+[NotNull("Name must be specified.")]
+```
+Only basic validation should be used to indicate that the command was not serialized or deserialized properly. Most rules should be
+external.
+
 ---
 ### Add the endpoint
+Add a class named **AddProduct** to the same folder.
+```csharp
+/// <summary>
+/// Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
+/// </summary>
+[EndPoint("catalog/products/add", Name = "Add Product", Timeout = 5000, Version = 1)]
+public class AddProduct : EndPoint<AddProductCommand, string>
+{
+    public override string Receive(AddProductCommand instance)
+    {
+        // Do something here to create the product.
+
+        // return the ID
+        return "[Added Product ID]";
+    }
+}
+```
+Now let's break this down a bit.
+```csharp
+class AddProduct
+```
+This should be the name of the use case.  If there are multiple versions, then append _v2 to the name for version two, etc.
+```csharp
+EndPoint<AddProductCommand, string>
+```
+The first type argument is the command and the second is the return.
+```csharp
+/// <summary>
+/// Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
+/// </summary>
+```
+The summary should come directly from the service contract.  It will be used in swagger and other discovery documents.
+```csharp
+public override string Receive(AddProductCommand instance)
+{
+    // Do something here to create the product.
+
+    // return the ID
+    return "[Added Product ID]";
+}
+```
+There are two methods that can be overridden.  The first is the synchronous method here, the other is ReceiveAsync which should be used 
+when needed.
