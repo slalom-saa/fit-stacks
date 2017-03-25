@@ -24,9 +24,9 @@ For this example, we will use a very simple contract: **Add Product**.
 
 **Input**:
 
-| Name | Description |  Validation
-| ---- | ----------- 
-| Name | The name of the product to add. | Must not be null.
+| Name | Description |  Validation |
+| ---- | ----------- |
+| Name | The name of the product to add. | Must not be null. |
 
 **Output**: Returns a simple string that represents the ID of the added product.
 </div>
