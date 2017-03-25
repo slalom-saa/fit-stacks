@@ -11,17 +11,17 @@ service contract.
 
 For this example, we will use a very simple contract: [**Add Product**](add-product-endpoint.md).
 
-#### Open the Starter Solution
+### Open the Starter Solution
 The empty shopping solution can be found [here](https://github.com/slalom-saa/stacks-shopping/tree/master/Empty).
 It has a basic project setup with nothing more.
 
-#### Add the Slalom.Stacks nuget package
+### Add the Slalom.Stacks nuget package
 In the NuGet Package Manager enter the following command:
 ```
 Install-Package Slalom.Stacks
 ```
 
-#### Add project folders
+### Add project folders
 Add the following folders: **Application/Catalog/Products/Add**.
 
 This may initially feel like a lot of folders.  It won't as the solution builds out.  Here is what the folders are for
@@ -34,7 +34,7 @@ This may initially feel like a lot of folders.  It won't as the solution builds 
 
 *Add* - This represents the operation or endpoint.  Everything in this folder will be composed to implement the logic.
 
-#### Add the command
+### Add the command
 In the **add** folder, add a class for the request named **AddProductCommand**.
 ```csharp
 public class AddProductCommand
