@@ -28,6 +28,13 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.Documentation
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.PerformanceTests", "test\Slalom.Stacks.PerformanceTests\Slalom.Stacks.PerformanceTests.xproj", "{A3918348-267A-4F40-AED6-1BF35755944A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{492DF1F3-810A-485E-866D-52B9AA7E3368}"
+	ProjectSection(SolutionItems) = preProject
+		documents\EndPoint.md = documents\EndPoint.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{D126EE11-BB73-4A5A-87BF-479DAACFA8C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,5 +76,6 @@ Global
 		{BC0461ED-C80E-4F22-8946-3C656B323250} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
 		{0DDC4CE8-8743-4F1B-9EA4-90C9E056B95D} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
 		{A3918348-267A-4F40-AED6-1BF35755944A} = {E59A74CA-04D4-43F0-9C6A-BE2E6380A240}
+		{D126EE11-BB73-4A5A-87BF-479DAACFA8C6} = {492DF1F3-810A-485E-866D-52B9AA7E3368}
 	EndGlobalSection
 EndGlobal
