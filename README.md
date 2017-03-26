@@ -2,6 +2,8 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/6nb0ud2cpm4rkuyx/branch/master?svg=true)](https://ci.appveyor.com/project/slalom-saa/stacks/branch/master)   [![NuGet Version](http://img.shields.io/nuget/v/Slalom.Stacks.svg?style=flat)](https://www.nuget.org/packages/Slalom.Stacks/)
 
+[Getting Started](#getting-started-hello-world) | [Design](https://github.com/slalom-saa/stacks/blob/master/documents/1.%20Design/overview.md)
+
 ## Getting Started (Hello World)
 1. Create a new .NET Core console application named **HelloWorldService** in **Visual Studio 2015**.
 2.	Add the **Slalom.Stacks** and **Slalom.Stacks.Web.AspNetCore** NuGet packages.  
