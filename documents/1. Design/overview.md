@@ -1,5 +1,7 @@
 # Design
 
+[Introduction][Design] | [Use Cases] | [Service Contracts]
+
 This section assumes that someone in the business analyst role has elicited and documented
 the business requirements.  There are two key inputs to serviced design:
 1. A logical domain model and accompanying dictionary
@@ -52,6 +54,12 @@ are still to be defined by the business analyst and architect.
 
 **Path**: catalog/products/add
 > This is taken from the bounded context, service, and operation or endpoint.
+
+**Version**: 1
+> The implementation version.
+
+**Timeout**: 5 seconds
+> How long the operation should take at max.
 
 **Summary**: Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
 > This should not change.

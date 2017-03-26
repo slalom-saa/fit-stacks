@@ -4,6 +4,10 @@
 
 **Path**: catalog/products/add
 
+**Version**: 1
+
+**Timeout**: 5 seconds
+
 **Summary**: Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
 
 **Input**:
