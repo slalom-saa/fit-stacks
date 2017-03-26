@@ -1,27 +1,11 @@
 # Development
 
-An endpoint is a well defined unit of solution logic that is intended to be executed by:
-1. An external client
-2. An internal, but remote service
-3. Another endpoint that is in the same process
+For this example, we will use the service contract defined in design: [**Add Product**](https://github.com/slalom-saa/stacks/blob/master/documents/1.%20Design/add-product-service-contract.md).
 
-## Creating an Endpoint
-Getting to the point of implementing the endpoint, you should be provided with a 
-service contract.  
-
-For this example, we will use a very simple service contract: [**Add Product**](https://github.com/slalom-saa/stacks/blob/master/documents/1.%20Design/add-product-service-contract.md).
-
----
 ### Open the Starter Solution
 The empty shopping solution can be found [here](https://github.com/slalom-saa/stacks-shopping/tree/master/Empty).
 It has a basic project setup with nothing more.
 
----
-### Add the Slalom.Stacks nuget package
-In the NuGet Package Manager enter the following command:
-```
-Install-Package Slalom.Stacks
-```
 ---
 ### Add project folders
 Add the following folders: **Application/Catalog/Products/Add**.
@@ -139,5 +123,5 @@ which should **not** start with the version.
 displayed in service manifests and will be used when no other timeout is specified by the host or 
 caller.
 
-*Version* - This is the endpoint version. The default is one.  It is used to determine the target endpoint and is specified 
+*Version* - This is the endpoint version. The default is 1.  It is used to determine the target endpoint and is specified 
 by prepending the route with v1, v2, etc.  If no version is specified, then the latest version will be used.

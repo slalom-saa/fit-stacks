@@ -12,10 +12,10 @@
 
 **Input**:
 
-| Name        | Description                              | Validation        |
-| ----------- | ---------------------------------------- | ----------------- |
-| Name        | The name of the product to add.          | Must not be null. |
-| Description | An optional description for the product. |                   |
+| Name        | Description                              | Validation              |
+| ----------- | ---------------------------------------- | ----------------------- |
+| Name        | The name of the product to add.          | Name must be specified. |
+| Description | An optional description for the product. |                         |
 
 **Output**: Returns a string representing the ID of the added product.
 

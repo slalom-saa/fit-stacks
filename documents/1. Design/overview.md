@@ -66,10 +66,10 @@ are still to be defined by the business analyst and architect.
 
 **Input**:
 
-| Name        | Description                              | Validation        |
-| ----------- | ---------------------------------------- | ----------------- |
-| Name        | The name of the product to add.          | Must not be null. |
-| Description | An optional description for the product. |                   |
+| Name        | Description                              | Validation              |
+| ----------- | ---------------------------------------- | ----------------------- |
+| Name        | The name of the product to add.          | Name must be specified. |
+| Description | An optional description for the product. |                         |
 > Here we keep everything the same and add validation.
 
 **Output**: Returns a string representing the ID of the added product.
