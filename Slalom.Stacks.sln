@@ -34,7 +34,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{
 		documents\endpoint.md = documents\endpoint.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{D126EE11-BB73-4A5A-87BF-479DAACFA8C6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Design", "Design", "{A4CF27AF-C3DF-4764-9DC2-5A8DE4CD42D5}"
+	ProjectSection(SolutionItems) = preProject
+		documents\1. Design\add-product-service-contract.md = documents\1. Design\add-product-service-contract.md
+		documents\1. Design\add-product-use-case.md = documents\1. Design\add-product-use-case.md
+		documents\1. Design\overview.md = documents\1. Design\overview.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +82,6 @@ Global
 		{BC0461ED-C80E-4F22-8946-3C656B323250} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
 		{0DDC4CE8-8743-4F1B-9EA4-90C9E056B95D} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
 		{A3918348-267A-4F40-AED6-1BF35755944A} = {E59A74CA-04D4-43F0-9C6A-BE2E6380A240}
-		{D126EE11-BB73-4A5A-87BF-479DAACFA8C6} = {492DF1F3-810A-485E-866D-52B9AA7E3368}
+		{A4CF27AF-C3DF-4764-9DC2-5A8DE4CD42D5} = {492DF1F3-810A-485E-866D-52B9AA7E3368}
 	EndGlobalSection
 EndGlobal
