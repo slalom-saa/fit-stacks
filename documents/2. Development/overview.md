@@ -1,4 +1,4 @@
-# Endpoint
+# Development
 
 An endpoint is a well defined unit of solution logic that is intended to be executed by:
 1. An external client
@@ -9,7 +9,7 @@ An endpoint is a well defined unit of solution logic that is intended to be exec
 Getting to the point of implementing the endpoint, you should be provided with a 
 service contract.  
 
-For this example, we will use a very simple service contract: [**Add Product**](add-product-endpoint.md).
+For this example, we will use a very simple service contract: [**Add Product**](https://github.com/slalom-saa/stacks/blob/master/documents/1.%20Design/add-product-service-contract.md).
 
 ---
 ### Open the Starter Solution

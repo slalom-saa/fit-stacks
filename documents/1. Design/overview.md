@@ -76,6 +76,15 @@ are still to be defined by the business analyst and architect.
 > Added a type of the return.  If this was a complex object then we would want
 > to list out the properties.  
 
+**Event**: Product Added Event
+
+| Name        | Description                              | 
+| ----------- | ---------------------------------------- | 
+| ID          | The added product ID.                    |
+| Name        | The name of the product to add.          | 
+| Description | An optional description for the product. |
+> Details about any raised event(s) is provided here.
+
 **Rules**: 
 
 | Number | Type     | Code                  | Name                    | End-User Message                             | 
