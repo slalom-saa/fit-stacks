@@ -19,6 +19,14 @@
 
 **Output**: Returns a string representing the ID of the added product.
 
+**Event**: Product Added Event
+
+| Name        | Description                              | 
+| ----------- | ---------------------------------------- | 
+| ID          | The added product ID.                    |
+| Name        | The name of the product to add.          | 
+| Description | An optional description for the product. |
+
 **Rules**: 
 
 | Number | Type     | Code                  | Name                    | End-User Message                             | 
