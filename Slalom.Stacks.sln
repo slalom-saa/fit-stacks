@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Design", "Design", "{A4CF27AF-C3DF-4764-9DC2-5A8DE4CD42D5}"
 	ProjectSection(SolutionItems) = preProject
+		documents\1. Design\add-product-service-contract.md = documents\1. Design\add-product-service-contract.md
+		documents\1. Design\add-product-use-case.md = documents\1. Design\add-product-use-case.md
 		documents\1. Design\overview.md = documents\1. Design\overview.md
 	EndProjectSection
 EndProject

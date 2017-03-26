@@ -1,11 +1,12 @@
 # Design
 
-This section assumes that the project has had some form of business requirements analysis
-that have been captured and document well.  There are two key inputs to serviced design:
+This section assumes that someone in the business analyst role has elicited and documented
+the business requirements.  There are two key inputs to serviced design:
 1. A logical domain model and accompanying dictionary
 2. Documented business processes as flow charts
 
-What we are interested in generating is a set of use cases and service contracts.
+In this phase, the business analyst and architect work together to build use cases
+and service contracts.
 
 ## Use Cases
 Use cases are derived from our business process flow charts.  Let's look at the following
@@ -74,3 +75,8 @@ are still to be defined by the business analyst and architect.
 | 1      | Security | UserNotRegistered     | user must be registered | You must be registered to submit a product.  |
 | 2      | Business | NameNotUnique         | name must be unique     | A product with the same name already exists. |
 > Here we add implementation details that are used in discovery documents.
+
+That's it for the quick overview of the design step.  Next is the develop step
+or you can explore examples:
+* [Add Product Use Case](add-product-use-case.md)
+* [Add Product Service Contract](add-product-service-contract.md)
