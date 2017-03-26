@@ -32,14 +32,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Design", "Design", "{A4CF27AF-C3DF-4764-9DC2-5A8DE4CD42D5}"
 	ProjectSection(SolutionItems) = preProject
-		documents\1. Design\add-product-service-contract.md = documents\1. Design\add-product-service-contract.md
-		documents\1. Design\add-product-use-case.md = documents\1. Design\add-product-use-case.md
-		documents\1. Design\overview.md = documents\1. Design\overview.md
+		docs\1. Design\add-product-service-contract.md = docs\1. Design\add-product-service-contract.md
+		docs\1. Design\add-product-use-case.md = docs\1. Design\add-product-use-case.md
+		docs\1. Design\overview.md = docs\1. Design\overview.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Development", "Development", "{502382AD-A9F4-4DCC-80A1-594053AF41C5}"
 	ProjectSection(SolutionItems) = preProject
-		documents\2. Development\overview.md = documents\2. Development\overview.md
+		docs\2. Development\overview.md = docs\2. Development\overview.md
 	EndProjectSection
 EndProject
 Global

@@ -1,6 +1,6 @@
 # Development
 
-For this example, we will use the service contract defined in design: [**Add Product**](https://github.com/slalom-saa/stacks/blob/master/documents/1.%20Design/add-product-service-contract.md).
+For this example, we will use the service contract defined in design: [**Add Product**](https://github.com/slalom-saa/stacks/blob/master/docs/1.%20Design/add-product-service-contract.md).
 
 ### Open the Starter Solution
 The empty shopping solution can be found [here](https://github.com/slalom-saa/stacks-shopping/tree/master/Empty).
