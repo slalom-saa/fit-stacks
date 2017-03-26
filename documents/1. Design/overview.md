@@ -1,6 +1,6 @@
 # Design
 
-[Introduction](#Design) | [Use Cases](#Use-Cases) | [Service Contracts](#Service-Contracts)
+[Introduction](#design) | [Use Cases](#use-cases) | [Service Contracts](#service-contracts)
 
 This section assumes that someone in the business analyst role has elicited and documented
 the business requirements.  There are two key inputs to serviced design:
