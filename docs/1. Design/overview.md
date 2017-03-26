@@ -21,6 +21,9 @@ The use case for add product might look something like the following.
 **Name**:  Add Product
 > The name of the use case, used for identification.
 
+**Actor**: Registered User
+> The use case actor that will be executing the use case.
+
 **Bounded Context**: Catalog
 > The logical grouping of the use case.  Others would be shipping, payment, etc.
 
@@ -45,6 +48,11 @@ The use case for add product might look something like the following.
 1. A product with the name and description is added to the product catalog.
 2. The product can be found in product search.
 > Listing them here makes it easy to test and validate.
+
+**Usage Index**:
+.25n
+> A number that indicates how many times the user will perform the action per visit.  This
+> number is later used to validate the system under load.
 
 ## Service Contracts
 Service contracts build on top of the use case and add some implementation specifics.  They
