@@ -1,31 +1,31 @@
 # Add Product Service Contract
 
-#### Name
+### Name
 Add Product
 
-#### Path 
+### Path 
 catalog/products/add
 
-#### Version
+### Version
 1
 
-#### Timeout
+### Timeout
 5 seconds
 
-#### Summary
+### Summary
 Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
 
-#### Input
+### Input
 
 | Name        | Description                              | Validation              |
 | ----------- | ---------------------------------------- | ----------------------- |
 | Name        | The name of the product to add.          | Name must be specified. |
 | Description | An optional description for the product. |                         |
 
-#### Output
+### Output
 Returns a string representing the ID of the added product.
 
-#### Event
+### Event
 Product Added Event
 
 | Name        | Description                              | 
@@ -34,7 +34,7 @@ Product Added Event
 | Name        | The name of the product to add.          | 
 | Description | An optional description for the product. |
 
-#### Rules 
+### Rules 
 
 | Number | Type     | Code                  | Name                    | End-User Message                             | 
 | ------ | -------- | --------------------- | ----------------------- | -------------------------------------------- |
