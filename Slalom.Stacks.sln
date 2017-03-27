@@ -28,18 +28,14 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.Documentation
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Slalom.Stacks.PerformanceTests", "test\Slalom.Stacks.PerformanceTests\Slalom.Stacks.PerformanceTests.xproj", "{A3918348-267A-4F40-AED6-1BF35755944A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{492DF1F3-810A-485E-866D-52B9AA7E3368}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Design", "Design", "{A4CF27AF-C3DF-4764-9DC2-5A8DE4CD42D5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{492DF1F3-810A-485E-866D-52B9AA7E3368}"
 	ProjectSection(SolutionItems) = preProject
-		docs\1. Design\add-product-service-contract.md = docs\1. Design\add-product-service-contract.md
-		docs\1. Design\add-product-use-case.md = docs\1. Design\add-product-use-case.md
-		docs\1. Design\overview.md = docs\1. Design\overview.md
+		docs\hello-world.md = docs\hello-world.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Development", "Development", "{502382AD-A9F4-4DCC-80A1-594053AF41C5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "walkthrough", "walkthrough", "{4D9B47C1-5111-40A2-88AB-1965B4816D50}"
 	ProjectSection(SolutionItems) = preProject
-		docs\2. Development\overview.md = docs\2. Development\overview.md
+		docs\walkthrough\overview.md = docs\walkthrough\overview.md
 	EndProjectSection
 EndProject
 Global
@@ -83,7 +79,6 @@ Global
 		{BC0461ED-C80E-4F22-8946-3C656B323250} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
 		{0DDC4CE8-8743-4F1B-9EA4-90C9E056B95D} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
 		{A3918348-267A-4F40-AED6-1BF35755944A} = {E59A74CA-04D4-43F0-9C6A-BE2E6380A240}
-		{A4CF27AF-C3DF-4764-9DC2-5A8DE4CD42D5} = {492DF1F3-810A-485E-866D-52B9AA7E3368}
-		{502382AD-A9F4-4DCC-80A1-594053AF41C5} = {492DF1F3-810A-485E-866D-52B9AA7E3368}
+		{4D9B47C1-5111-40A2-88AB-1965B4816D50} = {492DF1F3-810A-485E-866D-52B9AA7E3368}
 	EndGlobalSection
 EndGlobal

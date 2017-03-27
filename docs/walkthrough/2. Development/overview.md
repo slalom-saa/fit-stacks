@@ -2,9 +2,9 @@
 
 For this example, we will use the service contract defined in design: [**Add Product**](https://github.com/slalom-saa/stacks/blob/master/docs/1.%20Design/add-product-service-contract.md).
 
-### Open the Starter Solution
-The empty shopping solution can be found [here](https://github.com/slalom-saa/stacks-shopping/tree/master/Empty).
-It has a basic project setup with nothing more.
+## Create the Solution
+An empty shopping solution can be found [here](https://github.com/slalom-saa/stacks-shopping/tree/master/Empty).
+It has a basic project setup and nuget packages added for Slalom.Stacks.
 
 ---
 ### Add project folders
@@ -21,13 +21,13 @@ This may initially feel like a lot of folders.  It won't as the solution builds 
 *Add* - This represents the operation or endpoint.  Everything in this folder will be composed to implement the logic.
 
 ---
-### Add the command
+## Add the command
 In the **add** folder, add a class for the request named **AddProductCommand**.
 ```csharp
 public class AddProductCommand
 {
     /// <summary>
-    /// Gets the name of the product to be added.
+    /// Gets the name of the product to add.
     /// </summary>
     /// <value>The name of the product to add.</value>
     [NotNull("Name must be specified.")]
@@ -67,7 +67,7 @@ Only basic validation should be used to indicate that the command was not serial
 external.
 
 ---
-### Add the endpoint
+## Stub the endpoint
 Add a class named **AddProduct** to the same folder.
 ```csharp
 /// <summary>
@@ -103,9 +103,9 @@ The summary should come directly from the service contract.  It will be used in 
 ```csharp
 public override string Receive(AddProductCommand instance)
 {
-    // Do something here to create the product.
+    // TODO: add logic here
 
-    // return the ID
+    // TODO: return the ID
     return "[Added Product ID]";
 }
 ```
@@ -125,3 +125,40 @@ caller.
 
 *Version* - This is the endpoint version. The default is 1.  It is used to determine the target endpoint and is specified 
 by prepending the route with v1, v2, etc.  If no version is specified, then the latest version will be used.
+
+---
+
+### Stub the Rules
+First add a new folder named rules under the existing add folder.
+
+#### Stub the user must be registered rule
+```csharp
+/// <summary>
+/// Validates that a user is registered.
+/// </summary>
+public class user_must_be_registered : SecurityRule<AddProductCommand>
+{
+    /// <inheritdoc />
+    public override IEnumerable<ValidationError> Validate(AddProductCommand instance)
+    {
+        // TODO: perform validation here
+        yield return new ValidationError("UserNotRegistered", "You must be registered to submit a product.");
+    }
+}
+```
+#### Stub the name must be unique rule
+```csharp
+/// <summary>
+/// Validates that the product name is unique.
+/// </summary>
+public class name_must_be_unique : BusinessRule<AddProductCommand>
+{
+    /// <inheritdoc />
+    public override IEnumerable<ValidationError> Validate(AddProductCommand instance)
+    {
+        // TODO: perform validation here
+        yield return new ValidationError("NameNotUnique", "A product with the same name already exists.");
+    }
+}
+```
+

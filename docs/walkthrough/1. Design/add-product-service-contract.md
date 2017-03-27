@@ -36,7 +36,7 @@ Product Added Event
 
 ### Rules 
 
-| Number | Type     | Code                  | Name                    | End-User Message                             | 
-| ------ | -------- | --------------------- | ----------------------- | -------------------------------------------- |
-| 1      | Security | UserNotRegistered     | user must be registered | You must be registered to submit a product.  |
-| 2      | Business | NameNotUnique         | name must be unique     | A product with the same name already exists. |
+| Number | Type     | Code                  | End-User Message                             | 
+| ------ | -------- | --------------------- | -------------------------------------------- |
+| 1      | Security | UserNotRegistered     | You must be registered to submit a product.  |
+| 2      | Business | NameNotUnique         | A product with the same name already exists. |
