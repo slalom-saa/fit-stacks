@@ -4,13 +4,14 @@
 Add Product
 
 ### Actor
-Registered User
+Product Approver
 
 ### Bounded Context
 Catalog
 
 ### Summary
-Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
+Adds a product to the product catalog so that a user can search 
+for it and it can be added to a cart, rented, purchased and shipped.
 
 ### Input
 
@@ -24,7 +25,7 @@ Returns the ID of the added product.
 
 ### Rules
 1. A product with the same name does not already exist.
-2. The use must be registered.
+2. The user must be an employee.
 
 ### Post Conditions
 1. A product with the name and description is added to the product catalog.

@@ -1,11 +1,12 @@
 # Stacks Walkthrough
-For this walkthrough we will look at the steps for implementing the Make Reservation feature
-of Slalom Rentals.
+For this walkthrough, we will look at the steps for implementing the Request Product business process
+of Slalom Rentals, an online ski shop that rents and sells used skis.  This walkthrough isn't intended to be fully
+production ready; it is meant to serve as a good structural example.
 
 ### Part 1: Design
-Here we will use the business reqiurements from the Slalom Rentals case
+Here we will use the business reqiurements outlined in the Slalom Rentals case
 study to create developer specifications using use cases
-and service contracts.  
+and service contracts.  See [Design Overview](1.%20Design/overview.md).
 
 ### Part 2: Development
 This is the biggest piece in this walkthrough.  Here we will take the use cases

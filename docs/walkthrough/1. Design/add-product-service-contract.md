@@ -13,7 +13,7 @@ catalog/products/add
 5 seconds
 
 ### Summary
-Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
+Adds a product to the product catalog so that a user can search for it and it can be added to a cart, rented, purchased or shipped.
 
 ### Input
 
@@ -38,5 +38,5 @@ Product Added Event
 
 | Number | Type     | Code                  | End-User Message                             | 
 | ------ | -------- | --------------------- | -------------------------------------------- |
-| 1      | Security | UserNotRegistered     | You must be registered to submit a product.  |
+| 1      | Security | UserIsEmployee        | You must be an employee to add a product.    |
 | 2      | Business | NameNotUnique         | A product with the same name already exists. |
