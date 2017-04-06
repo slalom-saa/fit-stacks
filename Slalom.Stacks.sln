@@ -38,6 +38,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "walkthrough", "walkthrough"
 		docs\walkthrough\overview.md = docs\walkthrough\overview.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "design", "design", "{EA79932E-BE5B-4BBC-8C99-CBDF47F4E4DE}"
+	ProjectSection(SolutionItems) = preProject
+		docs\walkthrough\1. Design\add-product-service-contract.md = docs\walkthrough\1. Design\add-product-service-contract.md
+		docs\walkthrough\1. Design\add-product-use-case.md = docs\walkthrough\1. Design\add-product-use-case.md
+		docs\walkthrough\1. Design\overview.md = docs\walkthrough\1. Design\overview.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "develop", "develop", "{5D18AD4F-4D95-45A1-A00F-BCDCD33D8213}"
+	ProjectSection(SolutionItems) = preProject
+		docs\walkthrough\2. Development\overview.md = docs\walkthrough\2. Development\overview.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rules", "rules", "{BBDABEB4-0683-42C8-B9C2-080E33CE795A}"
+	ProjectSection(SolutionItems) = preProject
+		docs\rules\business-rule.md = docs\rules\business-rule.md
+		docs\rules\command.md = docs\rules\command.md
+		docs\rules\endpoint.md = docs\rules\endpoint.md
+		docs\rules\folders.md = docs\rules\folders.md
+		docs\walkthrough\overview.md = docs\walkthrough\overview.md
+		docs\rules\security-rule.md = docs\rules\security-rule.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,5 +102,8 @@ Global
 		{0DDC4CE8-8743-4F1B-9EA4-90C9E056B95D} = {5926D369-56E5-4A1D-8E7D-22F58D593C7B}
 		{A3918348-267A-4F40-AED6-1BF35755944A} = {E59A74CA-04D4-43F0-9C6A-BE2E6380A240}
 		{4D9B47C1-5111-40A2-88AB-1965B4816D50} = {492DF1F3-810A-485E-866D-52B9AA7E3368}
+		{EA79932E-BE5B-4BBC-8C99-CBDF47F4E4DE} = {4D9B47C1-5111-40A2-88AB-1965B4816D50}
+		{5D18AD4F-4D95-45A1-A00F-BCDCD33D8213} = {4D9B47C1-5111-40A2-88AB-1965B4816D50}
+		{BBDABEB4-0683-42C8-B9C2-080E33CE795A} = {4D9B47C1-5111-40A2-88AB-1965B4816D50}
 	EndGlobalSection
 EndGlobal

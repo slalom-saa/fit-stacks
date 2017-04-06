@@ -1,5 +1,7 @@
 ﻿using System;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Registry;
+using Slalom.Stacks.TestKit;
 using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
@@ -30,6 +32,14 @@ namespace Slalom.Stacks.ConsoleClient
             }
         }
 
+        [TestSubject(typeof(HelloWorld))]
+        public class When_submitting_hello_world
+        {
+            public void should_do_this()
+            {
+            }
+        }
+
         [STAThread]
         public static void Main(string[] args)
         {
@@ -37,9 +47,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.Send(new HelloWorldRequest("name")).Wait();
-
-                    stack.GetResopnses().OutputToJson();
+                    stack.Send(new HelloWorldRequest("name")).Result.OutputToJson();
                 }
             }
             catch (Exception exception)

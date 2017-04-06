@@ -1,6 +1,6 @@
 # Development
 
-For this example, we will use the service contract defined in design: [**Add Product**](https://github.com/slalom-saa/stacks/blob/master/docs/1.%20Design/add-product-service-contract.md).
+For this example, we will use the service contract defined in design: [**Add Product**](../1.%20Design/add-product-service-contract.md).
 
 ## Create the Solution
 An empty shopping solution can be found [here](https://github.com/slalom-saa/stacks-shopping/tree/master/Empty).
@@ -10,19 +10,12 @@ It has a basic project setup and nuget packages added for Slalom.Stacks.
 ### Add project folders
 Add the following folders: **Application/Catalog/Products/Add**.
 
-This may initially feel like a lot of folders.  It won't as the solution builds out.  Here is what the folders are for
+This may initially feel like a lot of folders.  It won't as the solution builds out.  [Folder Rules](../../rules/folders.md)
 
-*Application* - This is where the application logic resides for now.  As the project continues, it may make sense to split this out into another project or solution.
-
-*Catalog* - This is the bounded context for the product catalog.  Again, it is best to keep these in the same project until it makes sense to split.
-
-*Products* - This represents the service.  See the design standards section for why there is no class here.
-
-*Add* - This represents the operation or endpoint.  Everything in this folder will be composed to implement the logic.
 
 ---
 ## Add the command
-In the **add** folder, add a class for the request named **AddProductCommand**.
+In the **Add** folder, add a class for the request named **AddProductCommand**.
 ```csharp
 public class AddProductCommand
 {
@@ -39,32 +32,7 @@ public class AddProductCommand
     }
 }
 ```
-The breakdown:
-```csharp
-class AddProductCommand
-```
-Requests that change state should end in "Command".
-```csharp
-public string Name { get; }
-```
-All properties should be immutable.  There should be no fields.  No setter or a private setter should be used.
-```csharp
-public AddProductCommand(string name)
-{
-    this.Name = name;
-}
-```
-All properties should be set in the constructor.  Overrides can be used if a parameter is optional.
-```csharp
-/// <value>The name of the product to add.</value>
-```
-The value comments should be added for the property name.  This will show up in swagger and other discovery documents.
-Other comments should be added, but will not be used in service documents.
-```csharp
-[NotNull("Name must be specified.")]
-```
-Only basic validation should be used to indicate that the command was not serialized or deserialized properly. Most rules will be
-external.
+See [Command Guidelines](../../rules/command.md) for more information.
 
 ---
 ## Stub the endpoint
@@ -78,60 +46,22 @@ public class AddProduct : EndPoint<AddProductCommand, string>
 {
     public override string Receive(AddProductCommand instance)
     {
-        // Do something here to create the product.
+        // TODO: add logic here
 
         // return the ID
         return "[Added Product ID]";
     }
 }
 ```
-Now let's break this down.
-```csharp
-class AddProduct
-```
-This should be the name of the use case and service contract.  If there are multiple versions, then append _v2 to the name for version two.  Example here is AddProduct_v2.
-```csharp
-EndPoint<AddProductCommand, string>
-```
-The first type argument is the command and the second is the return.  There are other ways to do this, but this is optimal for discovery documents, code analysis and testing.
-```csharp
-/// <summary>
-/// Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
-/// </summary>
-```
-The summary should come directly from the service contract.  It will be used in swagger and other discovery documents.
-```csharp
-public override string Receive(AddProductCommand instance)
-{
-    // TODO: add logic here
-
-    // TODO: return the ID
-    return "[Added Product ID]";
-}
-```
-There are two methods that can be overridden.  The first is the synchronous method as shown here, the other is ReceiveAsync which should be used 
-when needed.
-```csharp
-[EndPoint("catalog/products/add", Name = "Add Product", Timeout = 5000, Version = 1)]
-```
-Endpoint metadata is defined using the attribute.  The only required information is the path 
-which should **not** start with the version.
-
-*Name* - This is used to override the generated name from the class.
-
-*Timeout* - This is used to indicate how long the endpoint should execute for.  It is
-displayed in service manifests and will be used when no other timeout is specified by the host or 
-caller.
-
-*Version* - This is the endpoint version. The default is 1.  It is used to determine the target endpoint and is specified 
-by prepending the route with v1, v2, etc.  If no version is specified, then the latest version will be used.
+See [Endpoint Guidelines](../../rules/endpoint.md) for more information.
 
 ---
 
 ### Stub the Rules
-First add a new folder named rules under the existing add folder.
+First add a new folder named **Rules** under the existing **Add** folder.
 
-#### Stub the user must be registered rule
+#### Stub the "user must be registered" rule
+Add a new file named **user_must_be_registered.cs** to the **Rules** folder.
 ```csharp
 /// <summary>
 /// Validates that a user is registered.
@@ -139,14 +69,16 @@ First add a new folder named rules under the existing add folder.
 public class user_must_be_registered : SecurityRule<AddProductCommand>
 {
     /// <inheritdoc />
-    public override IEnumerable<ValidationError> Validate(AddProductCommand instance)
+    public override ValidationError Validate(AddProductCommand instance)
     {
         // TODO: perform validation here
-        yield return new ValidationError("UserNotRegistered", "You must be registered to submit a product.");
+        return new ValidationError("UserNotRegistered", "You must be registered to submit a product.");
     }
 }
 ```
-#### Stub the name must be unique rule
+See [Security Rule Guidelines](../../rules/security-rule.md) for more information.
+#### Stub the "name must be unique" rule
+Add a new file named **name_must_be_unique.cs** to the **Rules** folder.
 ```csharp
 /// <summary>
 /// Validates that the product name is unique.
@@ -154,11 +86,12 @@ public class user_must_be_registered : SecurityRule<AddProductCommand>
 public class name_must_be_unique : BusinessRule<AddProductCommand>
 {
     /// <inheritdoc />
-    public override IEnumerable<ValidationError> Validate(AddProductCommand instance)
+    public override ValidationError Validate(AddProductCommand instance)
     {
         // TODO: perform validation here
-        yield return new ValidationError("NameNotUnique", "A product with the same name already exists.");
+        return new ValidationError("NameNotUnique", "A product with the same name already exists.");
     }
 }
 ```
+See [Business Rule Guidelines](../../rules/business-rule.md) for more information.
 

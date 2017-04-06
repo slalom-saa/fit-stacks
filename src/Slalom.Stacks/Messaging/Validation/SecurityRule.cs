@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using Slalom.Stacks.Validation;
 
@@ -16,28 +15,38 @@ namespace Slalom.Stacks.Messaging.Validation
         private ExecutionContext _context;
 
         /// <summary>
-        /// Gets the current user.
+        /// Gets the current request.
         /// </summary>
-        /// <value>The current user.</value>
-        public IPrincipal User => _context.Request.User;
+        /// <value>The current request.</value>
+        public Request Request => _context?.Request;
+
+        IEnumerable<ValidationError> IValidate<TCommand>.Validate(TCommand instance)
+        {
+            var target = this.Validate(instance);
+            if (target == null)
+            {
+                return Enumerable.Empty<ValidationError>();
+            }
+            return new[] {target};
+        }
+
+        void IUseExecutionContext.UseContext(ExecutionContext context)
+        {
+            _context = context;
+        }
 
         /// <summary>
         /// Validates the specified message instance.
         /// </summary>
         /// <param name="instance">The instance to validate.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
         /// <exception cref="System.NotImplementedException">Thrown when neither validate methods are implemented.</exception>
-        public virtual IEnumerable<ValidationError> Validate(TCommand instance)
+        public virtual ValidationError Validate(TCommand instance)
         {
             Argument.NotNull(instance, nameof(instance));
 
-            var result = this.ValidateAsync(instance).Result;
-            if (result == null)
-            {
-                return Enumerable.Empty<ValidationError>();
-            }
-            return new[] { result };
+            return this.ValidateAsync(instance).Result;
         }
 
         /// <summary>
@@ -49,11 +58,6 @@ namespace Slalom.Stacks.Messaging.Validation
         public virtual Task<ValidationError> ValidateAsync(TCommand instance)
         {
             throw new NotImplementedException();
-        }
-
-        void IUseExecutionContext.UseContext(ExecutionContext context)
-        {
-            _context = context;
         }
     }
 }

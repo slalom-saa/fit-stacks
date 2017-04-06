@@ -12,6 +12,7 @@
     "Slalom.Stacks": {
       "target": "project"
     },
+    "Slalom.Stacks.TestKit": "1.5.28",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.1"

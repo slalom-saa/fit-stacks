@@ -43,7 +43,11 @@ namespace Slalom.Stacks.Text
 
         public static string ToJson(this object instance)
         {
-            return JsonConvert.SerializeObject(instance, Formatting.Indented);
+            return JsonConvert.SerializeObject(instance, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
         }
 
         /// <summary>

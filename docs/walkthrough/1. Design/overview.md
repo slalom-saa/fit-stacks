@@ -2,12 +2,8 @@
 
 [Introduction](#design) | [Use Cases](#use-cases) | [Service Contracts](#service-contracts)
 
-This section assumes that someone in the business analyst role has elicited and documented
-the business requirements.  There are two key inputs to serviced design:
-1. A logical domain model and accompanying dictionary
-2. Documented business processes as flow charts
-
-In this phase, the business analyst and architect work together to build use cases
+This section uses the Slalom Rentals use case and documentation.  Instead of going into detail
+about how we use the input to make the output, we will review what the outputs should be: use cases
 and service contracts.
 
 ## Use Cases

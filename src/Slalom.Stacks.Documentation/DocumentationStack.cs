@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using Slalom.Stacks.Messaging.Registry;
+using Slalom.Stacks.Reflection;
+using Slalom.Stacks.TestKit;
 using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.Documentation
@@ -17,6 +20,7 @@ namespace Slalom.Stacks.Documentation
         public void CreateWordDocument(string path)
         {
             var services = this.GetServices();
+            var tests = this.Container.Resolve<DiscoveryService>().Find().Where(e => e.GetAllAttributes<TestSubjectAttribute>().Any()).ToList();
             using (var document = new WordDocument(path))
             {
                 foreach (var service in services.Hosts.SelectMany(e => e.Services).OrderBy(e => e.Path))
@@ -60,6 +64,28 @@ namespace Slalom.Stacks.Documentation
                             foreach (var rule in endPoint.Rules)
                             {
                                 table.AppendRow(rule.RuleType.ToString(), rule.Comments?.Summary);
+                            }
+                        }
+                        else
+                        {
+                            document.Append("None");
+                        }
+
+                        document.Append("Tested By", "Heading 3");
+                        var t = tests.Where(e => e.GetAllAttributes<TestSubjectAttribute>().First().Type == service.ServiceType);
+                        if (t.Any())
+                        {
+                            var table = document.AppendTable(10000);
+                            table.AppendRow("Name");
+                            foreach (var test in t)
+                            {
+                                foreach (var method in test.GetMethods())
+                                {
+                                    if (method.DeclaringType == test)
+                                    {
+                                        table.AppendRow(test.Name + "_it_" + method.Name);
+                                    }
+                                }
                             }
                         }
                         else

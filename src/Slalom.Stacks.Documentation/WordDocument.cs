@@ -1,4 +1,6 @@
 ﻿using System;
+using System.CodeDom;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -30,6 +32,17 @@ namespace Slalom.Stacks.Documentation
             _body.Append(sectionProps);
         }
 
+        static string GetTypeName(Type type)
+        {
+            var codeDomProvider = CodeDomProvider.CreateProvider("C#");
+            var typeReferenceExpression = new CodeTypeReferenceExpression(new CodeTypeReference(type));
+            using (var writer = new StringWriter())
+            {
+                codeDomProvider.GenerateCodeFromExpression(typeReferenceExpression, writer, new CodeGeneratorOptions());
+                return writer.GetStringBuilder().ToString();
+            }
+        }
+
 
         public void Append(IEnumerable<EndPointProperty> requestProperties)
         {
@@ -40,7 +53,7 @@ namespace Slalom.Stacks.Documentation
 
                 foreach (var property in requestProperties)
                 {
-                    table.AppendRow(property.Name, Type.GetType(property.Type).Name, property.Comments?.Value);
+                    table.AppendRow(property.Name, GetTypeName(Type.GetType(property.Type)), property.Comments?.Value);
                 }
             }
             else
