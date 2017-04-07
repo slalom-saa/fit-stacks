@@ -1,4 +1,5 @@
 ﻿using System;
+using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Registry;
 using Slalom.Stacks.TestKit;
@@ -47,7 +48,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.Send(new HelloWorldRequest("name")).Result.OutputToJson();
+                    stack.Send(new AddProductCommand("name", "e")).Result.OutputToJson();
                 }
             }
             catch (Exception exception)

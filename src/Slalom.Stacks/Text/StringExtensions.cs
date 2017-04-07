@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 namespace Slalom.Stacks.Text
 {
     /// <summary>
-    /// Contains extensions for <see cref="String"/> objects.
+    /// Contains extensions for <see cref="string" /> objects.
     /// </summary>
     public static class StringExtensions
     {
@@ -36,18 +36,13 @@ namespace Slalom.Stacks.Text
             }
         }
 
+        /// <summary>
+        /// Outputs the JSON representation to the console.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
         public static void OutputToJson(this object instance)
         {
             Console.WriteLine(instance.ToJson());
-        }
-
-        public static string ToJson(this object instance)
-        {
-            return JsonConvert.SerializeObject(instance, new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
         }
 
         /// <summary>
@@ -97,14 +92,18 @@ namespace Slalom.Stacks.Text
             return string.Concat(instance.Select((x, i) => i > 0 && char.IsUpper(x) ? delimiter + x.ToString() : x.ToString())).ToLowerInvariant();
         }
 
-        public static string ToTitle(this string instance)
+        /// <summary>
+        /// Returns the JSON representation.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns>Returns the JSON representation.</returns>
+        public static string ToJson(this object instance)
         {
-            return Regex.Replace(instance, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToUpper(m.Value[1])}");
-        }
-
-        public static string ToSentence(this string instance)
-        {
-            return instance.Replace("_", " ");
+            return JsonConvert.SerializeObject(instance, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
         }
 
         /// <summary>
@@ -122,6 +121,16 @@ namespace Slalom.Stacks.Text
         }
 
         /// <summary>
+        /// Returns a copy of the string as a sentence.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns>Returns a copy of the string as a sentence.</returns>
+        public static string ToSentence(this string instance)
+        {
+            return instance.Replace("_", " ");
+        }
+
+        /// <summary>
         /// Returns a copy of the string in snake case.
         /// </summary>
         /// <param name="instance">The instance.</param>
@@ -129,6 +138,16 @@ namespace Slalom.Stacks.Text
         public static string ToSnakeCase(this string instance)
         {
             return instance.ToDelimited("-");
+        }
+
+        /// <summary>
+        /// Returns a copy of the string as a title.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns>Returns a copy of the string as a title.</returns>
+        public static string ToTitle(this string instance)
+        {
+            return Regex.Replace(instance, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToUpper(m.Value[1])}");
         }
 
         /// <summary>

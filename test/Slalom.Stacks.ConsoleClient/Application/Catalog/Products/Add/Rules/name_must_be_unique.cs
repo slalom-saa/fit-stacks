@@ -20,17 +20,12 @@ namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add.Rules
     /// <summary>
     /// Validates that a user is registered.
     /// </summary>
-    public class user_must_be_registered : SecurityRule<AddProductCommand>
+    public class user_is_employee : SecurityRule<AddProductCommand>
     {
         /// <inheritdoc />
         public override ValidationError Validate(AddProductCommand instance)
         {
-            // TODO: perform validation here
-            if (this.Request.User.Identity.IsAuthenticated)
-            {
-            }
-
-            return new ValidationError("UserNotRegistered", "You must be registered to submit a product.");
+            return new ValidationError("UserNotEmployee", "You must be an employee to add a product.");
         }
     }
 }

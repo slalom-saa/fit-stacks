@@ -37,7 +37,7 @@ namespace Slalom.Stacks.Reflection
         /// Returns all custom attributes of the specified type.
         /// </summary>
         /// <typeparam name="T">The attribute type</typeparam>
-        /// <param name="type">The instance.</param>
+        /// <param name="method">The instance.</param>
         /// <returns>Returns all custom attributes of the specified type.</returns>
         public static IEnumerable<T> GetAllAttributes<T>(this MethodInfo method) where T : Attribute
         {

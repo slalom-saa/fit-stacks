@@ -50,6 +50,12 @@ that a user can search for it and it can be added to a cart, rented, purchased a
 
 **Output**: Returns the ID of the added product.
 
+**Events**:
+
+Product Added Event
+
+> List any events that need to be raised and possibly consumed.
+
 **Rules**: 
 1. A product with the same name does not already exist.
 2. The user must be an employee.
@@ -98,22 +104,28 @@ that a user can search for it and it can be added to a cart, rented, purchased a
 > Added a type of the return.  If this was a complex object then we would want
 > to list out the properties.  
 
-**Event**: Product Added Event
+**Events**: 
+
+Product Added Event
 
 | Name        | Description                              | 
 | ----------- | ---------------------------------------- | 
 | ID          | The added product ID.                    |
 | Name        | The name of the product to add.          | 
 | Description | An optional description for the product. |
-> Details about any raised event(s) is provided here.
+> Details about any raised event(s) is provided here.  The properties
+> of the events should contain enough information to replay the
+> event.
 
 **Rules**: 
 
-| Number | Type     | Code                  | End-User Message                             | 
-| ------ | -------- | --------------------- | -------------------------------------------- |
-| 1      | Security | UserIsEmployee        | You must be an employee to add a product.    |
-| 2      | Business | NameNotUnique         | A product with the same name already exists. |
+| Number | Type     | Code                   | End-User Message                             | 
+| ------ | -------- | ---------------------- | -------------------------------------------- |
+| 1      | Security | UserNotEmployee        | You must be an employee to add a product.    |
+| 2      | Business | NameNotUnique          | A product with the same name already exists. |
 > Here we add implementation details that are used in discovery documents.
+> The code should indicate why the condition was not met and lthe end-use message
+> is a default.  The UI should use the code to come up with its own message.
 
 That's it for our quick overview of the design.  Next is stubbing out classes and methods
 or you can explore examples:

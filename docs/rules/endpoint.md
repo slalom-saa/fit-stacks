@@ -4,7 +4,7 @@ This section contains rules for endpoints and uses the Add Product Endpoint exam
 
 ```csharp
 /// <summary>
-/// Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
+/// Adds a product to the product catalog so that a user can search for it and it can be added to a cart, rented, purchased and shipped.
 /// </summary>
 [EndPoint("catalog/products/add", Name = "Add Product", Timeout = 5000, Version = 1)]
 public class AddProduct : EndPoint<AddProductCommand, string>
@@ -44,7 +44,7 @@ EndPoint<AddProductCommand>
 The summary should come directly from the service contract.  This texte will be used in swagger and other discovery documents.
 ```csharp
 /// <summary>
-/// Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
+/// Adds a product to the product catalog so that a user can search for it and it can be added to a cart, rented, purchased and shipped.
 /// </summary>
 ```
 If the the endpoint does not call any async code then it should override the Receive method.

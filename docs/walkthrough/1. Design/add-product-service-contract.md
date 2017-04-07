@@ -25,7 +25,7 @@ Adds a product to the product catalog so that a user can search for it and it ca
 ### Output
 Returns a string representing the ID of the added product.
 
-### Event
+### Events
 Product Added Event
 
 | Name        | Description                              | 
@@ -36,7 +36,7 @@ Product Added Event
 
 ### Rules 
 
-| Number | Type     | Code                  | End-User Message                             | 
-| ------ | -------- | --------------------- | -------------------------------------------- |
-| 1      | Security | UserIsEmployee        | You must be an employee to add a product.    |
-| 2      | Business | NameNotUnique         | A product with the same name already exists. |
+| Number | Type     | Code                   | End-User Message                             | 
+| ------ | -------- | ---------------------- | -------------------------------------------- |
+| 1      | Security | UserNotEmployee        | You must be an employee to add a product.    |
+| 2      | Business | NameNotUnique          | A product with the same name already exists. |

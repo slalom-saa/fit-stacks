@@ -45,9 +45,24 @@ namespace Slalom.Stacks.Messaging
             return Task.FromResult(0);
         }
 
-        Task IEndPoint<object>.Receive(object instance)
+        async Task IEndPoint<object>.Receive(object instance)
         {
-            return this.ReceiveAsync();
+            await this.Components.Resolve<ValidateMessage>().Execute(this.Context);
+
+            if (!this.Context.ValidationErrors.Any())
+            {
+                try
+                {
+                    if (!this.Context.CancellationToken.IsCancellationRequested)
+                    {
+                        await this.ReceiveAsync();
+                    }
+                }
+                catch (Exception exception)
+                {
+                    this.Context.SetException(exception);
+                }
+            }
         }
 
         protected void Respond(object instance)
@@ -89,11 +104,14 @@ namespace Slalom.Stacks.Messaging
         public virtual Task ReceiveAsync(TMessage instance)
         {
             this.Receive(instance);
+
             return Task.FromResult(0);
         }
 
         async Task IEndPoint<TMessage>.Receive(TMessage instance)
         {
+            await this.Components.Resolve<ValidateMessage>().Execute(this.Context);
+
             if (!this.Context.ValidationErrors.Any())
             {
                 try
@@ -150,6 +168,8 @@ namespace Slalom.Stacks.Messaging
 
         async Task<TResponse> IEndPoint<TMessage, TResponse>.Receive(TMessage instance)
         {
+            await this.Components.Resolve<ValidateMessage>().Execute(this.Context);
+
             TResponse result = default(TResponse);
             if (!this.Context.ValidationErrors.Any())
             {

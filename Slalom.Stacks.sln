@@ -56,7 +56,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rules", "rules", "{BBDABEB4
 		docs\rules\command.md = docs\rules\command.md
 		docs\rules\endpoint.md = docs\rules\endpoint.md
 		docs\rules\folders.md = docs\rules\folders.md
-		docs\walkthrough\overview.md = docs\walkthrough\overview.md
 		docs\rules\security-rule.md = docs\rules\security-rule.md
 	EndProjectSection
 EndProject

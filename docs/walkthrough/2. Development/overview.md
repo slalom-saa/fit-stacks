@@ -1,14 +1,14 @@
 # Development
 
-For this example, we will use the service contract defined in design: [**Add Product**](../1.%20Design/add-product-service-contract.md).
+For this example, we will use the service contract defined in design: [**Add Product Service Contract**](../1.%20Design/add-product-service-contract.md).
 
 ## Create the Solution
-An empty shopping solution can be found [here](https://github.com/slalom-saa/stacks-shopping/tree/master/Empty).
+An empty starter solution can be found [here](https://github.com/slalom-saa/stacks-shopping/tree/master/Empty).
 It has a basic project setup and nuget packages added for Slalom.Stacks.
 
 ---
 ### Add project folders
-Add the following folders: **Application/Catalog/Products/Add**.
+Add the following folders to the source project: **Application/Catalog/Products/Add**.
 
 This may initially feel like a lot of folders.  It won't as the solution builds out.  [Folder Rules](../../rules/folders.md)
 
@@ -39,7 +39,7 @@ See [Command Guidelines](../../rules/command.md) for more information.
 Add a class named **AddProduct** to the same folder.
 ```csharp
 /// <summary>
-/// Adds a product to the product catalog so that a user can search for it and it can be added to a cart, purchased and/or shipped.
+/// Adds a product to the product catalog so that a user can search for it and it can be added to a cart, rented, purchased and shipped.
 /// </summary>
 [EndPoint("catalog/products/add", Name = "Add Product", Timeout = 5000, Version = 1)]
 public class AddProduct : EndPoint<AddProductCommand, string>
@@ -60,19 +60,19 @@ See [Endpoint Guidelines](../../rules/endpoint.md) for more information.
 ### Stub the Rules
 First add a new folder named **Rules** under the existing **Add** folder.
 
-#### Stub the "user must be registered" rule
-Add a new file named **user_must_be_registered.cs** to the **Rules** folder.
+#### Stub the "user is employee" rule
+Add a new file named **user_is_employee.cs** to the **Rules** folder.
 ```csharp
 /// <summary>
 /// Validates that a user is registered.
 /// </summary>
-public class user_must_be_registered : SecurityRule<AddProductCommand>
+public class user_is_employee : SecurityRule<AddProductCommand>
 {
     /// <inheritdoc />
     public override ValidationError Validate(AddProductCommand instance)
     {
         // TODO: perform validation here
-        return new ValidationError("UserNotRegistered", "You must be registered to submit a product.");
+        return new ValidationError("UserNotEmployee", "You must be an employee to add a product.");
     }
 }
 ```

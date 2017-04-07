@@ -1,18 +1,18 @@
 # Security Rule Guidelines
 
-This section contains rules for security rules and uses the user must be registered example.
+This section contains rules for security rules and uses the user is employee example.
 
 ```csharp
 /// <summary>
-/// Validates that a user is registered.
+/// Validates that a user is an employee.
 /// </summary>
-public class user_must_be_registered : SecurityRule<AddProductCommand>
+public class user_is_employee : SecurityRule<AddProductCommand>
 {
     /// <inheritdoc />
     public override ValidationError Validate(AddProductCommand instance)
     {
         // TODO: perform validation here
-        return new ValidationError("UserNotRegistered", "You must be registered to submit a product.");
+        return new ValidationError("UserNotEmployee", "You must be an employee to add a product.");
     }
 }
 ```
@@ -21,13 +21,13 @@ The class summary should be descriptive enough for documentation.  It will show 
 It should not contain information on how it is implemented - only what it validates.
 ```csharp
 /// <summary>
-/// Validates that a user is registered.
+/// Validates that a user is an employee.
 /// </summary>
 ```
 
 Class names should be written in specification case.  This aids in understanding and discovery documents.
 ```csharp
-user_must_be_registered
+user_is_employee
 ```
 
 The class should inherit from SecurityRule<> and the type argument should be the command.
@@ -40,16 +40,16 @@ If the logic does not call async methods then the Validate method should be over
 public override ValidationError Validate(AddProductCommand instance)
 {
     // TODO: perform validation here
-    return new ValidationError("UserNotRegistered", "You must be registered to submit a product.");
+    return new ValidationError("UserNotEmployee", "You must be an employee to add a product.");
 }
 ```
 The error code should not contain any punctuation or spaces.  It is used by the UI to generate custom messages.
 ```csharp
-"UserNotRegistered"
+"UserNotEmployee"
 ```
 The message should be a well-written, user-facing message with a period at the end.
 ```csharp
-"You must be registered to submit a product."
+"You must be an employee to add a product."
 ```
 
 Access to the current user should be done through the parent class Request property.

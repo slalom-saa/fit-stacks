@@ -1,7 +1,9 @@
 # Stacks Walkthrough
 For this walkthrough, we will look at the steps for implementing the Request Product business process
 of Slalom Rentals, an online ski shop that rents and sells used skis.  This walkthrough isn't intended to be fully
-production ready; it is meant to serve as a good structural example.
+production ready; it is meant to serve as a good structural example.  While not required if the
+intent is to go through the action of building, it may be helpful to have some background
+information on Service-Oriented Architecture and Microservices.  See learning paths.
 
 ### Part 1: Design
 Here we will use the business reqiurements outlined in the Slalom Rentals case
