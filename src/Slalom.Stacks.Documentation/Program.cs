@@ -16,8 +16,7 @@ namespace Slalom.Stacks.Documentation
             try
             {
                 var workspace = MSBuildWorkspace.Create();
-                var solution = workspace.OpenSolutionAsync(@"C:\Source\Stacks\Core\Slalom.Stacks.sln").Result;
-                var project = workspace.OpenProjectAsync(@"C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Slalom.Stacks.ConsoleClient.xproj").Result;
+                var solution = workspace.OpenSolutionAsync(@"C:\Users\George Olson\documents\visual studio 2017\Projects\Slalom.Rentals\Slalom.Rentals.sln").Result;
 
                 foreach (var projecct in solution.ProjectIds)
                 {

@@ -58,7 +58,7 @@ Push-Location $PSScriptRoot
 
 Go ..\src\Slalom.Stacks
 Go ..\src\Slalom.Stacks.TestKit
-Go ..\src\Slalom.Stacks.Documentation
+#Go ..\src\Slalom.Stacks.Documentation
 
 Pop-Location
 
