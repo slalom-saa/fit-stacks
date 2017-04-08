@@ -47,7 +47,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "design", "design", "{EA7993
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "develop", "develop", "{5D18AD4F-4D95-45A1-A00F-BCDCD33D8213}"
 	ProjectSection(SolutionItems) = preProject
-		docs\walkthrough\2. Development\overview.md = docs\walkthrough\2. Development\overview.md
+		docs\walkthrough\2. Development\1. stub methods and tests.md = docs\walkthrough\2. Development\1. stub methods and tests.md
+		docs\walkthrough\2. Development\2. run document tool to validate.md = docs\walkthrough\2. Development\2. run document tool to validate.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rules", "rules", "{BBDABEB4-0683-42C8-B9C2-080E33CE795A}"

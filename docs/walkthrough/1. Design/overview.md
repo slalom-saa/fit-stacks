@@ -1,4 +1,4 @@
-# Design
+# Design Overview
 
 [Introduction](#design) | [Use Cases](#use-cases) | [Service Contracts](#service-contracts)
 
@@ -65,11 +65,12 @@ Product Added Event
 1. A product with the name and description is added to the product catalog.
 2. The product can be found in product search.
 3. The response comes back in less than .5 seconds.
+4. The Product Added Event is raised.
 > Listing them here makes it easy to test and validate.
 
 **Usage Index**:
 
-.25n
+.01n
 > A number that indicates how many times the user will perform the action per visit.  This
 > number is later used to validate the system under load.
 

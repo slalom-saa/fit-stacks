@@ -30,6 +30,8 @@ Returns the ID of the added product.
 ### Post Conditions
 1. A product with the name and description is added to the product catalog.
 2. The product can be found in product search.
+3. The response comes back in less than .5 seconds.
+4. The Product Added Event is raised.
 
 ### Usage Index
-.25n
+.01n
