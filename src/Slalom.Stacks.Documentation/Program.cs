@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
+using System.Runtime.Loader;
 using Slalom.Stacks.Documentation.Model;
 using Slalom.Stacks.Messaging.Registry;
 using Slalom.Stacks.Text;
@@ -14,7 +14,18 @@ namespace Slalom.Stacks.Documentation
         {
             try
             {
-                var document = DocumentElement.Create(typeof(AddProduct).GetTypeInfo().Assembly);
+#if core
+                var path = @"C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\bin\Debug\netcoreapp1.0\Slalom.Stacks.ConsoleClient.dll";
+
+                var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+
+#else
+                var path = @"C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\bin\Debug\netcoreapp1.0\Slalom.Stacks.ConsoleClient.dll";
+
+                var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+#endif
+
+                var document = DocumentElement.Create(assembly);
 
                 document.OutputToJson();
             }

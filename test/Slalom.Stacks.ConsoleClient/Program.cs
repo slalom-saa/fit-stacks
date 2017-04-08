@@ -39,6 +39,10 @@ namespace Slalom.Stacks.ConsoleClient
             public void should_do_this()
             {
             }
+
+            public void should_do_that()
+            {
+            }
         }
 
         [STAThread]
