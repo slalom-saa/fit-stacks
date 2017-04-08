@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.Loader;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.MSBuild;
 using Slalom.Stacks.Documentation.Model;
 using Slalom.Stacks.Messaging.Registry;
 using Slalom.Stacks.Text;
@@ -14,20 +15,29 @@ namespace Slalom.Stacks.Documentation
         {
             try
             {
-#if core
-                var path = @"C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\bin\Debug\netcoreapp1.0\Slalom.Stacks.ConsoleClient.dll";
+                var workspace = MSBuildWorkspace.Create();
+                var solution = workspace.OpenSolutionAsync(@"C:\Source\Stacks\Core\Slalom.Stacks.sln").Result;
+                var project = workspace.OpenProjectAsync(@"C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Slalom.Stacks.ConsoleClient.xproj").Result;
 
-                var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+                foreach (var projecct in solution.ProjectIds)
+                {
+                    Console.WriteLine(projecct);
+                }
 
-#else
-                var path = @"C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\bin\Debug\netcoreapp1.0\Slalom.Stacks.ConsoleClient.dll";
+                //#if core
+                //                var path = @"C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\bin\Debug\netcoreapp1.0\Slalom.Stacks.ConsoleClient.dll";
 
-                var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
-#endif
+                //                var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
 
-                var document = DocumentElement.Create(assembly);
+                //#else
+                //                var path = @"C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\bin\Debug\netcoreapp1.0\Slalom.Stacks.ConsoleClient.dll";
 
-                document.OutputToJson();
+                //                var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+                //#endif
+
+                //                var document = DocumentElement.Create(assembly);
+
+                //                document.OutputToJson();
             }
             catch (Exception exception)
             {
