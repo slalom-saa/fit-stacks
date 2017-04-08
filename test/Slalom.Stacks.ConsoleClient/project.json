@@ -12,12 +12,14 @@
     "Slalom.Stacks": {
       "target": "project"
     },
-    "Slalom.Stacks.TestKit": "1.5.28",
+    "Slalom.Stacks.TestKit": {
+      "target": "project"
+    },
     "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.1"
-    }
-  },
+        "type": "platform",
+        "version": "1.0.1"
+      }
+    },
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [
@@ -33,8 +35,5 @@
     //    "System.Windows.Forms": {}
     //  }
     //}
-  },
-  "tools": {
-    "Microsoft.EntityFrameworkCore.Tools.DotNet": "1.1.0-preview4-final"
   }
 }
