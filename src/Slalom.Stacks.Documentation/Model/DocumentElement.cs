@@ -18,14 +18,17 @@ namespace Slalom.Stacks.Documentation.Model
 
         private void AddEndPoints()
         {
-            foreach (var endPoint in _registry.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints))
+            foreach (var service in _registry.Hosts.SelectMany(e => e.Services))
             {
-                this.EndPoints.Add(new EndPointElement
+                foreach (var endPoint in service.EndPoints)
                 {
-                    Name = endPoint.ServiceType.Name,
-                    Path = endPoint.Path,
-                    Timeout = endPoint.Timeout.ToString()
-                });
+                    this.EndPoints.Add(new EndPointElement
+                    {
+                        Name = service.Name,
+                        Path = endPoint.Path,
+                        Timeout = endPoint.Timeout.ToString()
+                    });
+                }
             }
         }
 
