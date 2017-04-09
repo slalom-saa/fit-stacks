@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
@@ -15,14 +17,18 @@ namespace Slalom.Stacks.Documentation
         {
             try
             {
+                var target = new DocumentElement();
+
                 var workspace = MSBuildWorkspace.Create();
-                var solution = workspace.OpenSolutionAsync(@"C:\Users\George Olson\documents\visual studio 2017\Projects\Slalom.Rentals\Slalom.Rentals.sln").Result;
+                var solution = workspace.OpenSolutionAsync(@"C:\Source\Stacks\Rentals\Slalom.Rentals.sln").Result;
 
-                foreach (var projecct in solution.ProjectIds)
+                var types = solution.Projects.Select(e => e.GetCompilationAsync().Result).SelectMany(e => e.GetSymbolsWithName(x => true))
+                    .OfType<INamedTypeSymbol>().ToList();
+                foreach (var symbol in types.Where(e => e.BaseType?.Name == "EndPoint"))
                 {
-                    Console.WriteLine(projecct);
+                    target.AddEndPoint(symbol, types);
                 }
-
+                
                 //#if core
                 //                var path = @"C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\bin\Debug\netcoreapp1.0\Slalom.Stacks.ConsoleClient.dll";
 
@@ -34,9 +40,9 @@ namespace Slalom.Stacks.Documentation
                 //                var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
                 //#endif
 
-                //                var document = DocumentElement.Create(assembly);
+                //var document = DocumentElement.Create(assemblies.ToArray());
 
-                //                document.OutputToJson();
+                target.OutputToJson();
             }
             catch (Exception exception)
             {
