@@ -5,8 +5,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Editing;
 using Slalom.Stacks.Messaging;
 using Slalom.Stacks.Messaging.Registry;
+using Slalom.Stacks.Text;
 
 
 namespace Slalom.Stacks.Documentation.Model
@@ -62,7 +66,7 @@ namespace Slalom.Stacks.Documentation.Model
             }
         }
 
-        public EndPointElement(INamedTypeSymbol item, List<INamedTypeSymbol> siblings)
+        public EndPointElement(INamedTypeSymbol item, Project project, List<INamedTypeSymbol> siblings)
         {
             this.Name = item.Name;
             var meta = item.GetAttributes().FirstOrDefault(e => e.AttributeClass.Name == "EndPointAttribute");
@@ -73,6 +77,8 @@ namespace Slalom.Stacks.Documentation.Model
                 this.GetValue(meta, "Version", e => this.Version = (int)e);
                 this.GetValue(meta, "Timeout", e => this.Timeout = e.ToString());
             }
+
+
 
             var request = item.BaseType.TypeArguments.FirstOrDefault();
             if (request != null)
@@ -101,7 +107,7 @@ namespace Slalom.Stacks.Documentation.Model
                     this.Rules.Add(new RuleElement("Business", new Comments(rule.GetDocumentationCommentXml())));
                 }
 
-                var tests = siblings.Where(e => e.GetAttributes().Any(a => a.AttributeClass.Name == "TestSubjectAttribute" && ((INamedTypeSymbol) a.ConstructorArguments.First().Value).Name == item.Name));
+                var tests = siblings.Where(e => e.GetAttributes().Any(a => a.AttributeClass.Name == "TestSubjectAttribute" && ((INamedTypeSymbol)a.ConstructorArguments.First().Value).Name == item.Name));
                 foreach (var test in tests)
                 {
                     foreach (var method in test.GetMembers().OfType<IMethodSymbol>())
@@ -114,8 +120,48 @@ namespace Slalom.Stacks.Documentation.Model
                 }
             }
 
-           
+            var receive = item.GetMembers().OfType<IMethodSymbol>().First(e => e.Name == "Receive" || e.Name == "ReceiveAsync");
+
+            var syntax = receive.DeclaringSyntaxReferences.First().SyntaxTree.GetRoot();
+
+            var invocations = syntax.DescendantNodes().OfType<InvocationExpressionSyntax>().Where(e => e.Expression.ToString() == "this.Send");
+            foreach (var invocation in invocations)
+            {
+                var argument = invocation.DescendantNodes().OfType<ArgumentSyntax>().First();
+                var command = argument.DescendantNodes().OfType<IdentifierNameSyntax>().First().Identifier.ValueText;
+
+                var dependency = siblings.FirstOrDefault(e => e.BaseType?.Name == "EndPoint" && e.BaseType.TypeArguments.First().Name == command);
+                var attribute = dependency?.GetAttributes().FirstOrDefault(e => e.AttributeClass.Name == "EndPointAttribute");
+                if (attribute != null)
+                {
+                    this.Dependencies.Add(new DependencyElement(attribute.ConstructorArguments.First().Value.ToString()));
+                }
+            }
+
+            //var access = syntax.DescendantNodes().OfType<MemberAccessExpressionSyntax>().Where(e => e.Kind() == SyntaxKind.SimpleMemberAccessExpression);
+            //foreach (var method in access)
+            //{
+            //    if (method.Name.ToString() == "Send")
+            //    {
+            //        var argument = method.DescendantNodes().OfType<ArgumentSyntax>().First();
+            //        var command = argument.DescendantNodes().OfType<IdentifierNameSyntax>().First().Identifier.ValueText;
+
+            //        Console.WriteLine(argument);
+            //    }
+            //}
+
+
+            //var syntaxGenerator = SyntaxGenerator.GetGenerator(project);
+            //var methodDeclaration = syntaxGenerator.MethodDeclaration(receive);
+
+            //foreach (var node in methodDeclaration.DescendantNodes().OfType<BlockSyntax>())
+            //{
+            //    Console.WriteLine(node.DescendantNodes().Count());
+            //    Console.WriteLine(node.GetType() + " " + node.GetText());
+            //}
+
         }
+
 
         private void GetValue(AttributeData meta, string name, Action<object> setter)
         {

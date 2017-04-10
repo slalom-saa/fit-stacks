@@ -13,11 +13,5 @@ namespace Slalom.Stacks.Documentation.Model
     public class DocumentElement
     {
         public List<EndPointElement> EndPoints { get; set; } = new List<EndPointElement>();
-
-
-        public void AddEndPoint(INamedTypeSymbol item, List<INamedTypeSymbol> types)
-        {
-            this.EndPoints.Add(new EndPointElement(item, types));
-        }
     }
 }

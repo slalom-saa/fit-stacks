@@ -20,27 +20,26 @@ namespace Slalom.Stacks.Documentation
                 var target = new DocumentElement();
 
                 var workspace = MSBuildWorkspace.Create();
-                var solution = workspace.OpenSolutionAsync(@"C:\Source\Stacks\Rentals\Slalom.Rentals.sln").Result;
+                var solution = workspace.OpenSolutionAsync(args.Length > 0 ? args[0] : @"C:\Source\Stacks\Rentals\Slalom.Rentals.sln").Result;
 
-                var types = solution.Projects.Select(e => e.GetCompilationAsync().Result).SelectMany(e => e.GetSymbolsWithName(x => true))
-                    .OfType<INamedTypeSymbol>().ToList();
-                foreach (var symbol in types.Where(e => e.BaseType?.Name == "EndPoint"))
+
+                var contents = new Dictionary<Project, List<INamedTypeSymbol>>();
+                foreach (var project in solution.Projects)
                 {
-                    target.AddEndPoint(symbol, types);
+                    var types = project.GetCompilationAsync().Result.GetSymbolsWithName(e => true).OfType<INamedTypeSymbol>().ToList();
+                    contents.Add(project, types);
                 }
-                
-                //#if core
-                //                var path = @"C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\bin\Debug\netcoreapp1.0\Slalom.Stacks.ConsoleClient.dll";
 
-                //                var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
-
-                //#else
-                //                var path = @"C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\bin\Debug\netcoreapp1.0\Slalom.Stacks.ConsoleClient.dll";
-
-                //                var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
-                //#endif
-
-                //var document = DocumentElement.Create(assemblies.ToArray());
+                foreach (var project in contents.Keys)
+                {
+                    foreach (var type in contents[project])
+                    {
+                        if (type.BaseType?.Name == "EndPoint")
+                        {
+                            target.EndPoints.Add(new EndPointElement(type, project, contents.Values.SelectMany(e => e).ToList()));
+                        }
+                    }
+                }
 
                 target.OutputToJson();
             }

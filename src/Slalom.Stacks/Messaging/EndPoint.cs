@@ -19,6 +19,11 @@ namespace Slalom.Stacks.Messaging
 
         public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
 
+        public Task<MessageResult> Send(object message)
+        {
+            return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
+        }
+
         /// <summary>
         /// Adds an event to be raised when the execution is successful.
         /// </summary>
@@ -73,6 +78,11 @@ namespace Slalom.Stacks.Messaging
 
     public abstract class EndPoint<TMessage> : IEndPoint<TMessage>
     {
+        public Task<MessageResult> Send(object message)
+        {
+            return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
+        }
+
         ExecutionContext IEndPoint.Context { get; set; }
 
         private ExecutionContext Context => ((IEndPoint)this).Context;
@@ -131,6 +141,11 @@ namespace Slalom.Stacks.Messaging
 
     public abstract class EndPoint<TMessage, TResponse> : IEndPoint<TMessage, TResponse>
     {
+        public Task<MessageResult> Send(object message)
+        {
+            return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
+        }
+
         ExecutionContext IEndPoint.Context { get; set; }
 
         private ExecutionContext Context => ((IEndPoint)this).Context;
