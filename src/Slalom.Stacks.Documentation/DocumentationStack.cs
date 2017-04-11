@@ -21,81 +21,81 @@ namespace Slalom.Stacks.Documentation
         {
             var services = this.GetServices();
             var tests = this.Container.Resolve<DiscoveryService>().Find().Where(e => e.GetAllAttributes<TestSubjectAttribute>().Any()).ToList();
-            using (var document = new WordDocument(path))
-            {
-                foreach (var service in services.Hosts.SelectMany(e => e.Services).OrderBy(e => e.Path))
+                using (var document = new WordDocument(path))
                 {
-                    if (service.Path?.StartsWith("_") ?? true)
+                    foreach (var service in services.Hosts.SelectMany(e => e.Services).OrderBy(e => e.Path))
                     {
-                        continue;
-                    }
-
-                    foreach (var endPoint in service.EndPoints)
-                    {
-                        var name = service.Name.ToTitle();
-                        if (endPoint.Version > 1)
+                        if (service.Path?.StartsWith("_") ?? true)
                         {
-                            name += " (version " + endPoint.Version + ")";
+                            continue;
                         }
-                        document.Append(name, "Heading 2");
-                        document.Append("v" + endPoint.Version + "/" + service.Path, "Endpoint Path");
 
-                        if (endPoint.Summary != null)
+                        foreach (var endPoint in service.EndPoints)
                         {
-                            document.Append(service.EndPoints.First().Summary);
-                        }
-                        document.Append("Parameters", "Heading 3");
-
-                        document.Append(endPoint.RequestProperties);
-
-                        document.Append("Rules", "Heading 3");
-
-                        if (endPoint.RequestProperties.Any(e => e.Validation != null) || endPoint.Rules.Any())
-                        {
-                            var table = document.AppendTable(1500, 8500);
-                            table.AppendRow("Type", "Summary");
-                            foreach (var property in endPoint.RequestProperties)
+                            var name = service.Name.ToTitle();
+                            if (endPoint.Version > 1)
                             {
-                                if (property.Validation != null)
+                                name += " (version " + endPoint.Version + ")";
+                            }
+                            document.Append(name, "Heading 2");
+                            document.Append("v" + endPoint.Version + "/" + service.Path, "Endpoint Path");
+
+                            if (endPoint.Summary != null)
+                            {
+                                document.Append(service.EndPoints.First().Summary);
+                            }
+                            document.Append("Parameters", "Heading 3");
+
+                            document.Append(endPoint.RequestProperties);
+
+                            document.Append("Rules", "Heading 3");
+
+                            if (endPoint.RequestProperties.Any(e => e.Validation != null) || endPoint.Rules.Any())
+                            {
+                                var table = document.AppendTable(1500, 8500);
+                                table.AppendRow("Type", "Summary");
+                                foreach (var property in endPoint.RequestProperties)
                                 {
-                                    table.AppendRow("Input", property.Validation);
+                                    if (property.Validation != null)
+                                    {
+                                        table.AppendRow("Input", property.Validation);
+                                    }
+                                }
+                                foreach (var rule in endPoint.Rules)
+                                {
+                                    table.AppendRow(rule.RuleType.ToString(), rule.Comments?.Summary);
                                 }
                             }
-                            foreach (var rule in endPoint.Rules)
+                            else
                             {
-                                table.AppendRow(rule.RuleType.ToString(), rule.Comments?.Summary);
+                                document.Append("None");
                             }
-                        }
-                        else
-                        {
-                            document.Append("None");
-                        }
 
-                        document.Append("Tested By", "Heading 3");
-                        var t = tests.Where(e => e.GetAllAttributes<TestSubjectAttribute>().First().Type == service.ServiceType);
-                        if (t.Any())
-                        {
-                            var table = document.AppendTable(10000);
-                            table.AppendRow("Name");
-                            foreach (var test in t)
+                            document.Append("Tested By", "Heading 3");
+                            var t = tests.Where(e => e.GetAllAttributes<TestSubjectAttribute>().First().Type == service.ServiceType);
+                            if (t.Any())
                             {
-                                foreach (var method in test.GetMethods())
+                                var table = document.AppendTable(10000);
+                                table.AppendRow("Name");
+                                foreach (var test in t)
                                 {
-                                    if (method.DeclaringType == test)
+                                    foreach (var method in test.GetMethods())
                                     {
-                                        table.AppendRow(test.Name + "_it_" + method.Name);
+                                        if (method.DeclaringType == test)
+                                        {
+                                            table.AppendRow(test.Name + "_it_" + method.Name);
+                                        }
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                            document.Append("None");
+                            else
+                            {
+                                document.Append("None");
+                            }
                         }
                     }
-                }
-                document.Save();
-                document.Open();
+                    document.Save();
+                    document.Open();
             }
         }
     }
