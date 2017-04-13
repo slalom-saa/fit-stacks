@@ -78,7 +78,7 @@ namespace Slalom.Stacks.Messaging.Registry
                 }
                 if (target == null)
                 {
-                    var attribute = message.GetType().GetAllAttributes<CommandAttribute>().FirstOrDefault();
+                    var attribute = message.GetType().GetAllAttributes<RequestAttribute>().FirstOrDefault();
                     if (attribute != null)
                     {
                         target = this.Find(attribute.Path);

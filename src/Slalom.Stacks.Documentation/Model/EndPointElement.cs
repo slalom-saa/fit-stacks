@@ -66,7 +66,7 @@ namespace Slalom.Stacks.Documentation.Model
             }
         }
 
-        public EndPointElement(INamedTypeSymbol item, Project project, List<INamedTypeSymbol> siblings)
+        public EndPointElement(INamedTypeSymbol item, List<INamedTypeSymbol> siblings)
         {
             this.Name = item.Name;
             var meta = item.GetAttributes().FirstOrDefault(e => e.AttributeClass.Name == "EndPointAttribute");
@@ -130,36 +130,21 @@ namespace Slalom.Stacks.Documentation.Model
                 var argument = invocation.DescendantNodes().OfType<ArgumentSyntax>().First();
                 var command = argument.DescendantNodes().OfType<IdentifierNameSyntax>().First().Identifier.ValueText;
 
-                var dependency = siblings.FirstOrDefault(e => e.BaseType?.Name == "EndPoint" && e.BaseType.TypeArguments.First().Name == command);
-                var attribute = dependency?.GetAttributes().FirstOrDefault(e => e.AttributeClass.Name == "EndPointAttribute");
+                var attribute = siblings.FirstOrDefault(e => e.Name == command)?.GetAttributes().FirstOrDefault(e => e.AttributeClass.Name == "RequestAttribute");
                 if (attribute != null)
                 {
                     this.Dependencies.Add(new DependencyElement(attribute.ConstructorArguments.First().Value.ToString()));
                 }
+                else
+                {
+                    var dependency = siblings.FirstOrDefault(e => e.BaseType?.Name == "EndPoint" && e.BaseType.TypeArguments.First().Name == command);
+                    attribute = dependency?.GetAttributes().FirstOrDefault(e => e.AttributeClass.Name == "EndPointAttribute");
+                    if (attribute != null)
+                    {
+                        this.Dependencies.Add(new DependencyElement(attribute.ConstructorArguments.First().Value.ToString()));
+                    }
+                }
             }
-
-            //var access = syntax.DescendantNodes().OfType<MemberAccessExpressionSyntax>().Where(e => e.Kind() == SyntaxKind.SimpleMemberAccessExpression);
-            //foreach (var method in access)
-            //{
-            //    if (method.Name.ToString() == "Send")
-            //    {
-            //        var argument = method.DescendantNodes().OfType<ArgumentSyntax>().First();
-            //        var command = argument.DescendantNodes().OfType<IdentifierNameSyntax>().First().Identifier.ValueText;
-
-            //        Console.WriteLine(argument);
-            //    }
-            //}
-
-
-            //var syntaxGenerator = SyntaxGenerator.GetGenerator(project);
-            //var methodDeclaration = syntaxGenerator.MethodDeclaration(receive);
-
-            //foreach (var node in methodDeclaration.DescendantNodes().OfType<BlockSyntax>())
-            //{
-            //    Console.WriteLine(node.DescendantNodes().Count());
-            //    Console.WriteLine(node.GetType() + " " + node.GetText());
-            //}
-
         }
 
 

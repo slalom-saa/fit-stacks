@@ -45,14 +45,27 @@ namespace Slalom.Stacks.ConsoleClient
             }
         }
 
+       
+
         [STAThread]
         public static void Main(string[] args)
         {
             try
             {
-                using (var stack = new Stack())
+                using (var stack = new TestStack(typeof(Program)))
                 {
-                    stack.Send(new AddProductCommand("name", "e")).Result.OutputToJson();
+
+                    stack.UseEndPoint<SendNotification>(e =>
+                    {
+                        Console.WriteLine("A");
+                    });
+
+                    //stack.UseEndPoint("catalog/products/add", e =>
+                    //{
+                    //    Console.WriteLine(";");
+                    //});
+
+                    stack.Send(new AddProductCommand("name", "e"));
                 }
             }
             catch (Exception exception)

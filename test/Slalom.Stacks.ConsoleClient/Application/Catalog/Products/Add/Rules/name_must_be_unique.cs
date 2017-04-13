@@ -25,7 +25,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add.Rules
         /// <inheritdoc />
         public override ValidationError Validate(AddProductCommand instance)
         {
-            return new ValidationError("UserNotEmployee", "You must be an employee to add a product.");
+            return null;
         }
     }
 }

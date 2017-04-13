@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging.Pipeline;
+using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks.Messaging
@@ -143,7 +145,15 @@ namespace Slalom.Stacks.Messaging
     {
         public Task<MessageResult> Send(object message)
         {
-            return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
+            var attribute = message.GetType().GetAllAttributes<RequestAttribute>().FirstOrDefault();
+            if (attribute != null)
+            {
+                return this.Components.Resolve<IMessageGateway>().Send(attribute.Path, message, this.Context);
+            }
+            else
+            {
+                return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
+            }
         }
 
         ExecutionContext IEndPoint.Context { get; set; }

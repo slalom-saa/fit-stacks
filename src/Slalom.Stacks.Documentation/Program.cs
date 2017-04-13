@@ -36,7 +36,7 @@ namespace Slalom.Stacks.Documentation
                     {
                         if (type.BaseType?.Name == "EndPoint")
                         {
-                            target.EndPoints.Add(new EndPointElement(type, project, contents.Values.SelectMany(e => e).ToList()));
+                            target.EndPoints.Add(new EndPointElement(type, contents.Values.SelectMany(e => e).ToList()));
                         }
                     }
                 }
