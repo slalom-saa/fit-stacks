@@ -35,6 +35,15 @@ namespace Slalom.Stacks.Reflection
         }
 
         /// <summary>
+        /// Finds all available types.
+        /// </summary>
+        /// <returns>Returns all available types.</returns>
+        public IEnumerable<Type> Find()
+        {
+            return _assemblies.Value.SafelyGetTypes();
+        }
+
+        /// <summary>
         /// Finds available types that are assignable to the specified type.
         /// </summary>
         /// <typeparam name="TType">The type that found types are assignable to.</typeparam>

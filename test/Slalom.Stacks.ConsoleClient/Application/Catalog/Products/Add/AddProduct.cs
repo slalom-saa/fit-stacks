@@ -4,6 +4,20 @@ using Slalom.Stacks.Messaging;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
 {
+    [Request("notifications/send")]
+    public class SendNotification
+    {
+        public string Email { get; }
+
+        public string Message { get; }
+
+        public SendNotification(string email, string message)
+        {
+            this.Email = email;
+            this.Message = message;
+        }
+    }
+
     /// <summary>
     /// Adds a product to the product catalog.
     /// </summary>
@@ -16,6 +30,8 @@ namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
             var target = new Product(command.Name, command.Description);
 
             await this.Domain.Add(target);
+
+            await this.Send(new SendNotification("adsf", "adf"));
 
             this.AddRaisedEvent(new ProductAdded(target.Name, target.Description));
         }
@@ -33,6 +49,8 @@ namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
             var target = new Product(command.Name, command.Description);
 
             await this.Domain.Add(target);
+
+            await this.Send(new SendNotification("adsf", "adf"));
 
             return new ProductAdded(target.Name, target.Description);
         }

@@ -22,8 +22,19 @@ namespace Slalom.Stacks.Messaging
 
         public Comments(XNode node)
         {
+            this.ReadFromNode(node);
+        }
+
+        private void ReadFromNode(XNode node)
+        {
             this.Summary = node.XPathSelectElement("summary")?.Value.Trim();
             this.Value = node.XPathSelectElement("value")?.Value.Trim();
+        }
+
+        public Comments(string comments)
+        {
+            var node = XElement.Parse(comments);
+            this.ReadFromNode(node);
         }
     }
 

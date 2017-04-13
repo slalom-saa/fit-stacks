@@ -120,7 +120,6 @@ namespace Slalom.Stacks
         /// <summary>
         /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
-        /// <param name="instance">The this instance.</param>
         /// <param name="message">The command to send.</param>
         /// <param name="timeout">The request timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
@@ -132,7 +131,6 @@ namespace Slalom.Stacks
         /// <summary>
         /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
-        /// <param name="instance">The this instance.</param>
         /// <param name="path">The path.</param>
         /// <param name="message">The command to send.</param>
         /// <param name="timeout">The request timeout.</param>
@@ -145,7 +143,6 @@ namespace Slalom.Stacks
         /// <summary>
         /// Sends the an empty command to the configured point-to-point endPoint.
         /// </summary>
-        /// <param name="instance">The this instance.</param>
         /// <param name="path">The path.</param>
         /// <param name="timeout">The request timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>
@@ -157,7 +154,6 @@ namespace Slalom.Stacks
         /// <summary>
         /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
-        /// <param name="instance">The this instance.</param>
         /// <param name="path">The path to the receiver.</param>
         /// <param name="command">The serialized command to send.</param>
         /// <param name="timeout">The request timeout.</param>

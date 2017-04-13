@@ -23,7 +23,7 @@ namespace Slalom.Stacks.Messaging
             this.RaisedException = context.Exception;
             this.Response = context.Response;
             this.ValidationErrors = context.ValidationErrors.ToList();
-            //this.RequestId = context.Request.Message.Id;
+            this.RequestId = context.Request.Message.Id;
             this.IsCancelled = context.CancellationToken.IsCancellationRequested;
         }
 
@@ -32,8 +32,6 @@ namespace Slalom.Stacks.Messaging
         /// </summary>
         /// <value>The date and time completed.</value>
         public DateTimeOffset? Completed { get; }
-
-        public bool IsCancelled { get; }
 
         /// <summary>
         /// Gets the correlation identifier.
@@ -45,7 +43,20 @@ namespace Slalom.Stacks.Messaging
         /// Gets the time elapsed.
         /// </summary>
         /// <value>The time elapsed.</value>
-        public TimeSpan? Elapsed => this.Completed - this.Started;
+        public TimeSpan? Elapsed
+        {
+            get
+            {
+                var timeSpan = this.Completed - this.Started;
+                if (timeSpan != null)
+                {
+                    return new TimeSpan(Math.Max(timeSpan.Value.Ticks, 0));
+                }
+                return TimeSpan.Zero;
+            }
+        }
+
+        public bool IsCancelled { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the execution was successful.

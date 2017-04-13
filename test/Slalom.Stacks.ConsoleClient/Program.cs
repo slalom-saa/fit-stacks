@@ -1,5 +1,8 @@
 ﻿using System;
+using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
 using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Messaging.Registry;
+using Slalom.Stacks.TestKit;
 using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
@@ -30,16 +33,39 @@ namespace Slalom.Stacks.ConsoleClient
             }
         }
 
+        [TestSubject(typeof(HelloWorld))]
+        public class When_submitting_hello_world
+        {
+            public void should_do_this()
+            {
+            }
+
+            public void should_do_that()
+            {
+            }
+        }
+
+       
+
         [STAThread]
         public static void Main(string[] args)
         {
             try
             {
-                using (var stack = new Stack())
+                using (var stack = new TestStack(typeof(Program)))
                 {
-                    stack.Send(new HelloWorldRequest("name")).Wait();
 
-                    stack.GetResopnses().OutputToJson();
+                    stack.UseEndPoint<SendNotification>(e =>
+                    {
+                        Console.WriteLine("A");
+                    });
+
+                    //stack.UseEndPoint("catalog/products/add", e =>
+                    //{
+                    //    Console.WriteLine(";");
+                    //});
+
+                    stack.Send(new AddProductCommand("name", "e"));
                 }
             }
             catch (Exception exception)

@@ -78,7 +78,7 @@ namespace Slalom.Stacks.Messaging.Registry
                 }
                 if (target == null)
                 {
-                    var attribute = message.GetType().GetAllAttributes<CommandAttribute>().FirstOrDefault();
+                    var attribute = message.GetType().GetAllAttributes<RequestAttribute>().FirstOrDefault();
                     if (attribute != null)
                     {
                         target = this.Find(attribute.Path);
@@ -92,7 +92,7 @@ namespace Slalom.Stacks.Messaging.Registry
         /// Registers all local services using the specified assemblies.
         /// </summary>
         /// <param name="assemblies">The assemblies to use to scan.</param>
-        public void RegisterLocal(Assembly[] assemblies)
+        public void RegisterLocal(params Assembly[] assemblies)
         {
             var host = new ServiceHost();
             foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint)).Distinct())

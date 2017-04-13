@@ -19,7 +19,7 @@ namespace Slalom.Stacks.Messaging
             return instance.Container.Resolve<IRequestLog>().GetEntries(null, null).Result;
         }
 
-        public static IEnumerable<ResponseEntry> GetResopnses(this Stack instance)
+        public static IEnumerable<ResponseEntry> GetResponses(this Stack instance)
         {
             return instance.Container.Resolve<IResponseLog>().GetEntries(null, null).Result;
         }

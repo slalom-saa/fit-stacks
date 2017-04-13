@@ -1,4 +1,4 @@
-namespace Slalom.Stacks.Messaging
+namespace Slalom.Stacks.Messaging.EndPoints
 {
     [EndPoint("_systems/health")]
     public class CheckHealth : EndPoint

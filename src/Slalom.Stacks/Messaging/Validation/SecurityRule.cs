@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Principal;
-using Slalom.Stacks.Runtime;
+using System.Linq;
+using System.Threading.Tasks;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Messaging.Validation
@@ -14,20 +14,50 @@ namespace Slalom.Stacks.Messaging.Validation
     {
         private ExecutionContext _context;
 
-        public IPrincipal User => _context.Request.User;
+        /// <summary>
+        /// Gets the current request.
+        /// </summary>
+        /// <value>The current request.</value>
+        public Request Request => _context?.Request;
+
+        IEnumerable<ValidationError> IValidate<TCommand>.Validate(TCommand instance)
+        {
+            var target = this.Validate(instance);
+            if (target == null)
+            {
+                return Enumerable.Empty<ValidationError>();
+            }
+            return new[] {target};
+        }
+
+        void IUseExecutionContext.UseContext(ExecutionContext context)
+        {
+            _context = context;
+        }
 
         /// <summary>
         /// Validates the specified message instance.
         /// </summary>
         /// <param name="instance">The instance to validate.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
-        public abstract IEnumerable<ValidationError> Validate(TCommand instance);
-
-        public void UseContext(ExecutionContext context)
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
+        /// <exception cref="System.NotImplementedException">Thrown when neither validate methods are implemented.</exception>
+        public virtual ValidationError Validate(TCommand instance)
         {
+            Argument.NotNull(instance, nameof(instance));
 
-            _context = context;
+            return this.ValidateAsync(instance).Result;
+        }
+
+        /// <summary>
+        /// Validates the specified message instance.
+        /// </summary>
+        /// <param name="instance">The instance to validate.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        /// <exception cref="System.NotImplementedException">Thrown when neither validate methods are implemented.</exception>
+        public virtual Task<ValidationError> ValidateAsync(TCommand instance)
+        {
+            throw new NotImplementedException();
         }
     }
 }

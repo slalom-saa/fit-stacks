@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using Slalom.Stacks.Messaging.Serialization;
+using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Messaging.Logging
@@ -19,7 +20,7 @@ namespace Slalom.Stacks.Messaging.Logging
             {
                 this.MessageBody = JsonConvert.SerializeObject(request.Message.Body, new JsonSerializerSettings
                 {
-                    ContractResolver = new CommandContractResolver()
+                    ContractResolver = new BaseContractResolver()
                 });
             }
             catch

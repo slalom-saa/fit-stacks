@@ -59,6 +59,7 @@ namespace Slalom.Stacks.Configuration
             builder.RegisterModule(new MessagingModule(_stack));
             builder.RegisterModule(new SearchModule(_stack));
             builder.RegisterModule(new RuntimeModule());
+            builder.RegisterModule(new ReflectionModule(_stack));
 
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new NullCachingModule());
