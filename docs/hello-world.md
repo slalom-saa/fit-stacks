@@ -53,5 +53,5 @@ public static void Main(string[] args)
   "name": "My Name"
 }
 ```
-9. In a web browser, or PostMan, call the endpoint http://localhost:5000/_system/requests to view all requests that have been made.
-10. In a web browser, or PostMan, call the endpoint http://localhost:5000/_system/responses to see what services responded to the requests.
+9. Use PostMan to call http://localhost:5000/_system/requests and view the requests.
+10. Use PostMan to call http://localhost:5000/_system/responses and view all service responses.
