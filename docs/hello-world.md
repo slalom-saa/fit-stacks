@@ -3,8 +3,7 @@
 The following example demonstrates the quickest way to get something up and running.  For a 
 more real-world example, try the [Stacks Walkthrough](walkthrough/overview.md)  .
 
-1. Create a new .NET Core console application named **HelloWorldService** in 
-2. **Visual Studio 2017**.
+1. Create a new .NET Core console application named **HelloWorldService** in **Visual Studio 2017**.
 2.	Add the **Slalom.Stacks** and **Slalom.Stacks.Web.AspNetCore** NuGet packages.  
 ```
 Install-Package Slalom.Stacks
