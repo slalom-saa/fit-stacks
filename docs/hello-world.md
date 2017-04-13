@@ -21,7 +21,7 @@ public class HelloWorldRequest
     }
 }
 ```
-4.	Create an endpoint named **HelloWorld**.  Resolve any references as you go.
+4.	Create an endpoint named **HelloWorld**.
 ```csharp
 [EndPoint("hello/greet")]
 public class HelloWorld : EndPoint<HelloWorldRequest, string>
@@ -32,6 +32,8 @@ public class HelloWorld : EndPoint<HelloWorldRequest, string>
     }
 }
 ```	
+> There will be some references that you need to resolve.  At this time, not all references are immediately
+> available in VS 2017.  You may need to restart your Visual Studio instance.
 5.	Initialize a new Stack and run the web host.
 ```csharp
 public static void Main(string[] args)
