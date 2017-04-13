@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Slalom.Stacks.Messaging.Logging;
 
-namespace Slalom.Stacks.Messaging.Logging.EndPoints
+namespace Slalom.Stacks.Messaging.EndPoints
 {
-    [EndPoint("_systems/messaging/responses")]
+    [EndPoint("_system/responses")]
     public class GetResponses : EndPoint<GetResponsesCommand, IEnumerable<ResponseEntry>>
     {
         private readonly IResponseLog _source;

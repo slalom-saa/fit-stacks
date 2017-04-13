@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Slalom.Stacks.Messaging.Logging;
 
-namespace Slalom.Stacks.Messaging.Logging.EndPoints
+namespace Slalom.Stacks.Messaging.EndPoints
 {
-    [EndPoint("_systems/messaging/requests")]
+    [EndPoint("_system/requests")]
     public class GetRequests : EndPoint<GetRequestsCommand, IEnumerable<RequestEntry>>
     {
         private readonly IRequestLog _source;

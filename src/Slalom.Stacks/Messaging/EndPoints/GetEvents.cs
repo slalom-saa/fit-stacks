@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Messaging.EndPoints
 {
-    [EndPoint("events", Public = false)]
+    [EndPoint("_system/events", Public = false)]
     public class GetEvents : EndPoint<GetEventsCommand, IEnumerable<EventMessage>>
     {
         private readonly IEventStore _events;
