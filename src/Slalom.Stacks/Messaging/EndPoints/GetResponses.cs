@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Messaging.Logging;
 
@@ -14,9 +15,11 @@ namespace Slalom.Stacks.Messaging.EndPoints
             _source = source;
         }
 
-        public override Task<IEnumerable<ResponseEntry>> ReceiveAsync(GetResponsesCommand instance)
+        public override async Task<IEnumerable<ResponseEntry>> ReceiveAsync(GetResponsesCommand instance)
         {
-            return _source.GetEntries(instance.Start, instance.End);
+            var result = await _source.GetEntries(instance.Start, instance.End);
+
+            return result.Where(e => e.ValidationErrors == null || !e.Path.StartsWith("_"));
         }
     }
 }
