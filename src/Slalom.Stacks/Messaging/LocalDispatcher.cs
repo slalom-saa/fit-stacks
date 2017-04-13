@@ -47,7 +47,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public async Task<MessageResult> Dispatch(Request request, ExecutionContext context)
+        public virtual async Task<MessageResult> Dispatch(Request request, ExecutionContext context)
         {
             var handlers = _components.ResolveAll(typeof(IHandle<>).MakeGenericType(request.Message.MessageType));
             foreach (var handler in handlers)
@@ -62,7 +62,7 @@ namespace Slalom.Stacks.Messaging
         }
 
         /// <inheritdoc />
-        public async Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null)
+        public virtual async Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null)
         {
             CancellationTokenSource source;
             if (timeout.HasValue || endPoint.Timeout.HasValue)

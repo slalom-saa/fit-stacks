@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Messaging.Pipeline;
+using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
 
 namespace Slalom.Stacks.Messaging
@@ -18,6 +20,11 @@ namespace Slalom.Stacks.Messaging
         public Request Request => this.Context.Request;
 
         public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
+
+        public Task<MessageResult> Send(object message)
+        {
+            return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
+        }
 
         /// <summary>
         /// Adds an event to be raised when the execution is successful.
@@ -73,6 +80,11 @@ namespace Slalom.Stacks.Messaging
 
     public abstract class EndPoint<TMessage> : IEndPoint<TMessage>
     {
+        public Task<MessageResult> Send(object message)
+        {
+            return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
+        }
+
         ExecutionContext IEndPoint.Context { get; set; }
 
         private ExecutionContext Context => ((IEndPoint)this).Context;
@@ -131,6 +143,19 @@ namespace Slalom.Stacks.Messaging
 
     public abstract class EndPoint<TMessage, TResponse> : IEndPoint<TMessage, TResponse>
     {
+        public Task<MessageResult> Send(object message)
+        {
+            var attribute = message.GetType().GetAllAttributes<RequestAttribute>().FirstOrDefault();
+            if (attribute != null)
+            {
+                return this.Components.Resolve<IMessageGateway>().Send(attribute.Path, message, this.Context);
+            }
+            else
+            {
+                return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
+            }
+        }
+
         ExecutionContext IEndPoint.Context { get; set; }
 
         private ExecutionContext Context => ((IEndPoint)this).Context;

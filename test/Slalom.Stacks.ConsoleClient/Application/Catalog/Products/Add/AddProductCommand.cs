@@ -6,7 +6,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
     /// <summary>
     /// Adds a product to the product catalog.
     /// </summary>
-    [Command("catalog/products/add")]
+    [Request("catalog/products/add")]
     public class AddProductCommand
     {
         /// <summary>
