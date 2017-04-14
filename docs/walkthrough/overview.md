@@ -6,7 +6,7 @@ intent is to go through the action of building, it may be helpful to have some b
 information on Service-Oriented Architecture and Microservices.  See learning paths.
 
 ### Part 1: Design
-Here we will use the business reqiurements outlined in the Slalom Rentals case
+Here we will use the business requirements outlined in the Slalom Rentals case
 study to create developer specifications using use cases
 and service contracts.  See [Design Overview](1.%20Design/overview.md).
 
@@ -24,4 +24,4 @@ using Postman.
 
 ### Part 4: Monitoring
 In the monitor section, we will configure monitoring based on the business 
-requirements and specifications - specificaly for performance and goal KPIs.
+requirements and specifications - specifically for performance and goal KPIs.
