@@ -24,11 +24,6 @@ namespace Slalom.Stacks.Messaging.Logging
         {
             Argument.NotNull(entry, nameof(entry));
 
-            if (entry.Path?.StartsWith("_system") ?? false)
-            {
-                return Task.FromResult(0);
-            }
-
             CacheLock.EnterWriteLock();
             try
             {

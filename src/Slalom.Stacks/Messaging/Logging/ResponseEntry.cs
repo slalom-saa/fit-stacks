@@ -31,11 +31,14 @@ namespace Slalom.Stacks.Messaging.Logging
             this.ApplicationName = environment.ApplicationName;
             this.EnvironmentName = environment.EnvironmentName;
             this.ThreadId = environment.ThreadId;
+            this.Path = context.Request.Path;
             if (this.Completed.HasValue)
             {
                 this.Elapsed = this.Completed.Value - this.Started;
             }
         }
+
+        public string Path { get; set; }
 
         public string ApplicationName { get; set; }
 

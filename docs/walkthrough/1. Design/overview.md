@@ -9,7 +9,7 @@ First let's look at the business process which has the following
 activities: Create Request, Review Request, Approve Request, Add Product,
 Notify Requestor.
 > We should also notify the requestor on rejection, but this is a simple
-> example so we will ommit.
+> example so we will omit.
 
 ![Submit Process](images/request-product.PNG "Submit Process")
 
@@ -125,7 +125,7 @@ Product Added Event
 | 1      | Security | UserNotEmployee        | You must be an employee to add a product.    |
 | 2      | Business | NameNotUnique          | A product with the same name already exists. |
 > Here we add implementation details that are used in discovery documents.
-> The code should indicate why the condition was not met and lthe end-use message
+> The code should indicate why the condition was not met and the end-user message
 > is a default.  The UI should use the code to come up with its own message.
 
 That's it for our quick overview of the design.  Next is stubbing out classes and methods

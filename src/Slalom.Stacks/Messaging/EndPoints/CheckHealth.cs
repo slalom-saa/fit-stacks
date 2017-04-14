@@ -1,6 +1,6 @@
 namespace Slalom.Stacks.Messaging.EndPoints
 {
-    [EndPoint("_systems/health")]
+    [EndPoint("_system/health")]
     public class CheckHealth : EndPoint
     {
         public override void Receive()

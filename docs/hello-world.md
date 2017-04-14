@@ -3,8 +3,7 @@
 The following example demonstrates the quickest way to get something up and running.  For a 
 more real-world example, try the [Stacks Walkthrough](walkthrough/overview.md)  .
 
-1. Create a new .NET Core console application named **HelloWorldService** in 
-2. **Visual Studio 2017**.
+1. Create a new .NET Core console application named **HelloWorldService** in **Visual Studio 2017**.
 2.	Add the **Slalom.Stacks** and **Slalom.Stacks.Web.AspNetCore** NuGet packages.  
 ```
 Install-Package Slalom.Stacks
@@ -22,7 +21,7 @@ public class HelloWorldRequest
     }
 }
 ```
-4.	Create an endpoint named **HelloWorld**.  Resolve any references as you go.
+4.	Create an endpoint named **HelloWorld**.
 ```csharp
 [EndPoint("hello/greet")]
 public class HelloWorld : EndPoint<HelloWorldRequest, string>
@@ -33,6 +32,9 @@ public class HelloWorld : EndPoint<HelloWorldRequest, string>
     }
 }
 ```	
+> There will be some references that you need to resolve.  
+
+> **At this time, not all references are immediately available in VS 2017.  You may need to restart your Visual Studio instance when you add the next section.**
 5.	Initialize a new Stack and run the web host.
 ```csharp
 public static void Main(string[] args)
@@ -51,3 +53,5 @@ public static void Main(string[] args)
   "name": "My Name"
 }
 ```
+9. Use PostMan to call http://localhost:5000/_system/requests and view the requests.
+10. Use PostMan to call http://localhost:5000/_system/responses and view all service responses.
