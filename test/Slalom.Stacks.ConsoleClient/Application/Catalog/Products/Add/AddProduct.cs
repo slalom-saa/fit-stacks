@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Slalom.Stacks.ConsoleClient.Domain.Products;
-using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
 {

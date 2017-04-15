@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Slalom.Stacks.ConsoleClient.Domain.Products;
-using Slalom.Stacks.Messaging.Validation;
+using Slalom.Stacks.Services.Validation;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add.Rules

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Domain
 {
