@@ -7,15 +7,16 @@ namespace Slalom.Stacks.ConsoleClient
 {
     public class Program
     {
-        
-       
 
         [STAThread]
         public static void Main(string[] args)
         {
             try
             {
-                
+                using (var stack = new Stack())
+                {
+                    
+                }
             }
             catch (Exception exception)
             {

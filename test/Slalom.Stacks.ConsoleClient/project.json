@@ -12,7 +12,7 @@
     "Slalom.Stacks": {
       "target": "project"
     },
-    "Slalom.Stacks.TestKit": {
+    "Slalom.Stacks.Tests": {
       "target": "project"
     },
     "Microsoft.NETCore.App": {
