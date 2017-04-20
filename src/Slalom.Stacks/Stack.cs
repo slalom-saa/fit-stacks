@@ -65,7 +65,7 @@ namespace Slalom.Stacks
                     current
                 };
 #if !core
-                foreach (var assembly in Directory.GetFiles(Path.GetDirectoryName(current.Location), current.GetName().Name.Split('.')[0] + "*.dll"))
+                foreach (var assembly in Directory.GetFiles(Path.GetDirectoryName(current.Location), "*.dll"))
                 {
                     list.Add(Assembly.LoadFrom(assembly));
                 }
