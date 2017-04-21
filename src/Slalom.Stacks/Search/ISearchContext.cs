@@ -24,6 +24,14 @@ namespace Slalom.Stacks.Search
         /// <returns>A task for asynchronous programming.</returns>
         Task AddAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult;
 
+
+        /// <summary>
+        /// Reads items from the domain.  To be used when indexing.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of entity.</typeparam>
+        /// <returns>Returns a query to index.</returns>
+        IQueryable<TEntity> Read<TEntity>();
+
         /// <summary>
         /// Clears all instances of the specified type.
         /// </summary>
