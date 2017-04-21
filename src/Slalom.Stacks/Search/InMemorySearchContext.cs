@@ -47,6 +47,11 @@ namespace Slalom.Stacks.Search
             return Task.FromResult(0);
         }
 
+        public IQueryable<TEntity> Read<TEntity>()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Clears all instances of the specified type.
         /// </summary>
