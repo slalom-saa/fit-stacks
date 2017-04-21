@@ -7,8 +7,10 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Configuration;
-using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Services;
 using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Services.Messaging;
+
 #if core
 using Microsoft.Extensions.DependencyModel;
 #endif

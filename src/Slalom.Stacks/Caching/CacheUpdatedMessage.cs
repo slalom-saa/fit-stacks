@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Slalom.Stacks.Messaging;
+using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Caching
 {

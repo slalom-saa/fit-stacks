@@ -1,4 +1,4 @@
-﻿using Slalom.Stacks.Messaging;
+﻿using Slalom.Stacks.Services;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock
 {

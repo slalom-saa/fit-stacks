@@ -4,18 +4,21 @@ using System.IO;
 using Autofac;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Caching;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Domain.Modules;
 using Slalom.Stacks.Logging;
-using Slalom.Stacks.Messaging;
-using Slalom.Stacks.Messaging.Modules;
+using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Modules;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
 using Environment = Slalom.Stacks.Runtime.Environment;
 using Module = Autofac.Module;
+
+#if core
+using Microsoft.Extensions.Configuration;
+#endif
 
 namespace Slalom.Stacks.Configuration
 {
@@ -46,6 +49,7 @@ namespace Slalom.Stacks.Configuration
         {
             base.Load(builder);
 
+#if core
             builder.Register(c =>
                    {
                        var configurationBuilder = new ConfigurationBuilder();
@@ -54,6 +58,11 @@ namespace Slalom.Stacks.Configuration
                        return configurationBuilder.Build();
                    }).As<IConfiguration>()
                    .SingleInstance();
+             builder.Register(c => new Environment(c.Resolve<IConfiguration>()))
+                .As<IEnvironmentContext>();
+#else
+            builder.Register(c => new Environment()).As<IEnvironmentContext>();
+#endif
 
             builder.RegisterModule(new DomainModule(_stack));
             builder.RegisterModule(new MessagingModule(_stack));
@@ -63,11 +72,7 @@ namespace Slalom.Stacks.Configuration
 
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new NullCachingModule());
-
-            builder.Register(c => new Environment(c.Resolve<IConfiguration>()))
-                .As<IEnvironmentContext>();
-
-
+    
             builder.Register(c => new DiscoveryService(c.Resolve<ILogger>()))
                    .As<IDiscoverTypes>()
                    .SingleInstance();

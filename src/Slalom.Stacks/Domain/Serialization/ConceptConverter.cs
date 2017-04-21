@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Newtonsoft.Json;
+// ReSharper disable PossibleNullReferenceException
 
 namespace Slalom.Stacks.Domain.Serialization
 {
