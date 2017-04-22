@@ -13,8 +13,8 @@ and service contracts.  See the [design overview](1.%20Design/overview.md).
 ### Part 2: Development
 This is the biggest piece in this walkthrough.  Here we will take the use cases
 and service contracts to:
-1. Stub out methods and tests - [here](2.%20Development/1.%20stub%20methods%20and%20tests.md)
-2. Use the document tool to validate against specifications - [here](2.%20Development/2.%20run%20document%20tool%20to%20validate.md)
+1. Stub out methods and tests - [link](2.%20Development/1.%20stub%20methods%20and%20tests.md)
+2. Use the document tool to validate against specifications - [link](2.%20Development/2.%20run%20document%20tool%20to%20validate.md)
 3. Implement required functionality and tests
 4. Check test reports and create additional reports
 
