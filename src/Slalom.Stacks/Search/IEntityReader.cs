@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Search
 {
-    public interface IDataReader<TEntity>
+    public interface IEntityReader<TEntity>
     {
         IQueryable<TEntity> Read();
     }

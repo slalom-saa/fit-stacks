@@ -7,8 +7,10 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Configuration;
+using Slalom.Stacks.Domain;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Search;
 using Slalom.Stacks.Services.Messaging;
 
 #if core
@@ -17,6 +19,17 @@ using Microsoft.Extensions.DependencyModel;
 
 namespace Slalom.Stacks
 {
+    public class ConsoleStack : Stack
+    {
+        public ConsoleStack(params object[] markers) : base(markers)
+        {
+        }
+
+        public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
+
+        public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
+    }
+
     /// <summary>
     /// The host and main entry point to the stack.
     /// </summary>
