@@ -8,7 +8,7 @@ information on Service-Oriented Architecture and Microservices.  See learning pa
 ### Part 1: Design
 Here we will use the business requirements outlined in the Slalom Rentals case
 study to create developer specifications using use cases
-and service contracts.  See [the design overview](1.%20Design/overview.md).
+and service contracts.  See the [design overview](1.%20Design/overview.md).
 
 ### Part 2: Development
 This is the biggest piece in this walkthrough.  Here we will take the use cases
