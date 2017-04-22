@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-    Packages the Stacks packages.
+    Packages the core Slalom Stacks NuGet packages.
 #>
 param (
     $Configuration = "DEBUG",

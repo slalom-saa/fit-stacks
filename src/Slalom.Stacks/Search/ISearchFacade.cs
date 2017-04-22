@@ -14,6 +14,13 @@ namespace Slalom.Stacks.Search
     public interface ISearchFacade
     {
         /// <summary>
+        /// Reads items from the domain.  To be used when indexing.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of entity.</typeparam>
+        /// <returns>Returns a query to index.</returns>
+        IQueryable<TEntity> Read<TEntity>();
+
+        /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
         /// item already exists.
         /// </summary>

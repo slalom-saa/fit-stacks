@@ -30,6 +30,18 @@ namespace Slalom.Stacks.Search
         }
 
         /// <summary>
+        /// Reads items from the domain.  To be used when indexing.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of entity.</typeparam>
+        /// <returns>Returns a query to index.</returns>
+        public IQueryable<TEntity> Read<TEntity>()
+        {
+            var target = _componentContext.Resolve<IEntityReader<TEntity>>();
+
+            return target.Read();
+        }
+
+        /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
         /// item already exists.
         /// </summary>

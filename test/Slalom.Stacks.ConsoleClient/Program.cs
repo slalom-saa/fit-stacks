@@ -13,9 +13,8 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-                using (var stack = new Stack())
+                using (var stack = new ConsoleStack())
                 {
-                    
                 }
             }
             catch (Exception exception)
