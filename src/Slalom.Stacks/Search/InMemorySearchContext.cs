@@ -47,11 +47,6 @@ namespace Slalom.Stacks.Search
             return Task.FromResult(0);
         }
 
-        public IQueryable<TEntity> Read<TEntity>()
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Clears all instances of the specified type.
         /// </summary>
@@ -82,6 +77,10 @@ namespace Slalom.Stacks.Search
             _cacheLock.EnterReadLock();
             try
             {
+                if (!String.IsNullOrWhiteSpace(text))
+                {
+                    return _instances.OfType<TSearchResult>().AsQueryable().Where(SearchExtensions.Search<TSearchResult>(text));
+                }
                 return _instances.OfType<TSearchResult>().AsQueryable();
             }
             finally
