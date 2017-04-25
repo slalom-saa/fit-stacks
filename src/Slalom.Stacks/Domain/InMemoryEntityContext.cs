@@ -11,7 +11,7 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Domain
 {
     /// <summary>
-    /// Provides an in-memory <see cref="IEntityContext" /> implementation to use with short lived apps and testing.
+    /// Provides an in-memory <see cref="IEntityContext" /> implementation to use with single-use applications.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Domain.IEntityContext" />
     public class InMemoryEntityContext : IEntityContext
@@ -27,7 +27,7 @@ namespace Slalom.Stacks.Domain
         protected readonly List<IAggregateRoot> Instances = new List<IAggregateRoot>();
 
         /// <inheritdoc />
-        public Task Add<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
+        public Task Add<TEntity>(TEntity[] instances) where TEntity : class, IAggregateRoot
         {
             Argument.NotNull(instances, nameof(instances));
 
@@ -47,7 +47,7 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <inheritdoc />
-        public Task Clear<TEntity>() where TEntity : IAggregateRoot
+        public Task Clear<TEntity>() where TEntity : class, IAggregateRoot
         {
             CacheLock.EnterWriteLock();
             try
@@ -62,7 +62,7 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <inheritdoc />
-        public async Task<bool> Exists<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : IAggregateRoot
+        public async Task<bool> Exists<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class, IAggregateRoot
         {
             var current = await this.Find(expression);
 
@@ -70,7 +70,7 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <inheritdoc />
-        public Task<TEntity> Find<TEntity>(string id) where TEntity : IAggregateRoot
+        public Task<TEntity> Find<TEntity>(string id) where TEntity : class, IAggregateRoot
         {
             CacheLock.EnterReadLock();
             try
@@ -84,7 +84,7 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<TEntity>> Find<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : IAggregateRoot
+        public async Task<IEnumerable<TEntity>> Find<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class, IAggregateRoot
         {
             CacheLock.EnterReadLock();
             try
@@ -102,7 +102,7 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<TEntity>> Find<TEntity>() where TEntity : IAggregateRoot
+        public async Task<IEnumerable<TEntity>> Find<TEntity>() where TEntity : class, IAggregateRoot
         {
             CacheLock.EnterReadLock();
             try
@@ -118,7 +118,7 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <inheritdoc />
-        public Task Remove<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
+        public Task Remove<TEntity>(TEntity[] instances) where TEntity : class, IAggregateRoot
         {
             CacheLock.EnterWriteLock();
             try
@@ -134,7 +134,7 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <inheritdoc />
-        public async Task Update<TEntity>(TEntity[] instances) where TEntity : IAggregateRoot
+        public async Task Update<TEntity>(TEntity[] instances) where TEntity : class, IAggregateRoot
         {
             await this.Remove(instances);
 
@@ -142,7 +142,7 @@ namespace Slalom.Stacks.Domain
         }
 
         /// <inheritdoc />
-        public async Task<bool> Exists<TEntity>(string id) where TEntity : IAggregateRoot
+        public async Task<bool> Exists<TEntity>(string id) where TEntity : class, IAggregateRoot
         {
             var target = await this.Find<TEntity>(id);
 

@@ -23,14 +23,14 @@ namespace Slalom.Stacks.Domain
 
             var other = obj as T;
 
-            return Equals(other);
+            return this.Equals(other);
         }
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            var fields = GetFields().Select(field => field.GetValue(this)).Where(value => value != null).ToList();
-            fields.Add(GetType());
+            var fields = this.GetFields().Select(field => field.GetValue(this)).Where(value => value != null).ToList();
+            fields.Add(this.GetType());
             return GetHashCode(fields.ToArray());
         }
 
@@ -58,13 +58,13 @@ namespace Slalom.Stacks.Domain
             if (other == null)
                 return false;
 
-            var t = GetType();
+            var t = this.GetType();
             var otherType = other.GetType();
 
             if (t != otherType)
                 return false;
 
-            var fields = GetFields();
+            var fields = this.GetFields();
 
             foreach (var field in fields)
             {
@@ -109,7 +109,7 @@ namespace Slalom.Stacks.Domain
         IEnumerable<FieldInfo> GetFields()
         {
             if (!_fields.Any())
-                _fields = new List<FieldInfo>(BuildFieldCollection());
+                _fields = new List<FieldInfo>(this.BuildFieldCollection());
             return _fields;
         }
 

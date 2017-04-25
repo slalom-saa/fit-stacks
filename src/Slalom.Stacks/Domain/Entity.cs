@@ -24,14 +24,14 @@ namespace Slalom.Stacks.Domain
         /// <param name="id">The identifier.</param>
         protected Entity(string id)
         {
-            Id = id;
+            this.Id = id;
         }
 
         /// <summary>
         ///     Gets or sets the entity identifier.
         /// </summary>
         /// <value>The entity identifier.</value>
-        public string Id { get; }
+        public string Id { get; protected set; }
 
         /// <summary>
         ///     Gets the keys for this instance.  It may be just the identifier or a combination of identifier and human readable
@@ -42,7 +42,7 @@ namespace Slalom.Stacks.Domain
         {
             return new
             {
-                Id
+                this.Id
             };
         }
 
@@ -82,7 +82,7 @@ namespace Slalom.Stacks.Domain
         /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
         protected bool Equals(Entity other)
         {
-            return other != null && Id.Equals(other.Id);
+            return other != null && this.Id.Equals(other.Id);
         }
 
         /// <summary>
@@ -94,8 +94,8 @@ namespace Slalom.Stacks.Domain
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((Entity) obj);
+            if (obj.GetType() != this.GetType()) return false;
+            return this.Equals((Entity) obj);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Slalom.Stacks.Domain
         [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
         public override int GetHashCode()
         {
-            return (GetType() + Id).GetHashCode();
+            return (this.GetType() + this.Id).GetHashCode();
         }
 
         #endregion

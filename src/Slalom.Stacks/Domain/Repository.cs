@@ -13,7 +13,7 @@ namespace Slalom.Stacks.Domain
     /// </summary>
     /// <typeparam name="TRoot">The type of <see cref="IAggregateRoot" />.</typeparam>
     /// <seealso href="http://bit.ly/2dVQsXu">Domain-Driven Design: Tackling Complexity in the Heart of Software</seealso>
-    public class Repository<TRoot> : IRepository<TRoot> where TRoot : IAggregateRoot
+    public class Repository<TRoot> : IRepository<TRoot> where TRoot : class, IAggregateRoot
     {
         private readonly IEntityContext _context;
 
