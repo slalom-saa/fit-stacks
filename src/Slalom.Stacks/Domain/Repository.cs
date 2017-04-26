@@ -36,7 +36,7 @@ namespace Slalom.Stacks.Domain
         {
             Argument.NotNull(instances, nameof(instances));
 
-            this.Logger.Verbose($"Adding {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
+            this.Logger.Verbose($"Adding {instances.Count()} items of type {typeof(TRoot)} using {this.GetType().Name}:{_context.GetType().Name}.");
 
             return _context.Add(instances);
         }
@@ -44,7 +44,7 @@ namespace Slalom.Stacks.Domain
         /// <inheritdoc />
         public Task Clear()
         {
-            this.Logger.Verbose($"Clearing all items of type {typeof(TRoot)} using {_context.GetType()}.");
+            this.Logger.Verbose($"Clearing all items of type {typeof(TRoot)} using {this.GetType().Name}:{_context.GetType().Name}.");
 
             return _context.Clear<TRoot>();
         }
@@ -54,7 +54,7 @@ namespace Slalom.Stacks.Domain
         {
             Argument.NotNull(expression, nameof(expression));
 
-            this.Logger.Verbose($"Checking to see if items of type {typeof(TRoot)} exist using {_context.GetType()}.");
+            this.Logger.Verbose($"Checking to see if items of type {typeof(TRoot)} exist using {this.GetType().Name}:{_context.GetType().Name}.");
 
             return _context.Exists(expression);
         }
@@ -64,7 +64,7 @@ namespace Slalom.Stacks.Domain
         {
             Argument.NotNull(expression, nameof(expression));
 
-            this.Logger.Verbose($"Finding items of type {typeof(TRoot)} using {_context.GetType()}.");
+            this.Logger.Verbose($"Finding items of type {typeof(TRoot)} using {this.GetType().Name}:{_context.GetType().Name}.");
 
             return _context.Find(expression);
         }
@@ -76,7 +76,7 @@ namespace Slalom.Stacks.Domain
         /// <returns>A task for asynchronous programming.</returns>
         public Task<TRoot> Find(string id)
         {
-            this.Logger.Verbose($"Finding item of type {typeof(TRoot)} with ID {id} using {_context.GetType()}.");
+            this.Logger.Verbose($"Finding item of type {typeof(TRoot)} with ID {id} using {this.GetType().Name}:{_context.GetType().Name}.");
 
             return _context.Find<TRoot>(id);
         }
@@ -84,7 +84,7 @@ namespace Slalom.Stacks.Domain
         /// <inheritdoc />
         public Task<IEnumerable<TRoot>> Find()
         {
-            this.Logger.Verbose($"Finding all items of type {typeof(TRoot)} using {_context.GetType()}.");
+            this.Logger.Verbose($"Finding all items of type {typeof(TRoot)} using {this.GetType().Name}:{_context.GetType().Name}.");
 
             return _context.Find<TRoot>();
         }
@@ -94,7 +94,7 @@ namespace Slalom.Stacks.Domain
         {
             Argument.NotNull(instances, nameof(instances));
 
-            this.Logger.Verbose($"Removing {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
+            this.Logger.Verbose($"Removing {instances.Count()} items of type {typeof(TRoot)} using {this.GetType().Name}:{_context.GetType().Name}.");
 
             return _context.Remove(instances);
         }
@@ -104,7 +104,7 @@ namespace Slalom.Stacks.Domain
         {
             Argument.NotNull(instances, nameof(instances));
 
-            this.Logger.Verbose($"Updating {instances.Count()} items of type {typeof(TRoot)} using {_context.GetType()}.");
+            this.Logger.Verbose($"Updating {instances.Count()} items of type {typeof(TRoot)} using {this.GetType().Name}:{_context.GetType().Name}.");
 
             return _context.Update(instances);
         }
@@ -114,7 +114,7 @@ namespace Slalom.Stacks.Domain
         {
             Argument.NotNullOrWhiteSpace(id, nameof(id));
 
-            this.Logger.Verbose($"Checking to see if items of type {typeof(TRoot)} exist using {_context.GetType()}.");
+            this.Logger.Verbose($"Checking to see if items of type {typeof(TRoot)} exist using {this.GetType().Name}:{_context.GetType().Name}.");
 
             return _context.Exists<TRoot>(id);
         }
