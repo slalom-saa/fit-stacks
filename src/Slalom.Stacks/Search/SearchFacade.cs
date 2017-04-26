@@ -36,7 +36,12 @@ namespace Slalom.Stacks.Search
         /// <returns>Returns a query to index.</returns>
         public IQueryable<TEntity> Read<TEntity>()
         {
-            var target = _componentContext.Resolve<IEntityReader<TEntity>>();
+            var target = _componentContext.ResolveOptional<IEntityReader<TEntity>>();
+
+            if (target == null)
+            {
+                throw new InvalidOperationException($"No reader has been registered for type {typeof(TEntity)}.");
+            }
 
             return target.Read();
         }
@@ -60,7 +65,7 @@ namespace Slalom.Stacks.Search
                 return Task.FromResult(0);
             }
 
-            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
+            var store = _componentContext.ResolveOptional<ISearchIndex<TSearchResult>>();
 
             if (store == null)
             {

@@ -17,11 +17,5 @@ namespace Slalom.Stacks.Domain
         /// </summary>
         /// <value>The identifier.</value>
         string Id { get; }
-
-        /// <summary>
-        /// Commits and returns the raised events.
-        /// </summary>
-        /// <returns>The events that were raised.</returns>
-        IEnumerable<EventMessage> CommitEvents();
     }
 }
