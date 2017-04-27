@@ -4,13 +4,30 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Search
 {
-    internal static class SearchExtensions
+    /// <summary>
+    /// Contains extension methods for search.
+    /// </summary>
+    public static class SearchExtensions
     {
-        internal static Expression<Func<T, bool>> Search<T>(string searchText)
+        /// <summary>
+        /// Searches for the specified text and returns a query with the layered expression.
+        /// </summary>
+        /// <typeparam name="T">The instance type</typeparam>
+        /// <param name="instance">The instance.</param>
+        /// <param name="text">The search text.</param>
+        /// <returns>Returns a query with the layered expression.</returns>
+        public static IQueryable<T> Contains<T>(this IQueryable<T> instance, string text)
         {
+            Argument.NotNull(instance, nameof(instance));
+            if (String.IsNullOrWhiteSpace(text))
+            {
+                return instance;
+            }
+
             var t = Expression.Parameter(typeof(T));
             Expression body = Expression.Constant(false);
 
@@ -33,12 +50,12 @@ namespace Slalom.Stacks.Search
 
                 var nextExpression = Expression.Call(updated,
                     containsMethod,
-                    Expression.Constant(searchText.ToLower()));
+                    Expression.Constant(text.ToLower()));
 
                 body = Expression.OrElse(body, nextExpression);
             }
 
-            return Expression.Lambda<Func<T, bool>>(body, t);
+            return instance.Where(Expression.Lambda<Func<T, bool>>(body, t));
         }
     }
 }
