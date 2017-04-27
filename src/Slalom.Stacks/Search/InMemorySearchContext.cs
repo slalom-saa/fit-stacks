@@ -79,7 +79,7 @@ namespace Slalom.Stacks.Search
             {
                 if (!String.IsNullOrWhiteSpace(text))
                 {
-                    return _instances.OfType<TSearchResult>().AsQueryable().Where(SearchExtensions.Search<TSearchResult>(text));
+                    return _instances.OfType<TSearchResult>().AsQueryable().Contains(text);
                 }
                 return _instances.OfType<TSearchResult>().AsQueryable();
             }
