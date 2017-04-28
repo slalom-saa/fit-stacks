@@ -90,6 +90,7 @@ namespace Slalom.Stacks
                 var current = Assembly.GetEntryAssembly();
                 if (current != null)
                 {
+                    list.Add(current);
                     foreach (var assembly in Directory.GetFiles(Path.GetDirectoryName(current.Location), current.GetName().Name.Split('.')[0] + "*.dll"))
                     {
                         list.Add(Assembly.LoadFrom(assembly));
