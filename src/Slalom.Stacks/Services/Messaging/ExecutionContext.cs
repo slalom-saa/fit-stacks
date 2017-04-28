@@ -30,8 +30,8 @@ namespace Slalom.Stacks.Services.Messaging
         public ExecutionContext(Request request, ExecutionContext context)
         {
             this.Request = request;
-            this.Parent = context.Parent;
-            this.CancellationToken = context.CancellationToken;
+            this.Parent = context?.Parent;
+            this.CancellationToken = context?.CancellationToken ?? CancellationToken.None;
         }
 
         public CancellationToken CancellationToken { get; }
