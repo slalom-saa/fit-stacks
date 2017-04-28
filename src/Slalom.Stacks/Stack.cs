@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using Autofac;
@@ -12,9 +13,9 @@ using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Services.Messaging;
 using Module = Autofac.Module;
-
 #if core
 using Microsoft.Extensions.DependencyModel;
+
 #endif
 
 namespace Slalom.Stacks
@@ -84,15 +85,15 @@ namespace Slalom.Stacks
         {
             if (!markers?.Any() ?? true)
             {
-                var current = Assembly.GetEntryAssembly();
-                var list = new List<Assembly>
-                {
-                    current
-                };
+                var list = new List<Assembly>();
 #if !core
-                foreach (var assembly in Directory.GetFiles(Path.GetDirectoryName(current.Location), current.GetName().Name.Split('.')[0] + "*.dll"))
+                var current = Assembly.GetEntryAssembly();
+                if (current != null)
                 {
-                    list.Add(Assembly.LoadFrom(assembly));
+                    foreach (var assembly in Directory.GetFiles(Path.GetDirectoryName(current.Location), current.GetName().Name.Split('.')[0] + "*.dll"))
+                    {
+                        list.Add(Assembly.LoadFrom(assembly));
+                    }
                 }
 #else
                 var dependencies = DependencyContext.Default;

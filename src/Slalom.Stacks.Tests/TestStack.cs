@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
+using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Services.Messaging;
 
@@ -18,9 +21,38 @@ namespace Slalom.Stacks.Tests
 
 
 #if !core
-        public TestStack() : base(new StackFrame(1).GetMethod().DeclaringType)
+        public TestStack()
         {
             var method = new StackFrame(1).GetMethod();
+            if (method != null)
+            {
+                var current = method.DeclaringType.Assembly;
+                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    if (assembly.FullName.StartsWith(current.FullName.Split('.')[0]))
+                    {
+                        foreach (var module in assembly.SafelyGetTypes().Where(e => e.GetAllAttributes<AutoLoadAttribute>().Any()))
+                        {
+                            if (module.GetConstructors().SingleOrDefault()?.GetParameters().Length == 0)
+                            {
+                                this.Use(builder =>
+                                {
+                                    builder.RegisterModule((Autofac.Module)Activator.CreateInstance(module));
+                                });
+                            }
+                            if (module.GetConstructors().SingleOrDefault()?.GetParameters().SingleOrDefault()?.ParameterType == typeof(Stack))
+                            {
+                                this.Use(builder =>
+                                {
+                                    builder.RegisterModule((Autofac.Module)Activator.CreateInstance(module, this));
+                                });
+                            }
+                        }
+                        this.Assemblies.Add(assembly);
+                    }
+                }
+            }
+
             var attribute = method.GetCustomAttributes<GivenAttribute>().FirstOrDefault();
             if (attribute != null)
             {

@@ -53,7 +53,7 @@ namespace Slalom.Stacks.Services.Messaging
 
                 await this.Complete(context);
             }
-            return new MessageResult(context);
+            return new MessageResult(context ?? new ExecutionContext(request, null));
         }
 
         /// <inheritdoc />

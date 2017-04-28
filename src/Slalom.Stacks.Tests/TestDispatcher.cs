@@ -27,7 +27,7 @@ namespace Slalom.Stacks.Tests
         {
         }
 
-        public override Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = default(TimeSpan?))
+        public override Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null)
         {
             if (_endPoints.ContainsKey(request.Message.MessageType))
             {
@@ -38,7 +38,7 @@ namespace Slalom.Stacks.Tests
                 return Task.FromResult(new MessageResult(context));
             }
 
-            if (_namedEndPoints.ContainsKey(endPoint.Path))
+            if (!String.IsNullOrWhiteSpace(endPoint.Path) && _namedEndPoints.ContainsKey(endPoint.Path))
             {
                 var context = new ExecutionContext(request, endPoint, CancellationToken.None, parentContext);
 
@@ -48,13 +48,6 @@ namespace Slalom.Stacks.Tests
             }
 
             return base.Dispatch(request, endPoint, parentContext, timeout);
-        }
-
-        public override Task<MessageResult> Dispatch(Request request, ExecutionContext context)
-        {
-            Console.WriteLine("Y");
-
-            return base.Dispatch(request, context);
         }
 
         public void UseEndPoint(string path, Action<Request> action)
@@ -78,7 +71,7 @@ namespace Slalom.Stacks.Tests
                 return Task.FromResult(new MessageResult(context));
             }
 
-            if (_namedEndPoints.ContainsKey(request.Path))
+            if (!String.IsNullOrWhiteSpace(request.Path) && _namedEndPoints.ContainsKey(request.Path))
             {
                 var context = new ExecutionContext(request, parentContext);
 
