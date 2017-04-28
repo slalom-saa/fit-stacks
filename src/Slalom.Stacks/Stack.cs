@@ -12,6 +12,7 @@ using Slalom.Stacks.Services;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Services.Messaging;
+using Module = Autofac.Module;
 
 #if core
 using Microsoft.Extensions.DependencyModel;
@@ -48,6 +49,18 @@ namespace Slalom.Stacks
             var builder = new ContainerBuilder();
 
             builder.RegisterModule(new ConfigurationModule(this));
+
+            foreach (var module in this.Assemblies.SafelyGetTypes<Module>().Where(e => e.GetAllAttributes<AutoLoadAttribute>().Any()))
+            {
+                if (module.GetConstructors().SingleOrDefault()?.GetParameters().Length == 0)
+                {
+                    builder.RegisterModule((Module)Activator.CreateInstance(module));
+                }
+                if (module.GetConstructors().SingleOrDefault()?.GetParameters().SingleOrDefault()?.ParameterType == typeof(Stack))
+                {
+                    builder.RegisterModule((Module)Activator.CreateInstance(module, this));
+                }
+            }
 
             this.Container = builder.Build();
         }
