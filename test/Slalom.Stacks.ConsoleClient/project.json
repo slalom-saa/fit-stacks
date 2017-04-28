@@ -9,16 +9,16 @@
     "xmlDoc": true
   },
   "dependencies": {
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.1.1"
+    },
     "Slalom.Stacks": {
       "target": "project"
     },
     "Slalom.Stacks.Tests": {
       "target": "project"
-    },
-    "Microsoft.NETCore.App": {
-        "type": "platform",
-        "version": "1.0.1"
-      }
+    }
     },
   "frameworks": {
     "netcoreapp1.0": {

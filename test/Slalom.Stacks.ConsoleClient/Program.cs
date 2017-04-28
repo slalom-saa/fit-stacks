@@ -13,8 +13,9 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-                using (var stack = new ConsoleStack())
+                using (var stack = new Stack(typeof(AddProductCommand)))
                 {
+                    stack.Send(new AddProductCommand("name", "esc")).Result.OutputToJson();
                 }
             }
             catch (Exception exception)

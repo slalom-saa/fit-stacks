@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Autofac;
+using System.Linq;
+using System.Threading.Tasks;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
-using Slalom.Stacks.Services;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Services.Messaging;
@@ -20,17 +19,6 @@ using Microsoft.Extensions.DependencyModel;
 
 namespace Slalom.Stacks
 {
-    public class ConsoleStack : Stack
-    {
-        public ConsoleStack(params object[] markers) : base(markers)
-        {
-        }
-
-        public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
-
-        public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
-    }
-
     /// <summary>
     /// The host and main entry point to the stack.
     /// </summary>
@@ -76,6 +64,17 @@ namespace Slalom.Stacks
         /// </summary>
         public IContainer Container { get; }
 
+        /// <summary>
+        /// Gets the configured <see cref="IDomainFacade"/>.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade"/>.</value>
+        public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
+
+        /// <summary>
+        /// Gets the configured <see cref="ISearchFacade"/>.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade"/>.</value>
+        public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
 
         /// <summary>
         /// Includes or registers additional assemblies identified by the specified markers.
