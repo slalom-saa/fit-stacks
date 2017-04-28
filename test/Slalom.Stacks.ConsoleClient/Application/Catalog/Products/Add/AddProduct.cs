@@ -32,7 +32,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
 
             await this.Domain.Add(target);
 
-            await this.Send(new SendNotification("adsf", "adf"));
+            //await this.Send(new SendNotification("adsf", "adf"));
 
             this.AddRaisedEvent(new ProductAdded(target.Name, target.Description));
         }
@@ -51,7 +51,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
 
             await this.Domain.Add(target);
 
-            await this.Send(new SendNotification("adsf", "adf"));
+            //await this.Send(new SendNotification("adsf", "adf"));
 
             return new ProductAdded(target.Name, target.Description);
         }
