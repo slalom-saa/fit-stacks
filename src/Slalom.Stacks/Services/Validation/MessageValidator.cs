@@ -99,10 +99,6 @@ namespace Slalom.Stacks.Services.Validation
         protected virtual IEnumerable<ValidationError> CheckInputRules(TCommand command)
         {
             var target = new List<ValidationError>();
-            foreach (var rule in _rules.OfType<IInputRule<TCommand>>())
-            {
-                target.AddRange(rule.Validate(command));
-            }
             foreach (var property in command.GetType().GetProperties())
             {
                 foreach (var attribute in property.GetCustomAttributes<ValidationAttribute>())
@@ -117,7 +113,13 @@ namespace Slalom.Stacks.Services.Validation
                     }
                 }
             }
-
+            if (!target.Any())
+            {
+                foreach (var rule in _rules.OfType<IInputRule<TCommand>>())
+                {
+                    target.AddRange(rule.Validate(command));
+                }
+            }
             return target.AsEnumerable();
         }
 
