@@ -1,6 +1,8 @@
 ﻿using System;
+using Autofac;
 using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
@@ -15,7 +17,9 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack(typeof(AddProductCommand)))
                 {
-                    stack.Send(new AddProductCommand("name", "esc")).Result.OutputToJson();
+                    stack.Send(new AddProductCommand("name", "esc")).Wait();
+
+                    stack.GetEvents().OutputToJson();
                 }
             }
             catch (Exception exception)

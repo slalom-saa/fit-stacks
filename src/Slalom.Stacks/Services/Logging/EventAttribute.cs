@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Slalom.Stacks.Services
+namespace Slalom.Stacks.Services.Logging
 {
     /// <summary>
     /// Defines information about an EventName.

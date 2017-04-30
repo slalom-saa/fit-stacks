@@ -14,14 +14,19 @@ namespace Slalom.Stacks.Services
     /// </summary>
     public static class MessagingExtensions
     {
-        public static IEnumerable<RequestEntry> GetRequests(this Stack instance)
+        public static IEnumerable<RequestEntry> GetRequests(this Stack instance, DateTimeOffset? start = null, DateTimeOffset? end = null)
         {
-            return instance.Container.Resolve<IRequestLog>().GetEntries(null, null).Result;
+            return instance.Container.Resolve<IRequestLog>().GetEntries(start, end).Result;
         }
 
-        public static IEnumerable<ResponseEntry> GetResponses(this Stack instance)
+        public static IEnumerable<ResponseEntry> GetResponses(this Stack instance, DateTimeOffset? start = null, DateTimeOffset? end = null)
         {
-            return instance.Container.Resolve<IResponseLog>().GetEntries(null, null).Result;
+            return instance.Container.Resolve<IResponseLog>().GetEntries(start, end).Result;
+        }
+
+        public static IEnumerable<EventMessage> GetEvents(this Stack instance, DateTimeOffset? start = null, DateTimeOffset? end = null)
+        {
+            return instance.Container.Resolve<IEventStore>().GetEvents(start, end).Result;
         }
     }
 }

@@ -19,12 +19,6 @@ namespace Slalom.Stacks.Services.Messaging
             this.Name = this.MessageType?.Name;
         }
 
-        public Message(Type type)
-        {
-            this.MessageType = type;
-            this.Name = type.Name;
-        }
-
         /// <inheritdoc />
         public string Id { get; } = NewId.NextId();
 
@@ -38,7 +32,7 @@ namespace Slalom.Stacks.Services.Messaging
         public Type MessageType { get; }
 
         /// <inheritdoc />
-        public string Name { get; }
+        public string Name { get; protected set; }
 
         /// <inheritdoc />
         public override bool Equals(object obj)

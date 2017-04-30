@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Slalom.Stacks.Services.Inventory;
+using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.Messaging

@@ -1,4 +1,5 @@
 using Slalom.Stacks.Services.Inventory;
+using Slalom.Stacks.Services.Logging;
 
 namespace Slalom.Stacks.Services.Messaging
 {

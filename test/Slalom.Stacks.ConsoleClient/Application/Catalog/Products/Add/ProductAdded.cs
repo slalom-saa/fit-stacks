@@ -1,4 +1,5 @@
 ﻿using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.Logging;
 
 namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
 {

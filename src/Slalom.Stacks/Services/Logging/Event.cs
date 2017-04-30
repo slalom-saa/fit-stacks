@@ -1,4 +1,4 @@
-﻿namespace Slalom.Stacks.Services
+﻿namespace Slalom.Stacks.Services.Logging
 {
     /// <summary>
     /// Contains data about an event that has occurred.

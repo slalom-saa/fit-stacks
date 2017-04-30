@@ -48,7 +48,7 @@ namespace Slalom.Stacks.Services.Modules
 
             builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
 
-            builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] {typeof(IMessageExecutionStep).GetTypeInfo().Assembly}).ToArray())
+            builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 
@@ -60,11 +60,12 @@ namespace Slalom.Stacks.Services.Modules
             builder.Register(c => new Request())
                 .As<IRequestContext>();
 
-          builder.RegisterType<InMemoryRequestLog>().As<IRequestLog>().SingleInstance();
+            builder.RegisterType<InMemoryRequestLog>().As<IRequestLog>().SingleInstance();
             builder.RegisterType<InMemoryResponseLog>().As<IResponseLog>().SingleInstance();
-        
+            builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
 
-            builder.RegisterType<NullEventStore>().As<IEventStore>().SingleInstance();
+
+
 
             builder.RegisterGeneric(typeof(MessageValidator<>));
 

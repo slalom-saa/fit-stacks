@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Services.Inventory
