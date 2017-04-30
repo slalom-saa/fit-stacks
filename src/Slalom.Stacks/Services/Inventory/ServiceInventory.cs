@@ -60,7 +60,7 @@ namespace Slalom.Stacks.Services.Inventory
         /// <returns>Returns the endpoint for the specified message.</returns>
         public IEnumerable<EndPointMetaData> Find(EventMessage message)
         {
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.MessageType);
+            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType.FullName == message.MessageType);
         }
 
         /// <summary>

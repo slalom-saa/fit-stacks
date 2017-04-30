@@ -75,7 +75,7 @@ namespace Slalom.Stacks.Services.Modules
                 .AllPropertiesAutowired();
 
             builder.RegisterAssemblyTypes(_stack.Assemblies.ToArray())
-                .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IEndPoint<,>) || x == typeof(IHandle<>)))
+                .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IEndPoint<,>)))
                 .AsBaseAndContractTypes().AsSelf()
                 .AllPropertiesAutowired();
 
@@ -89,7 +89,7 @@ namespace Slalom.Stacks.Services.Modules
                         .AllPropertiesAutowired();
 
                     b.RegisterAssemblyTypes(args.NewItems.OfType<Assembly>().ToArray())
-                        .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IEndPoint<,>) || x == typeof(IHandle<>)))
+                        .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IEndPoint<,>)))
                         .AsBaseAndContractTypes()
                         .AsSelf()
                         .AllPropertiesAutowired();

@@ -42,21 +42,6 @@ namespace Slalom.Stacks.Services.Messaging
         }
 
         /// <inheritdoc />
-        public virtual async Task<MessageResult> Dispatch(Request request, ExecutionContext context)
-        {
-            var handlers = _components.ResolveAll(typeof(IHandle<>).MakeGenericType(request.Message.MessageType));
-            foreach (var handler in handlers)
-            {
-                context = new ExecutionContext(request, context);
-
-                typeof(IHandle<>).MakeGenericType(request.Message.MessageType).GetMethod("Handle").Invoke(handler, new[] { request.Message.Body });
-
-                await this.Complete(context);
-            }
-            return new MessageResult(context ?? new ExecutionContext(request, null));
-        }
-
-        /// <inheritdoc />
         public virtual async Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null)
         {
             CancellationTokenSource source;
@@ -77,7 +62,7 @@ namespace Slalom.Stacks.Services.Messaging
             {
                 service.Context = context;
             }
-            
+
             await (Task)endPoint.Method.Invoke(handler, new object[] { request.Message.Body });
 
             await this.Complete(context);

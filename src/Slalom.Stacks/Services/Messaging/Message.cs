@@ -1,5 +1,6 @@
 ﻿using System;
 using Slalom.Stacks.Utilities.NewId;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.Messaging
 {
@@ -14,9 +15,13 @@ namespace Slalom.Stacks.Services.Messaging
         /// <param name="body">The message body.</param>
         public Message(object body)
         {
+            Argument.NotNull(body, nameof(body));
+
+            var type = body.GetType();
+
             this.Body = body;
-            this.MessageType = body?.GetType();
-            this.Name = this.MessageType?.Name;
+            this.MessageType = type.FullName;
+            this.Name = type.Name;
         }
 
         /// <inheritdoc />
@@ -29,7 +34,7 @@ namespace Slalom.Stacks.Services.Messaging
         public object Body { get; }
 
         /// <inheritdoc />
-        public Type MessageType { get; }
+        public string MessageType { get; }
 
         /// <inheritdoc />
         public string Name { get; protected set; }
