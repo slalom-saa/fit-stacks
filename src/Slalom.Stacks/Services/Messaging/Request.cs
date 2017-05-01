@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Services.Inventory;
+using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Services.Messaging

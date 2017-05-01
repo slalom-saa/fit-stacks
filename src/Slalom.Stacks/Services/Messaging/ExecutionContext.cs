@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Slalom.Stacks.Services.Inventory;
+using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.Messaging
 {
+    /// <summary>
+    /// Provides a context for the flow of execution for a request.  This context stays with any subsequent requests.
+    /// </summary>
     public class ExecutionContext
     {
         private readonly List<EventMessage> _raisedEvents = new List<EventMessage>();
@@ -24,9 +28,14 @@ namespace Slalom.Stacks.Services.Messaging
             this.Request = request;
             this.EndPoint = endPoint;
             this.Parent = parent;
-            this.CancellationToken  = cancellationToken;
+            this.CancellationToken = cancellationToken;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExecutionContext"/> class.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="context">The context.</param>
         public ExecutionContext(Request request, ExecutionContext context)
         {
             this.Request = request;
@@ -34,6 +43,10 @@ namespace Slalom.Stacks.Services.Messaging
             this.CancellationToken = context?.CancellationToken ?? CancellationToken.None;
         }
 
+        /// <summary>
+        /// Gets the cancellation token.
+        /// </summary>
+        /// <value>The cancellation token.</value>
         public CancellationToken CancellationToken { get; }
 
         /// <summary>

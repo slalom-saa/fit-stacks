@@ -8,6 +8,6 @@ namespace Slalom.Stacks.Services.Logging
     {
         Task Append(ResponseEntry entry);
 
-        Task<IEnumerable<ResponseEntry>> GetEntries(DateTimeOffset? start, DateTimeOffset? end);
+        Task<IEnumerable<ResponseEntry>> GetEntries(DateTimeOffset? start = null, DateTimeOffset? end = null);
     }
 }

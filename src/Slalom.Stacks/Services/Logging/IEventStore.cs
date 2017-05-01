@@ -7,7 +7,7 @@ namespace Slalom.Stacks.Services.Logging
 {
     public interface IEventStore
     {
-        Task<IEnumerable<EventMessage>> GetEvents(DateTimeOffset? start, DateTimeOffset? end);
+        Task<IEnumerable<EventMessage>> GetEvents(DateTimeOffset? start = null, DateTimeOffset? end = null);
 
         Task Append(EventMessage instance);
     }

@@ -7,6 +7,7 @@ using System.Reflection;
 using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Reflection;
@@ -90,6 +91,7 @@ namespace Slalom.Stacks
                 var current = Assembly.GetEntryAssembly();
                 if (current != null)
                 {
+                    list.Add(current);
                     foreach (var assembly in Directory.GetFiles(Path.GetDirectoryName(current.Location), current.GetName().Name.Split('.')[0] + "*.dll"))
                     {
                         list.Add(Assembly.LoadFrom(assembly));
@@ -191,6 +193,17 @@ namespace Slalom.Stacks
             return this.Container.Resolve<IMessageGateway>().Send(path, command, timeout: timeout);
         }
 
+        /// <summary>
+        /// Publishes the specified events to any configured publish-subscribe endpoint.
+        /// </summary>
+        /// <param name="channel">The message channel.</param>
+        /// <param name="message">The message to publish.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public void Publish(string channel, string message)
+        {
+            this.Container.Resolve<IMessageGateway>().Publish(channel, message);
+        }
+        
         #region IDisposable Implementation
 
         private bool _disposed;

@@ -10,6 +10,7 @@ using BenchmarkDotNet.Running;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Inventory;
 using Xunit;
+#pragma warning disable 1591
 
 namespace Slalom.Stacks.PerformanceTests
 {

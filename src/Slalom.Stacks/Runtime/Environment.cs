@@ -9,6 +9,10 @@ using System.Configuration;
 
 namespace Slalom.Stacks.Runtime
 {
+    /// <summary>
+    /// Contains information about the execution environment and a method to resolve that information.
+    /// </summary>
+    /// <seealso cref="Slalom.Stacks.Runtime.IEnvironmentContext" />
     public class Environment : IEnvironmentContext
     {
         [ThreadStatic]

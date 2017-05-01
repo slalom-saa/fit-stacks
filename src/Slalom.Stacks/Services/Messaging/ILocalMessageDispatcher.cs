@@ -14,7 +14,5 @@ namespace Slalom.Stacks.Services.Messaging
     public interface ILocalMessageDispatcher
     {
         Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null);
-
-        Task<MessageResult> Dispatch(Request request, ExecutionContext context);
     }   
 }

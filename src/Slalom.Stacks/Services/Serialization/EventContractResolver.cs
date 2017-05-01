@@ -4,6 +4,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Slalom.Stacks.Serialization;
+using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Services.Serialization

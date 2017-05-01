@@ -11,17 +11,16 @@ namespace Slalom.Stacks.Tests
 {
     public class TestDispatcher : LocalDispatcher, IRemoteMessageDispatcher
     {
-        private Dictionary<Type, Action<object>> _endPoints = new Dictionary<Type, Action<object>>();
+        private Dictionary<string, Action<object>> _endPoints = new Dictionary<string, Action<object>>();
         private Dictionary<string, Action<Request>> _namedEndPoints = new Dictionary<string, Action<Request>>();
 
         public void UseEndPoint<T>(Action<T> action)
         {
-            _endPoints.Add(typeof(T), a =>
+            _endPoints.Add(typeof(T).FullName, a =>
             {
                 action((T)a);
             });
         }
-
 
         public TestDispatcher(IComponentContext components) : base(components)
         {
@@ -80,7 +79,7 @@ namespace Slalom.Stacks.Tests
                 return Task.FromResult(new MessageResult(context));
             }
 
-            return base.Dispatch(request, parentContext);
+            return Task.FromResult(new MessageResult(parentContext));
         }
     }
 }
