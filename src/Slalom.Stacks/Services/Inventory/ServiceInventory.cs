@@ -66,6 +66,10 @@ namespace Slalom.Stacks.Services.Inventory
             }));
         }
 
+        /// <summary>
+        /// Gets the end points in the inventory.
+        /// </summary>
+        /// <value>The end points in the inventory.</value>
         public IEnumerable<EndPointMetaData> EndPoints => this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints);
 
         /// <summary>

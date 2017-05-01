@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Running;
+#pragma warning disable 1591
 
 namespace Slalom.Stacks.PerformanceTests
 {

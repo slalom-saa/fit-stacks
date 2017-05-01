@@ -1,5 +1,6 @@
 ﻿using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Logging;
+#pragma warning disable 1591
 
 namespace Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock
 {

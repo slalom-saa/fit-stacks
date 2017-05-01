@@ -28,6 +28,11 @@ namespace Slalom.Stacks.Services.Messaging
             _components = components;
         }
 
+        /// <summary>
+        /// Runs steps to complete the current execution context.
+        /// </summary>
+        /// <param name="context">The current context.</param>
+        /// <returns>Returns a task for asynchronous programming.</returns>
         protected virtual async Task Complete(ExecutionContext context)
         {
             var steps = new List<IMessageExecutionStep>

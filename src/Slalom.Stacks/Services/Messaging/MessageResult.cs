@@ -56,6 +56,10 @@ namespace Slalom.Stacks.Services.Messaging
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this message execution was cancelled.
+        /// </summary>
+        /// <value><c>true</c> if this message execution was cancelled; otherwise, <c>false</c>.</value>
         public bool IsCancelled { get; }
 
         /// <summary>

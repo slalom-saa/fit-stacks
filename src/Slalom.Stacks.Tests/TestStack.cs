@@ -112,22 +112,10 @@ namespace Slalom.Stacks.Tests
         }
 
         /// <summary>
-        /// Gets the configured <see cref="IDomainFacade" />.
-        /// </summary>
-        /// <value>The configured <see cref="IDomainFacade" />.</value>
-        public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
-
-        /// <summary>
         /// Gets the configured <see cref="ILogger" />.
         /// </summary>
         /// <value>The configured <see cref="ILogger" />.</value>
         public ILogger Logger => this.Container.Resolve<ILogger>();
-
-        /// <summary>
-        /// Gets the configured <see cref="ISearchFacade" />.
-        /// </summary>
-        /// <value>The configured <see cref="ISearchFacade" />.</value>
-        public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
 
         public void UseEndPoint<T>(Action<T> action = null)
         {
