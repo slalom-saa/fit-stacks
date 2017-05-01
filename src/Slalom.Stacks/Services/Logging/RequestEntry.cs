@@ -31,7 +31,7 @@ namespace Slalom.Stacks.Services.Logging
             if (request.Message is IMessage)
             {
                 var message = (IMessage)request.Message;
-                this.MessageType = message.MessageType?.FullName;
+                this.MessageType = message.MessageType;
                 this.MessageId = message.Id;
                 this.TimeStamp = message.TimeStamp;
             }

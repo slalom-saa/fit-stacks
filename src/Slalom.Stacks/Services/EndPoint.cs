@@ -8,6 +8,7 @@ using Slalom.Stacks.Domain;
 using Slalom.Stacks.Services.Pipeline;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
+using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Services
@@ -21,6 +22,8 @@ namespace Slalom.Stacks.Services
         public Request Request => this.Context.Request;
 
         public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
+
+        public ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
 
         public Task<MessageResult> Send(object message)
         {
@@ -94,6 +97,8 @@ namespace Slalom.Stacks.Services
 
         public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
 
+        public ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
+
         /// <summary>
         /// Adds an event to be raised when the execution is successful.
         /// </summary>
@@ -164,6 +169,8 @@ namespace Slalom.Stacks.Services
         public Request Request => this.Context.Request;
 
         public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
+
+        public ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
 
 
         /// <summary>

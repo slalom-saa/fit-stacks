@@ -4,11 +4,6 @@ using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Services
 {
-    public interface IHandle<TMessage>
-    {
-        Task Handle(TMessage message);
-    }
-
     public interface IEndPoint
     {
         ExecutionContext Context { get; set; }
@@ -19,7 +14,6 @@ namespace Slalom.Stacks.Services
 
     public interface IEndPoint<TMessage> : IEndPoint
     {
-       
         Task Receive(TMessage instance);
     }
 

@@ -40,9 +40,9 @@ namespace Slalom.Stacks.Services.Validation
             Argument.NotNull(command, nameof(command));
 
             TCommand instance = command as TCommand;
-            if (instance == null && command is String)
+            if (instance == null)
             {
-                instance = (TCommand)JsonConvert.DeserializeObject((string)command, context.EndPoint.RequestType);
+                instance = (TCommand)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(command), typeof(TCommand));
             }
 
             var input = this.CheckInputRules(instance).ToList();
