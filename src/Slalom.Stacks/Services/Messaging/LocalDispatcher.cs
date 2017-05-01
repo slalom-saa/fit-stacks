@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using Newtonsoft.Json;
 using Slalom.Stacks.Services.Inventory;
 using Slalom.Stacks.Services.Pipeline;
 
@@ -63,7 +65,14 @@ namespace Slalom.Stacks.Services.Messaging
                 service.Context = context;
             }
 
-            await (Task)endPoint.Method.Invoke(handler, new object[] { request.Message.Body });
+            var body = request.Message.Body;
+            var parameterType = endPoint.Method.GetParameters().First().ParameterType;
+            if (body.GetType() != parameterType)
+            {
+                body = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body), parameterType);
+            }
+
+            await (Task)endPoint.Method.Invoke(handler, new object[] { body });
 
             await this.Complete(context);
 

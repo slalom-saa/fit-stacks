@@ -60,8 +60,13 @@ namespace Slalom.Stacks.Services.Inventory
         /// <returns>Returns the endpoint for the specified message.</returns>
         public IEnumerable<EndPointMetaData> Find(EventMessage message)
         {
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType.FullName == message.MessageType);
+            return this.EndPoints.Where(e => e.RequestType.FullName == message.MessageType || e.ServiceType.GetAllAttributes<SubscribeAttribute>().Any(x =>
+            {
+                return true;
+            }));
         }
+
+        public IEnumerable<EndPointMetaData> EndPoints => this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints);
 
         /// <summary>
         /// Finds the endpoint that can handle the specified path.  If there is no path, then the message will be used.

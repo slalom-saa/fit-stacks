@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Services.Messaging
             var type = body.GetType();
 
             this.Body = body;
-            this.MessageType = type.FullName;
+            this.MessageType = type.AssemblyQualifiedName;
             this.Name = type.Name;
         }
 

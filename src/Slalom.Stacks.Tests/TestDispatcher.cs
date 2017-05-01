@@ -22,7 +22,6 @@ namespace Slalom.Stacks.Tests
             });
         }
 
-
         public TestDispatcher(IComponentContext components) : base(components)
         {
         }

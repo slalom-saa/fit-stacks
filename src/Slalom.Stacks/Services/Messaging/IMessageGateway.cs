@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Slalom.Stacks.Services.Logging;
 
 namespace Slalom.Stacks.Services.Messaging
 {
@@ -11,7 +10,7 @@ namespace Slalom.Stacks.Services.Messaging
     public interface IMessageGateway
     {
         /// <summary>
-        /// Publishes the specified event to the configured publish-subscribe endPoint.
+        /// Publishes the specified event to any configured publish-subscribe endpoint.
         /// </summary>
         /// <param name="instance">The event instances.</param>
         /// <param name="context">The current context.</param>
@@ -19,7 +18,7 @@ namespace Slalom.Stacks.Services.Messaging
         Task Publish(EventMessage instance, ExecutionContext context = null);
 
         /// <summary>
-        /// Publishes the specified events to the configured publish-subscribe endPoint.
+        /// Publishes the specified events to any configured publish-subscribe endpoint.
         /// </summary>
         /// <param name="instances">The event instances.</param>
         /// <param name="context">The current context.</param>
@@ -27,7 +26,15 @@ namespace Slalom.Stacks.Services.Messaging
         Task Publish(IEnumerable<EventMessage> instances, ExecutionContext context = null);
 
         /// <summary>
-        /// Sends the specified command to the configured point-to-point endPoint.
+        /// Publishes the specified events to any configured publish-subscribe endpoint.
+        /// </summary>
+        /// <param name="channel">The message channel.</param>
+        /// <param name="message">The message to publish.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        void Publish(string channel, string message);
+
+        /// <summary>
+        /// Sends the specified command to the configured point-to-point endpoint.
         /// </summary>
         /// <param name="message">The message to send.</param>
         /// <param name="parentContext">The parent message context.</param>
@@ -36,7 +43,7 @@ namespace Slalom.Stacks.Services.Messaging
         Task<MessageResult> Send(object message, ExecutionContext parentContext = null, TimeSpan? timeout = null);
 
         /// <summary>
-        /// Sends the specified command to the configured point-to-point endPoint.
+        /// Sends the specified command to the configured point-to-point endpoint.
         /// </summary>
         /// <param name="path">The path to the receiver.</param>
         /// <param name="message">The message to send.</param>
@@ -46,7 +53,7 @@ namespace Slalom.Stacks.Services.Messaging
         Task<MessageResult> Send(string path, object message, ExecutionContext parentContext = null, TimeSpan? timeout = null);
 
         /// <summary>
-        /// Sends the specified command to the configured point-to-point endPoint.
+        /// Sends the specified command to the configured point-to-point endpoint.
         /// </summary>
         /// <param name="path">The path to the receiver.</param>
         /// <param name="command">The serialized command to send.</param>

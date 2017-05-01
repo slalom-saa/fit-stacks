@@ -5,6 +5,7 @@ using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Services.Logging;
+using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Services.Modules;
 
 namespace Slalom.Stacks.Services

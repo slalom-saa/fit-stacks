@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Services.Messaging;
+using Slalom.Stacks.Services.Logging;
 
-namespace Slalom.Stacks.Services.Logging
+namespace Slalom.Stacks.Services.Messaging
 {
     /// <summary>
     /// An event that is raised when state changes within a particular domain.
@@ -22,6 +23,18 @@ namespace Slalom.Stacks.Services.Logging
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="EventMessage" /> class.
+        /// </summary>
+        /// <param name="requestId">The request identifier.</param>
+        /// <param name="body">The message body.</param>
+        internal EventMessage(string requestId, object body)
+            : base(body)
+        {
+            this.RequestId = requestId;
+            this.Name = this.GetEventName();
+        }
+
+        /// <summary>
         /// Gets the request message identifier.
         /// </summary>
         /// <value>The request message identifier.</value>
@@ -29,7 +42,7 @@ namespace Slalom.Stacks.Services.Logging
 
         private string GetEventName()
         {
-            var type = this.GetType();
+            var type = this.Body.GetType();
             var attribute = type.GetAllAttributes<EventAttribute>().FirstOrDefault();
             if (attribute != null)
             {

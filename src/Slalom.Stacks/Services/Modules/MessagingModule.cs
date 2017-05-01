@@ -64,9 +64,6 @@ namespace Slalom.Stacks.Services.Modules
             builder.RegisterType<InMemoryResponseLog>().As<IResponseLog>().SingleInstance();
             builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
 
-
-
-
             builder.RegisterGeneric(typeof(MessageValidator<>));
 
             builder.RegisterAssemblyTypes(_stack.Assemblies.ToArray())
