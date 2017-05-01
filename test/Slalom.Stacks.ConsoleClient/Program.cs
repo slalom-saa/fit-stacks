@@ -12,6 +12,7 @@ using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Text;
+#pragma warning disable 1591
 
 namespace Slalom.Stacks.ConsoleClient
 {
