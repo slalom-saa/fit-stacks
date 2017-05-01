@@ -8,7 +8,7 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.Logging
 {
-    public class InMemoryRequestLog : IRequestLog
+    internal class InMemoryRequestLog : IRequestLog
     {
         /// <summary>
         /// The lock for the instances.

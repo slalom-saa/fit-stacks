@@ -8,7 +8,7 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.Logging
 {
-    public class InMemoryEventStore : IEventStore
+    internal class InMemoryEventStore : IEventStore
     {
         /// <summary>
         /// The lock for the instances.

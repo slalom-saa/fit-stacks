@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.ConsoleClient.Domain.Shipping;
 using Slalom.Stacks.Services;
+#pragma warning disable 1591
 
 namespace Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock
 {

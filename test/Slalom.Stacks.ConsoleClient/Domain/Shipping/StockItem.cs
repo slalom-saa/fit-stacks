@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Validation;
+#pragma warning disable 1591
 
 namespace Slalom.Stacks.ConsoleClient.Domain.Shipping
 {

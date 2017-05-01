@@ -5,7 +5,7 @@ using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Services.Logging
 {
-    public class NullRequestLog : IRequestLog
+    internal class NullRequestLog : IRequestLog
     {
         public Task Append(Request entry)
         {

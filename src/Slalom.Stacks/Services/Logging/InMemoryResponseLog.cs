@@ -7,7 +7,7 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.Logging
 {
-    public class InMemoryResponseLog : IResponseLog
+    internal class InMemoryResponseLog : IResponseLog
     {
         /// <summary>
         /// The lock for the instances.

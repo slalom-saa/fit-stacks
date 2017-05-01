@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Validation;
+#pragma warning disable 1591
 
 namespace Slalom.Stacks.ConsoleClient.Domain.Products
 {

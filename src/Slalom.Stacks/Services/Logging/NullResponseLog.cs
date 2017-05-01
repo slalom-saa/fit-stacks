@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Services.Logging
 {
-    public class NullResponseLog : IResponseLog
+    internal class NullResponseLog : IResponseLog
     {
         public Task Append(ResponseEntry entry)
         {

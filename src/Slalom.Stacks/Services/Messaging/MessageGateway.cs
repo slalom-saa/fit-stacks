@@ -80,6 +80,7 @@ namespace Slalom.Stacks.Services.Messaging
             }
         }
 
+        /// <inheritdoc />
         public void Publish(string channel, string message)
         {
             var instance = JsonConvert.DeserializeObject<JObject>(message);

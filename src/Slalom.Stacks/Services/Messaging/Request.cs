@@ -7,6 +7,10 @@ using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Services.Messaging
 {
+    /// <summary>
+    /// Represents a request being made to an endpoint.
+    /// </summary>
+    /// <seealso cref="Slalom.Stacks.Services.Messaging.IRequestContext" />
     public class Request : IRequestContext
     {
         private static string sourceAddress;

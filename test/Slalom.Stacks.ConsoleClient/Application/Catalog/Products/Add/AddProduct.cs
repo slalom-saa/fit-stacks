@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Slalom.Stacks.ConsoleClient.Domain.Products;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Messaging;
+#pragma warning disable 1591
 
 namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
 {

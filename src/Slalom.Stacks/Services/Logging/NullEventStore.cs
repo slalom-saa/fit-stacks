@@ -6,7 +6,7 @@ using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Services.Logging
 {
-    public class NullEventStore : IEventStore
+    internal class NullEventStore : IEventStore
     {
         public Task<IEnumerable<EventMessage>> GetEvents(DateTimeOffset? start, DateTimeOffset? end)
         {
