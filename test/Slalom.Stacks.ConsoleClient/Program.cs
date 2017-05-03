@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
@@ -30,7 +31,7 @@ namespace Slalom.Stacks.ConsoleClient
     //    }
     //}
 
-    [Subscribe("ProductAdded")]
+    [Subscribe("ProductAssdded")]
     public class AddSomethingOnProductAdded : EndPoint<ProductAdded2>
     {
         public override void Receive(ProductAdded2 instance)
@@ -39,7 +40,7 @@ namespace Slalom.Stacks.ConsoleClient
         }
     }
 
-    [Subscribe("ProductAdded")]
+    [Subscribe("ProductAddssed")]
     public class AddSomethingOnProductAdded2 : EndPoint<ProductAdded>
     {
         public override void Receive(ProductAdded instance)
@@ -55,6 +56,15 @@ namespace Slalom.Stacks.ConsoleClient
         public string Name { get; set; }
     }
 
+    public class Pub : IEventPublisher
+    {
+        public Task Publish(params EventMessage[] events)
+        {
+            Console.WriteLine("publishing" + events.Select(e => e.Name));
+            return Task.FromResult(0);
+        }
+    }
+
     public class Program
     {
 
@@ -65,27 +75,9 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack(typeof(AddProductCommand)))
                 {
-                    var content = @"[{
-    ""requestId"": ""8d8d0000-6a6a-6400-307b-08d490c42a67"",
-    ""id"": ""8d8d0000-6a6a-6400-84f8-08d490c42a6a"",
-    ""timeStamp"": ""2017-05-01T18:59:16.5696431+00:00"",
-    ""body"": {
-      ""name"": ""name""
-    },
-    ""messageType"": ""ConsoleApp9.ProductAdded, ConsoleApp9, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"",
-    ""name"": ""ProductAdded""
-  }]";
 
-                    var messages = JsonConvert.DeserializeObject<JObject[]>(content);
-                    foreach (var message in messages)
-                    {
-                        var name = message["name"].Value<string>();
-                        stack.Publish(name, message.ToString());
-                    }
 
-                    Console.ReadKey();
-
-                    //stack.Send(new AddProductCommand("name", "esc")).Wait();
+                    stack.Send(new AddProductCommand("name", "esc")).Wait();
 
                     //Console.WriteLine(new String('-', 10));
 

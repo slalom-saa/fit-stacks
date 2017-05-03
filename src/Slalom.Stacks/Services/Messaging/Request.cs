@@ -194,7 +194,7 @@ namespace Slalom.Stacks.Services.Messaging
             }
             if (message != null)
             {
-                var content = JsonConvert.SerializeObject(message);
+                var content = JsonConvert.SerializeObject((message as EventMessage)?.Body ?? message);
                 return new Message(JsonConvert.DeserializeObject(content, endPoint.RequestType));
             }
             return new Message(JsonConvert.DeserializeObject("{}", endPoint.RequestType));

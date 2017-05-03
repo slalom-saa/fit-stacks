@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Specialized;
+using System.Linq;
 using System.Reflection;
 using Autofac;
 using Slalom.Stacks.Services.Logging;
@@ -66,32 +67,35 @@ namespace Slalom.Stacks.Services.Modules
 
             builder.RegisterGeneric(typeof(MessageValidator<>));
 
-            builder.RegisterAssemblyTypes(_stack.Assemblies.ToArray())
-                .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidate<>)))
-                .As(instance => instance.GetBaseAndContractTypes())
-                .AllPropertiesAutowired();
+            this.RegisterAssemblyTypes(builder, this._stack.Assemblies.ToArray());
 
-            builder.RegisterAssemblyTypes(_stack.Assemblies.ToArray())
-                .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IEndPoint<,>)))
-                .AsBaseAndContractTypes().AsSelf()
-                .AllPropertiesAutowired();
+            _stack.Assemblies.CollectionChanged += this.HandleCollectionChanged;
+        }
 
-            _stack.Assemblies.CollectionChanged += (sender, args) =>
+        private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            _stack.Use(builder =>
             {
-                _stack.Use(b =>
-                {
-                    b.RegisterAssemblyTypes(args.NewItems.OfType<Assembly>().ToArray())
-                        .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidate<>)))
-                        .AsBaseAndContractTypes()
-                        .AllPropertiesAutowired();
+                this.RegisterAssemblyTypes(builder, e.NewItems.OfType<Assembly>().ToArray());
+            });
+        }
 
-                    b.RegisterAssemblyTypes(args.NewItems.OfType<Assembly>().ToArray())
-                        .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IEndPoint<,>)))
-                        .AsBaseAndContractTypes()
-                        .AsSelf()
-                        .AllPropertiesAutowired();
-                });
-            };
+        private void RegisterAssemblyTypes(ContainerBuilder builder, Assembly[] assemblies)
+        {
+            builder.RegisterAssemblyTypes(assemblies)
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidate<>)))
+                   .As(instance => instance.GetBaseAndContractTypes())
+                   .AllPropertiesAutowired();
+
+            builder.RegisterAssemblyTypes(assemblies)
+                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IEndPoint<,>)))
+                   .AsBaseAndContractTypes().AsSelf()
+                   .AllPropertiesAutowired();
+
+            builder.RegisterAssemblyTypes(assemblies)
+                   .Where(e => e.GetInterfaces().Contains(typeof(IEventPublisher)))
+                   .As<IEventPublisher>().AsSelf().SingleInstance();
+
         }
     }
 }
