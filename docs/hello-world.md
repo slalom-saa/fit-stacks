@@ -7,7 +7,7 @@ more real-world example, try the [Stacks Walkthrough](walkthrough/overview.md)  
 2.	Add the **Slalom.Stacks** and **Slalom.Stacks.Web.AspNetCore** NuGet packages.  
 ```
 Install-Package Slalom.Stacks
-Install-Package Slalom.Stacks.Web.AspNetCore
+Install-Package Slalom.Stacks.AspNetCore
 ```
 3.	Create a class named **HelloWorldRequest**.
 ```csharp
