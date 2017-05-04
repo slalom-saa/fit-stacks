@@ -39,22 +39,22 @@ namespace Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add
         }
     }
 
-    /// <summary>
-    /// Adds a product to the product catalog.
-    /// </summary>
-    [EndPoint("catalog/products/add", Version = 2, Name = "Add Product")]
-    public class AddProduct2 : EndPoint<AddProductCommand, ProductAdded>
-    {
-        /// <inheritdoc />
-        public override async Task<ProductAdded> ReceiveAsync(AddProductCommand command)
-        {
-            var target = new Product(command.Name, command.Description);
+    ///// <summary>
+    ///// Adds a product to the product catalog.
+    ///// </summary>
+    //[EndPoint("catalog/products/add", Version = 2, Name = "Add Product", Secure = true)]
+    //public class AddProduct2 : EndPoint<AddProductCommand, ProductAdded>
+    //{
+    //    /// <inheritdoc />
+    //    public override async Task<ProductAdded> ReceiveAsync(AddProductCommand command)
+    //    {
+    //        var target = new Product(command.Name, command.Description);
 
-            await this.Domain.Add(target);
+    //        await this.Domain.Add(target);
 
-            //await this.Send(new SendNotification("adsf", "adf"));
+    //        //await this.Send(new SendNotification("adsf", "adf"));
 
-            return new ProductAdded(target.Name, target.Description);
-        }
-    }
+    //        return new ProductAdded(target.Name, target.Description);
+    //    }
+    //}
 }

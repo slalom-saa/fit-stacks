@@ -77,7 +77,7 @@ namespace Slalom.Stacks.ConsoleClient
                 {
 
 
-                    stack.Send(new AddProductCommand("name", "esc")).Wait();
+                    stack.Send(new AddProductCommand("name", "esc")).OutputToJson();
 
                     //Console.WriteLine(new String('-', 10));
 

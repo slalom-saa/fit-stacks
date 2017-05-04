@@ -10,7 +10,7 @@ namespace Slalom.Stacks.Services
     public class EndPointAttribute : Attribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EndPointAttribute"/> class.
+        /// Initializes a new instance of the <see cref="EndPointAttribute" /> class.
         /// </summary>
         /// <param name="path">The path.</param>
         public EndPointAttribute(string path)
@@ -35,6 +35,13 @@ namespace Slalom.Stacks.Services
         /// </summary>
         /// <value><c>true</c> if public; otherwise, <c>false</c>.</value>
         public bool Public { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="EndPointAttribute" /> is secure.  Setting the endpoint to secure will require the caller to be authenticated, otherwise
+        /// it will allow anonymous access.  The default is false.
+        /// </summary>
+        /// <value><c>true</c> if secure; otherwise, <c>false</c>.</value>
+        public bool Secure { get; set; }
 
         /// <summary>
         /// Gets or sets the endpoint timeout in milliseconds.
