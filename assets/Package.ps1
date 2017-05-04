@@ -1,10 +1,10 @@
 ﻿<#
 .SYNOPSIS
-    Packages the core Slalom Stacks NuGet packages.
+    Packages the Slalom Stacks NuGet packages.
 #>
 param (
     $Configuration = "DEBUG",
-    $IncrementVersion = $true
+    $IncrementVersion = $false
 )
 
 function Increment-Version() {
