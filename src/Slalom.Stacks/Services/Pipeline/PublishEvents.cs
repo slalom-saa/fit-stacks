@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Services.Logging;
@@ -14,6 +15,7 @@ namespace Slalom.Stacks.Services.Pipeline
     {
         private readonly IEventStore _eventStore;
         private readonly IMessageGateway _messageGateway;
+        private IEnumerable<IEventPublisher> _eventPublishers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PublishEvents" /> class.
@@ -23,6 +25,7 @@ namespace Slalom.Stacks.Services.Pipeline
         {
             _messageGateway = components.Resolve<IMessageGateway>();
             _eventStore = components.Resolve<IEventStore>();
+            _eventPublishers = components.ResolveAll<IEventPublisher>();
         }
 
         /// <inheritdoc />
@@ -30,12 +33,15 @@ namespace Slalom.Stacks.Services.Pipeline
         {
             if (context.IsSuccessful)
             {
-                foreach (var instance in context.RaisedEvents.Union(new[] {context.Response as EventMessage}).Where(e => e != null))
+                var raisedEvents = context.RaisedEvents.Union(new[] { context.Response as EventMessage }).Where(e => e != null).ToArray();
+                foreach (var instance in raisedEvents)
                 {
                     await _eventStore.Append(instance);
 
                     await _messageGateway.Publish(instance, context);
                 }
+
+                await Task.WhenAll(_eventPublishers.Select(e => e.Publish(raisedEvents)));
             }
         }
     }

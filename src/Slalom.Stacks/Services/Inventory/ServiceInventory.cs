@@ -60,10 +60,7 @@ namespace Slalom.Stacks.Services.Inventory
         /// <returns>Returns the endpoint for the specified message.</returns>
         public IEnumerable<EndPointMetaData> Find(EventMessage message)
         {
-            return this.EndPoints.Where(e => e.RequestType.FullName == message.MessageType || e.ServiceType.GetAllAttributes<SubscribeAttribute>().Any(x =>
-            {
-                return true;
-            }));
+            return this.EndPoints.Where(e => e.RequestType.FullName == message.MessageType || e.ServiceType.GetAllAttributes<SubscribeAttribute>().Any());
         }
 
         /// <summary>
