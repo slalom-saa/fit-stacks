@@ -28,7 +28,7 @@ be Unit Tests and Integration Tests.  See the test overview for more information
 The following projects are from the Slalom Rentals: Add Product walkthrough.  
 
 ### Console Host
-The **Slalom.Rentals.ConsoleHost** is used to make direct calls to endpoints and to host
+The **Slalom.Rentals.ConsoleHost** is used to make direct calls to solution logic and to host
 the Web API.
 
 ### Core Logic
@@ -36,13 +36,13 @@ The **Slalom.Rentals** contains most of the solution logic implemented as endpoi
 are some very specific folders that belong here and also have rules.
 
 #### Application
-The application folder contains all application logic: endpoints, rules, commands, interfaces.
+The application folder contains all application logic: requests, responses, endpoints, rules, interfaces.
 
 Within the application folder, there should be subfolders for each service,
 then endpoint (capability).  The Add Product endpoint classes would be placed in "Application/Products/Add".
 
 There is one special folder within the Application folder named Integration.  This is 
-where client access components and external commands are placed.
+where client access components and external requests are placed.
 
 #### Domain
 The domain folder contains all domain logic: aggregates, entities, value objects.
