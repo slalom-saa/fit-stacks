@@ -17,53 +17,39 @@ using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
 {
-    //[Subscribe("ProductAdded")]
-    //public class AddCommandEventHandler : IHandle
-    //{
-    //    public void Receive(ExecutionContext context)
-    //    {
-    //        Console.WriteLine("...");
-    //    }
 
-    //    public bool ShouldHandle(IMessage instance)
-    //    {
-    //        return true;
-    //    }
-    //}
-
-    [Subscribe("ProductAssdded")]
-    public class AddSomethingOnProductAdded : EndPoint<ProductAdded2>
+    [Request("child")]
+    public class ChildRequest
     {
-        public override void Receive(ProductAdded2 instance)
+    }
+
+    [EndPoint("parent")]
+    public class Parent : EndPoint
+    {
+        public override void Receive()
         {
-            Console.WriteLine("ProductAdded2");
+            var result = this.Send<Response>(new ChildRequest()).Result;
+
+            Console.WriteLine(result);
+        }
+       
+    }
+
+    [EndPoint("child")]
+    public class Child : EndPoint
+    {
+        public override void Receive()
+        {
+            this.Respond(JsonConvert.SerializeObject(new Response()));
         }
     }
 
-    [Subscribe("ProductAddssed")]
-    public class AddSomethingOnProductAdded2 : EndPoint<ProductAdded>
+    public class Response
     {
-        public override void Receive(ProductAdded instance)
-        {
-            Console.WriteLine("ProductAdded");
-        }
+        public string Property { get; set; } = "abc";
     }
 
-    public class ProductAdded2 : Event
-    {
-        public string Description { get; set; }
 
-        public string Name { get; set; }
-    }
-
-    public class Pub : IEventPublisher
-    {
-        public Task Publish(params EventMessage[] events)
-        {
-            Console.WriteLine("publishing" + events.Select(e => e.Name));
-            return Task.FromResult(0);
-        }
-    }
 
     public class Program
     {
@@ -75,9 +61,9 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack(typeof(AddProductCommand)))
                 {
+                    stack.Send("parent").Result.Response.OutputToJson();
 
-
-                    stack.Send(new AddProductCommand("name", "esc")).OutputToJson();
+                    // stack.Send(new AddProductCommand("name", "esc")).OutputToJson();
 
                     //Console.WriteLine(new String('-', 10));
 

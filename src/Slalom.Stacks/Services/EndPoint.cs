@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
+using Newtonsoft.Json;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Services.Pipeline;
 using Slalom.Stacks.Reflection;
@@ -57,6 +58,27 @@ namespace Slalom.Stacks.Services
             {
                 return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
             }
+        }
+
+        /// <summary>
+        /// Sends the specified command to the configured point-to-point endpoint.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public async Task<MessageResult> Send<T>(object message)
+        {
+            var result = await this.Send(message);
+
+            if (result.Response is String)
+            {
+                result.Response = JsonConvert.DeserializeObject<T>((String)result.Response);
+            }
+            else
+            {
+                result.Response = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(result.Response));
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -143,6 +165,27 @@ namespace Slalom.Stacks.Services
             {
                 return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
             }
+        }
+
+        /// <summary>
+        /// Sends the specified command to the configured point-to-point endpoint.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public async Task<MessageResult> Send<T>(object message)
+        {
+            var result = await this.Send(message);
+
+            if (result.Response is String)
+            {
+                result.Response = JsonConvert.DeserializeObject<T>((String)message);
+            }
+            else
+            {
+                result.Response = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(message));
+            }
+
+            return result;
         }
 
         ExecutionContext IEndPoint.Context { get; set; }
@@ -243,6 +286,27 @@ namespace Slalom.Stacks.Services
             {
                 return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
             }
+        }
+
+        /// <summary>
+        /// Sends the specified command to the configured point-to-point endpoint.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public async Task<MessageResult> Send<T>(object message)
+        {
+            var result = await this.Send(message);
+
+            if (result.Response is String)
+            {
+                result.Response = JsonConvert.DeserializeObject<T>((String)message);
+            }
+            else
+            {
+                result.Response = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(message));
+            }
+
+            return result;
         }
 
         ExecutionContext IEndPoint.Context { get; set; }
