@@ -162,6 +162,32 @@ namespace Slalom.Stacks
         /// Sends the specified command to the configured point-to-point endPoint.
         /// </summary>
         /// <param name="path">The path.</param>
+        /// <param name="timeout">The request timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public async Task<MessageResult<T>> Send<T>(string path, TimeSpan? timeout = null)
+        {
+            var result = await this.Container.Resolve<IMessageGateway>().Send(path, timeout: timeout);
+
+            return new MessageResult<T>(result);
+        }
+
+        /// <summary>
+        /// Sends the specified command to the configured point-to-point endPoint.
+        /// </summary>
+        /// <param name="message">The command to send.</param>
+        /// <param name="timeout">The request timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public async Task<MessageResult<T>> Send<T>(object message, TimeSpan? timeout = null)
+        {
+            var result = await this.Container.Resolve<IMessageGateway>().Send(message, timeout: timeout);
+
+            return new MessageResult<T>(result);
+        }
+
+        /// <summary>
+        /// Sends the specified command to the configured point-to-point endPoint.
+        /// </summary>
+        /// <param name="path">The path.</param>
         /// <param name="message">The command to send.</param>
         /// <param name="timeout">The request timeout.</param>
         /// <returns>A task for asynchronous programming.</returns>

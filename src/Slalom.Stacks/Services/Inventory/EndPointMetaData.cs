@@ -73,6 +73,12 @@ namespace Slalom.Stacks.Services.Inventory
         public Type ServiceType { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the endpoint is secure.
+        /// </summary>
+        /// <value>Indicates whether the endpoint is secure.</value>
+        public bool Secure { get; set; }
+
+        /// <summary>
         /// Gets or sets the endpoint summary.
         /// </summary>
         /// <value>The endpoint summary.</value>
@@ -111,16 +117,8 @@ namespace Slalom.Stacks.Services.Inventory
                     var method = item.GetMethod("Receive");
                     if (method.DeclaringType != null)
                     {
-#if !core
-                        var map = service.GetInterfaceMap(method.DeclaringType);
-                        var index = Array.IndexOf(map.InterfaceMethods, method);
-                        var m = map.TargetMethods[index];
-                        var attribute = m?.GetCustomAttributes<EndPointAttribute>().FirstOrDefault();
-                        if (!string.IsNullOrWhiteSpace(attribute?.Path))
-                        {
-                            path = attribute.Path;
-                        }
-#endif
+                        var attribute = service.GetAllAttributes<EndPointAttribute>().FirstOrDefault();
+
                         var requestType = method.GetParameters().FirstOrDefault()?.ParameterType;
                         var endPoint = new EndPointMetaData
                         {
@@ -135,7 +133,8 @@ namespace Slalom.Stacks.Services.Inventory
                             RootPath = rootPath,
                             Timeout = timeout,
                             Method = method,
-                            Public = service.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Public ?? true
+                            Public = service.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Public ?? true,
+                            Secure = attribute?.Secure ?? false
                         };
                         yield return endPoint;
                     }

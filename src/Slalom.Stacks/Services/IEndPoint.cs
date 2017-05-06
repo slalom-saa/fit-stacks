@@ -1,11 +1,10 @@
-using System;
 using System.Threading.Tasks;
 using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Services
 {
     /// <summary>
-    /// An endpoint is a single unit of solution logic that can be accessed in-process or out-of-process.  
+    /// An endpoint is a single unit of solution logic that can be accessed in-process or out-of-process.
     /// This endpoint type does not receive message data and does not return a value.
     /// </summary>
     public interface IEndPoint
@@ -21,12 +20,18 @@ namespace Slalom.Stacks.Services
         /// </summary>
         /// <value>The current request.</value>
         Request Request { get; }
+
+        /// <summary>
+        /// Called when the endpoint is created and started.
+        /// </summary>
+        void OnStart();
     }
 
     /// <summary>
     /// An endpoint is a single unit of solution logic that can be accessed in-process or out-of-process.  This endpoint type takes in a message
     /// of the specified type and does not return a value.
     /// </summary>
+    /// <typeparam name="TMessage">The type of message that this endpoint can receive.</typeparam>
     public interface IEndPoint<TMessage> : IEndPoint
     {
         /// <summary>
@@ -40,6 +45,8 @@ namespace Slalom.Stacks.Services
     /// An endpoint is a single unit of solution logic that can be accessed in-process or out-of-process.  This endpoint type takes in a message
     /// of the specified type and returns a value of the specified type.
     /// </summary>
+    /// <typeparam name="TRequest">The type of message that this endpoint can receive.</typeparam>
+    /// <typeparam name="TResponse">The type of message this endpoint returns.</typeparam>
     public interface IEndPoint<TRequest, TResponse> : IEndPoint
     {
         /// <summary>

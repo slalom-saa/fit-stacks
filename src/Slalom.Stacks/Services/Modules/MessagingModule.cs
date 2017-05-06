@@ -46,6 +46,7 @@ namespace Slalom.Stacks.Services.Modules
                 .SingleInstance();
 
             builder.RegisterType<LocalDispatcher>().As<ILocalMessageDispatcher>();
+            builder.RegisterType<RemoteEndPointInventory>().AsSelf().SingleInstance();
 
             builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
 
@@ -83,14 +84,19 @@ namespace Slalom.Stacks.Services.Modules
         private void RegisterAssemblyTypes(ContainerBuilder builder, Assembly[] assemblies)
         {
             builder.RegisterAssemblyTypes(assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IValidate<>)))
-                   .As(instance => instance.GetBaseAndContractTypes())
+                   .Where(e => e.GetInterfaces().Any(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == typeof(IValidate<>)))
+                   .AsBaseAndContractTypes()
                    .AllPropertiesAutowired();
 
             builder.RegisterAssemblyTypes(assemblies)
-                   .Where(e => e.GetBaseAndContractTypes().Any(x => x == typeof(IEndPoint<>) || x == typeof(IEndPoint<,>)))
-                   .AsBaseAndContractTypes().AsSelf()
-                   .AllPropertiesAutowired();
+                .Where(e => e.GetInterfaces().Any(x => x == typeof(IEndPoint)))
+                .AsBaseAndContractTypes()
+                .AsSelf()
+                .AllPropertiesAutowired()
+                .OnActivated(e =>
+                {
+                    ((IEndPoint) e.Instance).OnStart();
+                });
 
             builder.RegisterAssemblyTypes(assemblies)
                    .Where(e => e.GetInterfaces().Contains(typeof(IEventPublisher)))

@@ -46,6 +46,15 @@ namespace Slalom.Stacks.Services.Messaging
         /// Sends the specified command to the configured point-to-point endpoint.
         /// </summary>
         /// <param name="path">The path to the receiver.</param>
+        /// <param name="parentContext">The parent message context.</param>
+        /// <param name="timeout">The request timeout.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task<MessageResult> Send(string path, ExecutionContext parentContext = null, TimeSpan? timeout = null);
+
+        /// <summary>
+        /// Sends the specified command to the configured point-to-point endpoint.
+        /// </summary>
+        /// <param name="path">The path to the receiver.</param>
         /// <param name="message">The message to send.</param>
         /// <param name="parentContext">The parent message context.</param>
         /// <param name="timeout">The request timeout.</param>

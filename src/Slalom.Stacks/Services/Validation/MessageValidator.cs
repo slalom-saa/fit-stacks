@@ -45,6 +45,12 @@ namespace Slalom.Stacks.Services.Validation
                 instance = (TCommand)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(command), typeof(TCommand));
             }
 
+            if (context.EndPoint.Secure && !(context.Request.User?.Identity?.IsAuthenticated ?? false))
+            {
+                return Task.FromResult(new [] { new ValidationError("Unauthorized", "The call to \"" + context.Request.Path + "\" requires authentication.", ValidationType.Security) }.AsEnumerable());
+            }
+
+
             var input = this.CheckInputRules(instance).ToList();
             if (input.Any())
             {
