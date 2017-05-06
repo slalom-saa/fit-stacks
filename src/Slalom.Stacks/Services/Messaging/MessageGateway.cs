@@ -17,12 +17,11 @@ namespace Slalom.Stacks.Services.Messaging
     /// </summary>
     public class MessageGateway : IMessageGateway
     {
-        private readonly IComponentContext _components;
         private readonly Lazy<ILocalMessageDispatcher> _dispatcher;
         private readonly Lazy<IRequestContext> _requestContext;
         private readonly Lazy<IRequestLog> _requests;
         private readonly Lazy<ServiceInventory> _services;
-        private Lazy<IEnumerable<IRemoteMessageDispatcher>> _dispatchers;
+        private readonly Lazy<IEnumerable<IRemoteMessageDispatcher>> _dispatchers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageGateway" /> class.
@@ -32,7 +31,6 @@ namespace Slalom.Stacks.Services.Messaging
         {
             Argument.NotNull(components, nameof(components));
 
-            _components = components;
             _services = new Lazy<ServiceInventory>(components.Resolve<ServiceInventory>);
             _requestContext = new Lazy<IRequestContext>(components.Resolve<IRequestContext>);
             _requests = new Lazy<IRequestLog>(components.Resolve<IRequestLog>);
@@ -130,7 +128,11 @@ namespace Slalom.Stacks.Services.Messaging
                     return await dispatcher.Dispatch(request, parentContext, timeout);
                 }
             }
-            throw new InvalidOperationException("No endpoint could be found for the request.");
+
+            var current = _requestContext.Value.Resolve(path, instance);
+            var context = new ExecutionContext(current, null);
+            context.SetException(new EndPointNotFoundException(current));
+            return new MessageResult(context);
         }
 
         /// <inheritdoc />
@@ -153,7 +155,11 @@ namespace Slalom.Stacks.Services.Messaging
                     return await dispatcher.Dispatch(request, parentContext, timeout);
                 }
             }
-            throw new InvalidOperationException("No endpoint could be found for the request.");
+
+            var current = _requestContext.Value.Resolve(path, command);
+            var context = new ExecutionContext(current, null);
+            context.SetException(new EndPointNotFoundException(current));
+            return new MessageResult(context);
         }
     }
 }

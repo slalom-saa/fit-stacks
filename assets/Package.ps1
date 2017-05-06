@@ -27,7 +27,7 @@ function Format-Json([Parameter(Mandatory, ValueFromPipeline)][String] $json) {
   $indent = 0;
   ($json -Split '\n' |
     % {
-      if ($_ -match '[\}\]]') {
+      if ($_ -match '[\}\]]') { 
         # This line contains  ] or }, decrement the indentation level
         $indent--
       }

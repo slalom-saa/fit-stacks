@@ -1,28 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
-using Newtonsoft.Json;
 using Slalom.Stacks.Domain;
-using Slalom.Stacks.Services.Pipeline;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
+using Slalom.Stacks.Services.Pipeline;
 
 namespace Slalom.Stacks.Services
 {
     /// <summary>
-    /// An endpoint is a single unit of solution logic that can be accessed in-process or out-of-process.  This endpoint type does not receive message data and does
-    /// not return a value.
+    /// An endpoint is a single unit of solution logic that can be accessed in-process or out-of-process.
     /// </summary>
-    public abstract class EndPoint : IEndPoint<object>
+    public abstract class BaseEndPoint : IEndPoint
     {
-        ExecutionContext IEndPoint.Context { get; set; }
+        /// <summary>
+        /// Gets the configured <see cref="IDomainFacade" />.
+        /// </summary>
+        /// <value>The configured <see cref="IDomainFacade" />.</value>
+        public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
 
-        private ExecutionContext Context => ((IEndPoint)this).Context;
+        /// <summary>
+        /// Gets the configured <see cref="ISearchFacade" />.
+        /// </summary>
+        /// <value>The configured <see cref="ISearchFacade" />.</value>
+        public ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
+
+        /// <summary>
+        /// Gets the current context.
+        /// </summary>
+        /// <value>The current context.</value>
+        protected internal ExecutionContext Context => ((IEndPoint) this).Context;
+
+        /// <summary>
+        /// Gets the configured <see cref="IComponentContext" /> instance.
+        /// </summary>
+        /// <value>The configured <see cref="IComponentContext" /> instance.</value>
+        internal IComponentContext Components { get; set; }
+
+        ExecutionContext IEndPoint.Context { get; set; }
 
         /// <summary>
         /// Gets the current request.
@@ -31,16 +49,20 @@ namespace Slalom.Stacks.Services
         public Request Request => this.Context.Request;
 
         /// <summary>
-        /// Gets the configured <see cref="IDomainFacade"/>.
+        /// Called when the endpoint is created and started.
         /// </summary>
-        /// <value>The configured <see cref="IDomainFacade"/>.</value>
-        public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
+        public virtual void OnStart()
+        {
+        }
 
         /// <summary>
-        /// Gets the configured <see cref="ISearchFacade"/>.
+        /// Adds an event to be raised when the execution is successful.
         /// </summary>
-        /// <value>The configured <see cref="ISearchFacade"/>.</value>
-        public ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
+        /// <param name="instance">The event to add.</param>
+        public void AddRaisedEvent(Event instance)
+        {
+            this.Context.AddRaisedEvent(instance);
+        }
 
         /// <summary>
         /// Sends the specified command to the configured point-to-point endpoint.
@@ -54,10 +76,7 @@ namespace Slalom.Stacks.Services
             {
                 return this.Components.Resolve<IMessageGateway>().Send(attribute.Path, message, this.Context);
             }
-            else
-            {
-                return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
-            }
+            return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
         }
 
         /// <summary>
@@ -65,54 +84,20 @@ namespace Slalom.Stacks.Services
         /// </summary>
         /// <param name="message">The message to send.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        public async Task<MessageResult> Send<T>(object message)
+        public async Task<MessageResult<T>> Send<T>(object message)
         {
             var result = await this.Send(message);
 
-            if (result.Response is String)
-            {
-                result.Response = JsonConvert.DeserializeObject<T>((String)result.Response);
-            }
-            else
-            {
-                result.Response = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(result.Response));
-            }
-
-            return result;
+            return new MessageResult<T>(result);
         }
+    }
 
-        /// <summary>
-        /// Adds an event to be raised when the execution is successful.
-        /// </summary>
-        /// <param name="instance">The event to add.</param>
-        public void AddRaisedEvent(Event instance)
-        {
-            this.Context.AddRaisedEvent(instance);
-        }
-
-        /// <summary>
-        /// Gets the configured <see cref="IComponentContext"/> instance.
-        /// </summary>
-        /// <value>The configured <see cref="IComponentContext"/> instance.</value>
-        internal IComponentContext Components { get; set; }
-
-        /// <summary>
-        /// Receives the call to the endpoint.
-        /// </summary>
-        public virtual void Receive()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Receives the call to the endpoint.
-        /// </summary>
-        public virtual Task ReceiveAsync()
-        {
-            this.Receive();
-            return Task.FromResult(0);
-        }
-
+    /// <summary>
+    /// An endpoint is a single unit of solution logic that can be accessed in-process or out-of-process.  This endpoint type does not receive message data and does
+    /// not return a value.
+    /// </summary>
+    public abstract class EndPoint : BaseEndPoint, IEndPoint<object>
+    {
         async Task IEndPoint<object>.Receive(object instance)
         {
             await this.Components.Resolve<ValidateMessage>().Execute(this.Context);
@@ -134,6 +119,23 @@ namespace Slalom.Stacks.Services
         }
 
         /// <summary>
+        /// Receives the call to the endpoint.
+        /// </summary>
+        public virtual void Receive()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Receives the call to the endpoint.
+        /// </summary>
+        public virtual Task ReceiveAsync()
+        {
+            this.Receive();
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
         /// Responds to the request with the specified message.
         /// </summary>
         /// <param name="instance">The message instance to respond with.</param>
@@ -147,102 +149,8 @@ namespace Slalom.Stacks.Services
     /// An endpoint is a single unit of solution logic that can be accessed in-process or out-of-process.  This endpoint type takes in a message
     /// of the specified type and does not return a value.
     /// </summary>
-    public abstract class EndPoint<TMessage> : IEndPoint<TMessage>
+    public abstract class EndPoint<TMessage> : BaseEndPoint, IEndPoint<TMessage>
     {
-        /// <summary>
-        /// Sends the specified command to the configured point-to-point endpoint.
-        /// </summary>
-        /// <param name="message">The message to send.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task<MessageResult> Send(object message)
-        {
-            var attribute = message.GetType().GetAllAttributes<RequestAttribute>().FirstOrDefault();
-            if (attribute != null)
-            {
-                return this.Components.Resolve<IMessageGateway>().Send(attribute.Path, message, this.Context);
-            }
-            else
-            {
-                return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
-            }
-        }
-
-        /// <summary>
-        /// Sends the specified command to the configured point-to-point endpoint.
-        /// </summary>
-        /// <param name="message">The message to send.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public async Task<MessageResult> Send<T>(object message)
-        {
-            var result = await this.Send(message);
-
-            if (result.Response is String)
-            {
-                result.Response = JsonConvert.DeserializeObject<T>((String)message);
-            }
-            else
-            {
-                result.Response = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(message));
-            }
-
-            return result;
-        }
-
-        ExecutionContext IEndPoint.Context { get; set; }
-
-        private ExecutionContext Context => ((IEndPoint)this).Context;
-
-        /// <summary>
-        /// Gets the current request.
-        /// </summary>
-        /// <value>The current request.</value>
-        public Request Request => this.Context.Request;
-
-        /// <summary>
-        /// Gets the configured <see cref="IDomainFacade"/>.
-        /// </summary>
-        /// <value>The configured <see cref="IDomainFacade"/>.</value>
-        public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
-
-        /// <summary>
-        /// Gets the configured <see cref="ISearchFacade"/>.
-        /// </summary>
-        /// <value>The configured <see cref="ISearchFacade"/>.</value>
-        public ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
-
-        /// <summary>
-        /// Adds an event to be raised when the execution is successful.
-        /// </summary>
-        /// <param name="instance">The event to add.</param>
-        public void AddRaisedEvent(Event instance)
-        {
-            this.Context.AddRaisedEvent(instance);
-        }
-
-        /// <summary>
-        /// Gets the configured <see cref="IComponentContext"/> instance.
-        /// </summary>
-        /// <value>The configured <see cref="IComponentContext"/> instance.</value>
-        internal IComponentContext Components { get; set; }
-
-        /// <summary>
-        /// Receives the call to the endpoint.
-        /// </summary>
-        public virtual void Receive(TMessage instance)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Receives the call to the endpoint.
-        /// </summary>
-        public virtual Task ReceiveAsync(TMessage instance)
-        {
-            this.Receive(instance);
-
-            return Task.FromResult(0);
-        }
-
         async Task IEndPoint<TMessage>.Receive(TMessage instance)
         {
             await this.Components.Resolve<ValidateMessage>().Execute(this.Context);
@@ -262,88 +170,11 @@ namespace Slalom.Stacks.Services
                 }
             }
         }
-    }
-
-    /// <summary>
-    /// An endpoint is a single unit of solution logic that can be accessed in-process or out-of-process.  This endpoint type takes in a message
-    /// of the specified type and returns a value of the specified type.
-    /// </summary>
-    public abstract class EndPoint<TMessage, TResponse> : IEndPoint<TMessage, TResponse>
-    {
-        /// <summary>
-        /// Sends the specified command to the configured point-to-point endpoint.
-        /// </summary>
-        /// <param name="message">The message to send.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public Task<MessageResult> Send(object message)
-        {
-            var attribute = message.GetType().GetAllAttributes<RequestAttribute>().FirstOrDefault();
-            if (attribute != null)
-            {
-                return this.Components.Resolve<IMessageGateway>().Send(attribute.Path, message, this.Context);
-            }
-            else
-            {
-                return this.Components.Resolve<IMessageGateway>().Send(message, this.Context);
-            }
-        }
-
-        /// <summary>
-        /// Sends the specified command to the configured point-to-point endpoint.
-        /// </summary>
-        /// <param name="message">The message to send.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public async Task<MessageResult> Send<T>(object message)
-        {
-            var result = await this.Send(message);
-
-            if (result.Response is String)
-            {
-                result.Response = JsonConvert.DeserializeObject<T>((String)message);
-            }
-            else
-            {
-                result.Response = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(message));
-            }
-
-            return result;
-        }
-
-        ExecutionContext IEndPoint.Context { get; set; }
-
-        private ExecutionContext Context => ((IEndPoint)this).Context;
-
-        /// <summary>
-        /// Gets the current request.
-        /// </summary>
-        /// <value>The current request.</value>
-        public Request Request => this.Context.Request;
-
-        /// <summary>
-        /// Gets the configured <see cref="IDomainFacade"/>.
-        /// </summary>
-        /// <value>The configured <see cref="IDomainFacade"/>.</value>
-        public IDomainFacade Domain => this.Components.Resolve<IDomainFacade>();
-
-        /// <summary>
-        /// Gets the configured <see cref="ISearchFacade"/>.
-        /// </summary>
-        /// <value>The configured <see cref="ISearchFacade"/>.</value>
-        public ISearchFacade Search => this.Components.Resolve<ISearchFacade>();
-
-
-        /// <summary>
-        /// Gets the configured <see cref="IComponentContext"/> instance.
-        /// </summary>
-        /// <value>The configured <see cref="IComponentContext"/> instance.</value>
-        internal IComponentContext Components { get; set; }
 
         /// <summary>
         /// Receives the call to the endpoint.
         /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <returns>Returns the response to the request.</returns>
-        public virtual TResponse Receive(TMessage instance)
+        public virtual void Receive(TMessage instance)
         {
             throw new NotImplementedException();
         }
@@ -351,27 +182,25 @@ namespace Slalom.Stacks.Services
         /// <summary>
         /// Receives the call to the endpoint.
         /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <returns>Returns the response to the request.</returns>
-        public virtual Task<TResponse> ReceiveAsync(TMessage instance)
+        public virtual Task ReceiveAsync(TMessage instance)
         {
-            return Task.FromResult(this.Receive(instance));
-        }
+            this.Receive(instance);
 
-        /// <summary>
-        /// Adds an event to be raised when the execution is successful.
-        /// </summary>
-        /// <param name="instance">The event to add.</param>
-        public void AddRaisedEvent(Event instance)
-        {
-            this.Context.AddRaisedEvent(instance);
+            return Task.FromResult(0);
         }
+    }
 
+    /// <summary>
+    /// An endpoint is a single unit of solution logic that can be accessed in-process or out-of-process.  This endpoint type takes in a message
+    /// of the specified type and returns a value of the specified type.
+    /// </summary>
+    public abstract class EndPoint<TMessage, TResponse> : BaseEndPoint, IEndPoint<TMessage, TResponse>
+    {
         async Task<TResponse> IEndPoint<TMessage, TResponse>.Receive(TMessage instance)
         {
             await this.Components.Resolve<ValidateMessage>().Execute(this.Context);
 
-            TResponse result = default(TResponse);
+            var result = default(TResponse);
             if (!this.Context.ValidationErrors.Any())
             {
                 try
@@ -394,6 +223,26 @@ namespace Slalom.Stacks.Services
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// Receives the call to the endpoint.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns>Returns the response to the request.</returns>
+        public virtual TResponse Receive(TMessage instance)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Receives the call to the endpoint.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns>Returns the response to the request.</returns>
+        public virtual Task<TResponse> ReceiveAsync(TMessage instance)
+        {
+            return Task.FromResult(this.Receive(instance));
         }
     }
 }

@@ -17,7 +17,6 @@ using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
 {
-
     [Request("child")]
     public class ChildRequest
     {
@@ -26,13 +25,23 @@ namespace Slalom.Stacks.ConsoleClient
     [EndPoint("parent")]
     public class Parent : EndPoint
     {
+        private int i = 0;
         public override void Receive()
         {
+            if (i++ > 5)
+            {
+                throw new Exception();
+            }
+
             var result = this.Send<Response>(new ChildRequest()).Result;
 
             this.Respond(result.Response);
         }
-       
+
+        public override void OnStart()
+        {
+            Console.WriteLine("Starting...");
+        }
     }
 
     [EndPoint("child")]
@@ -61,7 +70,12 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack(typeof(AddProductCommand)))
                 {
-                    stack.Send<Response>("parent").Result.Response.OutputToJson();
+                    for (int i = 0; i < 10; i++)
+                    {
+                        var result = stack.Send<Response>("parent").Result;
+
+                        Console.WriteLine(result.IsSuccessful);
+                    }
 
                     // stack.Send(new AddProductCommand("name", "esc")).OutputToJson();
 

@@ -34,13 +34,9 @@ namespace Slalom.Stacks.Services.Messaging
             this.ValidationErrors = instance.ValidationErrors.ToList();
             this.RequestId = instance.RequestId;
             this.IsCancelled = instance.IsCancelled;
-            if (instance.Response is T)
+            if (instance.Response is String)
             {
-                this.Response = (T) instance.Response;
-            }
-            else if (instance.Response is string)
-            {
-                this.Response = JsonConvert.DeserializeObject<T>((string) instance.Response);
+                this.Response = JsonConvert.DeserializeObject<T>((string)instance.Response);
             }
             else
             {
@@ -54,7 +50,7 @@ namespace Slalom.Stacks.Services.Messaging
         /// <value>The message response.</value>
         public new T Response
         {
-            get { return (T) base.Response; }
+            get { return (T)base.Response; }
             set { base.Response = value; }
         }
     }
