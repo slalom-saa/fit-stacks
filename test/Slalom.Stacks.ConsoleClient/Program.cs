@@ -30,7 +30,7 @@ namespace Slalom.Stacks.ConsoleClient
         {
             var result = this.Send<Response>(new ChildRequest()).Result;
 
-            Console.WriteLine(result);
+            this.Respond(result.Response);
         }
        
     }
@@ -61,7 +61,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack(typeof(AddProductCommand)))
                 {
-                    stack.Send("parent").Result.Response.OutputToJson();
+                    stack.Send<Response>("parent").Result.Response.OutputToJson();
 
                     // stack.Send(new AddProductCommand("name", "esc")).OutputToJson();
 
