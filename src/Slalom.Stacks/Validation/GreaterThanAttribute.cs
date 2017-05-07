@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 
 namespace Slalom.Stacks.Validation
 {
@@ -10,7 +17,7 @@ namespace Slalom.Stacks.Validation
     public class GreaterThanAttribute : ValidationAttribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NotNullOrWhiteSpaceAttribute"/> class.
+        /// Initializes a new instance of the <see cref="NotNullOrWhiteSpaceAttribute" /> class.
         /// </summary>
         /// <param name="value">The value to compare.</param>
         /// <param name="message">The message.</param>
@@ -33,7 +40,7 @@ namespace Slalom.Stacks.Validation
         /// <returns><c>true</c> if the specified value is valid; otherwise, <c>false</c>.</returns>
         public override bool IsValid(object value)
         {
-            return value is int && (int)value > this.Value;
+            return value is int && (int) value > this.Value;
         }
     }
 }

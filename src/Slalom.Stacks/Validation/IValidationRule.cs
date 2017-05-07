@@ -1,6 +1,12 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Validation
 {
@@ -15,7 +21,7 @@ namespace Slalom.Stacks.Validation
         /// </summary>
         /// <param name="instance">The instance to validate.</param>
         /// <returns>Returns all found validation errors.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
         IEnumerable<ValidationError> Validate(TValue instance);
     }
 }

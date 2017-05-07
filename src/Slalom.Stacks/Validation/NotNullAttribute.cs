@@ -1,5 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 
 namespace Slalom.Stacks.Validation
 {
@@ -11,7 +17,7 @@ namespace Slalom.Stacks.Validation
     public class NotNullAttribute : ValidationAttribute
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NotNullAttribute"/> class.
+        /// Initializes a new instance of the <see cref="NotNullAttribute" /> class.
         /// </summary>
         /// <param name="message">The message.</param>
         public NotNullAttribute(string message)

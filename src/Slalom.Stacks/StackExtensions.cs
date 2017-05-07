@@ -1,8 +1,15 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Autofac;
-using System.Linq;
 using Autofac.Builder;
 using Autofac.Features.Scanning;
 using Slalom.Stacks.Reflection;
@@ -18,19 +25,6 @@ namespace Slalom.Stacks
     public static class StackExtensions
     {
         /// <summary>
-        /// Specifies how a type from a scanned assembly is mapped to a service.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
-        /// <param name="registration">Registration to set service mapping on.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> AsBaseAndContractTypes<TLimit, TScanningActivatorData, TRegistrationStyle>(this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration) where TScanningActivatorData : ScanningActivatorData
-        {
-            return registration.As(instance => instance.GetBaseAndContractTypes());
-        }
-
-        /// <summary>
         /// Autowires properties of registered instances.
         /// </summary>
         /// <typeparam name="TLimit">The type of the t limit.</typeparam>
@@ -42,6 +36,20 @@ namespace Slalom.Stacks
             this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration)
         {
             return registration.OnActivated(args => InjectProperties(args.Context, args.Instance, true));
+        }
+
+        /// <summary>
+        /// Specifies how a type from a scanned assembly is mapped to a service.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> AsBaseAndContractTypes<TLimit, TScanningActivatorData, TRegistrationStyle>(
+            this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration) where TScanningActivatorData : ScanningActivatorData
+        {
+            return registration.As(instance => instance.GetBaseAndContractTypes());
         }
 
         /// <summary>
@@ -59,13 +67,13 @@ namespace Slalom.Stacks
             {
                 var propertyType = propertyInfo.PropertyType;
 
-                if ((!propertyType.GetTypeInfo().IsValueType || propertyType.GetTypeInfo().IsEnum) && (propertyInfo.GetIndexParameters().Length == 0) && context.IsRegistered(propertyType))
+                if ((!propertyType.GetTypeInfo().IsValueType || propertyType.GetTypeInfo().IsEnum) && propertyInfo.GetIndexParameters().Length == 0 && context.IsRegistered(propertyType))
                 {
                     var accessors = propertyInfo.GetAccessors(true);
-                    if (((accessors.Length != 1) ||
+                    if ((accessors.Length != 1 ||
                          !(accessors[0].ReturnType != typeof(void))) &&
-                        (overrideSetValues || (accessors.Length != 2) ||
-                         (propertyInfo.GetValue(instance, null) == null)))
+                        (overrideSetValues || accessors.Length != 2 ||
+                         propertyInfo.GetValue(instance, null) == null))
                     {
                         var obj = context.Resolve(propertyType);
                         propertyInfo.SetValue(instance, obj, null);
@@ -99,7 +107,7 @@ namespace Slalom.Stacks
             Argument.NotNull(instance, nameof(instance));
             Argument.NotNull(type, nameof(type));
 
-            var target = ((IEnumerable<object>)instance.Resolve(typeof(IEnumerable<>).MakeGenericType(type))).ToList();
+            var target = ((IEnumerable<object>) instance.Resolve(typeof(IEnumerable<>).MakeGenericType(type))).ToList();
 
             foreach (var item in target)
             {

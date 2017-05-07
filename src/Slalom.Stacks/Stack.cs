@@ -1,22 +1,26 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.IO;
-using System.Reflection;
-using Autofac;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+using Autofac;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Services.Messaging;
 using Module = Autofac.Module;
+
 #if core
 using Microsoft.Extensions.DependencyModel;
-
 #endif
 
 namespace Slalom.Stacks
@@ -44,11 +48,11 @@ namespace Slalom.Stacks
             {
                 if (module.GetConstructors().SingleOrDefault()?.GetParameters().Length == 0)
                 {
-                    builder.RegisterModule((Module)Activator.CreateInstance(module));
+                    builder.RegisterModule((Module) Activator.CreateInstance(module));
                 }
                 if (module.GetConstructors().SingleOrDefault()?.GetParameters().SingleOrDefault()?.ParameterType == typeof(Stack))
                 {
-                    builder.RegisterModule((Module)Activator.CreateInstance(module, this));
+                    builder.RegisterModule((Module) Activator.CreateInstance(module, this));
                 }
             }
 
@@ -67,15 +71,15 @@ namespace Slalom.Stacks
         public IContainer Container { get; }
 
         /// <summary>
-        /// Gets the configured <see cref="IDomainFacade"/>.
+        /// Gets the configured <see cref="IDomainFacade" />.
         /// </summary>
-        /// <value>The configured <see cref="IDomainFacade"/>.</value>
+        /// <value>The configured <see cref="IDomainFacade" />.</value>
         public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
 
         /// <summary>
-        /// Gets the configured <see cref="ISearchFacade"/>.
+        /// Gets the configured <see cref="ISearchFacade" />.
         /// </summary>
-        /// <value>The configured <see cref="ISearchFacade"/>.</value>
+        /// <value>The configured <see cref="ISearchFacade" />.</value>
         public ISearchFacade Search => this.Container.Resolve<ISearchFacade>();
 
         /// <summary>
@@ -127,24 +131,36 @@ namespace Slalom.Stacks
             else
             {
                 var current = markers.Select(e =>
-                {
-                    var type = e as Type;
-                    if (type != null)
                     {
-                        return type.GetTypeInfo().Assembly;
-                    }
-                    var assembly = e as Assembly;
-                    if (assembly != null)
-                    {
-                        return assembly;
-                    }
-                    return e.GetType().GetTypeInfo().Assembly;
-                }).Distinct();
+                        var type = e as Type;
+                        if (type != null)
+                        {
+                            return type.GetTypeInfo().Assembly;
+                        }
+                        var assembly = e as Assembly;
+                        if (assembly != null)
+                        {
+                            return assembly;
+                        }
+                        return e.GetType().GetTypeInfo().Assembly;
+                    })
+                    .Distinct();
                 foreach (var item in current)
                 {
                     this.Assemblies.Add(item);
                 }
             }
+        }
+
+        /// <summary>
+        /// Publishes the specified events to any configured publish-subscribe endpoint.
+        /// </summary>
+        /// <param name="channel">The message channel.</param>
+        /// <param name="message">The message to publish.</param>
+        /// <returns>A task for asynchronous programming.</returns>
+        public void Publish(string channel, string message)
+        {
+            this.Container.Resolve<IMessageGateway>().Publish(channel, message);
         }
 
         /// <summary>
@@ -204,7 +220,7 @@ namespace Slalom.Stacks
         /// <returns>A task for asynchronous programming.</returns>
         public Task<MessageResult> Send(string path, TimeSpan? timeout = null)
         {
-            return this.Container.Resolve<IMessageGateway>().Send(path, null, timeout: timeout);
+            return this.Container.Resolve<IMessageGateway>().Send(path, null, timeout);
         }
 
         /// <summary>
@@ -219,17 +235,6 @@ namespace Slalom.Stacks
             return this.Container.Resolve<IMessageGateway>().Send(path, command, timeout: timeout);
         }
 
-        /// <summary>
-        /// Publishes the specified events to any configured publish-subscribe endpoint.
-        /// </summary>
-        /// <param name="channel">The message channel.</param>
-        /// <param name="message">The message to publish.</param>
-        /// <returns>A task for asynchronous programming.</returns>
-        public void Publish(string channel, string message)
-        {
-            this.Container.Resolve<IMessageGateway>().Publish(channel, message);
-        }
-        
         #region IDisposable Implementation
 
         private bool _disposed;

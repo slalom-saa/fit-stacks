@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Linq;
 
 namespace Slalom.Stacks.Validation
@@ -10,7 +17,7 @@ namespace Slalom.Stacks.Validation
     public class ValidationException : InvalidOperationException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationException"/> class.
+        /// Initializes a new instance of the <see cref="ValidationException" /> class.
         /// </summary>
         /// <param name="errors">The validation errors to add to the exception.</param>
         public ValidationException(params ValidationError[] errors)
@@ -23,6 +30,6 @@ namespace Slalom.Stacks.Validation
         /// Gets the validation errors.
         /// </summary>
         /// <value>The validation errors.</value>
-        public ValidationError[] ValidationErrors { get; private set; }
+        public ValidationError[] ValidationErrors { get; }
     }
 }
