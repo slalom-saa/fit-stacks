@@ -9,7 +9,7 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Services.Pipeline
 {
     /// <summary>
-    /// The log startup step of the Service execution pipeline.
+    /// The log startup step of the EndPoint execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Services.Pipeline.IMessageExecutionStep" />
     public class LogStart : IMessageExecutionStep

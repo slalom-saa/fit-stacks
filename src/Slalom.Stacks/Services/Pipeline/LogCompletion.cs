@@ -34,9 +34,14 @@ namespace Slalom.Stacks.Services.Pipeline
         /// <inheritdoc />
         public Task Execute(ExecutionContext context)
         {
+            if (context.Request.Path?.StartsWith("_") == true && context.IsSuccessful)
+            {
+                return Task.FromResult(0);
+            }
+
             var tasks = new List<Task> { _actions.Append(new ResponseEntry(context, _environmentContext.Resolve())) };
 
-            var name = context.Request.Message.Name;
+            var name = context.Request.Path ?? context.Request.Message.Name;
             if (!context.IsSuccessful)
             {
                 if (context.Exception != null)

@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Services
         /// <param name="request">The current request.</param>
         /// <param name="dependency">The dependency call result.</param>
         public DependencyFailedException(Request request, MessageResult dependency)
-            : base($"Failed to complete message {request.Message.Id} because of a failed dependent message {dependency.RequestId}.", dependency.RaisedException ?? new ValidationException(dependency.ValidationErrors.ToArray()))
+            : base($"Failed to complete request {request.Message.Id} because of a failed dependent request {dependency.RequestId}.", dependency.RaisedException ?? new ValidationException(dependency.ValidationErrors.ToArray()))
         {
             this.Request = request;
             this.Dependency = dependency;

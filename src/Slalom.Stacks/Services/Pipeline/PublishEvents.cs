@@ -8,7 +8,7 @@ using Slalom.Stacks.Services.Messaging;
 namespace Slalom.Stacks.Services.Pipeline
 {
     /// <summary>
-    /// The publish events step of the Service execution pipeline.
+    /// The publish events step of the EndPoint execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Services.Pipeline.IMessageExecutionStep" />
     public class PublishEvents : IMessageExecutionStep

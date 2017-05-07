@@ -44,7 +44,7 @@ namespace Slalom.Stacks.Services.Messaging
             Argument.NotNull(instance, nameof(instance));
 
             var request = _requestContext.Value.Resolve(instance, context.Request);
-            await _requests.Value.Append(request);
+            await this.LogRequest(request);
 
             var endPoints = _services.Value.Find(instance);
             foreach (var endPoint in endPoints)
@@ -115,13 +115,13 @@ namespace Slalom.Stacks.Services.Messaging
             if (endPoint != null)
             {
                 var request = _requestContext.Value.Resolve(instance, endPoint, parentContext?.Request);
-                await _requests.Value.Append(request);
+                await this.LogRequest(request);
                 return await _dispatcher.Value.Dispatch(request, endPoint, parentContext, timeout);
             }
             else
             {
                 var request = _requestContext.Value.Resolve(path, instance, parentContext?.Request);
-                await _requests.Value.Append(request);
+                await this.LogRequest(request);
                 var dispatcher = _dispatchers.Value.FirstOrDefault(e => e.CanDispatch(request));
                 if (dispatcher != null)
                 {
@@ -142,13 +142,13 @@ namespace Slalom.Stacks.Services.Messaging
             if (endPoint != null)
             {
                 var request = _requestContext.Value.Resolve(command, endPoint, parentContext?.Request);
-                await _requests.Value.Append(request);
+                await this.LogRequest(request);
                 return await _dispatcher.Value.Dispatch(request, endPoint, parentContext, timeout);
             }
             else
             {
                 var request = _requestContext.Value.Resolve(path, command, parentContext?.Request);
-                await _requests.Value.Append(request);
+                await this.LogRequest(request);
                 var dispatcher = _dispatchers.Value.FirstOrDefault(e => e.CanDispatch(request));
                 if (dispatcher != null)
                 {
@@ -160,6 +160,14 @@ namespace Slalom.Stacks.Services.Messaging
             var context = new ExecutionContext(current, null);
             context.SetException(new EndPointNotFoundException(current));
             return new MessageResult(context);
+        }
+
+        private async Task LogRequest(Request request)
+        {
+            if (request.Path?.StartsWith("_") == false)
+            {
+                await _requests.Value.Append(request);
+            }
         }
     }
 }

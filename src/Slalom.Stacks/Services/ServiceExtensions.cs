@@ -4,7 +4,7 @@ using Slalom.Stacks.Services.Inventory;
 namespace Slalom.Stacks.Services
 {
     /// <summary>
-    /// Service extention methods for Stacks.
+    /// EndPoint extention methods for Stacks.
     /// </summary>
     public static class ServiceExtensions
     {
