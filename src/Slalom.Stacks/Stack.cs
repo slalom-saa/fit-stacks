@@ -21,6 +21,8 @@ using Module = Autofac.Module;
 
 #if core
 using Microsoft.Extensions.DependencyModel;
+#else
+using System.IO;
 #endif
 
 namespace Slalom.Stacks
@@ -235,7 +237,7 @@ namespace Slalom.Stacks
             return this.Container.Resolve<IMessageGateway>().Send(path, command, timeout: timeout);
         }
 
-        #region IDisposable Implementation
+#region IDisposable Implementation
 
         private bool _disposed;
 
@@ -280,6 +282,6 @@ namespace Slalom.Stacks
             _disposed = true;
         }
 
-        #endregion
+#endregion
     }
 }
