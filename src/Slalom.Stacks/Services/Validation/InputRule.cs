@@ -1,6 +1,12 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.Validation
@@ -16,7 +22,7 @@ namespace Slalom.Stacks.Services.Validation
         /// </summary>
         /// <param name="instance">The instance to validate.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance"/> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instance" /> argument is null.</exception>
         public abstract IEnumerable<ValidationError> Validate(TCommand instance);
     }
 }

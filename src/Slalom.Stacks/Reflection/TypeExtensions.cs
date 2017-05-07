@@ -1,13 +1,20 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 
 namespace Slalom.Stacks.Reflection
 {
     /// <summary>
-    /// Contains extensions for <see cref="Type"/> classes.
+    /// Contains extensions for <see cref="Type" /> classes.
     /// </summary>
     public static class TypeExtensions
     {
@@ -27,8 +34,7 @@ namespace Slalom.Stacks.Reflection
                 target.AddRange(type.GetTypeInfo().GetCustomAttributes<T>());
                 target.AddRange(type.GetInterfaces().SelectMany(e => e.GetAllAttributes<T>()));
                 type = type.GetTypeInfo().BaseType;
-            }
-            while (type != null);
+            } while (type != null);
 
             return target.AsEnumerable();
         }

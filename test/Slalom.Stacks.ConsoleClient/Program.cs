@@ -70,7 +70,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack(typeof(AddProductCommand)))
                 {
-                    for (int i = 0; i < 10; i++)
+                    for (int i = 0; i < 1; i++)
                     {
                         var result = stack.Send<Response>("parent").Result;
 

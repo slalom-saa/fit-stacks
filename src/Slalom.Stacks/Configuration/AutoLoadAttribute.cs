@@ -1,5 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 
 namespace Slalom.Stacks.Configuration
 {
@@ -7,7 +13,7 @@ namespace Slalom.Stacks.Configuration
     /// Indicates that the class should be loaded with any loading routines.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class AutoLoadAttribute : Attribute
+    public sealed class AutoLoadAttribute : Attribute
     {
     }
 }

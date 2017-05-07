@@ -1,3 +1,10 @@
+/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +22,7 @@ namespace Slalom.Stacks.Services.EndPoints
         private readonly IResponseLog _source;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetResponses"/> class.
+        /// Initializes a new instance of the <see cref="GetResponses" /> class.
         /// </summary>
         /// <param name="source">The source.</param>
         public GetResponses(IResponseLog source)

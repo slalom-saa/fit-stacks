@@ -1,4 +1,12 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
+using System.Diagnostics.CodeAnalysis;
 using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Domain
@@ -57,9 +65,13 @@ namespace Slalom.Stacks.Domain
         public static bool operator ==(Entity a, Entity b)
         {
             if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
+            {
                 return true;
+            }
             if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
+            {
                 return false;
+            }
             return a.Equals(b);
         }
 
@@ -82,7 +94,7 @@ namespace Slalom.Stacks.Domain
         /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
         protected bool Equals(Entity other)
         {
-            return other != null && this.Id.Equals(other.Id);
+            return other != null && this.Id.Equals(other.Id, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -92,9 +104,18 @@ namespace Slalom.Stacks.Domain
         /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
             return this.Equals((Entity) obj);
         }
 

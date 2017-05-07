@@ -35,10 +35,13 @@ namespace Slalom.Stacks.Services.Logging
         {
             try
             {
-                this.Body = JsonConvert.SerializeObject(request.Message.Body, new JsonSerializerSettings
+                if (request.Message.Body != null)
                 {
-                    ContractResolver = new BaseContractResolver()
-                });
+                    this.Body = JsonConvert.SerializeObject(request.Message.Body, new JsonSerializerSettings
+                    {
+                        ContractResolver = new BaseContractResolver()
+                    });
+                }
             }
             catch
             {
@@ -53,7 +56,7 @@ namespace Slalom.Stacks.Services.Logging
             }
             else
             {
-                this.RequestType = request.Message.GetType().FullName;
+                this.RequestType = request.Message?.MessageType;
             }
             this.SessionId = request.SessionId;
             this.UserName = request.User?.Identity?.Name;

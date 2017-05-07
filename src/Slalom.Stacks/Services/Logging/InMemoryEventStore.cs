@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -27,7 +34,7 @@ namespace Slalom.Stacks.Services.Logging
             {
                 start = start ?? DateTimeOffset.Now.LocalDateTime.AddDays(-1);
                 end = end ?? DateTimeOffset.Now.LocalDateTime;
-                return Task.FromResult(this.Instances.Where(e => e.TimeStamp >= start && e.TimeStamp <= end).AsEnumerable());
+                return Task.FromResult(Instances.Where(e => e.TimeStamp >= start && e.TimeStamp <= end).AsEnumerable());
             }
             finally
             {

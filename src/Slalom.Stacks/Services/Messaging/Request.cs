@@ -1,8 +1,14 @@
-﻿using System.Security.Claims;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System.Security.Claims;
 using Newtonsoft.Json;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Services.Inventory;
-using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Utilities.NewId;
 
 namespace Slalom.Stacks.Services.Messaging
@@ -88,15 +94,6 @@ namespace Slalom.Stacks.Services.Messaging
             };
         }
 
-        private IMessage GetMessage(string path, object message)
-        {
-            if (message is IMessage)
-            {
-                return (IMessage)message;
-            }
-            return new Message(message);
-        }
-
         /// <inheritdoc />
         public Request Resolve(string command, EndPointMetaData endPoint, Request parent = null)
         {
@@ -177,11 +174,24 @@ namespace Slalom.Stacks.Services.Messaging
             return ClaimsPrincipal.Current;
         }
 
+        private IMessage GetMessage(string path, object message)
+        {
+            if (message is IMessage)
+            {
+                return (IMessage) message;
+            }
+            return new Message(message);
+        }
+
         private IMessage GetMessage(string message, EndPointMetaData endPoint)
         {
             if (message == null)
             {
-                return new Message(JsonConvert.DeserializeObject("{}", endPoint.RequestType));
+                if (endPoint.RequestType != typeof(object))
+                {
+                    return new Message(JsonConvert.DeserializeObject("{}", endPoint.RequestType));
+                }
+                return new Message();
             }
             return new Message(JsonConvert.DeserializeObject(message, endPoint.RequestType));
         }

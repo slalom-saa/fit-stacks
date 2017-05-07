@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.IO;
 using Autofac;
-using System.Linq;
-using System.Reflection;
 using Slalom.Stacks.Caching;
-using Slalom.Stacks.Domain;
 using Slalom.Stacks.Domain.Modules;
 using Slalom.Stacks.Logging;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Modules;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
-using Environment = Slalom.Stacks.Runtime.Environment;
-using Module = Autofac.Module;
-
+using Slalom.Stacks.Services.Modules;
 #if core
 using Microsoft.Extensions.Configuration;
+
 #endif
 
 namespace Slalom.Stacks.Configuration
@@ -42,8 +41,10 @@ namespace Slalom.Stacks.Configuration
         /// <summary>
         /// Override to add registrations to the container.
         /// </summary>
-        /// <param name="builder">The builder through which components can be
-        /// registered.</param>
+        /// <param name="builder">
+        /// The builder through which components can be
+        /// registered.
+        /// </param>
         /// <remarks>Note that the ContainerBuilder parameter is unique to this module.</remarks>
         protected override void Load(ContainerBuilder builder)
         {
@@ -51,14 +52,15 @@ namespace Slalom.Stacks.Configuration
 
 #if core
             builder.Register(c =>
-                   {
-                       var configurationBuilder = new ConfigurationBuilder();
-                       configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
-                       configurationBuilder.AddJsonFile("appsettings.json", true, true);
-                       return configurationBuilder.Build();
-                   }).As<IConfiguration>()
-                   .SingleInstance();
-             builder.Register(c => new Environment(c.Resolve<IConfiguration>()))
+                {
+                    var configurationBuilder = new ConfigurationBuilder();
+                    configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
+                    configurationBuilder.AddJsonFile("appsettings.json", true, true);
+                    return configurationBuilder.Build();
+                })
+                .As<IConfiguration>()
+                .SingleInstance();
+            builder.Register(c => new Environment(c.Resolve<IConfiguration>()))
                 .As<IEnvironmentContext>();
 #else
             builder.Register(c => new Environment()).As<IEnvironmentContext>();
@@ -72,10 +74,10 @@ namespace Slalom.Stacks.Configuration
 
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new NullCachingModule());
-    
+
             builder.Register(c => new DiscoveryService(c.Resolve<ILogger>()))
-                   .As<IDiscoverTypes>()
-                   .SingleInstance();
+                .As<IDiscoverTypes>()
+                .SingleInstance();
         }
     }
 }

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reflection;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using Autofac;
 using Slalom.Stacks.Caching;
-using Slalom.Stacks.Configuration;
-using IComponentContext = Autofac.IComponentContext;
-using Module = Autofac.Module;
 
 namespace Slalom.Stacks.Domain.Modules
 {
@@ -30,25 +30,27 @@ namespace Slalom.Stacks.Domain.Modules
         /// <summary>
         /// Override to add registrations to the container.
         /// </summary>
-        /// <param name="builder">The builder through which components can be
-        /// registered.</param>
+        /// <param name="builder">
+        /// The builder through which components can be
+        /// registered.
+        /// </param>
         /// <remarks>Note that the ContainerBuilder parameter is unique to this module.</remarks>
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
 
             builder.Register(c => new DomainFacade(c.Resolve<IComponentContext>(), c.Resolve<ICacheManager>()))
-                   .As<IDomainFacade>()
-                   .SingleInstance();
+                .As<IDomainFacade>()
+                .SingleInstance();
 
             builder.Register(e => new InMemoryEntityContext())
-                   .As<IEntityContext>()
-                   .SingleInstance();
+                .As<IEntityContext>()
+                .SingleInstance();
 
             builder.RegisterGeneric(typeof(Repository<>))
-                   .As(typeof(IRepository<>))
-                   .PropertiesAutowired()
-                   .SingleInstance();
+                .As(typeof(IRepository<>))
+                .PropertiesAutowired()
+                .SingleInstance();
         }
     }
 }

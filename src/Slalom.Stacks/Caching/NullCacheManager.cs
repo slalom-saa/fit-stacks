@@ -1,11 +1,16 @@
-﻿using System;
-using System.Linq;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Caching
 {
     /// <summary>
-    /// A null <see cref="ICacheManager"/> implementation.
+    /// A null <see cref="ICacheManager" /> implementation.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Caching.ICacheManager" />
     public class NullCacheManager : ICacheManager

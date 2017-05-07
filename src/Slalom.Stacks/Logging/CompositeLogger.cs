@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
@@ -7,7 +14,7 @@ using Slalom.Stacks.Runtime;
 namespace Slalom.Stacks.Logging
 {
     /// <summary>
-    /// A composite <see cref="ILogger"/> implemenation that uses the component context to use all registered loggers.
+    /// A composite <see cref="ILogger" /> implemenation that uses the component context to use all registered loggers.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Logging.ILogger" />
     public class CompositeLogger : ILogger
@@ -24,14 +31,6 @@ namespace Slalom.Stacks.Logging
         {
             _components = components;
             _environment = environment;
-        }
-
-        private object[] CreateProperties(IEnumerable<object> original)
-        {
-            return original.Union(new[]
-            {
-                _environment.Resolve()
-            }).ToArray();
         }
 
         /// <summary>
@@ -201,6 +200,15 @@ namespace Slalom.Stacks.Logging
             {
                 logger.Warning(template, this.CreateProperties(properties));
             }
+        }
+
+        private object[] CreateProperties(IEnumerable<object> original)
+        {
+            return original.Union(new[]
+                {
+                    _environment.Resolve()
+                })
+                .ToArray();
         }
 
         private IEnumerable<ILogger> GetLoggers()

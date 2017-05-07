@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Messaging;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
 
 namespace Slalom.Stacks.Domain
 {

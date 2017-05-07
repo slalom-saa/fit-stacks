@@ -1,16 +1,23 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using Slalom.Stacks.Utilities.NewId;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.Messaging
 {
     /// <summary>
-    ///An atomic packet of data that is transmitted through a message channel.
+    /// An atomic packet of data that is transmitted through a message channel.
     /// </summary>
     public class Message : IMessage
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Message"/> class.
+        /// Initializes a new instance of the <see cref="Message" /> class.
         /// </summary>
         /// <param name="body">The message body.</param>
         public Message(object body)
@@ -22,6 +29,13 @@ namespace Slalom.Stacks.Services.Messaging
             this.Body = body;
             this.MessageType = type.AssemblyQualifiedName;
             this.Name = type.Name;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Message" /> class.
+        /// </summary>
+        public Message()
+        {
         }
 
         /// <inheritdoc />

@@ -1,6 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using Autofac;
-using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Caching
@@ -18,10 +23,7 @@ namespace Slalom.Stacks.Caching
         {
             Argument.NotNull(container, nameof(container));
 
-            container.Container.Update(builder =>
-            {
-                builder.RegisterModule(new LocalCacheModule());
-            });
+            container.Container.Update(builder => { builder.RegisterModule(new LocalCacheModule()); });
         }
     }
 }

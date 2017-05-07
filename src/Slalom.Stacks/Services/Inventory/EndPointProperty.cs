@@ -1,3 +1,10 @@
+/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Reflection;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Validation;
@@ -26,16 +33,16 @@ namespace Slalom.Stacks.Services.Inventory
         }
 
         /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        /// <value>The name.</value>
-        public string Name { get; set; }
-
-        /// <summary>
         /// Gets or sets the comments.
         /// </summary>
         /// <value>The comments.</value>
         public Comments Comments { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the type.

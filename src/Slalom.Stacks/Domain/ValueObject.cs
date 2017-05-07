@@ -1,8 +1,14 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Domain
 {
@@ -13,13 +19,54 @@ namespace Slalom.Stacks.Domain
     /// <seealso cref="System.IEquatable{T}" />
     public abstract class ValueObject<T> : IEquatable<T> where T : ValueObject<T>
     {
-        static IList<FieldInfo> _fields = new List<FieldInfo>();
+        private static IList<FieldInfo> _fields = new List<FieldInfo>();
+
+        /// <inheritdoc />
+        public virtual bool Equals(T other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            var t = this.GetType();
+            var otherType = other.GetType();
+
+            if (t != otherType)
+            {
+                return false;
+            }
+
+            var fields = this.GetFields();
+
+            foreach (var field in fields)
+            {
+                var value1 = field.GetValue(other);
+                var value2 = field.GetValue(this);
+
+                if (value1 == null)
+                {
+                    if (value2 != null)
+                    {
+                        return false;
+                    }
+                }
+                else if (!value1.Equals(value2))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (obj == null)
+            {
                 return false;
+            }
 
             var other = obj as T;
 
@@ -43,44 +90,13 @@ namespace Slalom.Stacks.Domain
         {
             unchecked
             {
-                int hash = 17;
+                var hash = 17;
                 foreach (var item in objects)
                 {
                     hash = hash * 31 + item.GetHashCode();
                 }
                 return hash;
             }
-        }
-
-        /// <inheritdoc />
-        public virtual bool Equals(T other)
-        {
-            if (other == null)
-                return false;
-
-            var t = this.GetType();
-            var otherType = other.GetType();
-
-            if (t != otherType)
-                return false;
-
-            var fields = this.GetFields();
-
-            foreach (var field in fields)
-            {
-                var value1 = field.GetValue(other);
-                var value2 = field.GetValue(this);
-
-                if (value1 == null)
-                {
-                    if (value2 != null)
-                        return false;
-                }
-                else if (!value1.Equals(value2))
-                    return false;
-            }
-
-            return true;
         }
 
         /// <summary>
@@ -106,14 +122,7 @@ namespace Slalom.Stacks.Domain
             return !(x == y);
         }
 
-        IEnumerable<FieldInfo> GetFields()
-        {
-            if (!_fields.Any())
-                _fields = new List<FieldInfo>(this.BuildFieldCollection());
-            return _fields;
-        }
-
-        IEnumerable<FieldInfo> BuildFieldCollection()
+        private IEnumerable<FieldInfo> BuildFieldCollection()
         {
             var t = typeof(T);
             var fields = new List<FieldInfo>();
@@ -128,6 +137,15 @@ namespace Slalom.Stacks.Domain
                 t = typeInfo.BaseType;
             }
             return fields;
+        }
+
+        private IEnumerable<FieldInfo> GetFields()
+        {
+            if (!_fields.Any())
+            {
+                _fields = new List<FieldInfo>(this.BuildFieldCollection());
+            }
+            return _fields;
         }
     }
 }

@@ -1,12 +1,18 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Caching
 {
     /// <summary>
-    /// A null <see cref="ICacheConnector"/> implementation.
+    /// A null <see cref="ICacheConnector" /> implementation.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Caching.ICacheConnector" />
     public class NullCacheConnector : ICacheConnector

@@ -1,4 +1,11 @@
-﻿using System.Reflection;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System.Reflection;
 using System.Security.Claims;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;

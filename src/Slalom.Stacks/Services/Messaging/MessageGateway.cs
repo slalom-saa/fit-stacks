@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,10 +25,10 @@ namespace Slalom.Stacks.Services.Messaging
     public class MessageGateway : IMessageGateway
     {
         private readonly Lazy<ILocalMessageDispatcher> _dispatcher;
+        private readonly Lazy<IEnumerable<IRemoteMessageDispatcher>> _dispatchers;
         private readonly Lazy<IRequestContext> _requestContext;
         private readonly Lazy<IRequestLog> _requests;
         private readonly Lazy<ServiceInventory> _services;
-        private readonly Lazy<IEnumerable<IRemoteMessageDispatcher>> _dispatchers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageGateway" /> class.
@@ -99,7 +106,7 @@ namespace Slalom.Stacks.Services.Messaging
         /// <inheritdoc />
         public Task<MessageResult> Send(object message, ExecutionContext parentContext = null, TimeSpan? timeout = null)
         {
-            return this.Send((string) null, message, parentContext, timeout);
+            return this.Send(null, message, parentContext, timeout);
         }
 
         /// <inheritdoc />

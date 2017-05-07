@@ -1,7 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Search
 {

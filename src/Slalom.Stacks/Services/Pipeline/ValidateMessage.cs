@@ -1,7 +1,12 @@
-﻿using System;
-using Autofac;
-using System.Linq;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Threading.Tasks;
+using Autofac;
 using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Services.Validation;
 using Slalom.Stacks.Validation;
@@ -17,7 +22,7 @@ namespace Slalom.Stacks.Services.Pipeline
         private readonly IComponentContext _components;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValidateMessage"/> class.
+        /// Initializes a new instance of the <see cref="ValidateMessage" /> class.
         /// </summary>
         /// <param name="components">The context.</param>
         public ValidateMessage(IComponentContext components)
@@ -32,9 +37,12 @@ namespace Slalom.Stacks.Services.Pipeline
         {
             var message = context.Request.Message;
 
-            var validator = (IMessageValidator)_components.Resolve(typeof(MessageValidator<>).MakeGenericType(context.EndPoint.RequestType));
-            var results = await validator.Validate(message.Body, context);
-            context.AddValidationErrors(results);
+            if (message.Body != null)
+            {
+                var validator = (IMessageValidator) _components.Resolve(typeof(MessageValidator<>).MakeGenericType(context.EndPoint.RequestType));
+                var results = await validator.Validate(message.Body, context);
+                context.AddValidationErrors(results);
+            }
         }
     }
 }

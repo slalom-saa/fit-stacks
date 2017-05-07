@@ -1,11 +1,17 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Collections.Generic;
-using Autofac;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using Slalom.Stacks.Logging;
-using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Services.Pipeline
@@ -21,7 +27,7 @@ namespace Slalom.Stacks.Services.Pipeline
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LogCompletion"/> class.
+        /// Initializes a new instance of the <see cref="LogCompletion" /> class.
         /// </summary>
         /// <param name="components">The component context.</param>
         public LogCompletion(IComponentContext components)
@@ -39,7 +45,7 @@ namespace Slalom.Stacks.Services.Pipeline
                 return Task.FromResult(0);
             }
 
-            var tasks = new List<Task> { _actions.Append(new ResponseEntry(context, _environmentContext.Resolve())) };
+            var tasks = new List<Task> {_actions.Append(new ResponseEntry(context, _environmentContext.Resolve()))};
 
             var name = context.Request.Path ?? context.Request.Message.Name;
             if (!context.IsSuccessful)

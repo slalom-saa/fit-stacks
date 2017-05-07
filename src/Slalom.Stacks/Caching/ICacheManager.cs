@@ -1,7 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Threading.Tasks;
-using Slalom.Stacks.Domain;
 
 namespace Slalom.Stacks.Caching
 {
@@ -17,6 +21,12 @@ namespace Slalom.Stacks.Caching
         /// <param name="instances">The instances to add.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
         Task AddAsync<TItem>(params TItem[] instances);
+
+        /// <summary>
+        /// Clears the cache.
+        /// </summary>
+        /// <returns>Returns a task for asynchronous programming.</returns>
+        Task ClearAsync();
 
         /// <summary>
         /// Finds the item in the cache with the specified ID.
@@ -41,11 +51,5 @@ namespace Slalom.Stacks.Caching
         /// <param name="instances">The instances to update.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
         Task UpdateAsync<TItem>(params TItem[] instances);
-
-        /// <summary>
-        /// Clears the cache.
-        /// </summary>
-        /// <returns>Returns a task for asynchronous programming.</returns>
-        Task ClearAsync();
     }
 }

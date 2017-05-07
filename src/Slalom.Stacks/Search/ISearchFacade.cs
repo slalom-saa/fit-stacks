@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -14,21 +21,16 @@ namespace Slalom.Stacks.Search
     public interface ISearchFacade
     {
         /// <summary>
-        /// Reads items from the domain.  To be used when indexing.
-        /// </summary>
-        /// <typeparam name="TEntity">The type of entity.</typeparam>
-        /// <returns>Returns a query to index.</returns>
-        IQueryable<TEntity> Read<TEntity>();
-
-        /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
         /// item already exists.
         /// </summary>
         /// <typeparam name="TSearchResult">The type of instance to add.</typeparam>
         /// <param name="instances">The instances to add.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
+        /// <remarks>
+        /// This allows for performance gain in larger data sets.  If you are unsure
+        /// and have a small set, then you can use the update method.
+        /// </remarks>
         Task AddAsync<TSearchResult>(params TSearchResult[] instances) where TSearchResult : class, ISearchResult;
 
         /// <summary>
@@ -39,12 +41,27 @@ namespace Slalom.Stacks.Search
         Task ClearAsync<TSearchResult>() where TSearchResult : class, ISearchResult;
 
         /// <summary>
-        /// Creates a query that can be used to search.
+        /// Finds the instance with the specified identifier.
         /// </summary>
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
-        /// <param name="text">The text to use for search.</param>
-        /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
-        IQueryable<TSearchResult> Search<TSearchResult>(string text = null) where TSearchResult : class, ISearchResult;
+        /// <param name="id">The instance identifier.</param>
+        /// <returns>Returns the instance with the specified identifier.</returns>
+        /// <exception cref="System.NotSupportedException">Thrown when an unsupported type is used.</exception>
+        Task<TSearchResult> FindAsync<TSearchResult>(int id) where TSearchResult : class, ISearchResult;
+
+        /// <summary>
+        /// Reads items from the domain.  To be used when indexing.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of entity.</typeparam>
+        /// <returns>Returns a query to index.</returns>
+        IQueryable<TEntity> Read<TEntity>();
+
+        /// <summary>
+        /// Rebuilds the index of the specified search result type.
+        /// </summary>
+        /// <typeparam name="TSearchResult">The type of search result.</typeparam>
+        /// <returns>A task for asynchronous programming.</returns>
+        Task RebuildIndexAsync<TSearchResult>() where TSearchResult : class, ISearchResult;
 
         /// <summary>
         /// Removes the specified instances.
@@ -65,20 +82,12 @@ namespace Slalom.Stacks.Search
         Task RemoveAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate) where TSearchResult : class, ISearchResult;
 
         /// <summary>
-        /// Finds the instance with the specified identifier.
+        /// Creates a query that can be used to search.
         /// </summary>
         /// <typeparam name="TSearchResult">The type of the instance.</typeparam>
-        /// <param name="id">The instance identifier.</param>
-        /// <returns>Returns the instance with the specified identifier.</returns>
-        /// <exception cref="System.NotSupportedException">Thrown when an unsupported type is used.</exception>
-        Task<TSearchResult> FindAsync<TSearchResult>(int id) where TSearchResult : class, ISearchResult;
-
-        /// <summary>
-        /// Rebuilds the index of the specified search result type.
-        /// </summary>
-        /// <typeparam name="TSearchResult">The type of search result.</typeparam>
-        /// <returns>A task for asynchronous programming.</returns>
-        Task RebuildIndexAsync<TSearchResult>() where TSearchResult : class, ISearchResult;
+        /// <param name="text">The text to use for search.</param>
+        /// <returns>An IQueryable&lt;TSearchResult&gt; that can be used to filter and project.</returns>
+        IQueryable<TSearchResult> Search<TSearchResult>(string text = null) where TSearchResult : class, ISearchResult;
 
         /// <summary>
         /// Updates the specified instances. Update is similar to Add, but Add skips a check to see if the
@@ -88,8 +97,10 @@ namespace Slalom.Stacks.Search
         /// <param name="instances">The instances to update.</param>
         /// <returns>A task for asynchronous programming.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances" /> argument is null.</exception>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
+        /// <remarks>
+        /// This allows for performance gain in larger data sets.  If you are unsure
+        /// and have a small set, then you can use the update method.
+        /// </remarks>
         Task UpdateAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult;
 
         /// <summary>

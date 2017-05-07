@@ -1,9 +1,16 @@
+/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Security.Claims;
 
 namespace Slalom.Stacks.Serialization.Model
 {
     /// <summary>
-    /// EndPointType used to hold a <see cref="Claim"/>  for serialization.
+    /// EndPointType used to hold a <see cref="Claim" />  for serialization.
     /// </summary>
     public class ClaimHolder
     {

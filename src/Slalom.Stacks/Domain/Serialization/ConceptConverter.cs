@@ -1,12 +1,20 @@
+/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System;
 using System.Reflection;
 using Newtonsoft.Json;
+
 // ReSharper disable PossibleNullReferenceException
 
 namespace Slalom.Stacks.Domain.Serialization
 {
     /// <summary>
-    /// A <see cref="ConceptAs{TValue}"/> JSON converter that flattens and unflattens values.
+    /// A <see cref="ConceptAs{TValue}" /> JSON converter that flattens and unflattens values.
     /// </summary>
     /// <seealso cref="Newtonsoft.Json.JsonConverter" />
     public class ConceptConverter : JsonConverter

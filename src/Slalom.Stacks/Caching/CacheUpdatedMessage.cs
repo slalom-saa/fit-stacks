@@ -1,7 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Collections.Generic;
-using System.Linq;
-using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Caching
@@ -13,7 +17,7 @@ namespace Slalom.Stacks.Caching
     public class CacheUpdatedMessage : Message
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CacheUpdatedMessage"/> class.
+        /// Initializes a new instance of the <see cref="CacheUpdatedMessage" /> class.
         /// </summary>
         /// <param name="keysUpdated">The keys that were updated.</param>
         public CacheUpdatedMessage(IEnumerable<string> keysUpdated)

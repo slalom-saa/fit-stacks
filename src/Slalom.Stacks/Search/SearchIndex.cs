@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -29,16 +36,16 @@ namespace Slalom.Stacks.Search
         }
 
         /// <summary>
-        /// Gets or sets the configured <see cref="ILogger"/>.
+        /// Gets or sets the configured <see cref="IDomainFacade" />.
         /// </summary>
-        /// <value>The configured <see cref="ILogger"/>.</value>
-        public ILogger Logger { get; set; }
+        /// <value>The configured <see cref="IDomainFacade" />.</value>
+        public IDomainFacade Domain { get; set; }
 
         /// <summary>
-        /// Gets or sets the configured <see cref="IDomainFacade"/>.
+        /// Gets or sets the configured <see cref="ILogger" />.
         /// </summary>
-        /// <value>The configured <see cref="IDomainFacade"/>.</value>
-        public IDomainFacade Domain { get; set; }
+        /// <value>The configured <see cref="ILogger" />.</value>
+        public ILogger Logger { get; set; }
 
         /// <summary>
         /// Adds the specified instances to the index immediately. Add is similar to Update, but skips a check to see if the

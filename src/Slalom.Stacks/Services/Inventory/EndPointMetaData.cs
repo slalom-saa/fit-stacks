@@ -1,3 +1,10 @@
+/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,16 +74,16 @@ namespace Slalom.Stacks.Services.Inventory
         public List<EndPointRule> Rules { get; set; }
 
         /// <summary>
-        /// Gets or sets the service type.
-        /// </summary>
-        /// <value>The service type.</value>
-        public Type ServiceType { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the endpoint is secure.
         /// </summary>
         /// <value>Indicates whether the endpoint is secure.</value>
         public bool Secure { get; set; }
+
+        /// <summary>
+        /// Gets or sets the service type.
+        /// </summary>
+        /// <value>The service type.</value>
+        public Type ServiceType { get; set; }
 
         /// <summary>
         /// Gets or sets the endpoint summary.
@@ -149,7 +156,7 @@ namespace Slalom.Stacks.Services.Inventory
             {
                 return null;
             }
-            if ((bool)method.ReturnType?.GetTypeInfo().IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+            if ((bool) method.ReturnType?.GetTypeInfo().IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
             {
                 return method.ReturnType.GetGenericArguments()[0];
             }

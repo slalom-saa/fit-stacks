@@ -1,4 +1,9 @@
-using System.Security.Principal;
+/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
 
 namespace Slalom.Stacks.Runtime
 {
@@ -10,7 +15,7 @@ namespace Slalom.Stacks.Runtime
     public class NullEnvironment : Environment
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NullEnvironment"/> class.
+        /// Initializes a new instance of the <see cref="NullEnvironment" /> class.
         /// </summary>
         public NullEnvironment()
             : base("", "", "", 0)

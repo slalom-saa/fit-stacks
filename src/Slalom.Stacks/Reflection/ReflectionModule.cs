@@ -1,7 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using Autofac;
 using Slalom.Stacks.Logging;
 
@@ -16,7 +19,7 @@ namespace Slalom.Stacks.Reflection
         private readonly Stack _stack;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ReflectionModule"/> class.
+        /// Initializes a new instance of the <see cref="ReflectionModule" /> class.
         /// </summary>
         /// <param name="stack">The stack.</param>
         public ReflectionModule(Stack stack)
@@ -27,8 +30,10 @@ namespace Slalom.Stacks.Reflection
         /// <summary>
         /// Override to add registrations to the container.
         /// </summary>
-        /// <param name="builder">The builder through which components can be
-        /// registered.</param>
+        /// <param name="builder">
+        /// The builder through which components can be
+        /// registered.
+        /// </param>
         /// <remarks>Note that the ContainerBuilder parameter is unique to this module.</remarks>
         protected override void Load(ContainerBuilder builder)
         {

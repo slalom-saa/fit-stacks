@@ -1,10 +1,16 @@
-﻿using System;
-using System.Reflection;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Validation;
 
@@ -18,7 +24,7 @@ namespace Slalom.Stacks.Services.Validation
         private readonly IEnumerable<IValidate<TCommand>> _rules;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessageValidator{TCommand}"/> class.
+        /// Initializes a new instance of the <see cref="MessageValidator{TCommand}" /> class.
         /// </summary>
         /// <param name="rules">The rules for the message.</param>
         public MessageValidator(IEnumerable<IValidate<TCommand>> rules)
@@ -39,15 +45,15 @@ namespace Slalom.Stacks.Services.Validation
         {
             Argument.NotNull(command, nameof(command));
 
-            TCommand instance = command as TCommand;
+            var instance = command as TCommand;
             if (instance == null)
             {
-                instance = (TCommand)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(command), typeof(TCommand));
+                instance = (TCommand) JsonConvert.DeserializeObject(JsonConvert.SerializeObject(command), typeof(TCommand));
             }
 
             if (context.EndPoint.Secure && !(context.Request.User?.Identity?.IsAuthenticated ?? false))
             {
-                return Task.FromResult(new [] { new ValidationError("Unauthorized", "The call to \"" + context.Request.Path + "\" requires authentication.", ValidationType.Security) }.AsEnumerable());
+                return Task.FromResult(new[] {new ValidationError("Unauthorized", "The call to \"" + context.Request.Path + "\" requires authentication.", ValidationType.Security)}.AsEnumerable());
             }
 
 
@@ -85,9 +91,9 @@ namespace Slalom.Stacks.Services.Validation
             {
                 if (rule is IUseExecutionContext)
                 {
-                    ((IUseExecutionContext)rule).UseContext(context);
+                    ((IUseExecutionContext) rule).UseContext(context);
                 }
-                var result = (rule.Validate(command)).ToList();
+                var result = rule.Validate(command).ToList();
                 if (result.Any())
                 {
                     return result;
@@ -142,9 +148,9 @@ namespace Slalom.Stacks.Services.Validation
             {
                 if (rule is IUseExecutionContext)
                 {
-                    ((IUseExecutionContext)rule).UseContext(context);
+                    ((IUseExecutionContext) rule).UseContext(context);
                 }
-                var result = (rule.Validate(command)).ToList();
+                var result = rule.Validate(command).ToList();
                 if (result.Any())
                 {
                     return result;

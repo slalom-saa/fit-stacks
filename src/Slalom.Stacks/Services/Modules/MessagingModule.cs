@@ -1,13 +1,19 @@
-﻿using System.Collections.Specialized;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Slalom.Stacks.Services.Inventory;
 using Slalom.Stacks.Services.Logging;
+using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Services.Pipeline;
 using Slalom.Stacks.Services.Validation;
-using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Services.Inventory;
-using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Validation;
 using Module = Autofac.Module;
 
@@ -50,7 +56,7 @@ namespace Slalom.Stacks.Services.Modules
 
             builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
 
-            builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
+            builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] {typeof(IMessageExecutionStep).GetTypeInfo().Assembly}).ToArray())
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 
@@ -68,40 +74,35 @@ namespace Slalom.Stacks.Services.Modules
 
             builder.RegisterGeneric(typeof(MessageValidator<>));
 
-            this.RegisterAssemblyTypes(builder, this._stack.Assemblies.ToArray());
+            this.RegisterAssemblyTypes(builder, _stack.Assemblies.ToArray());
 
             _stack.Assemblies.CollectionChanged += this.HandleCollectionChanged;
         }
 
         private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            _stack.Use(builder =>
-            {
-                this.RegisterAssemblyTypes(builder, e.NewItems.OfType<Assembly>().ToArray());
-            });
+            _stack.Use(builder => { this.RegisterAssemblyTypes(builder, e.NewItems.OfType<Assembly>().ToArray()); });
         }
 
         private void RegisterAssemblyTypes(ContainerBuilder builder, Assembly[] assemblies)
         {
             builder.RegisterAssemblyTypes(assemblies)
-                   .Where(e => e.GetInterfaces().Any(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == typeof(IValidate<>)))
-                   .AsBaseAndContractTypes()
-                   .AllPropertiesAutowired();
+                .Where(e => e.GetInterfaces().Any(x => x.GetTypeInfo().IsGenericType && x.GetGenericTypeDefinition() == typeof(IValidate<>)))
+                .AsBaseAndContractTypes()
+                .AllPropertiesAutowired();
 
             builder.RegisterAssemblyTypes(assemblies)
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IEndPoint)))
                 .AsBaseAndContractTypes()
                 .AsSelf()
                 .AllPropertiesAutowired()
-                .OnActivated(e =>
-                {
-                    ((IEndPoint) e.Instance).OnStart();
-                });
+                .OnActivated(e => { ((IEndPoint) e.Instance).OnStart(); });
 
             builder.RegisterAssemblyTypes(assemblies)
-                   .Where(e => e.GetInterfaces().Contains(typeof(IEventPublisher)))
-                   .As<IEventPublisher>().AsSelf().SingleInstance();
-
+                .Where(e => e.GetInterfaces().Contains(typeof(IEventPublisher)))
+                .As<IEventPublisher>()
+                .AsSelf()
+                .SingleInstance();
         }
     }
 }

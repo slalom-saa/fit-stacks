@@ -1,12 +1,19 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
-using System.Reflection;
-using System.Xml.XPath;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Linq;
+using System.Xml.XPath;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Services.Inventory;
 using Slalom.Stacks.Validation;

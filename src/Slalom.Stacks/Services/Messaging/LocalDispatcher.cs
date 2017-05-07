@@ -1,7 +1,13 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -12,7 +18,7 @@ using Slalom.Stacks.Services.Pipeline;
 namespace Slalom.Stacks.Services.Messaging
 {
     /// <summary>
-    /// A local <see cref="ILocalMessageDispatcher"/> implementation.
+    /// A local <see cref="ILocalMessageDispatcher" /> implementation.
     /// </summary>
     /// <seealso cref="ILocalMessageDispatcher" />
     public class LocalDispatcher : ILocalMessageDispatcher
@@ -20,32 +26,12 @@ namespace Slalom.Stacks.Services.Messaging
         private readonly IComponentContext _components;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LocalDispatcher"/> class.
+        /// Initializes a new instance of the <see cref="LocalDispatcher" /> class.
         /// </summary>
-        /// <param name="components">The configured <see cref="IComponentContext"/>.</param>
+        /// <param name="components">The configured <see cref="IComponentContext" />.</param>
         public LocalDispatcher(IComponentContext components)
         {
             _components = components;
-        }
-
-        /// <summary>
-        /// Runs steps to complete the current execution context.
-        /// </summary>
-        /// <param name="context">The current context.</param>
-        /// <returns>Returns a task for asynchronous programming.</returns>
-        protected virtual async Task Complete(ExecutionContext context)
-        {
-            var steps = new List<IMessageExecutionStep>
-            {
-                _components.Resolve<HandleException>(),
-                _components.Resolve<Complete>(),
-                _components.Resolve<PublishEvents>(),
-                _components.Resolve<LogCompletion>()
-            };
-            foreach (var step in steps)
-            {
-                await step.Execute(context);
-            }
         }
 
         /// <inheritdoc />
@@ -72,16 +58,36 @@ namespace Slalom.Stacks.Services.Messaging
 
             var body = request.Message.Body;
             var parameterType = endPoint.Method.GetParameters().First().ParameterType;
-            if (body.GetType() != parameterType)
+            if (body == null || body.GetType() != parameterType)
             {
-                body = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body), parameterType);
+                body = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body ?? ""), parameterType);
             }
 
-            await (Task)endPoint.Method.Invoke(handler, new object[] { body });
+            await (Task) endPoint.Method.Invoke(handler, new[] {body});
 
             await this.Complete(context);
 
             return new MessageResult(context);
+        }
+
+        /// <summary>
+        /// Runs steps to complete the current execution context.
+        /// </summary>
+        /// <param name="context">The current context.</param>
+        /// <returns>Returns a task for asynchronous programming.</returns>
+        protected virtual async Task Complete(ExecutionContext context)
+        {
+            var steps = new List<IMessageExecutionStep>
+            {
+                _components.Resolve<HandleException>(),
+                _components.Resolve<Complete>(),
+                _components.Resolve<PublishEvents>(),
+                _components.Resolve<LogCompletion>()
+            };
+            foreach (var step in steps)
+            {
+                await step.Execute(context);
+            }
         }
     }
 }
