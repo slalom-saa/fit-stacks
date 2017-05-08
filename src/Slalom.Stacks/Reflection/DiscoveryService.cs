@@ -1,13 +1,20 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Validation;
-
 #if core
 using Microsoft.Extensions.DependencyModel;
+
 #endif
 
 namespace Slalom.Stacks.Reflection
@@ -20,27 +27,18 @@ namespace Slalom.Stacks.Reflection
     {
         private static readonly ConcurrentDictionary<Type, List<Type>> Cache = new ConcurrentDictionary<Type, List<Type>>();
 
-        internal static readonly string[] Ignores = { "Libuv", "Microsoft.", "NETStandard", "runtime", "xunit" };
+        internal static readonly string[] Ignores = {"Libuv", "Microsoft.", "NETStandard", "runtime", "xunit"};
         private Lazy<List<Assembly>> _assemblies;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DiscoveryService"/> class.
+        /// Initializes a new instance of the <see cref="DiscoveryService" /> class.
         /// </summary>
-        /// <param name="logger">The configured <see cref="ILogger"/> instance.</param>
+        /// <param name="logger">The configured <see cref="ILogger" /> instance.</param>
         public DiscoveryService(ILogger logger)
         {
             Argument.NotNull(logger, nameof(logger));
 
             this.CreateAssemblyFactory(logger);
-        }
-
-        /// <summary>
-        /// Finds all available types.
-        /// </summary>
-        /// <returns>Returns all available types.</returns>
-        public IEnumerable<Type> Find()
-        {
-            return _assemblies.Value.SafelyGetTypes();
         }
 
         /// <summary>
@@ -60,6 +58,15 @@ namespace Slalom.Stacks.Reflection
         public IEnumerable<Type> Find(Type type)
         {
             return Cache.GetOrAdd(type, t => _assemblies.Value.SafelyGetTypes(type).ToList());
+        }
+
+        /// <summary>
+        /// Finds all available types.
+        /// </summary>
+        /// <returns>Returns all available types.</returns>
+        public IEnumerable<Type> Find()
+        {
+            return _assemblies.Value.SafelyGetTypes();
         }
 
         private void CreateAssemblyFactory(ILogger logger)

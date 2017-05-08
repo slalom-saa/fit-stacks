@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -19,12 +26,12 @@ namespace Slalom.Stacks.Domain
         /// <summary>
         /// The lock for the instances.
         /// </summary>
-        protected readonly ReaderWriterLockSlim CacheLock = new ReaderWriterLockSlim();
+        private readonly ReaderWriterLockSlim CacheLock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// The in-memory items.
         /// </summary>
-        protected readonly List<IAggregateRoot> Instances = new List<IAggregateRoot>();
+        private readonly List<IAggregateRoot> Instances = new List<IAggregateRoot>();
 
         /// <inheritdoc />
         public Task Add<TEntity>(TEntity[] instances) where TEntity : class, IAggregateRoot

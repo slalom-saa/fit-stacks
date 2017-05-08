@@ -1,5 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
 
 namespace Slalom.Stacks.Services.Messaging
 {
@@ -9,7 +13,7 @@ namespace Slalom.Stacks.Services.Messaging
     public class Document
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Document"/> class.
+        /// Initializes a new instance of the <see cref="Document" /> class.
         /// </summary>
         /// <param name="name">The file name of the document.</param>
         /// <param name="content">The document content.</param>

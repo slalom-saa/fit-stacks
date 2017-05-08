@@ -1,3 +1,10 @@
+/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +18,7 @@ namespace Slalom.Stacks.Services.Inventory
     public class ServiceMetaData
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceMetaData"/> class.
+        /// Initializes a new instance of the <see cref="ServiceMetaData" /> class.
         /// </summary>
         /// <param name="service">The service type.</param>
         /// <param name="rootPath">The root path.</param>
@@ -30,7 +37,7 @@ namespace Slalom.Stacks.Services.Inventory
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceMetaData"/> class.
+        /// Initializes a new instance of the <see cref="ServiceMetaData" /> class.
         /// </summary>
         public ServiceMetaData()
         {
@@ -41,6 +48,12 @@ namespace Slalom.Stacks.Services.Inventory
         /// </summary>
         /// <value>The end points.</value>
         public List<EndPointMetaData> EndPoints { get; set; } = new List<EndPointMetaData>();
+
+        /// <summary>
+        /// Gets or sets the service name.
+        /// </summary>
+        /// <value>The service name.</value>
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the path.
@@ -59,13 +72,5 @@ namespace Slalom.Stacks.Services.Inventory
         /// </summary>
         /// <value>The service type.</value>
         public Type ServiceType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the service name.
-        /// </summary>
-        /// <value>The service name.</value>
-        public string Name { get; set; }
-
-       
     }
 }

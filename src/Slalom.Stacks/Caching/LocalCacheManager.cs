@@ -1,35 +1,27 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Slalom.Stacks.Domain;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Caching
 {
     /// <summary>
-    /// A local <see cref="ICacheManager"/> implementation that uses an in-memory store.  This is not to be used in a distributed
+    /// A local <see cref="ICacheManager" /> implementation that uses an in-memory store.  This is not to be used in a distributed
     /// environment.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Caching.ICacheManager" />
     public class LocalCacheManager : ICacheManager
     {
-        private readonly ICacheConnector _connector;
-        private List<object> _instances = new List<object>();
         private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LocalCacheManager"/> class.
-        /// </summary>
-        /// <param name="connector">The configured <see cref="ICacheConnector"/>.</param>
-        public LocalCacheManager(ICacheConnector connector)
-        {
-            Argument.NotNull(connector, nameof(connector));
-
-            _connector = connector;
-        }
+        private readonly List<object> _instances = new List<object>();
 
         /// <summary>
         /// Gets the item count.
@@ -84,31 +76,12 @@ namespace Slalom.Stacks.Caching
             _cacheLock.EnterReadLock();
             try
             {
-                return Task.FromResult((TItem)_instances.Find(e => ItemIdentity.GetIdentity(e) == id));
+                return Task.FromResult((TItem) _instances.Find(e => ItemIdentity.GetIdentity(e) == id));
             }
             finally
             {
                 _cacheLock.ExitReadLock();
             }
-        }
-
-        /// <summary>
-        /// Removes the items with the specified keys.
-        /// </summary>
-        /// <param name="keys">The keys to remove.</param>
-        /// <returns>Returns a task for asynchronous programming.</returns>
-        public virtual Task RemoveAsync(params string[] keys)
-        {
-            _cacheLock.EnterWriteLock();
-            try
-            {
-                _instances.RemoveAll(e => keys.Contains(ItemIdentity.GetIdentity(e)));
-            }
-            finally
-            {
-                _cacheLock.ExitWriteLock();
-            }
-            return Task.FromResult(0);
         }
 
         /// <summary>
@@ -145,6 +118,25 @@ namespace Slalom.Stacks.Caching
             await this.RemoveAsync(instances);
 
             await this.AddAsync(instances);
+        }
+
+        /// <summary>
+        /// Removes the items with the specified keys.
+        /// </summary>
+        /// <param name="keys">The keys to remove.</param>
+        /// <returns>Returns a task for asynchronous programming.</returns>
+        public virtual Task RemoveAsync(params string[] keys)
+        {
+            _cacheLock.EnterWriteLock();
+            try
+            {
+                _instances.RemoveAll(e => keys.Contains(ItemIdentity.GetIdentity(e)));
+            }
+            finally
+            {
+                _cacheLock.ExitWriteLock();
+            }
+            return Task.FromResult(0);
         }
     }
 }

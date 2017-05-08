@@ -1,3 +1,10 @@
+/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Reflection;
 using Autofac.Core;
 
@@ -12,7 +19,7 @@ namespace Slalom.Stacks.Configuration
         /// <summary>
         /// The shared instance of the selector.
         /// </summary>
-        public static readonly IPropertySelector Instance = new AllProperties();
+        public static IPropertySelector Instance => new AllProperties();
 
         /// <summary>
         /// Provides filtering to determine if property should be injected

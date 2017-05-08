@@ -1,7 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using Autofac;
-using Slalom.Stacks.Caching;
-using Slalom.Stacks.Configuration;
 
 namespace Slalom.Stacks.Logging
 {
@@ -14,16 +18,18 @@ namespace Slalom.Stacks.Logging
         /// <summary>
         /// Override to add registrations to the container.
         /// </summary>
-        /// <param name="builder">The builder through which components can be
-        /// registered.</param>
+        /// <param name="builder">
+        /// The builder through which components can be
+        /// registered.
+        /// </param>
         /// <remarks>Note that the ContainerBuilder parameter is unique to this module.</remarks>
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
 
             builder.RegisterType<CompositeLogger>()
-                   .AsImplementedInterfaces()
-                   .SingleInstance();
+                .AsImplementedInterfaces()
+                .SingleInstance();
         }
     }
 }

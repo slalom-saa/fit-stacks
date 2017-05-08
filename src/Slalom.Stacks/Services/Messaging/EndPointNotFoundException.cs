@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 
 namespace Slalom.Stacks.Services.Messaging
 {
@@ -9,7 +16,7 @@ namespace Slalom.Stacks.Services.Messaging
     public class EndPointNotFoundException : InvalidOperationException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EndPointNotFoundException"/> class.
+        /// Initializes a new instance of the <see cref="EndPointNotFoundException" /> class.
         /// </summary>
         /// <param name="request">The current request.</param>
         public EndPointNotFoundException(Request request) : base("An endpoint could not be found for the path " + request.Path)

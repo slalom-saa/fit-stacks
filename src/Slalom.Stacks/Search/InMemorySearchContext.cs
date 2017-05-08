@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -14,9 +21,9 @@ namespace Slalom.Stacks.Search
     /// <seealso cref="Slalom.Stacks.Search.ISearchContext" />
     public class InMemorySearchContext : ISearchContext
     {
-        private readonly List<ISearchResult> _instances = new List<ISearchResult>();
-        private int _index = 0;
         private readonly ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
+        private readonly List<ISearchResult> _instances = new List<ISearchResult>();
+        private int _index;
 
         /// <summary>
         /// Adds the specified instances. Add is similar to Update, but skips a check to see if the
@@ -25,8 +32,10 @@ namespace Slalom.Stacks.Search
         /// <typeparam name="TSearchResult">The type of instance to add.</typeparam>
         /// <param name="instances">The instances to add.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
+        /// <remarks>
+        /// This allows for performance gain in larger data sets.  If you are unsure
+        /// and have a small set, then you can use the update method.
+        /// </remarks>
         public Task AddAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
             Argument.NotNull(instances, nameof(instances));
@@ -77,7 +86,7 @@ namespace Slalom.Stacks.Search
             _cacheLock.EnterReadLock();
             try
             {
-                if (!String.IsNullOrWhiteSpace(text))
+                if (!string.IsNullOrWhiteSpace(text))
                 {
                     return _instances.OfType<TSearchResult>().AsQueryable().Contains(text);
                 }
@@ -121,7 +130,7 @@ namespace Slalom.Stacks.Search
             _cacheLock.EnterWriteLock();
             try
             {
-                _instances.RemoveAll(e => predicate.Compile()((TSearchResult)e));
+                _instances.RemoveAll(e => predicate.Compile()((TSearchResult) e));
             }
             finally
             {
@@ -141,7 +150,7 @@ namespace Slalom.Stacks.Search
             _cacheLock.EnterReadLock();
             try
             {
-                return Task.FromResult((TSearchResult)_instances.Find(e => e.Id == id));
+                return Task.FromResult((TSearchResult) _instances.Find(e => e.Id == id));
             }
             finally
             {
@@ -156,8 +165,10 @@ namespace Slalom.Stacks.Search
         /// <typeparam name="TSearchResult">The type of instance.</typeparam>
         /// <param name="instances">The instances to update.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
+        /// <remarks>
+        /// This allows for performance gain in larger data sets.  If you are unsure
+        /// and have a small set, then you can use the update method.
+        /// </remarks>
         public async Task UpdateAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
             await this.RemoveAsync(instances);

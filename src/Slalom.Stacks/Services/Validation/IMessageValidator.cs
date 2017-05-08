@@ -1,6 +1,12 @@
-﻿using System.Collections.Generic;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Validation;
 

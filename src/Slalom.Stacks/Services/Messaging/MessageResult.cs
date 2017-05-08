@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -34,9 +41,9 @@ namespace Slalom.Stacks.Services.Messaging
             this.ValidationErrors = instance.ValidationErrors.ToList();
             this.RequestId = instance.RequestId;
             this.IsCancelled = instance.IsCancelled;
-            if (instance.Response is String)
+            if (instance.Response is string)
             {
-                this.Response = JsonConvert.DeserializeObject<T>((string)instance.Response);
+                this.Response = JsonConvert.DeserializeObject<T>((string) instance.Response);
             }
             else
             {
@@ -50,7 +57,7 @@ namespace Slalom.Stacks.Services.Messaging
         /// <value>The message response.</value>
         public new T Response
         {
-            get { return (T)base.Response; }
+            get { return (T) base.Response; }
             set { base.Response = value; }
         }
     }

@@ -1,8 +1,15 @@
-﻿using System;
-using Slalom.Stacks.Validation;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
 
+using System;
+using Slalom.Stacks.Validation;
 #if core
 using Microsoft.Extensions.Configuration;
+
 #else
 using System.Configuration;
 #endif
@@ -15,14 +22,13 @@ namespace Slalom.Stacks.Runtime
     /// <seealso cref="Slalom.Stacks.Runtime.IEnvironmentContext" />
     public class Environment : IEnvironmentContext
     {
-        [ThreadStatic]
-        private static Environment current;
+        [ThreadStatic] private static Environment current;
 
 #if core
         private readonly IConfiguration _configuration;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Runtime.Environment"/> class.
+        /// Initializes a new instance of the <see cref="Runtime.Environment" /> class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         public Environment(IConfiguration configuration)
@@ -31,6 +37,7 @@ namespace Slalom.Stacks.Runtime
 
             _configuration = configuration;
         }
+
 #else
         internal Environment()
         {
@@ -89,9 +96,9 @@ namespace Slalom.Stacks.Runtime
         {
 #if core
             return current ?? (current = new Environment(_configuration?["Application"],
-                                   _configuration?["Environment"],
-                                   System.Environment.MachineName,
-                                   System.Environment.CurrentManagedThreadId));
+                       _configuration?["Environment"],
+                       System.Environment.MachineName,
+                       System.Environment.CurrentManagedThreadId));
 #else
             return current ?? (current = new Environment(ConfigurationManager.AppSettings["Application"],
                        ConfigurationManager.AppSettings["Environment"],

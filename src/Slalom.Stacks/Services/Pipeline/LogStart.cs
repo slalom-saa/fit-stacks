@@ -1,5 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Threading.Tasks;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Services.Logging;
@@ -9,7 +14,7 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Services.Pipeline
 {
     /// <summary>
-    /// The log startup step of the Service execution pipeline.
+    /// The log startup step of the EndPoint execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Services.Pipeline.IMessageExecutionStep" />
     public class LogStart : IMessageExecutionStep

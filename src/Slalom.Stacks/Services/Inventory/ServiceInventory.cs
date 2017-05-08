@@ -1,8 +1,14 @@
-﻿using System.Collections.Generic;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Services.Inventory
@@ -12,6 +18,12 @@ namespace Slalom.Stacks.Services.Inventory
     /// </summary>
     public class ServiceInventory
     {
+        /// <summary>
+        /// Gets the end points in the inventory.
+        /// </summary>
+        /// <value>The end points in the inventory.</value>
+        public IEnumerable<EndPointMetaData> EndPoints => this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints);
+
         /// <summary>
         /// Gets the registered services.
         /// </summary>
@@ -62,12 +74,6 @@ namespace Slalom.Stacks.Services.Inventory
         {
             return this.EndPoints.Where(e => e.RequestType.FullName == message.MessageType || e.ServiceType.GetAllAttributes<SubscribeAttribute>().Any());
         }
-
-        /// <summary>
-        /// Gets the end points in the inventory.
-        /// </summary>
-        /// <value>The end points in the inventory.</value>
-        public IEnumerable<EndPointMetaData> EndPoints => this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints);
 
         /// <summary>
         /// Finds the endpoint that can handle the specified path.  If there is no path, then the message will be used.

@@ -13,51 +13,28 @@ using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Text;
+using Slalom.Stacks.Validation;
+
 #pragma warning disable 1591
 
 namespace Slalom.Stacks.ConsoleClient
 {
-    [Request("child")]
-    public class ChildRequest
+    public class Req
     {
+        [Url("sdf")]
+        public string Url { get; set; } = "http://localhost:5001";
+
+        [Json("ad")]
+        public string Json { get; set; } = "{}";
     }
 
-    [EndPoint("parent")]
-    public class Parent : EndPoint
+    public class Go : EndPoint<Req>
     {
-        private int i = 0;
-        public override void Receive()
+        public override void Receive(Req instance)
         {
-            if (i++ > 5)
-            {
-                throw new Exception();
-            }
-
-            var result = this.Send<Response>(new ChildRequest()).Result;
-
-            this.Respond(result.Response);
-        }
-
-        public override void OnStart()
-        {
-            Console.WriteLine("Starting...");
+            base.Receive(instance);
         }
     }
-
-    [EndPoint("child")]
-    public class Child : EndPoint
-    {
-        public override void Receive()
-        {
-            this.Respond(JsonConvert.SerializeObject(new Response()));
-        }
-    }
-
-    public class Response
-    {
-        public string Property { get; set; } = "abc";
-    }
-
 
 
     public class Program
@@ -70,26 +47,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack(typeof(AddProductCommand)))
                 {
-                    for (int i = 0; i < 10; i++)
-                    {
-                        var result = stack.Send<Response>("parent").Result;
-
-                        Console.WriteLine(result.IsSuccessful);
-                    }
-
-                    // stack.Send(new AddProductCommand("name", "esc")).OutputToJson();
-
-                    //Console.WriteLine(new String('-', 10));
-
-                    //stack.GetEvents().OutputToJson();
-
-                    //Console.WriteLine(new String('-', 10));
-
-                    //stack.GetRequests().OutputToJson();
-
-                    //Console.WriteLine(new String('-', 10));
-
-                    //stack.GetResponses().OutputToJson();
+                    stack.Send(new Req()).Result.OutputToJson();
                 }
             }
             catch (Exception exception)

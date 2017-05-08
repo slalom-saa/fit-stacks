@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System.Collections.Generic;
 
 namespace Slalom.Stacks.Validation
 {

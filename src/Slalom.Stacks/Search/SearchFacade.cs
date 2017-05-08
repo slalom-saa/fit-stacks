@@ -1,9 +1,15 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Autofac;
-using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Search
@@ -19,7 +25,7 @@ namespace Slalom.Stacks.Search
         private readonly IComponentContext _componentContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SearchFacade"/> class.
+        /// Initializes a new instance of the <see cref="SearchFacade" /> class.
         /// </summary>
         /// <param name="componentContext">The component requestContext.</param>
         public SearchFacade(IComponentContext componentContext)
@@ -53,9 +59,11 @@ namespace Slalom.Stacks.Search
         /// <typeparam name="TSearchResult">The type of instance to add.</typeparam>
         /// <param name="instances">The instances to add.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <exception>Thrown when the <paramref name="instances"/> argument is null.</exception>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
+        /// <exception>Thrown when the <paramref name="instances" /> argument is null.</exception>
+        /// <remarks>
+        /// This allows for performance gain in larger data sets.  If you are unsure
+        /// and have a small set, then you can use the update method.
+        /// </remarks>
         public Task AddAsync<TSearchResult>(params TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
             Argument.NotNull(instances, nameof(instances));
@@ -130,7 +138,7 @@ namespace Slalom.Stacks.Search
         /// <typeparam name="TSearchResult">The type of instance to remove.</typeparam>
         /// <param name="instances">The instances to remove.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <exception>Thrown when the <paramref name="instances"/> argument is null.</exception>
+        /// <exception>Thrown when the <paramref name="instances" /> argument is null.</exception>
         public Task RemoveAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
             Argument.NotNull(instances, nameof(instances));
@@ -154,7 +162,7 @@ namespace Slalom.Stacks.Search
         /// <typeparam name="TSearchResult">The type of read model.</typeparam>
         /// <param name="predicate">The predicate to match.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <exception>Thrown when the <paramref name="predicate"/> argument is null.</exception>
+        /// <exception>Thrown when the <paramref name="predicate" /> argument is null.</exception>
         public Task RemoveAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate) where TSearchResult : class, ISearchResult
         {
             Argument.NotNull(predicate, nameof(predicate));
@@ -191,9 +199,11 @@ namespace Slalom.Stacks.Search
         /// <typeparam name="TSearchResult">The type of instance.</typeparam>
         /// <param name="instances">The instances to update.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <remarks>This allows for performance gain in larger data sets.  If you are unsure
-        /// and have a small set, then you can use the update method.</remarks>
-        /// <exception>Thrown when the <paramref name="instances"/> argument is null.</exception>
+        /// <remarks>
+        /// This allows for performance gain in larger data sets.  If you are unsure
+        /// and have a small set, then you can use the update method.
+        /// </remarks>
+        /// <exception>Thrown when the <paramref name="instances" /> argument is null.</exception>
         public Task UpdateAsync<TSearchResult>(TSearchResult[] instances) where TSearchResult : class, ISearchResult
         {
             Argument.NotNull(instances, nameof(instances));
@@ -218,8 +228,8 @@ namespace Slalom.Stacks.Search
         /// <param name="predicate">The predicate to match.</param>
         /// <param name="expression">The update make.</param>
         /// <returns>A task for asynchronous programming.</returns>
-        /// <exception>Thrown when the <paramref name="predicate"/> argument is null.</exception>
-        /// <exception>Thrown when the <paramref name="expression"/> argument is null.</exception>
+        /// <exception>Thrown when the <paramref name="predicate" /> argument is null.</exception>
+        /// <exception>Thrown when the <paramref name="expression" /> argument is null.</exception>
         public Task UpdateAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate, Expression<Func<TSearchResult, TSearchResult>> expression) where TSearchResult : class, ISearchResult
         {
             Argument.NotNull(predicate, nameof(predicate));

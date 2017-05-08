@@ -1,8 +1,13 @@
-﻿using System.Collections.ObjectModel;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Linq;
 using System.Reflection;
 using Autofac;
-using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Reflection;
 using Module = Autofac.Module;
 

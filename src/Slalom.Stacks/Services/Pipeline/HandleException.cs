@@ -1,5 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using Slalom.Stacks.Services.Messaging;
@@ -33,9 +39,9 @@ namespace Slalom.Stacks.Services.Pipeline
                 }
                 else if (exception.InnerException is TargetInvocationException)
                 {
-                    context.SetException(((TargetInvocationException)exception.InnerException).InnerException);
+                    context.SetException(((TargetInvocationException) exception.InnerException).InnerException);
                 }
-                else if (((AggregateException)exception).InnerExceptions.Count == 1)
+                else if (((AggregateException) exception).InnerExceptions.Count == 1)
                 {
                     context.SetException(exception.InnerException);
                 }

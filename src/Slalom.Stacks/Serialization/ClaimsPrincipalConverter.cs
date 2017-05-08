@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Linq;
 using System.Security.Claims;
 using Newtonsoft.Json;
@@ -7,7 +14,7 @@ using Slalom.Stacks.Serialization.Model;
 namespace Slalom.Stacks.Serialization
 {
     /// <summary>
-    /// Allows for serialization and deserialization of <see cref="ClaimsPrincipal"/> instances.
+    /// Allows for serialization and deserialization of <see cref="ClaimsPrincipal" /> instances.
     /// </summary>
     /// <seealso cref="Newtonsoft.Json.JsonConverter" />
     public class ClaimsPrincipalConverter : JsonConverter
@@ -33,7 +40,10 @@ namespace Slalom.Stacks.Serialization
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var source = serializer.Deserialize<ClaimsPrincipalHolder>(reader);
-            if (source == null) return null;
+            if (source == null)
+            {
+                return null;
+            }
 
             var claims = source.Claims.Select(x => new Claim(x.Type, x.Value));
             var id = new ClaimsIdentity(claims, source.AuthenticationType);
@@ -49,7 +59,7 @@ namespace Slalom.Stacks.Serialization
         /// <param name="serializer">The calling serializer.</param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var source = (ClaimsPrincipal)value;
+            var source = (ClaimsPrincipal) value;
 
             var target = new ClaimsPrincipalHolder(source);
 

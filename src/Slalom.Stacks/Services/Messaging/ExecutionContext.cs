@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -32,7 +39,7 @@ namespace Slalom.Stacks.Services.Messaging
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExecutionContext"/> class.
+        /// Initializes a new instance of the <see cref="ExecutionContext" /> class.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="context">The context.</param>

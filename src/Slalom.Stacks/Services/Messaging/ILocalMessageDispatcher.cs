@@ -1,3 +1,10 @@
+/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System;
 using System.Threading.Tasks;
 using Slalom.Stacks.Services.Inventory;
@@ -18,5 +25,5 @@ namespace Slalom.Stacks.Services.Messaging
         /// <param name="timeout">The timeout.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
         Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null);
-    }   
+    }
 }

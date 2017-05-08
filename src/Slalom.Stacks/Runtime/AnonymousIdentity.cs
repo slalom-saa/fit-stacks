@@ -1,3 +1,10 @@
+/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Security.Principal;
 
 namespace Slalom.Stacks.Runtime
@@ -10,7 +17,7 @@ namespace Slalom.Stacks.Runtime
     public class AnonymousIdentity : GenericIdentity
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AnonymousIdentity"/> class.
+        /// Initializes a new instance of the <see cref="AnonymousIdentity" /> class.
         /// </summary>
         public AnonymousIdentity()
             : base("")

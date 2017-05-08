@@ -1,5 +1,11 @@
+/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using Slalom.Stacks.Services.Inventory;
-using Slalom.Stacks.Services.Logging;
 
 namespace Slalom.Stacks.Services.Messaging
 {
@@ -25,7 +31,7 @@ namespace Slalom.Stacks.Services.Messaging
         /// <param name="parent">The parent.</param>
         /// <returns>The current request.</returns>
         Request Resolve(string path, EndPointMetaData endPoint, Request parent = null);
-        
+
         /// <summary>
         /// Resolves the current request.
         /// </summary>

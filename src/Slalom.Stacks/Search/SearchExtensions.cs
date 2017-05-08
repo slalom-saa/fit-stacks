@@ -1,9 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Search
@@ -23,7 +28,7 @@ namespace Slalom.Stacks.Search
         public static IQueryable<T> Contains<T>(this IQueryable<T> instance, string text)
         {
             Argument.NotNull(instance, nameof(instance));
-            if (String.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(text))
             {
                 return instance;
             }
@@ -32,7 +37,7 @@ namespace Slalom.Stacks.Search
             Expression body = Expression.Constant(false);
 
             var containsMethod = typeof(string).GetMethod("Contains"
-                , new[] { typeof(string) });
+                , new[] {typeof(string)});
 
             var toLowerMethod = typeof(string).GetMethod("ToLower", new Type[0]);
 

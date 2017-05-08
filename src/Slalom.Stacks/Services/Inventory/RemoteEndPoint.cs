@@ -1,4 +1,11 @@
-﻿namespace Slalom.Stacks.Services.Inventory
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+namespace Slalom.Stacks.Services.Inventory
 {
     /// <summary>
     /// An available endpoint in a remote service.

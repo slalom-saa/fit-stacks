@@ -1,4 +1,10 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -10,14 +16,14 @@ namespace Slalom.Stacks.Validation
     public class ValidationError
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationError"/> class.
+        /// Initializes a new instance of the <see cref="ValidationError" /> class.
         /// </summary>
         public ValidationError()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationError"/> class.
+        /// Initializes a new instance of the <see cref="ValidationError" /> class.
         /// </summary>
         /// <param name="message">The message text.</param>
         public ValidationError(string message)
@@ -26,7 +32,7 @@ namespace Slalom.Stacks.Validation
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationError"/> class.
+        /// Initializes a new instance of the <see cref="ValidationError" /> class.
         /// </summary>
         /// <param name="message">The message text.</param>
         /// <param name="type">The validation type.</param>
@@ -36,7 +42,7 @@ namespace Slalom.Stacks.Validation
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationError"/> class.
+        /// Initializes a new instance of the <see cref="ValidationError" /> class.
         /// </summary>
         /// <param name="code">The message code for client consumption.</param>
         /// <param name="message">The message text.</param>
@@ -46,7 +52,7 @@ namespace Slalom.Stacks.Validation
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationError"/> class.
+        /// Initializes a new instance of the <see cref="ValidationError" /> class.
         /// </summary>
         /// <param name="code">The message code for client consumption.</param>
         /// <param name="message">The message text.</param>
@@ -64,7 +70,7 @@ namespace Slalom.Stacks.Validation
         /// <value>
         /// The message code.
         /// </value>
-        public string Code { get; private set; }
+        public string Code { get; }
 
         /// <summary>
         /// Gets the message text.
@@ -72,7 +78,7 @@ namespace Slalom.Stacks.Validation
         /// <value>
         /// The message text.
         /// </value>
-        public string Message { get; private set; }
+        public string Message { get; }
 
         /// <summary>
         /// Gets validation type.
@@ -84,6 +90,18 @@ namespace Slalom.Stacks.Validation
         public ValidationType Type { get; private set; }
 
         /// <summary>
+        /// Performs an implicit conversion from <see cref="System.String" /> to <see cref="ValidationError" />.
+        /// </summary>
+        /// <param name="message">The message text.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
+        public static implicit operator ValidationError(string message)
+        {
+            return new ValidationError(message);
+        }
+
+        /// <summary>
         /// Adds the type to the message.
         /// </summary>
         /// <param name="type">The type of validation.</param>
@@ -93,18 +111,6 @@ namespace Slalom.Stacks.Validation
             this.Type = type;
 
             return this;
-        }
-
-        /// <summary>
-        /// Performs an implicit conversion from <see cref="System.String"/> to <see cref="ValidationError"/>.
-        /// </summary>
-        /// <param name="message">The message text.</param>
-        /// <returns>
-        /// The result of the conversion.
-        /// </returns>
-        public static implicit operator ValidationError(string message)
-        {
-            return new ValidationError(message);
         }
     }
 }

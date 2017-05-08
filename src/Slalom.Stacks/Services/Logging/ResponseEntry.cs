@@ -1,6 +1,14 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Collections.Generic;
 using Slalom.Stacks.Services.Messaging;
+using Slalom.Stacks.Utilities.NewId;
 using Slalom.Stacks.Validation;
 using Environment = Slalom.Stacks.Runtime.Environment;
 
@@ -18,6 +26,13 @@ namespace Slalom.Stacks.Services.Logging
         /// <summary>
         /// Initializes a new instance of the <see cref="ResponseEntry" /> class.
         /// </summary>
+        public ResponseEntry()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResponseEntry" /> class.
+        /// </summary>
         /// <param name="context">The completed context.</param>
         /// <param name="environment">The current environment.</param>
         public ResponseEntry(ExecutionContext context, Environment environment)
@@ -25,8 +40,8 @@ namespace Slalom.Stacks.Services.Logging
             this.CorrelationId = context.Request.CorrelationId;
             this.RequestId = context.Request.Message.Id;
             this.Completed = context.Completed;
-            this.Service = context.EndPoint.ServiceType;
-            this.Exception = context.Exception;
+            this.EndPoint = context.EndPoint.ServiceType.AssemblyQualifiedName;
+            this.Exception = context.Exception?.ToString();
             this.IsSuccessful = context.IsSuccessful;
             this.Started = context.Started;
             this.ValidationErrors = context.ValidationErrors;
@@ -52,7 +67,7 @@ namespace Slalom.Stacks.Services.Logging
         /// Gets the execution completion date and time.
         /// </summary>
         /// <value>The execution completion date and time.</value>
-        public DateTimeOffset? Completed { get; }
+        public DateTimeOffset? Completed { get; set; }
 
         /// <summary>
         /// Gets or sets the request correlation identifier.
@@ -67,6 +82,12 @@ namespace Slalom.Stacks.Services.Logging
         public TimeSpan Elapsed { get; set; }
 
         /// <summary>
+        /// Gets the type of the endpoint.
+        /// </summary>
+        /// <value>The type of the endpoint.</value>
+        public string EndPoint { get; set; }
+
+        /// <summary>
         /// Gets or sets the name of the environment.  This should be DEV, QA, PROD, etc.
         /// </summary>
         /// <value>The name of the environment.</value>
@@ -76,13 +97,19 @@ namespace Slalom.Stacks.Services.Logging
         /// Gets the exception that was raised, if any.
         /// </summary>
         /// <value>The exception that was raised, if any.</value>
-        public Exception Exception { get; }
+        public string Exception { get; set; }
+
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        public string Id { get; set; } = NewId.NextId();
 
         /// <summary>
         /// Gets a value indicating whether execution was successful.
         /// </summary>
         /// <value><c>true</c> if execution was; otherwise, <c>false</c>.</value>
-        public bool IsSuccessful { get; }
+        public bool IsSuccessful { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the machine that executed the endpoint.
@@ -100,19 +127,13 @@ namespace Slalom.Stacks.Services.Logging
         /// Gets the request message identifier.
         /// </summary>
         /// <value>The request message identifier.</value>
-        public string RequestId { get; }
-
-        /// <summary>
-        /// Gets the type of the endpoint.
-        /// </summary>
-        /// <value>The type of the endpoint.</value>
-        public Type Service { get; }
+        public string RequestId { get; set; }
 
         /// <summary>
         /// Gets the date and time that the request was received.
         /// </summary>
         /// <value>The date and time that the request was received.</value>
-        public DateTimeOffset Started { get; }
+        public DateTimeOffset Started { get; set; }
 
         /// <summary>
         /// Gets or sets the identifier of the thread that executed the endpoint.

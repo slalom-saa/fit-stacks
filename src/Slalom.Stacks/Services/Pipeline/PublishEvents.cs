@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
@@ -8,14 +15,14 @@ using Slalom.Stacks.Services.Messaging;
 namespace Slalom.Stacks.Services.Pipeline
 {
     /// <summary>
-    /// The publish events step of the Service execution pipeline.
+    /// The publish events step of the EndPoint execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Services.Pipeline.IMessageExecutionStep" />
     public class PublishEvents : IMessageExecutionStep
     {
         private readonly IEventStore _eventStore;
         private readonly IMessageGateway _messageGateway;
-        private IEnumerable<IEventPublisher> _eventPublishers;
+        private readonly IEnumerable<IEventPublisher> _eventPublishers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PublishEvents" /> class.
@@ -33,7 +40,7 @@ namespace Slalom.Stacks.Services.Pipeline
         {
             if (context.IsSuccessful)
             {
-                var raisedEvents = context.RaisedEvents.Union(new[] { context.Response as EventMessage }).Where(e => e != null).ToArray();
+                var raisedEvents = context.RaisedEvents.Union(new[] {context.Response as EventMessage}).Where(e => e != null).ToArray();
                 foreach (var instance in raisedEvents)
                 {
                     await _eventStore.Append(instance);

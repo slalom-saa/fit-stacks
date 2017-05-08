@@ -1,4 +1,11 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -38,14 +45,14 @@ namespace Slalom.Stacks.Search
         /// Removes the specified instances.
         /// </summary>
         /// <param name="instances">The instances to remove.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances" /> argument is null.</exception>
         Task RemoveAsync(TSearchResult[] instances);
 
         /// <summary>
         /// Removes all instances that match the specified predicate.
         /// </summary>
         /// <param name="predicate">The predicate to match.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="predicate"/> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="predicate" /> argument is null.</exception>
         Task RemoveAsync(Expression<Func<TSearchResult, bool>> predicate);
 
         /// <summary>
@@ -64,7 +71,7 @@ namespace Slalom.Stacks.Search
         /// and have a small set, then you can use the update method.
         /// </remarks>
         /// <param name="instances">The instances to update.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances"/> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="instances" /> argument is null.</exception>
         Task UpdateAsync(TSearchResult[] instances);
 
         /// <summary>
@@ -72,8 +79,8 @@ namespace Slalom.Stacks.Search
         /// </summary>
         /// <param name="predicate">The predicate to match.</param>
         /// <param name="expression">The update to make.</param>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="predicate"/> argument is null.</exception>
-        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="expression"/> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="predicate" /> argument is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the <paramref name="expression" /> argument is null.</exception>
         Task UpdateAsync(Expression<Func<TSearchResult, bool>> predicate, Expression<Func<TSearchResult, TSearchResult>> expression);
     }
 }

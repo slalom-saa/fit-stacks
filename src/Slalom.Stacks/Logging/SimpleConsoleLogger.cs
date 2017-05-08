@@ -1,8 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
+using System;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Slalom.Stacks.Logging
 {
@@ -11,7 +15,7 @@ namespace Slalom.Stacks.Logging
     /// </summary>
     public class SimpleConsoleLogger : ILogger
     {
-        private static readonly string Separater = new String('-', 100);
+        private static readonly string Separater = new string('-', 100);
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

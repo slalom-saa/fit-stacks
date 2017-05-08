@@ -1,16 +1,21 @@
-﻿using System;
+﻿/* 
+ * Copyright (c) Stacks Contributors
+ * 
+ * This file is subject to the terms and conditions defined in
+ * the LICENSE file, which is part of this source code package.
+ */
+
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Slalom.Stacks.Serialization;
-using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Services.Serialization
 {
     /// <summary>
-    /// A JSON Contract Resolver for <see cref="EventMessage"/> instances.
+    /// A JSON Contract Resolver for <see cref="EventMessage" /> instances.
     /// </summary>
     public class EventContractResolver : BaseContractResolver
     {
