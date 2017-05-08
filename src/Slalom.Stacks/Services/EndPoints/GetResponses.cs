@@ -41,7 +41,7 @@ namespace Slalom.Stacks.Services.EndPoints
         {
             var result = await _source.GetEntries(instance.Start, instance.End);
 
-            return result.Where(e => e.ValidationErrors == null || !e.Path.StartsWith("_"));
+            return result.Where(e => e.Path == null || !e.Path.StartsWith("_") || e.ValidationErrors != null);
         }
     }
 }
