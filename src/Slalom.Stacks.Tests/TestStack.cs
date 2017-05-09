@@ -111,12 +111,6 @@ namespace Slalom.Stacks.Tests
             });
         }
 
-        /// <summary>
-        /// Gets the configured <see cref="ILogger" />.
-        /// </summary>
-        /// <value>The configured <see cref="ILogger" />.</value>
-        public ILogger Logger => this.Container.Resolve<ILogger>();
-
         public void UseEndPoint<T>(Action<T> action = null)
         {
             var dispatch = this.Container.Resolve<ILocalMessageDispatcher>() as TestDispatcher;

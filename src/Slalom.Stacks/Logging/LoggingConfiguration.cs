@@ -15,11 +15,11 @@ namespace Slalom.Stacks.Logging
     public static class LoggingConfiguration
     {
         /// <summary>
-        /// Adds simple console logging to the stack.
+        /// Adds console logging to the stack.
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns>The current instance for method chaining.</returns>
-        public static Stack UseSimpleConsoleLogging(this Stack instance)
+        public static Stack UseConsoleLogging(this Stack instance)
         {
             instance.Use(builder =>
             {

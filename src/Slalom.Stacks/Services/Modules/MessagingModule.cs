@@ -52,7 +52,7 @@ namespace Slalom.Stacks.Services.Modules
                 .SingleInstance();
 
             builder.RegisterType<LocalDispatcher>().As<ILocalMessageDispatcher>();
-            builder.RegisterType<RemoteEndPointInventory>().AsSelf().SingleInstance();
+            builder.RegisterType<RemoteServiceInventory>().AsSelf().SingleInstance();
 
             builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
 
