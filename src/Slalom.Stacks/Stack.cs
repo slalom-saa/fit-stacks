@@ -14,15 +14,16 @@ using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
+using Slalom.Stacks.Logging;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Services.Messaging;
 using Module = Autofac.Module;
-
 #if core
 using Microsoft.Extensions.DependencyModel;
 #else
 using System.IO;
+
 #endif
 
 namespace Slalom.Stacks
@@ -77,6 +78,13 @@ namespace Slalom.Stacks
         /// </summary>
         /// <value>The configured <see cref="IDomainFacade" />.</value>
         public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
+
+
+        /// <summary>
+        /// Gets the configured <see cref="ILogger" />.
+        /// </summary>
+        /// <value>The configured <see cref="ILogger" />.</value>
+        public ILogger Logger => this.Container.Resolve<ILogger>();
 
         /// <summary>
         /// Gets the configured <see cref="ISearchFacade" />.
@@ -237,7 +245,7 @@ namespace Slalom.Stacks
             return this.Container.Resolve<IMessageGateway>().Send(path, command, timeout: timeout);
         }
 
-#region IDisposable Implementation
+        #region IDisposable Implementation
 
         private bool _disposed;
 
@@ -282,6 +290,6 @@ namespace Slalom.Stacks
             _disposed = true;
         }
 
-#endregion
+        #endregion
     }
 }
