@@ -30,6 +30,11 @@ namespace Slalom.Stacks.Logging
             builder.RegisterType<CompositeLogger>()
                 .AsImplementedInterfaces()
                 .SingleInstance();
+
+            builder.Register(c => new ConsoleLogger())
+                .PreserveExistingDefaults()
+                .SingleInstance()
+                .As<ILogger>();
         }
     }
 }

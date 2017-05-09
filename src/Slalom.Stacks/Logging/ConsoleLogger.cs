@@ -13,7 +13,7 @@ namespace Slalom.Stacks.Logging
     /// <summary>
     /// Provides a simple console logger that should only be used in development.
     /// </summary>
-    public class SimpleConsoleLogger : ILogger
+    public class ConsoleLogger : ILogger
     {
         private static readonly string Separater = new string('-', 100);
 
