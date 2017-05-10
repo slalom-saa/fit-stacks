@@ -65,6 +65,7 @@ namespace Slalom.Stacks.Configuration
                             configurationBuilder.AddJsonFile("config\\" + Path.GetFileName(path), true, true);
                         }
                     }
+                    configurationBuilder.AddEnvironmentVariables();
                     return configurationBuilder.Build();
                 })
                 .As<IConfiguration>()
