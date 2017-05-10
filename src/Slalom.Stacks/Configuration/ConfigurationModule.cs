@@ -58,9 +58,12 @@ namespace Slalom.Stacks.Configuration
                     {
                         configurationBuilder.AddJsonFile(Path.GetFileName(path), true, true);
                     }
-                    foreach (var path in Directory.GetFiles(currentDirectory, "config\\stacks**.json"))
+                    if (Directory.Exists(Path.Combine(currentDirectory, "config")))
                     {
-                        configurationBuilder.AddJsonFile("config\\" + Path.GetFileName(path), true, true);
+                        foreach (var path in Directory.GetFiles(currentDirectory, "config\\stacks**.json"))
+                        {
+                            configurationBuilder.AddJsonFile("config\\" + Path.GetFileName(path), true, true);
+                        }
                     }
                     return configurationBuilder.Build();
                 })

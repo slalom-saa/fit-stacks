@@ -50,9 +50,12 @@ function Clear-LocalCache() {
             Push-Location $path
 
             foreach($item in Get-ChildItem -Filter "*slalom*" -Recurse) {
-                Remove-Item $item.FullName -Recurse -Force
-                Write-Host "Removing $item"
+                if (Test-Path $item) {
+                    Remove-Item $item.FullName -Recurse -Force
+                    Write-Host "Removing $item"
+                }
             }
+
 
             Pop-Location
     
