@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Core;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
@@ -47,7 +48,11 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack(typeof(AddProductCommand)))
                 {
-                    stack.Send(new Req()).Result.OutputToJson();
+                    var config = stack.Container.Resolve<IConfiguration>();
+
+                    config.GetValue<string>("Authority").OutputToJson();
+
+                    //stack.Send(new Req()).Result.OutputToJson();
                 }
             }
             catch (Exception exception)

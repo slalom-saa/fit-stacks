@@ -7,12 +7,7 @@
 
 using System;
 using Slalom.Stacks.Validation;
-#if core
 using Microsoft.Extensions.Configuration;
-
-#else
-using System.Configuration;
-#endif
 
 namespace Slalom.Stacks.Runtime
 {
@@ -22,9 +17,8 @@ namespace Slalom.Stacks.Runtime
     /// <seealso cref="Slalom.Stacks.Runtime.IEnvironmentContext" />
     public class Environment : IEnvironmentContext
     {
-        [ThreadStatic] private static Environment current;
+        [ThreadStatic] private static Environment _current;
 
-#if core
         private readonly IConfiguration _configuration;
 
         /// <summary>
@@ -37,14 +31,6 @@ namespace Slalom.Stacks.Runtime
 
             _configuration = configuration;
         }
-
-#else
-        internal Environment()
-        {
-            
-        }
-
-#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Runtime.Environment" /> class.
@@ -94,17 +80,10 @@ namespace Slalom.Stacks.Runtime
         /// <inheritdoc />
         public Environment Resolve()
         {
-#if core
-            return current ?? (current = new Environment(_configuration?["Application"],
+            return _current ?? (_current = new Environment(_configuration?["Application"],
                        _configuration?["Environment"],
                        System.Environment.MachineName,
                        System.Environment.CurrentManagedThreadId));
-#else
-            return current ?? (current = new Environment(ConfigurationManager.AppSettings["Application"],
-                       ConfigurationManager.AppSettings["Environment"],
-                       System.Environment.MachineName,
-                       System.Environment.CurrentManagedThreadId));
-#endif
         }
     }
 }

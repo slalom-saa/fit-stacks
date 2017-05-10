@@ -7,6 +7,7 @@
 
 using System.IO;
 using Autofac;
+using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Caching;
 using Slalom.Stacks.Domain.Modules;
 using Slalom.Stacks.Logging;
@@ -14,10 +15,6 @@ using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Services.Modules;
-#if core
-using Microsoft.Extensions.Configuration;
-
-#endif
 
 namespace Slalom.Stacks.Configuration
 {
@@ -50,21 +47,28 @@ namespace Slalom.Stacks.Configuration
         {
             base.Load(builder);
 
-#if core
             builder.Register(c =>
                 {
+                    var currentDirectory = Directory.GetCurrentDirectory();
                     var configurationBuilder = new ConfigurationBuilder();
-                    configurationBuilder.SetBasePath(Directory.GetCurrentDirectory());
+                    configurationBuilder.SetBasePath(currentDirectory);
                     configurationBuilder.AddJsonFile("appsettings.json", true, true);
+                    configurationBuilder.AddJsonFile("stacks.json", true, true);
+                    foreach (var path in Directory.GetFiles(currentDirectory, "stacks.*.json"))
+                    {
+                        configurationBuilder.AddJsonFile(Path.GetFileName(path), true, true);
+                    }
+                    foreach (var path in Directory.GetFiles(currentDirectory, "config\\stacks**.json"))
+                    {
+                        configurationBuilder.AddJsonFile("config\\" + Path.GetFileName(path), true, true);
+                    }
                     return configurationBuilder.Build();
                 })
                 .As<IConfiguration>()
                 .SingleInstance();
-            builder.Register(c => new Environment(c.Resolve<IConfiguration>()))
+
+            builder.RegisterType<Environment>()
                 .As<IEnvironmentContext>();
-#else
-            builder.Register(c => new Environment()).As<IEnvironmentContext>();
-#endif
 
             builder.RegisterModule(new DomainModule(_stack));
             builder.RegisterModule(new MessagingModule(_stack));
@@ -75,7 +79,7 @@ namespace Slalom.Stacks.Configuration
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new NullCachingModule());
 
-            builder.Register(c => new DiscoveryService(c.Resolve<ILogger>()))
+            builder.RegisterType<DiscoveryService>()
                 .As<IDiscoverTypes>()
                 .SingleInstance();
         }
