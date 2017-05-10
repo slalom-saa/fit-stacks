@@ -1,0 +1,48 @@
+﻿{
+  "Authority": "http://localhost:5000",
+  "Application": "ConsoleClient",
+  "Environment": "Local",
+  "ApplicationInsights": {
+    "InstrumentationKey": "4735060f-d33e-4b78-a562-6d21d3f6dabf"
+  },
+  "DocumentDb": {
+    "Database": "treatment",
+    "Host": "patolus-dev.documents.azure.com",
+    "Password": "dyBrKINSHcrRcu7bYr4vtfHSkCV0THi6qcWxeMb65oHvOo2xZqyPdtVzrgDuWqvp3Tl5vrhVQNc1geTF566t4g==",
+    "UserName": "patolus-dev"
+  },
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.Literate", "Serilog.Sinks.RollingFile", "Serilog.Sinks.MSSqlServer"],
+    "MinimumLevel": "Verbose",
+    "WriteTo": [
+      { "Name": "LiterateConsole" },
+      {
+        "Name": "RollingFile",
+        "Args": {
+          "pathFormat": "Logs/log.txt",
+          "formatter": "Serilog.Formatting.Json.JsonFormatter, Serilog",
+          "shared": true
+        }
+      },
+      {
+        "Name": "MSSqlServer",
+        "Args": {
+          "connectionString": "Data Source=localhost;Initial Catalog=Stacks;Integrated Security=True",
+          "tableName": "Diagnostics",
+          "autoCreateSqlTable": true
+        }
+      }
+    ],
+    "Enrich": [],
+    "Properties": {
+    }
+  },
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  }
+}

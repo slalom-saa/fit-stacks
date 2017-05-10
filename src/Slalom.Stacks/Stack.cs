@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
+using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
@@ -68,6 +69,13 @@ namespace Slalom.Stacks
         /// <value>The assemblies that are used for loading components.</value>
         public ObservableCollection<Assembly> Assemblies { get; } = new ObservableCollection<Assembly>();
 
+
+        /// <summary>
+        /// Gets the configured <see cref="IConfiguration" />.
+        /// </summary>
+        /// <value>The configured <see cref="IConfiguration" />.</value>
+        public IConfiguration Configuration => this.Container.Resolve<IConfiguration>();
+
         /// <summary>
         /// Gets the configured <see cref="IContainer" />.
         /// </summary>
@@ -78,7 +86,6 @@ namespace Slalom.Stacks
         /// </summary>
         /// <value>The configured <see cref="IDomainFacade" />.</value>
         public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
-
 
         /// <summary>
         /// Gets the configured <see cref="ILogger" />.
