@@ -1,17 +1,17 @@
-# External Command Guidelines
+# External Request Guidelines
 
-This section contains rules for external commands and uses the 
+This section contains rules for external requests and uses the 
 send notification example.
 
 ```csharp
 [Request("/notifications/send")]
-public class SendNotification
+public class SendNotificationRequest
 {
     public string Email { get; }
 
     public string Message { get; }
 
-    public SendNotification(string email, string message)
+    public SendNotificationRequest(string email, string message)
     {
         this.Email = email;
         this.Message = message;
@@ -27,7 +27,7 @@ public string Email { get; }
 There should be no fields in a message.
 All properties should be set in the constructor.  Overrides can be used if a parameter is optional.
 ```csharp
-public SendNotification(string email, string message)
+public SendNotificationRequest(string email, string message)
 {
     this.Email = email;
     this.Message = message;

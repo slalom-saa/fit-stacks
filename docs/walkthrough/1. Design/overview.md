@@ -3,9 +3,9 @@
 [Introduction](#design) | [Use Cases](#use-cases) | [Service Contracts](#service-contracts)
 
 This section first looks at the Request Product capability and creates two forms of developer
-specifications: use cases and Service Contracts.
+specifications: Use Cases and Service Contracts.
 
-First let's look at the business process which has the following
+First let's look at the **Submit Request** business process which has the following
 activities: Create Request, Review Request, Approve Request, Add Product,
 Notify Requestor.
 > We should also notify the requestor on rejection, but this is a simple
