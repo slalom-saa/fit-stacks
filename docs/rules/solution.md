@@ -13,12 +13,12 @@ assets.  Examples are the document.ps1 shown here and possibly a script that exe
 "dotnet restore" for the solution.
 
 ### Hosts
-The **hosts** folder should contain any project that actually run the solution.  There
-may be one for a console based client; other possibilies may be web, powershell, etc.
+The **hosts** folder should contain any project that run the solution.  There
+may be one for a console-based client; other possibilies may be web, powershell, etc.
 
 ### Source
 The **src** folder should contain the core logic for the solution and any related items
-such as data or implementation specific logic: file access, 3rd party access, etc.
+such as data or implementation specific logic: file access, 3rd party components, etc.
 
 ### Test
 The **test** folder should contain all tests.  In a service application this should
@@ -36,16 +36,19 @@ The **Slalom.Rentals** contains most of the solution logic implemented as endpoi
 are some very specific folders that belong here and also have rules.
 
 #### Application
-The application folder contains all application logic: endpoints, rules, commands, interfaces.
+The application folder contains all application logic: endpoints, rules, requests, responses.
 
-Within the application folder, there should be subfolders for each service,
-then endpoint (capability).  The Add Product endpoint classes would be placed in "Application/Products/Add".
-
-There is one special folder within the Application folder named Integration.  This is 
-where client access components and external commands are placed.
+Within the application folder, there should be subfolders for each business process or capability.  The 
+Add Product endpoint classes would be placed in "Application/SubmitRequest/AddProduct".
 
 #### Domain
 The domain folder contains all domain logic: aggregates, entities, value objects.
+
+#### Search
+The search folder contains all search logic: search results, search indexers.
+
+#### Integration
+The integration folder should contain all dependent interfaces and external commands.
 
 
 ### Data
@@ -53,13 +56,3 @@ The **Slalom.Rentals.Data** project contains all data access logic: entity conte
 
 ### Tests
 The **Slalom.Rentals.Tests** contains both acceptance tests and unit tests.
-
-
-
-
-
-
-
-
-## Search
-The search folder contains all search logic: search results, search indexers.

@@ -4,5 +4,6 @@
 
 ## Getting Started
 1. Try out the simple [Hello World](docs/hello-world.md) example to get started quickly.
-2. Go through a longer real-world example using the [Stacks Walkthrough](docs/walkthrough/overview.md).
+2. Go through the build steps in the structural walkthrough.
+3. Go through a longer real-world example using the [real-world walkthrough](docs/walkthrough/overview.md).
 3. View the Slalom Rentals reference project.
