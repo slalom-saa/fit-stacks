@@ -19,7 +19,7 @@ namespace Slalom.Stacks.Services.Messaging
         /// Initializes a new instance of the <see cref="EndPointNotFoundException" /> class.
         /// </summary>
         /// <param name="request">The current request.</param>
-        public EndPointNotFoundException(Request request) : base("An endpoint could not be found for the path " + request.Path)
+        public EndPointNotFoundException(Request request) : base($"An endpoint could not be found for the path \"{request.Path}\".")
         {
         }
     }
