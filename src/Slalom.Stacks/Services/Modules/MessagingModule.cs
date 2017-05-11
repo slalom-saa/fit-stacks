@@ -103,6 +103,12 @@ namespace Slalom.Stacks.Services.Modules
                 .As<IEventPublisher>()
                 .AsSelf()
                 .SingleInstance();
+
+            builder.RegisterAssemblyTypes(assemblies)
+                .Where(e => e.GetInterfaces().Contains(typeof(IRemoteMessageDispatcher)))
+                .As<IRemoteMessageDispatcher>()
+                .AsSelf()
+                .SingleInstance();
         }
     }
 }

@@ -4,7 +4,8 @@
 #>
 param (
     $Configuration = "DEBUG",
-    $IncrementVersion = $false
+    $IncrementVersion = $false,
+    $Packages = @("Slalom.Stacks", "Slalom.Stacks.Tests")
 )
 
 function Increment-Version() {
@@ -49,16 +50,17 @@ function Clear-LocalCache() {
 
             Push-Location $path
 
-            foreach($item in Get-ChildItem -Filter "*slalom*" -Recurse) {
-                if (Test-Path $item) {
-                    Remove-Item $item.FullName -Recurse -Force
-                    Write-Host "Removing $item"
+            foreach($package in $Packages) {
+
+                foreach($item in Get-ChildItem -Filter "$package" -Recurse) {
+                    if (Test-Path $item) {
+                        Remove-Item $item.FullName -Recurse -Force
+                        Write-Host "Removing $item"
+                    }
                 }
             }
 
-
             Pop-Location
-    
         }
     }
 }
@@ -82,8 +84,9 @@ function Go ($Path) {
 
 Push-Location $PSScriptRoot
 
-Go ..\src\Slalom.Stacks
-Go ..\src\Slalom.Stacks.Tests
+foreach($package in $Packages) {
+    Go "..\src\$package"
+}
 
 Pop-Location
 

@@ -28,5 +28,11 @@ namespace Slalom.Stacks.Services.Messaging
         /// </summary>
         /// <value>The request path.</value>
         public string Path { get; }
+
+        /// <summary>
+        /// Gets or sets the request method.  This can be different based on the integrated system.  HTTP for example would be GET, POST, etc.
+        /// </summary>
+        /// <value>The request method.</value>
+        public string Method { get; set; }
     }
 }

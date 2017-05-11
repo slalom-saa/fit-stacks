@@ -5,8 +5,10 @@
  * the LICENSE file, which is part of this source code package.
  */
 
+using System.Linq;
 using System.Security.Claims;
 using Newtonsoft.Json;
+using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Services.Inventory;
 using Slalom.Stacks.Utilities.NewId;
@@ -19,7 +21,7 @@ namespace Slalom.Stacks.Services.Messaging
     /// <seealso cref="Slalom.Stacks.Services.Messaging.IRequestContext" />
     public class Request : IRequestContext
     {
-        private static string sourceAddress;
+        private static string _sourceAddress;
 
         /// <summary>
         /// Gets the correlation identifier for the request.
@@ -89,7 +91,7 @@ namespace Slalom.Stacks.Services.Messaging
                 SessionId = this.GetSession(),
                 User = this.GetUser(),
                 Parent = parent,
-                Path = path,
+                Path = path ?? message?.GetType().GetAllAttributes<RequestAttribute>().FirstOrDefault()?.Path,
                 Message = this.GetMessage(path, message)
             };
         }
@@ -147,7 +149,7 @@ namespace Slalom.Stacks.Services.Messaging
         /// <returns>Returns the source IP address.</returns>
         protected virtual string GetSourceIPAddress()
         {
-            if (sourceAddress == null)
+            if (_sourceAddress == null)
             {
                 //try
                 //{
@@ -159,10 +161,10 @@ namespace Slalom.Stacks.Services.Messaging
                 //}
                 //catch
                 //{
-                sourceAddress = "127.0.0.1";
+                _sourceAddress = "127.0.0.1";
                 //}
             }
-            return sourceAddress;
+            return _sourceAddress;
         }
 
         /// <summary>
