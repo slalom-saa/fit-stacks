@@ -2,7 +2,9 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/6nb0ud2cpm4rkuyx/branch/master?svg=true)](https://ci.appveyor.com/project/slalom-saa/stacks/branch/master)   [![NuGet Version](http://img.shields.io/nuget/v/Slalom.Stacks.svg?style=flat)](https://www.nuget.org/packages/Slalom.Stacks/)
 
-Stacks allows you to compose your own stacks by leveraging existing frameworks and simplifies development by providing a common service model.  The same code can run in multiple contexts with just a few lines.  Using that common model simplifies the validation, reporting, integration and discovery of those services – in many cases is baked in.
+Stacks simplifies complex service development by leveraging existing frameworks and providing an easy to 
+learn, cross-framework service model.  The same code can run in multiple contexts with just a 
+few lines and can run at web scale.  The common model simplifies the validation, reporting, integration and discovery of those services – in many cases it is baked in.
 
 ![Image](docs/images/overview.png)
 
