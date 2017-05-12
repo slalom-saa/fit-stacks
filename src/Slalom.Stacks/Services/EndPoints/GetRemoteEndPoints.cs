@@ -33,7 +33,11 @@ namespace Slalom.Stacks.Services.EndPoints
         /// <inheritdoc />
         public override void Receive()
         {
-            this.Respond(_inventory.EndPoints.Select(e => e.FullPath));
+            this.Respond(_inventory.Services.Select(e => new
+            {
+                e.Path,
+                e.EndPoints
+            }));
         }
     }
 }

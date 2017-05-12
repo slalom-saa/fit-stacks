@@ -19,6 +19,12 @@ namespace Slalom.Stacks.Services.Inventory
         private readonly ConcurrentDictionary<string, RemoteService> _services = new ConcurrentDictionary<string, RemoteService>();
 
         /// <summary>
+        /// Gets the remote services.
+        /// </summary>
+        /// <value>The remote services.</value>
+        public IEnumerable<RemoteService> Services => _services.Values;
+
+        /// <summary>
         /// Gets the remote endpoints.
         /// </summary>
         /// <value>The remote endpoints.</value>
