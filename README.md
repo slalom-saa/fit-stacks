@@ -4,6 +4,6 @@
 
 ## Getting Started
 1. Try out the simple [Hello World](docs/hello-world.md) example to get started quickly.
-2. Take a look at the example solution to get a feel for the more advanced features.
+2. Take a look at the examples to get a feel for the more advanced features.
 3. Go through a longer real-world example using the [real-world walkthrough](docs/walkthrough/overview.md).
 3. View the full Slalom Rentals reference project.
