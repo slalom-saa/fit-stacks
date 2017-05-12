@@ -25,7 +25,7 @@ namespace Slalom.Stacks.Services
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
         /// <returns>Returns the event entries that fall within the specified time frame.</returns>
-        public static IEnumerable<EventMessage> GetEvents(this Stack instance, DateTimeOffset? start = null, DateTimeOffset? end = null)
+        public static IEnumerable<EventEntry> GetEvents(this Stack instance, DateTimeOffset? start = null, DateTimeOffset? end = null)
         {
             return instance.Container.Resolve<IEventStore>().GetEvents(start, end).Result;
         }

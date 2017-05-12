@@ -30,6 +30,6 @@ namespace Slalom.Stacks.Services.Logging
         /// <param name="start">The start date.</param>
         /// <param name="end">The end date.</param>
         /// <returns>Returns events that fall within the specified time frame.</returns>
-        Task<IEnumerable<EventMessage>> GetEvents(DateTimeOffset? start = null, DateTimeOffset? end = null);
+        Task<IEnumerable<EventEntry>> GetEvents(DateTimeOffset? start = null, DateTimeOffset? end = null);
     }
 }

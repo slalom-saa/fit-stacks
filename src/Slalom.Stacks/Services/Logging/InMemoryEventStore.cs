@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Validation;
 
@@ -17,6 +18,8 @@ namespace Slalom.Stacks.Services.Logging
 {
     internal class InMemoryEventStore : IEventStore
     {
+        private readonly IEnvironmentContext _environment;
+
         /// <summary>
         /// The lock for the instances.
         /// </summary>
@@ -25,9 +28,18 @@ namespace Slalom.Stacks.Services.Logging
         /// <summary>
         /// The in-memory items.
         /// </summary>
-        protected readonly List<EventMessage> Instances = new List<EventMessage>();
+        protected readonly List<EventEntry> Instances = new List<EventEntry>();
 
-        public Task<IEnumerable<EventMessage>> GetEvents(DateTimeOffset? start, DateTimeOffset? end)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InMemoryEventStore" /> class.
+        /// </summary>
+        /// <param name="environment">The environment.</param>
+        public InMemoryEventStore(IEnvironmentContext environment)
+        {
+            _environment = environment;
+        }
+
+        public Task<IEnumerable<EventEntry>> GetEvents(DateTimeOffset? start, DateTimeOffset? end)
         {
             CacheLock.EnterReadLock();
             try
@@ -49,7 +61,7 @@ namespace Slalom.Stacks.Services.Logging
             CacheLock.EnterWriteLock();
             try
             {
-                Instances.Add(instance);
+                Instances.Add(new EventEntry(instance, _environment.Resolve()));
             }
             finally
             {

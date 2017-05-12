@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Services.EndPoints
     /// Gets the events that have occurred within the service context.
     /// </summary>
     [EndPoint("_system/events", Public = false)]
-    public class GetEvents : EndPoint<GetEventsRequest, IEnumerable<EventMessage>>
+    public class GetEvents : EndPoint<GetEventsRequest, IEnumerable<EventEntry>>
     {
         private readonly IEventStore _events;
 
@@ -37,7 +37,7 @@ namespace Slalom.Stacks.Services.EndPoints
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns>Returns the response to the request.</returns>
-        public override Task<IEnumerable<EventMessage>> ReceiveAsync(GetEventsRequest instance)
+        public override Task<IEnumerable<EventEntry>> ReceiveAsync(GetEventsRequest instance)
         {
             return _events.GetEvents(instance.Start, instance.End);
         }
