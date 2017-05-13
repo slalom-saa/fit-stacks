@@ -113,17 +113,7 @@ namespace Slalom.Stacks.Services.Validation
             var target = new List<ValidationError>();
             foreach (var property in command.GetType().GetProperties())
             {
-                foreach (var attribute in property.GetCustomAttributes<ValidationAttribute>())
-                {
-                    if (!attribute.IsValid(property.GetValue(command)))
-                    {
-                        if (attribute.Code == null)
-                        {
-                            attribute.Code = $"{command.GetType().Name}.{property.Name}.{attribute.GetType().Name.Replace("Attribute", "")}";
-                        }
-                        target.Add(attribute.ValidationError);
-                    }
-                }
+                target.AddRange(this.CheckRules(property, () => property.GetValue(command)));
             }
             if (!target.Any())
             {
@@ -157,6 +147,33 @@ namespace Slalom.Stacks.Services.Validation
                 }
             }
             return Enumerable.Empty<ValidationError>();
+        }
+
+        private IEnumerable<ValidationError> CheckRules(PropertyInfo property, Func<object> value, string prefix = null)
+        {
+            foreach (var attribute in property.GetCustomAttributes<ValidationAttribute>())
+            {
+                if (!attribute.IsValid(value()))
+                {
+                    if (attribute.Code == null)
+                    {
+                        attribute.Code = $"{prefix}{property.DeclaringType.Name}.{property.Name}.{attribute.GetType().Name.Replace("Attribute", "")}";
+                    }
+                    yield return attribute.ValidationError;
+                }
+            }
+
+            foreach (var item in property.PropertyType.GetProperties())
+            {
+                foreach (var error in this.CheckRules(item, () =>
+                {
+                    var target = value();
+                    return target == null ? null : item.GetValue(target);
+                }, $"{prefix}{property.DeclaringType.Name}."))
+                {
+                    yield return error;
+                }
+            }
         }
     }
 }
