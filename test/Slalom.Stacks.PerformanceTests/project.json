@@ -9,9 +9,9 @@
 
   "dependencies": {
     "Slalom.Stacks": { "target": "project" },
-    "BenchmarkDotNet": "0.10.5",
     "xunit": "2.2.0",
-    "dotnet-test-xunit": "2.2.0-preview2-build1029"
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "BenchmarkDotNet": "0.10.6"
   },
 
   "frameworks": {

@@ -23,15 +23,35 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient
 {
-    public class Program
+    public class Request
     {
-        [STAThread]
-        public static void Main(string[] args)
+        public string Name { get; }
+
+        public Request(string name)
+        {
+            this.Name = name;
+        }
+    }
+
+    [EndPoint("request")]
+    public class RequestEndPoint : EndPoint
+    {
+        public override void Receive()
+        {
+            //Console.WriteLine(instance.Name);
+        }
+    }
+
+
+    internal class Program
+    {
+        private static void Main(string[] args)
         {
             try
             {
                 using (var stack = new Stack())
                 {
+                    stack.Send("request").Wait();
                 }
             }
             catch (Exception exception)
