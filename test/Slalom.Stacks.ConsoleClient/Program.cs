@@ -25,6 +25,7 @@ namespace Slalom.Stacks.ConsoleClient
 {
     public class Request
     {
+        [NotNull("Content")]
         public string Name { get; }
 
         public Request(string name)
@@ -34,9 +35,9 @@ namespace Slalom.Stacks.ConsoleClient
     }
 
     [EndPoint("request")]
-    public class RequestEndPoint : EndPoint
+    public class RequestEndPoint : EndPoint<Request>
     {
-        public override void Receive()
+        public override void Receive(Request instance)
         {
             //Console.WriteLine(instance.Name);
         }
@@ -51,7 +52,7 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.Send("request").Wait();
+                    stack.Send("request").Result.OutputToJson();
                 }
             }
             catch (Exception exception)

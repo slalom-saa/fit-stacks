@@ -97,6 +97,13 @@ namespace Slalom.Stacks.Tests
             return this.LastResult = this.Container.Resolve<IMessageGateway>().Send(command).Result;
         }
 
+        public MessageResult<T> Send<T>(object command)
+        {
+            var result = this.Container.Resolve<IMessageGateway>().Send(command).Result;
+
+            return (MessageResult<T>)(this.LastResult = new MessageResult<T>(result));
+        }
+
         public void UseScenario(Scenario scenario)
         {
             this.Use(builder => { builder.RegisterInstance(scenario.EntityContext).As<IEntityContext>(); });

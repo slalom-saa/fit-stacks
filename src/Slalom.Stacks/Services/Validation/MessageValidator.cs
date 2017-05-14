@@ -165,6 +165,10 @@ namespace Slalom.Stacks.Services.Validation
 
             foreach (var item in property.PropertyType.GetProperties())
             {
+                if (item.DeclaringType == property.DeclaringType)
+                {
+                    continue;
+                }
                 foreach (var error in this.CheckRules(item, () =>
                 {
                     var target = value();
