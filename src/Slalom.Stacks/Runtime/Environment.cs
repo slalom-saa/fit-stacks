@@ -80,8 +80,8 @@ namespace Slalom.Stacks.Runtime
         /// <inheritdoc />
         public Environment Resolve()
         {
-            return _current ?? (_current = new Environment(_configuration?["Application"],
-                       _configuration?["Environment"],
+            return _current ?? (_current = new Environment(_configuration?["Stacks:Application"],
+                       _configuration?["Stacks:Environment"],
                        System.Environment.MachineName,
                        System.Environment.CurrentManagedThreadId));
         }

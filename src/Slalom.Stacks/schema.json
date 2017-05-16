@@ -1,0 +1,27 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "additionalProperties": true,
+  "definitions": {},
+  "properties": {
+    "Stacks": {
+      "additionalProperties": true,
+      "id": "/properties/Stacks",
+      "properties": {
+        "Application": {
+          "description": "The name of the application or API.",
+          "id": "/properties/Stacks/properties/Application",
+          "title": "Application Name",
+          "type": "string"
+        },
+        "Environment": {
+          "description": "The environment name: LOCAL, DEV, QA, PROD, etc.",
+          "id": "/properties/Stacks/properties/Environment",
+          "title": "Environment Name",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}
