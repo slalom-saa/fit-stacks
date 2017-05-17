@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
+using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Security;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.Logging;
@@ -23,27 +24,6 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.ConsoleClient
 {
-    public class Request
-    {
-        [NotNull("Content")]
-        public string Name { get; }
-
-        public Request(string name)
-        {
-            this.Name = name;
-        }
-    }
-
-    [EndPoint("request")]
-    public class RequestEndPoint : EndPoint<Request>
-    {
-        public override void Receive(Request instance)
-        {
-            //Console.WriteLine(instance.Name);
-        }
-    }
-
-
     internal class Program
     {
         private static void Main(string[] args)
@@ -52,7 +32,9 @@ namespace Slalom.Stacks.ConsoleClient
             {
                 using (var stack = new Stack())
                 {
-                    stack.Send("request").Result.OutputToJson();
+                    var environment = stack.Container.Resolve<IEnvironmentContext>().Resolve();
+
+                    environment.OutputToJson();
                 }
             }
             catch (Exception exception)
