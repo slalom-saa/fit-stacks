@@ -49,8 +49,9 @@ namespace Slalom.Stacks.Services.Logging
             this.MachineName = environment.MachineName;
             this.ApplicationName = environment.ApplicationName;
             this.EnvironmentName = environment.EnvironmentName;
-            this.ThreadId = environment.ThreadId;
             this.Path = context.Request.Path;
+            this.Version = environment.Version;
+            this.Build = environment.Build;
             if (this.Completed.HasValue)
             {
                 this.Elapsed = this.Completed.Value - this.Started;
@@ -62,6 +63,14 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <value>The application name where the endpoint executed.</value>
         public string ApplicationName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the build number.
+        /// </summary>
+        /// <value>
+        /// The build number.
+        /// </value>
+        public string Build { get; set; }
 
         /// <summary>
         /// Gets the execution completion date and time.
@@ -136,12 +145,6 @@ namespace Slalom.Stacks.Services.Logging
         public DateTimeOffset Started { get; set; }
 
         /// <summary>
-        /// Gets or sets the identifier of the thread that executed the endpoint.
-        /// </summary>
-        /// <value>The identifier of the thread that executed the endpoint.</value>
-        public int ThreadId { get; set; }
-
-        /// <summary>
         /// Gets or sets the date and time when this entry was created.
         /// </summary>
         /// <value>The date and time when this entry was created.</value>
@@ -152,5 +155,13 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <value>The validation errors that were raised.</value>
         public IEnumerable<ValidationError> ValidationErrors { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version number.
+        /// </summary>
+        /// <value>
+        /// The version number.
+        /// </value>
+        public string Version { get; set; }
     }
 }

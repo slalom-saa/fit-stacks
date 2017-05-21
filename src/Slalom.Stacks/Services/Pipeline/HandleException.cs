@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Services.Pipeline
     /// The handle exception step of the usecase execution pipeline.  This attempt to unwrap the exception if it can.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Services.Pipeline.IMessageExecutionStep" />
-    public class HandleException : IMessageExecutionStep
+    internal class HandleException : IMessageExecutionStep
     {
         /// <inheritdoc />
         public Task Execute(ExecutionContext context)

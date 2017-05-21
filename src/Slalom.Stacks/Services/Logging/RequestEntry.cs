@@ -67,7 +67,6 @@ namespace Slalom.Stacks.Services.Logging
             this.MachineName = environment.MachineName;
             this.ApplicationName = environment.ApplicationName;
             this.EnvironmentName = environment.EnvironmentName;
-            this.ThreadId = environment.ThreadId;
         }
 
         /// <summary>
@@ -141,12 +140,6 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <value>The user host address.</value>
         public string SourceAddress { get; set; }
-
-        /// <summary>
-        /// Gets or sets the ID of the thread that received the request.
-        /// </summary>
-        /// <value>The ID of the thread that received the request.</value>
-        public int ThreadId { get; set; }
 
         /// <summary>
         /// Gets or sets the message time stamp.

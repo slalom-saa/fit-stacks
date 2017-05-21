@@ -1,11 +1,5 @@
-﻿/* 
- * Copyright (c) Stacks Contributors
- * 
- * This file is subject to the terms and conditions defined in
- * the LICENSE file, which is part of this source code package.
- */
-
-using System;
+﻿using System;
+using System.Reflection;
 using Newtonsoft.Json.Linq;
 
 namespace Slalom.Stacks.Validation
@@ -20,8 +14,23 @@ namespace Slalom.Stacks.Validation
         /// Initializes a new instance of the <see cref="JsonAttribute" /> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public JsonAttribute(string message) : base(message)
+        public JsonAttribute(string message)
+            : base(message)
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonAttribute" /> class.
+        /// </summary>
+        public JsonAttribute()
+            : base(null)
+        {
+        }
+
+        /// <inheritdoc />
+        public override ValidationError GetValidationError(PropertyInfo property)
+        {
+            return new ValidationError(this.Code, this.Message ?? property.Name + " must be a valid JSON.");
         }
 
         /// <inheritdoc />
@@ -29,7 +38,7 @@ namespace Slalom.Stacks.Validation
         {
             if (value is string)
             {
-                var strInput = ((string) value).Trim();
+                var strInput = ((string)value).Trim();
                 if (strInput.StartsWith("{") && strInput.EndsWith("}") || strInput.StartsWith("[") && strInput.EndsWith("]"))
                 {
                     try

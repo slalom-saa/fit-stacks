@@ -159,7 +159,7 @@ namespace Slalom.Stacks.Services.Validation
                     {
                         attribute.Code = $"{prefix}{property.DeclaringType.Name}.{property.Name}.{attribute.GetType().Name.Replace("Attribute", "")}";
                     }
-                    yield return attribute.ValidationError;
+                    yield return attribute.GetValidationError(property);
                 }
             }
 

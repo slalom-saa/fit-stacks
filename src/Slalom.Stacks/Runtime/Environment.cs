@@ -6,8 +6,9 @@
  */
 
 using System;
-using Slalom.Stacks.Validation;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
+using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Runtime
 {
@@ -17,7 +18,8 @@ namespace Slalom.Stacks.Runtime
     /// <seealso cref="Slalom.Stacks.Runtime.IEnvironmentContext" />
     public class Environment : IEnvironmentContext
     {
-        [ThreadStatic] private static Environment _current;
+        [ThreadStatic]
+        private static Environment current;
 
         private readonly IConfiguration _configuration;
 
@@ -38,13 +40,15 @@ namespace Slalom.Stacks.Runtime
         /// <param name="applicationName">The mame of the application.</param>
         /// <param name="environment">The current environment. (Development, Quality Assurance, Production)</param>
         /// <param name="machineName">The name of the machine.</param>
-        /// <param name="threadId">The current thread identifier.</param>
-        protected Environment(string applicationName, string environment, string machineName, int threadId)
+        /// <param name="version">The version number.</param>
+        /// <param name="build">The build number.</param>
+        protected Environment(string applicationName, string environment, string machineName, string version, string build)
         {
             this.MachineName = machineName;
             this.EnvironmentName = environment;
             this.ApplicationName = applicationName;
-            this.ThreadId = threadId;
+            this.Build = build;
+            this.Version = version;
         }
 
         /// <summary>
@@ -52,6 +56,14 @@ namespace Slalom.Stacks.Runtime
         /// </summary>
         /// <value>The name of the application.</value>
         public string ApplicationName { get; }
+
+        /// <summary>
+        /// Gets the build number.
+        /// </summary>
+        /// <value>
+        /// The build number.
+        /// </value>
+        public string Build { get; }
 
         /// <summary>
         /// Gets the name of the environment.
@@ -72,18 +84,21 @@ namespace Slalom.Stacks.Runtime
         public static Environment Null => new NullEnvironment();
 
         /// <summary>
-        /// Gets the thread identifier.
+        /// Gets the version number.
         /// </summary>
-        /// <value>The thread identifier.</value>
-        public int ThreadId { get; }
+        /// <value>
+        /// The version number.
+        /// </value>
+        public string Version { get; }
 
         /// <inheritdoc />
         public Environment Resolve()
         {
-            return _current ?? (_current = new Environment(_configuration?["Stacks:Application"],
-                       _configuration?["Stacks:Environment"],
-                       System.Environment.MachineName,
-                       System.Environment.CurrentManagedThreadId));
+            return current ?? (current = new Environment(_configuration?["Stacks:Application"],
+                                   _configuration?["Stacks:Environment"],
+                                   System.Environment.MachineName,
+                                   _configuration?["Stacks:Version"],
+                                   Assembly.GetEntryAssembly().GetName().Version.ToString()));
         }
     }
 }

@@ -18,6 +18,12 @@
           "id": "/properties/Stacks/properties/Environment",
           "title": "Environment Name",
           "type": "string"
+        },
+        "Version": {
+          "description": "The version number of the application.",
+          "id": "/properties/Stacks/properties/Version",
+          "title": "Version Number",
+          "type": "string"
         }
       },
       "type": "object"

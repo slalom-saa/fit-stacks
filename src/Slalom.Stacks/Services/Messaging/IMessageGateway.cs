@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Slalom.Stacks.Services.Logging;
 
 namespace Slalom.Stacks.Services.Messaging
 {
@@ -39,6 +40,12 @@ namespace Slalom.Stacks.Services.Messaging
         /// <param name="message">The message to publish.</param>
         /// <returns>A task for asynchronous programming.</returns>
         void Publish(string channel, string message);
+
+        /// <summary>
+        /// Publishes the specified event.
+        /// </summary>
+        /// <param name="instance">The event instance.</param>
+        void Publish(Event instance);
 
         /// <summary>
         /// Sends the specified command to the configured point-to-point endpoint.

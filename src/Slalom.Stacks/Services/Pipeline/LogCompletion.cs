@@ -20,7 +20,7 @@ namespace Slalom.Stacks.Services.Pipeline
     /// The log completion step of the use case execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Services.Pipeline.IMessageExecutionStep" />
-    public class LogCompletion : IMessageExecutionStep
+    internal class LogCompletion : IMessageExecutionStep
     {
         private readonly IResponseLog _actions;
         private readonly IEnvironmentContext _environmentContext;

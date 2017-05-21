@@ -7,23 +7,28 @@
 
 using System;
 using System.Threading.Tasks;
-using Slalom.Stacks.Services.Inventory;
 
 namespace Slalom.Stacks.Services.Messaging
 {
     /// <summary>
-    /// Dispatches messages locally, or within process.
+    /// Routes messages to remote endpoints.
     /// </summary>
-    public interface ILocalMessageDispatcher
+    public interface IRemoteRouter
     {
         /// <summary>
-        /// Dispatches the specified request.
+        /// Determines whether this instance can route the specified request.
         /// </summary>
         /// <param name="request">The request.</param>
-        /// <param name="endPoint">The endpoint to dispatch to.</param>
+        /// <returns><c>true</c> if this instance can route the specified request; otherwise, <c>false</c>.</returns>
+        bool CanRoute(Request request);
+
+        /// <summary>
+        /// Routes the specified request.
+        /// </summary>
+        /// <param name="request">The request.</param>
         /// <param name="parentContext">The parent context.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns>Returns a task for asynchronous programming.</returns>
-        Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null);
+        Task<MessageResult> Route(Request request, ExecutionContext parentContext, TimeSpan? timeout = null);
     }
 }

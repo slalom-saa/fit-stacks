@@ -18,7 +18,7 @@ namespace Slalom.Stacks.Runtime
         /// Initializes a new instance of the <see cref="NullEnvironment" /> class.
         /// </summary>
         public NullEnvironment()
-            : base("", "", "", 0)
+            : base("", "", "", "", "")
         {
         }
     }

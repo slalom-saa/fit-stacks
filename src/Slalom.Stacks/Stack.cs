@@ -1,11 +1,4 @@
-﻿/* 
- * Copyright (c) Stacks Contributors
- * 
- * This file is subject to the terms and conditions defined in
- * the LICENSE file, which is part of this source code package.
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,6 +11,7 @@ using Slalom.Stacks.Domain;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Search;
+using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
 using Module = Autofac.Module;
 #if core
@@ -52,11 +46,11 @@ namespace Slalom.Stacks
             {
                 if (module.GetConstructors().SingleOrDefault()?.GetParameters().Length == 0)
                 {
-                    builder.RegisterModule((Module) Activator.CreateInstance(module));
+                    builder.RegisterModule((Module)Activator.CreateInstance(module));
                 }
                 if (module.GetConstructors().SingleOrDefault()?.GetParameters().SingleOrDefault()?.ParameterType == typeof(Stack))
                 {
-                    builder.RegisterModule((Module) Activator.CreateInstance(module, this));
+                    builder.RegisterModule((Module)Activator.CreateInstance(module, this));
                 }
             }
 
@@ -68,7 +62,6 @@ namespace Slalom.Stacks
         /// </summary>
         /// <value>The assemblies that are used for loading components.</value>
         public ObservableCollection<Assembly> Assemblies { get; } = new ObservableCollection<Assembly>();
-
 
         /// <summary>
         /// Gets the configured <see cref="IConfiguration" />.
@@ -148,20 +141,20 @@ namespace Slalom.Stacks
             else
             {
                 var current = markers.Select(e =>
-                    {
-                        var type = e as Type;
-                        if (type != null)
-                        {
-                            return type.GetTypeInfo().Assembly;
-                        }
-                        var assembly = e as Assembly;
-                        if (assembly != null)
-                        {
-                            return assembly;
-                        }
-                        return e.GetType().GetTypeInfo().Assembly;
-                    })
-                    .Distinct();
+                                     {
+                                         var type = e as Type;
+                                         if (type != null)
+                                         {
+                                             return type.GetTypeInfo().Assembly;
+                                         }
+                                         var assembly = e as Assembly;
+                                         if (assembly != null)
+                                         {
+                                             return assembly;
+                                         }
+                                         return e.GetType().GetTypeInfo().Assembly;
+                                     })
+                                     .Distinct();
                 foreach (var item in current)
                 {
                     this.Assemblies.Add(item);
@@ -178,6 +171,15 @@ namespace Slalom.Stacks
         public void Publish(string channel, string message)
         {
             this.Container.Resolve<IMessageGateway>().Publish(channel, message);
+        }
+
+        /// <summary>
+        /// Publishes the specified event.
+        /// </summary>
+        /// <param name="instance">The event instance.</param>
+        public void Publish(Event instance)
+        {
+            this.Container.Resolve<IMessageGateway>().Publish(instance);
         }
 
         /// <summary>
@@ -237,7 +239,7 @@ namespace Slalom.Stacks
         /// <returns>A task for asynchronous programming.</returns>
         public Task<MessageResult> Send(string path, TimeSpan? timeout = null)
         {
-            return this.Container.Resolve<IMessageGateway>().Send(path, null, timeout);
+            return this.Container.Resolve<IMessageGateway>().Send(path, null, timeout); 
         }
 
         /// <summary>

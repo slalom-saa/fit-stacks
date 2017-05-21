@@ -51,7 +51,7 @@ namespace Slalom.Stacks.Services.Modules
                 .As<IMessageGateway>()
                 .SingleInstance();
 
-            builder.RegisterType<LocalDispatcher>().As<ILocalMessageDispatcher>();
+            builder.RegisterType<RequestRouter>().As<IRequestRouter>();
             builder.RegisterType<RemoteServiceInventory>().AsSelf().SingleInstance();
 
             builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
@@ -105,8 +105,8 @@ namespace Slalom.Stacks.Services.Modules
                 .SingleInstance();
 
             builder.RegisterAssemblyTypes(assemblies)
-                .Where(e => e.GetInterfaces().Contains(typeof(IRemoteMessageDispatcher)))
-                .As<IRemoteMessageDispatcher>()
+                .Where(e => e.GetInterfaces().Contains(typeof(IRemoteRouter)))
+                .As<IRemoteRouter>()
                 .AsSelf()
                 .SingleInstance();
         }

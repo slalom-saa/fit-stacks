@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.Messaging
@@ -41,13 +42,17 @@ namespace Slalom.Stacks.Services.Messaging
             this.ValidationErrors = instance.ValidationErrors.ToList();
             this.RequestId = instance.RequestId;
             this.IsCancelled = instance.IsCancelled;
-            if (instance.Response is string)
+            if (instance.Response is T)
             {
-                this.Response = JsonConvert.DeserializeObject<T>((string) instance.Response);
+                this.Response = (T)instance.Response;
+            }
+            else if (instance.Response is string)
+            {
+                this.Response = JsonConvert.DeserializeObject<T>((string)instance.Response);
             }
             else
             {
-                this.Response = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(instance.Response));
+                this.Response = JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(instance.Response, DefaultSerializationSettings.Instance), DefaultSerializationSettings.Instance);
             }
         }
 
@@ -57,7 +62,7 @@ namespace Slalom.Stacks.Services.Messaging
         /// <value>The message response.</value>
         public new T Response
         {
-            get { return (T) base.Response; }
+            get { return (T)base.Response; }
             set { base.Response = value; }
         }
     }

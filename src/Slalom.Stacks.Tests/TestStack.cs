@@ -120,7 +120,7 @@ namespace Slalom.Stacks.Tests
 
         public void UseEndPoint<T>(Action<T> action = null)
         {
-            var dispatch = this.Container.Resolve<ILocalMessageDispatcher>() as TestDispatcher;
+            var dispatch = this.Container.Resolve<IRequestRouter>() as TestDispatcher;
 
             if (dispatch == null)
             {
@@ -132,7 +132,7 @@ namespace Slalom.Stacks.Tests
 
         public void UseEndPoint(string path, Action<Request> action = null)
         {
-            var dispatch = this.Container.Resolve<ILocalMessageDispatcher>() as TestDispatcher;
+            var dispatch = this.Container.Resolve<IRequestRouter>() as TestDispatcher;
 
             if (dispatch == null)
             {

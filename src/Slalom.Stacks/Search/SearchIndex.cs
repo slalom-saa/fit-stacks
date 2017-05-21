@@ -97,6 +97,12 @@ namespace Slalom.Stacks.Search
             return _context.RemoveAsync(predicate);
         }
 
+        /// <inheritdoc />
+        public virtual Task Index(params string[] ids)
+        {
+            return Task.FromResult(0);
+        }
+
         /// <summary>
         /// Removes the specified instances.
         /// </summary>

@@ -242,5 +242,21 @@ namespace Slalom.Stacks.Search
             }
             return store.UpdateAsync(predicate, expression);
         }
+
+
+        /// <summary>
+        /// Indexes the the items with the specified IDs.
+        /// </summary>
+        /// <param name="ids">The IDs of the items to index.</param>
+        /// <returns>Retuns a task for asynchronous programming.</returns>
+        public Task Index<TSearchResult>(params string[] ids) where TSearchResult : class, ISearchResult
+        {
+            var store = _componentContext.Resolve<ISearchIndex<TSearchResult>>();
+            if (store == null)
+            {
+                throw new InvalidOperationException($"No index has been registered for type {typeof(TSearchResult)}.");
+            }
+            return store.Index(ids);
+        }
     }
 }

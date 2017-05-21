@@ -21,7 +21,7 @@ namespace Slalom.Stacks.Services.Messaging
     /// <seealso cref="Slalom.Stacks.Services.Messaging.IRequestContext" />
     public class Request : IRequestContext
     {
-        private static string _sourceAddress;
+        private string _sessionId;
 
         /// <summary>
         /// Gets the correlation identifier for the request.
@@ -71,10 +71,10 @@ namespace Slalom.Stacks.Services.Messaging
         {
             return new Request
             {
-                CorrelationId = this.GetCorrelationId(),
-                SourceAddress = this.GetSourceIPAddress(),
-                SessionId = this.GetSession(),
-                User = this.GetUser(),
+                CorrelationId = parent?.CorrelationId ?? this.GetCorrelationId(),
+                SourceAddress = parent?.SourceAddress ?? this.GetSourceIPAddress(),
+                SessionId = parent?.SessionId ?? this.GetSession(),
+                User = parent?.User ?? this.GetUser(),
                 Parent = parent,
                 Path = endPoint.Path,
                 Message = this.GetMessage(message, endPoint)
@@ -86,10 +86,10 @@ namespace Slalom.Stacks.Services.Messaging
         {
             return new Request
             {
-                CorrelationId = this.GetCorrelationId(),
-                SourceAddress = this.GetSourceIPAddress(),
-                SessionId = this.GetSession(),
-                User = this.GetUser(),
+                CorrelationId = parent?.CorrelationId ?? this.GetCorrelationId(),
+                SourceAddress = parent?.SourceAddress ?? this.GetSourceIPAddress(),
+                SessionId = parent?.SessionId ?? this.GetSession(),
+                User = parent?.User ?? this.GetUser(),
                 Parent = parent,
                 Path = path ?? message?.GetType().GetAllAttributes<RequestAttribute>().FirstOrDefault()?.Path,
                 Message = this.GetMessage(path, message)
@@ -101,10 +101,10 @@ namespace Slalom.Stacks.Services.Messaging
         {
             return new Request
             {
-                CorrelationId = this.GetCorrelationId(),
-                SourceAddress = this.GetSourceIPAddress(),
-                SessionId = this.GetSession(),
-                User = this.GetUser(),
+                CorrelationId = parent?.CorrelationId ?? this.GetCorrelationId(),
+                SourceAddress = parent?.SourceAddress ?? this.GetSourceIPAddress(),
+                SessionId = parent?.SessionId ?? this.GetSession(),
+                User = parent?.User ?? this.GetUser(),
                 Parent = parent,
                 Path = endPoint.Path,
                 Message = this.GetMessage(command, endPoint)
@@ -140,7 +140,7 @@ namespace Slalom.Stacks.Services.Messaging
         /// <returns>Returns the current session ID.</returns>
         protected virtual string GetSession()
         {
-            return NewId.NextId();
+            return _sessionId ?? (_sessionId = NewId.NextId());
         }
 
         /// <summary>
@@ -149,22 +149,7 @@ namespace Slalom.Stacks.Services.Messaging
         /// <returns>Returns the source IP address.</returns>
         protected virtual string GetSourceIPAddress()
         {
-            if (_sourceAddress == null)
-            {
-                //try
-                //{
-                //    using (var client = new HttpClient())
-                //    {
-                //        var response = client.GetAsync("http://ipinfo.io/ip").Result;
-                //        sourceAddress = response.Content.ReadAsStringAsync().Result.Trim();
-                //    }
-                //}
-                //catch
-                //{
-                _sourceAddress = "127.0.0.1";
-                //}
-            }
-            return _sourceAddress;
+            return "127.0.0.1";
         }
 
         /// <summary>
@@ -180,7 +165,7 @@ namespace Slalom.Stacks.Services.Messaging
         {
             if (message is IMessage)
             {
-                return (IMessage) message;
+                return (IMessage)message;
             }
             return new Message(message);
         }

@@ -42,6 +42,13 @@ namespace Slalom.Stacks.Search
         Task<TSearchResult> FindAsync(int id);
 
         /// <summary>
+        /// Indexes the the items with the specified IDs.
+        /// </summary>
+        /// <param name="ids">The IDs of the items to index.</param>
+        /// <returns>Retuns a task for asynchronous programming.</returns>
+        Task Index(params string[] ids);
+
+        /// <summary>
         /// Removes the specified instances.
         /// </summary>
         /// <param name="instances">The instances to remove.</param>

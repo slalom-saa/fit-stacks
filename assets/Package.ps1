@@ -24,7 +24,7 @@ function Increment-Version() {
 }
 
 
-function Format-Json([Parameter(Mandatory, ValueFromPipeline)][String] $json) {2
+function Format-Json([Parameter(Mandatory, ValueFromPipeline)][String] $json) {
   $indent = 0;
   ($json -Split '\n' |
     % {
