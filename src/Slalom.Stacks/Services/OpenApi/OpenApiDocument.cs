@@ -78,7 +78,7 @@ namespace Slalom.Stacks.Services.OpenApi
         /// <value>
         /// The transfer protocol of the API. Values MUST be from the list: "http", "https", "ws", "wss". If the schemes is not included, the default scheme to be used is the one used to access the Swagger definition itself.
         /// </value>
-        public string[] Schemes { get; set; } = { "https", "http" };
+        public string[] Schemes { get; set; } = { "http", "https" };
 
         /// <summary>
         /// Gets or sets the Swagger Specification version being used. It can be used by the Swagger UI and other clients to interpret the API listing. The value MUST be "2.0".
@@ -100,10 +100,11 @@ namespace Slalom.Stacks.Services.OpenApi
         /// Loads the document using hte specified service inventory.
         /// </summary>
         /// <param name="services">The service inventory.</param>
-        public void Load(ServiceInventory services)
+        /// <param name="includeAll">Indicates whether all endpoints should be retreived or just public.</param>
+        public void Load(ServiceInventory services, bool includeAll = false)
         {
             this.Info = services.Application;
-            var endPoints = services.EndPoints.Where(e => e.Public && !e.IsVersioned).ToList();
+            var endPoints = services.EndPoints.Where(e => includeAll || e.Public && !e.IsVersioned).ToList();
             foreach (var endPoint in endPoints)
             {
                 if (endPoint.RequestType != null)

@@ -6,11 +6,13 @@
  */
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Newtonsoft.Json;
 using Slalom.Stacks.Serialization;
 
@@ -153,7 +155,11 @@ namespace Slalom.Stacks.Text
         {
             instance = Regex.Replace(instance, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToUpper(m.Value[1])}");
 
+#if core
             return Regex.Replace(instance, @"^\w|\b\w(?=\w{{2}})", m => m.Value.ToUpperInvariant());
+#else
+            return Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(instance);
+#endif
         }
 
         /// <summary>

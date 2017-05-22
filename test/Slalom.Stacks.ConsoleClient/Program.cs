@@ -36,24 +36,7 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-                //var collection = new SchemaCollection();
-                //var result = collection.GetOrAdd(typeof(OpenApiDocument));
-
-
-                //result.OutputToJson();
-                //File.WriteAllText("output.json", JsonConvert.SerializeObject(result, DefaultSerializationSettings.Instance));
-
-                using (var stack = new Stack())
-                {
-                    var result = stack.Send("_system/endpoints/open-api", new
-                    {
-                        Host = "localhost"
-                    }).Result;
-
-                    result.OutputToJson();
-
-                    File.WriteAllText("output.json", JsonConvert.SerializeObject(result.Response, DefaultSerializationSettings.Instance));
-                }
+                "promo-codes".Replace("-", " ").ToTitle().OutputToJson();
             }
             catch (Exception exception)
             {
