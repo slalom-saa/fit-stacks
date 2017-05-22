@@ -8,15 +8,12 @@
 namespace Slalom.Stacks.Services.EndPoints
 {
     /// <summary>
-    /// Checks the health of the service and returns nothing if everything is good.  If there is an issue with the system health then
-    /// an exception is thrown.
+    /// Checks the health of the application and returns no content if no issues are found.  An exception is raised when there is an issue present.
     /// </summary>
     [EndPoint("_system/health", Method = "GET")]
     public class CheckHealth : EndPoint
     {
-        /// <summary>
-        /// Receives the call to the endpoint.
-        /// </summary>
+        /// <inheritdoc />
         public override void Receive()
         {
         }

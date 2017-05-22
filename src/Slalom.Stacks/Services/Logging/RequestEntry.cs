@@ -15,7 +15,7 @@ using Slalom.Stacks.Utilities.NewId;
 namespace Slalom.Stacks.Services.Logging
 {
     /// <summary>
-    /// Represents a request log entry - something that tracks the request at the application level.
+    /// A serializable record of a request.
     /// </summary>
     public class RequestEntry
     {

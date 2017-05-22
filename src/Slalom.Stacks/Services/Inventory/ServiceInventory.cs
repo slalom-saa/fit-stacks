@@ -37,16 +37,12 @@ namespace Slalom.Stacks.Services.Inventory
         public Application Application { get; }
 
         /// <summary>
-        /// Gets the end points in the inventory.
+        /// Gets or sets the inventoried end points.
         /// </summary>
-        /// <value>The end points in the inventory.</value>
-        public IEnumerable<EndPointMetaData> EndPoints => this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints);
-
-        /// <summary>
-        /// Gets the registered services.
-        /// </summary>
-        /// <value>The registered services.</value>
-        public List<ServiceHost> Hosts { get; } = new List<ServiceHost>();
+        /// <value>
+        /// The inventoried end points.
+        /// </value>
+        public List<EndPointMetaData> EndPoints { get; set; } = new List<EndPointMetaData>();
 
         /// <summary>
         /// Finds the endpoint for the specified message.
@@ -59,7 +55,7 @@ namespace Slalom.Stacks.Services.Inventory
             {
                 return Enumerable.Empty<EndPointMetaData>();
             }
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.GetType());
+            return this.EndPoints.Where(e => e.RequestType == message.GetType());
         }
 
         /// <summary>
@@ -74,9 +70,9 @@ namespace Slalom.Stacks.Services.Inventory
                 return null;
             }
 
-            var endPoints = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).ToList();
+            path = path.Trim('/');
 
-            return endPoints.FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path) ?? endPoints.Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
+            return this.EndPoints.FirstOrDefault(e => e.Path == path);
         }
 
         /// <summary>
@@ -117,20 +113,27 @@ namespace Slalom.Stacks.Services.Inventory
         }
 
         /// <summary>
-        /// Registers all local services using the specified assemblies.
+        /// Loads all local services using the specified assemblies.
         /// </summary>
         /// <param name="assemblies">The assemblies to use to scan.</param>
-        public void RegisterLocal(params Assembly[] assemblies)
+        public void Load(params Assembly[] assemblies)
         {
-            var host = new ServiceHost();
             foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint)).Distinct())
             {
                 if (!service.GetTypeInfo().IsGenericType && !service.IsDynamic() && !service.GetTypeInfo().IsAbstract)
                 {
-                    host.Add(service);
+                    this.EndPoints.AddRange(EndPointMetaData.Create(service));
                 }
             }
-            this.Hosts.Add(host);
+            foreach (var group in this.EndPoints.GroupBy(e => e.Path))
+            {
+                var current = group.Max(e => e.Version);
+                foreach (var previous in group.Where(e => e.Version != current))
+                {
+                    previous.Path = $"v{previous.Version}/{previous.Path}";
+                    previous.IsVersioned = true;
+                }
+            }
         }
     }
 }

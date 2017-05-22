@@ -10,7 +10,7 @@ using System;
 namespace Slalom.Stacks.Services.EndPoints
 {
     /// <summary>
-    /// Message to get responses that have been provided in a service context.
+    /// Request to get responses that have been executed in an application context.
     /// </summary>
     public class GetResponsesRequest
     {

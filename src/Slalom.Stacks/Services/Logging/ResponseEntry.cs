@@ -16,7 +16,7 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Services.Logging
 {
     /// <summary>
-    /// An entry to capture the response, or action, of a request.
+    /// A serializable record of a response.
     /// </summary>
     /// <remarks>
     /// The entry is intended to be created on the same process and thread as the executing

@@ -63,7 +63,7 @@ namespace Slalom.Stacks.Services.Modules
             builder.RegisterType<ServiceInventory>()
                 .AsSelf()
                 .SingleInstance()
-                .OnActivated(e => { e.Instance.RegisterLocal(_stack.Assemblies.ToArray()); });
+                .OnActivated(e => { e.Instance.Load(_stack.Assemblies.ToArray()); });
 
             builder.Register(c => new Request())
                 .As<IRequestContext>();

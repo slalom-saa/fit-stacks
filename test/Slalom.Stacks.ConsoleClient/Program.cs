@@ -45,7 +45,7 @@ namespace Slalom.Stacks.ConsoleClient
 
                 using (var stack = new Stack())
                 {
-                    var result = stack.Send("_system/open-api", new
+                    var result = stack.Send("_system/endpoints/open-api", new
                     {
                         Host = "localhost"
                     }).Result;

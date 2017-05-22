@@ -32,19 +32,13 @@ namespace Slalom.Stacks.Services.Inventory
         /// <value>
         /// The HTTP method.
         /// </value>
-        public string HttpMethod { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is local.
-        /// </summary>
-        /// <value><c>true</c> if this instance is local; otherwise, <c>false</c>.</value>
-        public bool IsLocal => this.RootPath == ServiceHost.LocalPath;
+        public string Method { get; set; }
 
         /// <summary>
         /// Gets or sets the endpoint method.
         /// </summary>
         /// <value>The endpoint method.</value>
-        public MethodInfo Method { get; set; }
+        public MethodInfo InvokeMethod { get; set; }
 
         /// <summary>
         /// Gets or sets the endpoint name.
@@ -79,12 +73,6 @@ namespace Slalom.Stacks.Services.Inventory
         public Type ResponseType { get; set; }
 
         /// <summary>
-        /// Gets or sets the root path.
-        /// </summary>
-        /// <value>The root path.</value>
-        public string RootPath { get; set; }
-
-        /// <summary>
         /// Gets or sets the rules.
         /// </summary>
         /// <value>The rules.</value>
@@ -115,12 +103,19 @@ namespace Slalom.Stacks.Services.Inventory
         public int Version { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is an older version.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is an older version; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsVersioned { get; set; }
+
+        /// <summary>
         /// Creates endpoint metadata for the specified service.
         /// </summary>
         /// <param name="service">The owning service.</param>
-        /// <param name="rootPath">The root path.</param>
         /// <returns>Returns endpoint metadata for the specified service.</returns>
-        public static IEnumerable<EndPointMetaData> Create(Type service, string rootPath = ServiceHost.LocalPath)
+        public static IEnumerable<EndPointMetaData> Create(Type service)
         {
             var interfaces = service.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && (e.GetGenericTypeDefinition() == typeof(IEndPoint<>) || e.GetGenericTypeDefinition() == typeof(IEndPoint<,>))).ToList();
             if (interfaces.Any())
@@ -142,16 +137,15 @@ namespace Slalom.Stacks.Services.Inventory
                         {
                             Name = attribute?.Name ?? service.Name.ToTitle(),
                             Path = path,
-                            HttpMethod = attribute?.Method ?? "POST",
+                            Method = attribute?.Method ?? "POST",
                             EndPointType = service,
                             RequestType = requestType,
                             ResponseType = GetResponseType(method),
                             Rules = requestType?.GetRules().Select(e => new EndPointRule(e)).ToList(),
                             Version = version,
                             Summary = summary?.Summary,
-                            RootPath = rootPath,
                             Timeout = timeout,
-                            Method = method,
+                            InvokeMethod = method,
                             Public = service.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Public ?? true,
                             Secure = attribute?.Secure ?? false
                         };

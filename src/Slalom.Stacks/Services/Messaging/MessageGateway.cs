@@ -57,7 +57,7 @@ namespace Slalom.Stacks.Services.Messaging
             var endPoints = _services.Value.Find(instance);
             foreach (var endPoint in endPoints)
             {
-                if (endPoint.Method.GetParameters().FirstOrDefault()?.ParameterType.AssemblyQualifiedName == instance.MessageType)
+                if (endPoint.InvokeMethod.GetParameters().FirstOrDefault()?.ParameterType.AssemblyQualifiedName == instance.MessageType)
                 {
                     await _dispatcher.Value.Route(request, endPoint, context);
                 }

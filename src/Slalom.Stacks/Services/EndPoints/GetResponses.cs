@@ -14,7 +14,7 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Services.EndPoints
 {
     /// <summary>
-    /// Gets responses that have been provided in a service context.
+    /// Gets responses that have been executed in the application context.
     /// </summary>
     [EndPoint("_system/responses", Method = "GET")]
     public class GetResponses : EndPoint<GetResponsesRequest, IEnumerable<ResponseEntry>>

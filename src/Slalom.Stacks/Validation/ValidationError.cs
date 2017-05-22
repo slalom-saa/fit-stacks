@@ -11,7 +11,7 @@ using Newtonsoft.Json.Converters;
 namespace Slalom.Stacks.Validation
 {
     /// <summary>
-    /// Represents a validation error and contains user facing messaging.
+    /// Represents a validation error that was raised by the system and is inteded to be returned to the user.
     /// </summary>
     public class ValidationError
     {

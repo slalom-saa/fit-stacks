@@ -317,10 +317,7 @@
           "type": "object"
         },
         "externalDocs": {
-          "items": {
-            "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.ExternalDocs"
-          },
-          "type": "array"
+          "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.ExternalDocs"
         },
         "host": {
           "type": "string"
@@ -533,6 +530,10 @@
       "type": "string"
     }
   },
+  "externalDocs": {
+    "description": "The Patolus Project Confluence site",
+    "url": "https://pds-patolus.atlassian.net/wiki/display/PDSPAT/PDS-Patolus"
+  },
   "host": "localhost",
   "info": {
     "title": "Envio",
@@ -545,7 +546,7 @@
         "consumes": [
           "application/json"
         ],
-        "operationId": "POST /catalog/products/add",
+        "operationId": "656a0000181de4b38c1a08d4a1565935",
         "parameters": [
           {
             "schema": {
@@ -603,7 +604,7 @@
         "consumes": [
           "application/json"
         ],
-        "operationId": "POST /shipping/products/stock",
+        "operationId": "656a0000181de4b3ee5108d4a1565935",
         "parameters": [
           {
             "schema": {
@@ -640,62 +641,37 @@
         ]
       }
     },
-    "/v1/catalog/products/add": {
-      "post": {
+    "/_system/endpoints/open-api": {
+      "get": {
         "consumes": [
           "application/json"
         ],
-        "description": "Adds a product to the product catalog.",
-        "operationId": "POST /catalog/products/add",
+        "description": "Gets the [OpenAPI](https://www.openapis.org/) definition for the API.",
+        "operationId": "656a0000181de4b3c2f308d4a1565933",
         "parameters": [
           {
-            "schema": {
-              "description": "Adds a product to the product catalog.",
-              "$ref": "#/definitions/slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add.AddProductCommand"
-            },
-            "name": "body",
-            "in": "body",
-            "required": true
+            "name": "Host",
+            "in": "query",
+            "description": "The host name to display in the document.",
+            "required": false,
+            "type": "string"
           }
         ],
         "produces": [
           "application/json"
         ],
         "responses": {
-          "204": {
-            "description": "No content is returned from this endpoint."
-          },
-          "400": {
-            "description": "1. Name is required.\r\n\r\n",
+          "200": {
+            "description": "This is the root document object for the API specification. It combines what previously was the Resource Listing and API Declaration (version 1.2 and earlier) together into one document.",
             "schema": {
-              "items": {
-                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
-              },
-              "type": "array"
-            }
-          },
-          "409": {
-            "description": "1. Name must be unique.\r\n\r\n",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
-              },
-              "type": "array"
-            }
-          },
-          "403": {
-            "description": "User is employee.    \r\n",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
-              },
-              "type": "array"
+              "description": "This is the root document object for the API specification. It combines what previously was the Resource Listing and API Declaration (version 1.2 and earlier) together into one document.",
+              "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.OpenApiDocument"
             }
           }
         },
-        "summary": "Add Product",
+        "summary": "Get OpenAPI Definition",
         "tags": [
-          "Products"
+          "Stacks"
         ]
       }
     },
@@ -705,7 +681,7 @@
           "application/json"
         ],
         "description": "Gets the events that have occurred within the service context.",
-        "operationId": "GET /_system/events",
+        "operationId": "656a0000181de4b3689408d4a1565932",
         "parameters": [
           {
             "name": "End",
@@ -750,7 +726,7 @@
           "application/json"
         ],
         "description": "Checks the health of the service and returns nothing if everything is good.  If there is an issue with the system health then\n            an exception is thrown.",
-        "operationId": "GET /_system/health",
+        "operationId": "656a0000181de4b3f0b508d4a1565930",
         "produces": [
           "application/json"
         ],
@@ -765,47 +741,13 @@
         ]
       }
     },
-    "/_system/open-api": {
-      "get": {
-        "consumes": [
-          "application/json"
-        ],
-        "description": "Gets the OpenAPI definition document.",
-        "operationId": "GET /_system/open-api",
-        "parameters": [
-          {
-            "name": "Host",
-            "in": "query",
-            "description": "The host name to display in the document.",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "This is the root document object for the API specification. It combines what previously was the Resource Listing and API Declaration (version 1.2 and earlier) together into one document.",
-            "schema": {
-              "description": "This is the root document object for the API specification. It combines what previously was the Resource Listing and API Declaration (version 1.2 and earlier) together into one document.",
-              "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.OpenApiDocument"
-            }
-          }
-        },
-        "summary": "Get OpenAPI Definition",
-        "tags": [
-          "Stacks"
-        ]
-      }
-    },
     "/_system/requests": {
       "get": {
         "consumes": [
           "application/json"
         ],
         "description": "Gets requests that have happened in the service context.",
-        "operationId": "GET /_system/requests",
+        "operationId": "656a0000181de4b3a4ac08d4a1565934",
         "parameters": [
           {
             "name": "End",
@@ -850,7 +792,7 @@
           "application/json"
         ],
         "description": "Gets responses that have been provided in a service context.",
-        "operationId": "GET /_system/responses",
+        "operationId": "656a0000181de4b3798c08d4a1565935",
         "parameters": [
           {
             "name": "End",

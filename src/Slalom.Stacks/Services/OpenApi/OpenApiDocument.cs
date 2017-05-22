@@ -13,6 +13,7 @@ using System.Text;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Services.Inventory;
 using Slalom.Stacks.Text;
+using Slalom.Stacks.Utilities.NewId;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.OpenApi
@@ -45,7 +46,7 @@ namespace Slalom.Stacks.Services.OpenApi
         /// <value>
         /// The external additional external documentation.
         /// </value>
-        public IList<ExternalDocs> ExternalDocs { get; set; }
+        public ExternalDocs ExternalDocs { get; set; }
 
         /// <summary>
         /// Gets or sets the host (name or ip) serving the API. This MUST be the host only and does not include the scheme nor sub-paths. It MAY include a port. If the host is not included, the host serving the documentation is to be used (including the port). The host does not support path templating.
@@ -102,7 +103,7 @@ namespace Slalom.Stacks.Services.OpenApi
         public void Load(ServiceInventory services)
         {
             this.Info = services.Application;
-            var endPoints = services.EndPoints.Where(e => e.Public).ToList();
+            var endPoints = services.EndPoints.Where(e => e.Public && !e.IsVersioned).ToList();
             foreach (var endPoint in endPoints)
             {
                 if (endPoint.RequestType != null)
@@ -127,7 +128,7 @@ namespace Slalom.Stacks.Services.OpenApi
 
         private Operation GetGetOperation(EndPointMetaData endPoint)
         {
-            if (endPoint.HttpMethod == "GET")
+            if (endPoint.Method == "GET")
             {
                 var parameters = new List<IParameter>();
                 foreach (var property in endPoint.RequestType.GetProperties())
@@ -152,7 +153,7 @@ namespace Slalom.Stacks.Services.OpenApi
                     Description = endPoint.Summary,
                     Consumes = new List<string> { "application/json" },
                     Produces = new List<string> { "application/json" },
-                    OperationId = "GET /" + endPoint.Path,
+                    OperationId = NewId.NextId().Replace("-", ""),
                     Parameters = parameters,
                     Responses = this.GetResponses(endPoint)
                 };
@@ -162,7 +163,7 @@ namespace Slalom.Stacks.Services.OpenApi
 
         private Operation GetPostOperation(EndPointMetaData endPoint)
         {
-            if (endPoint.HttpMethod == "POST")
+            if (endPoint.Method == "POST")
             {
                 return new Operation
                 {
@@ -171,7 +172,7 @@ namespace Slalom.Stacks.Services.OpenApi
                     Description = endPoint.Summary,
                     Consumes = new List<string> { "application/json" },
                     Produces = new List<string> { "application/json" },
-                    OperationId = "POST /" + endPoint.Path,
+                    OperationId = NewId.NextId().Replace("-", ""),
                     Parameters = this.GetPostParameters(endPoint).ToList(),
                     Responses = this.GetResponses(endPoint)
                 };
@@ -274,7 +275,14 @@ namespace Slalom.Stacks.Services.OpenApi
             var segments = endPoint.Path.Split('/');
             if (segments.Length >= 3)
             {
-                yield return segments[1].Replace("-", " ").ToTitle();
+                if (endPoint.IsVersioned)
+                {
+                    yield return segments[2].Replace("-", " ").ToTitle();
+                }
+                else
+                {
+                    yield return segments[1].Replace("-", " ").ToTitle();
+                }
             }
         }
 

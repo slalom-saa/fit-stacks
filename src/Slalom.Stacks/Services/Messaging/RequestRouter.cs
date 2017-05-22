@@ -57,13 +57,13 @@ namespace Slalom.Stacks.Services.Messaging
             }
 
             var body = request.Message.Body;
-            var parameterType = endPoint.Method.GetParameters().First().ParameterType;
+            var parameterType = endPoint.InvokeMethod.GetParameters().First().ParameterType;
             if (body == null || body.GetType() != parameterType)
             {
                 body = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body ?? ""), parameterType);
             }
 
-            await (Task)endPoint.Method.Invoke(handler, new[] { body });
+            await (Task)endPoint.InvokeMethod.Invoke(handler, new[] { body });
 
             await this.Complete(context);
 

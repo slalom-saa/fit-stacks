@@ -13,7 +13,7 @@ using Slalom.Stacks.Services.Messaging;
 namespace Slalom.Stacks.Services.Logging
 {
     /// <summary>
-    /// An entry of an event that has been raised.
+    /// A serializable record of an event that has been raised.
     /// </summary>
     public class EventEntry
     {
