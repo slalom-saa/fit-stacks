@@ -9,8 +9,16 @@ using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.OpenApi
 {
+    /// <summary>
+    /// A collection of OpenAPI schema defintinions.
+    /// </summary>
     public class SchemaCollection : SortedDictionary<string, Schema>
     {
+        /// <summary>
+        /// Gets or adds a shema for the specified type.
+        /// </summary>
+        /// <param name="type">The type to use for the schema.</param>
+        /// <returns>Returns the existing or added schema.</returns>
         public Schema GetOrAdd(Type type)
         {
             if (type == null || type == typeof(Object))
@@ -182,7 +190,7 @@ namespace Slalom.Stacks.Services.OpenApi
             };
         }
 
-        public Schema GetReferenceSchema(Type type)
+        internal Schema GetReferenceSchema(Type type)
         {
             if (type.IsNullable())
             {

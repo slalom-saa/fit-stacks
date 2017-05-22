@@ -25,39 +25,20 @@ namespace Slalom.Stacks.Services.OpenApi
     public class OpenApiDocument
     {
         /// <summary>
-        /// Gets or sets the metadata about the API. The metadata can be used by the clients if needed.
-        /// </summary>
-        /// <value>
-        /// The metadata about the API. The metadata can be used by the clients if needed.
-        /// </value>
-        public Application Info { get; set; }
-
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new OpenApiContractResolver()
-            });
-        }
-
-        /// <summary>
-        /// Gets or sets the list of tags used by the specification with additional metadata. The order of the tags can be used to reflect on their order by the parsing tools. Not all tags that are used by the Operation Object must be declared. The tags that are not declared may be organized randomly or based on the tools' logic. Each tag name in the list MUST be unique.
-        /// </summary>
-        /// <value>
-        /// The list of tags used by the specification with additional metadata.
-        /// </value>
-        public List<Tag> Tags { get; set; } = new List<Tag> { new Tag { Name = "Stacks", Description = "System defined endpoints." } };
-
-        /// <summary>
         /// Gets or sets the object to hold data types produced and consumed by operations.
         /// </summary>
         /// <value>
         /// The object to hold data types produced and consumed by operations.
         /// </value>
         public SchemaCollection Definitions { get; set; } = new SchemaCollection();
+
+        /// <summary>
+        /// Gets or sets the metadata about the API. The metadata can be used by the clients if needed.
+        /// </summary>
+        /// <value>
+        /// The metadata about the API. The metadata can be used by the clients if needed.
+        /// </value>
+        public Application Info { get; set; }
 
         /// <summary>
         /// Gets or sets the available paths and operations for the API.
@@ -83,6 +64,18 @@ namespace Slalom.Stacks.Services.OpenApi
         /// </value>
         public string Swagger { get; set; } = "2.0";
 
+        /// <summary>
+        /// Gets or sets the list of tags used by the specification with additional metadata. The order of the tags can be used to reflect on their order by the parsing tools. Not all tags that are used by the Operation Object must be declared. The tags that are not declared may be organized randomly or based on the tools' logic. Each tag name in the list MUST be unique.
+        /// </summary>
+        /// <value>
+        /// The list of tags used by the specification with additional metadata.
+        /// </value>
+        public List<Tag> Tags { get; set; } = new List<Tag> { new Tag { Name = "Stacks", Description = "System defined endpoints." } };
+
+        /// <summary>
+        /// Loads the document using hte specified service inventory.
+        /// </summary>
+        /// <param name="services">The service inventory.</param>
         public void Load(ServiceInventory services)
         {
             this.Info = services.Application;
@@ -106,6 +99,17 @@ namespace Slalom.Stacks.Services.OpenApi
                     });
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new OpenApiContractResolver()
+            });
         }
 
         private Operation GetGetOperation(EndPointMetaData endPoint)
@@ -166,27 +170,7 @@ namespace Slalom.Stacks.Services.OpenApi
             return null;
         }
 
-        private IEnumerable<string> GetTags(EndPointMetaData endPoint)
-        {
-            if (endPoint.Path == null)
-            {
-                yield break;
-            }
-
-            if (endPoint.Path.StartsWith("_system"))
-            {
-                yield return "Stacks";
-                yield break;
-            }
-
-            var segments = endPoint.Path.Split('/');
-            if (segments.Length >= 3)
-            {
-                yield return segments[1].ToTitle();
-            }
-        }
-
-        public IEnumerable<IParameter> GetPostParameters(EndPointMetaData endPoint)
+        private IEnumerable<IParameter> GetPostParameters(EndPointMetaData endPoint)
         {
             if (endPoint.RequestType != null && endPoint.RequestType != typeof(object))
             {
@@ -196,6 +180,7 @@ namespace Slalom.Stacks.Services.OpenApi
                 };
             }
         }
+
         private Dictionary<string, Response> GetResponses(EndPointMetaData endPoint)
         {
             var responses = new Dictionary<string, Response>();
@@ -203,7 +188,7 @@ namespace Slalom.Stacks.Services.OpenApi
             {
                 responses.Add("204", new Response
                 {
-                    Description = "No content is returned from this endpoint.",
+                    Description = "No content is returned from this endpoint."
                 });
             }
             else
@@ -259,6 +244,26 @@ namespace Slalom.Stacks.Services.OpenApi
                 });
             }
             return responses;
+        }
+
+        private IEnumerable<string> GetTags(EndPointMetaData endPoint)
+        {
+            if (endPoint.Path == null)
+            {
+                yield break;
+            }
+
+            if (endPoint.Path.StartsWith("_system"))
+            {
+                yield return "Stacks";
+                yield break;
+            }
+
+            var segments = endPoint.Path.Split('/');
+            if (segments.Length >= 3)
+            {
+                yield return segments[1].ToTitle();
+            }
         }
     }
 }
