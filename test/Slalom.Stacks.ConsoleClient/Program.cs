@@ -16,20 +16,21 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-                var collection = new SchemaCollection();
-                var result = collection.GetOrAdd(typeof(OpenApiDocument));
+                //var collection = new SchemaCollection();
+                //var result = collection.GetOrAdd(typeof(OpenApiDocument));
 
 
-                result.OutputToJson();
+                //result.OutputToJson();
+                //File.WriteAllText("output.json", JsonConvert.SerializeObject(result, DefaultSerializationSettings.Instance));
 
-                //using (var stack = new Stack())
-                //{
-                //    var result = stack.Send("_system/open-api").Result;
+                using (var stack = new Stack())
+                {
+                    var result = stack.Send("_system/open-api").Result;
 
-                //    result.OutputToJson();
+                    result.OutputToJson();
 
-                //    File.WriteAllText("output.json", JsonConvert.SerializeObject(result.Response, DefaultSerializationSettings.Instance));
-                //}
+                    File.WriteAllText("output.json", JsonConvert.SerializeObject(result.Response, DefaultSerializationSettings.Instance));
+                }
             }
             catch (Exception exception)
             {

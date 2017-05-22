@@ -3,12 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json.Serialization;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Text;
 using Slalom.Stacks.Validation;
 
 namespace Slalom.Stacks.Services.OpenApi
 {
+    public static class Ex
+    {
+        public static bool IsDictionary(this Type type)
+        {
+            return type.GetInterfaces().Any(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(IDictionary<,>));
+        }
+    }
+
     /// <summary>
     /// A collection of OpenAPI schema defintinions.
     /// </summary>
@@ -36,7 +45,7 @@ namespace Slalom.Stacks.Services.OpenApi
                 return this.CreatePrimitiveSchema(type);
             }
 
-            if (typeof(IEnumerable).IsAssignableFrom(type) || type.IsArray)
+            if (!type.IsDictionary() && (typeof(IEnumerable).IsAssignableFrom(type) || type.IsArray))
             {
                 return this.CreateArraySchema(type);
             }
@@ -46,12 +55,13 @@ namespace Slalom.Stacks.Services.OpenApi
                 return this[type.Name];
             }
 
-            this.Add(type.Name, this.CreateSchema(type, description));
+            this.Add(type.Name, null);
+            this[type.Name] = this.CreateSchema(type, description);
 
-            foreach (var item in type.GetProperties())
-            {
-                this.GetOrAdd(item.PropertyType, description);
-            }
+            //foreach (var item in type.GetProperties())
+            //{
+            //    this.GetOrAdd(item.PropertyType, item.GetComments()?.Value);
+            //}
 
             return this[type.Name];
         }
@@ -62,7 +72,6 @@ namespace Slalom.Stacks.Services.OpenApi
             {
                 return this.CreateSchema(Nullable.GetUnderlyingType(type), description);
             }
-
             if (type.GetTypeInfo().IsEnum)
             {
                 return this.CreateEnumSchema(type, description);
@@ -70,6 +79,10 @@ namespace Slalom.Stacks.Services.OpenApi
             else if (type.IsPrimitive())
             {
                 return this.CreatePrimitiveSchema(type, description);
+            }
+            else if (type.IsDictionary())
+            {
+                return this.CreateDictionarySchema(type, description);
             }
             else if (type.IsArray || typeof(IEnumerable).IsAssignableFrom(type))
             {
@@ -87,7 +100,7 @@ namespace Slalom.Stacks.Services.OpenApi
             {
                 return this.CreateArraySchema(type.GetElementType());
             }
-            else if (typeof(IEnumerable).IsAssignableFrom(type))
+            else if (typeof(IEnumerable).IsAssignableFrom(type) && type != typeof(string))
             {
                 if (type.GetTypeInfo().IsInterface)
                 {
@@ -105,7 +118,7 @@ namespace Slalom.Stacks.Services.OpenApi
             return new Schema
             {
                 Type = "array",
-                Items = this.CreateReferenceSchema(type)
+                Items = type.IsPrimitive() || type == typeof(object) ? this.CreatePrimitiveSchema(type) : this.CreateReferenceSchema(type),
             };
         }
 
@@ -120,7 +133,7 @@ namespace Slalom.Stacks.Services.OpenApi
             var required = new List<string>();
             foreach (var property in type.GetProperties())
             {
-                schema.Properties.Add(property.Name, this.CreateSchema(property.PropertyType));
+                schema.Properties.Add(property.Name, this.GetOrAdd(property.PropertyType));
                 if (property.GetCustomAttributes<ValidationAttribute>(true).Any())
                 {
                     required.Add(property.Name.ToCamelCase());
@@ -132,6 +145,27 @@ namespace Slalom.Stacks.Services.OpenApi
             }
             return schema;
         }
+
+        private Schema CreateDictionarySchema(Type type, string description = null)
+        {
+            var valueType = type.GetInterfaces().FirstOrDefault(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(IDictionary<,>))?.GetGenericArguments().ElementAt(1);
+            this.GetOrAdd(valueType);
+            if (valueType != null)
+            {
+                return new Schema
+                {
+                    Type = "object",
+                    //AdditionalProperties = valueType.IsPrimitive()  || valueType == typeof(object) ? this.CreatePrimitiveSchema(valueType) : this.CreateReferenceSchema(valueType, description),
+                    Description = description
+                };
+            }
+            return new Schema
+            {
+                Type = "object",
+                Description = description
+            };
+        }
+
 
         internal Schema CreatePrimitiveSchema(Type type, string description = null)
         {
@@ -182,11 +216,12 @@ namespace Slalom.Stacks.Services.OpenApi
             return new Schema { Type = "string", Description = description };
         }
 
-        private Schema CreateReferenceSchema(Type type)
+        private Schema CreateReferenceSchema(Type type, string description = null)
         {
             return new Schema
             {
-                Ref = $"#/definitions/{type.Name.ToCamelCase()}"
+                Ref = $"#/definitions/{type.Name.ToCamelCase()}",
+                Description = description
             };
         }
 
