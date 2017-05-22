@@ -1,40 +1,58 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using Autofac;
-using Autofac.Builder;
-using Autofac.Core;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
-using Slalom.Stacks.Runtime;
-using Slalom.Stacks.Security;
+using Slalom.Stacks.ConsoleClient.Domain.Products;
+using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Services;
-using Slalom.Stacks.Services.Logging;
-using Slalom.Stacks.Services.Messaging;
-using Slalom.Stacks.Services.Validation;
+using Slalom.Stacks.Services.OpenApi;
 using Slalom.Stacks.Text;
-using Slalom.Stacks.Validation;
 
 #pragma warning disable 1591
 
 namespace Slalom.Stacks.ConsoleClient
 {
+    [EndPoint("catalog/products/add", Version = 2)]
+    public class AddProduct : EndPoint<AddProductCommand>
+    {
+        /// <inheritdoc />
+        public override async Task ReceiveAsync(AddProductCommand command)
+        {
+            var target = new Product(command.Name, command.Description);
+
+            await this.Domain.Add(target);
+
+            //await this.Send(new SendNotification("adsf", "adf"));
+
+            this.AddRaisedEvent(new ProductAdded(target.Name, target.Description));
+        }
+    }
+
     internal class Program
     {
         private static void Main(string[] args)
         {
             try
             {
+                //var collection = new SchemaCollection();
+                //var result = collection.GetOrAdd(typeof(OpenApiDocument));
+
+
+                //result.OutputToJson();
+                //File.WriteAllText("output.json", JsonConvert.SerializeObject(result, DefaultSerializationSettings.Instance));
+
                 using (var stack = new Stack())
                 {
-                    var environment = stack.Container.Resolve<IEnvironmentContext>().Resolve();
+                    var result = stack.Send("_system/endpoints/open-api", new
+                    {
+                        Host = "localhost"
+                    }).Result;
 
-                    environment.OutputToJson();
+                    result.OutputToJson();
+
+                    File.WriteAllText("output.json", JsonConvert.SerializeObject(result.Response, DefaultSerializationSettings.Instance));
                 }
             }
             catch (Exception exception)

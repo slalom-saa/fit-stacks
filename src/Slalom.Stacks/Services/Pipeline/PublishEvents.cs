@@ -18,7 +18,7 @@ namespace Slalom.Stacks.Services.Pipeline
     /// The publish events step of the EndPoint execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Services.Pipeline.IMessageExecutionStep" />
-    public class PublishEvents : IMessageExecutionStep
+    internal class PublishEvents : IMessageExecutionStep
     {
         private readonly IEventStore _eventStore;
         private readonly IMessageGateway _messageGateway;

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.Services.Inventory
 {
@@ -20,16 +21,32 @@ namespace Slalom.Stacks.Services.Inventory
     public class EndPointMetaData
     {
         /// <summary>
-        /// Gets a value indicating whether this instance is local.
+        /// Gets or sets the endpoint type.
         /// </summary>
-        /// <value><c>true</c> if this instance is local; otherwise, <c>false</c>.</value>
-        public bool IsLocal => this.RootPath == ServiceHost.LocalPath;
+        /// <value>The endpoint type.</value>
+        public Type EndPointType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the HTTP method.
+        /// </summary>
+        /// <value>
+        /// The HTTP method.
+        /// </value>
+        public string Method { get; set; }
 
         /// <summary>
         /// Gets or sets the endpoint method.
         /// </summary>
         /// <value>The endpoint method.</value>
-        public MethodInfo Method { get; set; }
+        public MethodInfo InvokeMethod { get; set; }
+
+        /// <summary>
+        /// Gets or sets the endpoint name.
+        /// </summary>
+        /// <value>
+        /// The endpoint name.
+        /// </value>
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the relative path.
@@ -44,12 +61,6 @@ namespace Slalom.Stacks.Services.Inventory
         public bool Public { get; set; }
 
         /// <summary>
-        /// Gets or sets the request properties.
-        /// </summary>
-        /// <value>The request properties.</value>
-        public List<EndPointProperty> RequestProperties { get; set; }
-
-        /// <summary>
         /// Gets or sets the request type.
         /// </summary>
         /// <value>The request type.</value>
@@ -62,12 +73,6 @@ namespace Slalom.Stacks.Services.Inventory
         public Type ResponseType { get; set; }
 
         /// <summary>
-        /// Gets or sets the root path.
-        /// </summary>
-        /// <value>The root path.</value>
-        public string RootPath { get; set; }
-
-        /// <summary>
         /// Gets or sets the rules.
         /// </summary>
         /// <value>The rules.</value>
@@ -78,12 +83,6 @@ namespace Slalom.Stacks.Services.Inventory
         /// </summary>
         /// <value>Indicates whether the endpoint is secure.</value>
         public bool Secure { get; set; }
-
-        /// <summary>
-        /// Gets or sets the service type.
-        /// </summary>
-        /// <value>The service type.</value>
-        public Type ServiceType { get; set; }
 
         /// <summary>
         /// Gets or sets the endpoint summary.
@@ -104,12 +103,19 @@ namespace Slalom.Stacks.Services.Inventory
         public int Version { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is an older version.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is an older version; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsVersioned { get; set; }
+
+        /// <summary>
         /// Creates endpoint metadata for the specified service.
         /// </summary>
         /// <param name="service">The owning service.</param>
-        /// <param name="rootPath">The root path.</param>
         /// <returns>Returns endpoint metadata for the specified service.</returns>
-        public static IEnumerable<EndPointMetaData> Create(Type service, string rootPath = ServiceHost.LocalPath)
+        public static IEnumerable<EndPointMetaData> Create(Type service)
         {
             var interfaces = service.GetInterfaces().Where(e => e.GetTypeInfo().IsGenericType && (e.GetGenericTypeDefinition() == typeof(IEndPoint<>) || e.GetGenericTypeDefinition() == typeof(IEndPoint<,>))).ToList();
             if (interfaces.Any())
@@ -129,17 +135,17 @@ namespace Slalom.Stacks.Services.Inventory
                         var requestType = method.GetParameters().FirstOrDefault()?.ParameterType;
                         var endPoint = new EndPointMetaData
                         {
+                            Name = attribute?.Name ?? service.Name.ToTitle(),
                             Path = path,
-                            ServiceType = service,
+                            Method = attribute?.Method ?? "POST",
+                            EndPointType = service,
                             RequestType = requestType,
                             ResponseType = GetResponseType(method),
                             Rules = requestType?.GetRules().Select(e => new EndPointRule(e)).ToList(),
                             Version = version,
-                            RequestProperties = requestType?.GetInputProperties().ToList(),
                             Summary = summary?.Summary,
-                            RootPath = rootPath,
                             Timeout = timeout,
-                            Method = method,
+                            InvokeMethod = method,
                             Public = service.GetAllAttributes<EndPointAttribute>().FirstOrDefault()?.Public ?? true,
                             Secure = attribute?.Secure ?? false
                         };
@@ -149,14 +155,13 @@ namespace Slalom.Stacks.Services.Inventory
             }
         }
 
-
         private static Type GetResponseType(MethodInfo method)
         {
             if (method.ReturnType == typeof(Task))
             {
                 return null;
             }
-            if ((bool) method.ReturnType?.GetTypeInfo().IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+            if ((bool)method.ReturnType?.GetTypeInfo().IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
             {
                 return method.ReturnType.GetGenericArguments()[0];
             }

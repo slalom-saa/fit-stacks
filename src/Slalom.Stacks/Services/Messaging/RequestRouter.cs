@@ -18,24 +18,24 @@ using Slalom.Stacks.Services.Pipeline;
 namespace Slalom.Stacks.Services.Messaging
 {
     /// <summary>
-    /// A local <see cref="ILocalMessageDispatcher" /> implementation.
+    /// A local <see cref="IRequestRouter" /> implementation.
     /// </summary>
-    /// <seealso cref="ILocalMessageDispatcher" />
-    public class LocalDispatcher : ILocalMessageDispatcher
+    /// <seealso cref="IRequestRouter" />
+    public class RequestRouter : IRequestRouter
     {
         private readonly IComponentContext _components;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LocalDispatcher" /> class.
+        /// Initializes a new instance of the <see cref="RequestRouter" /> class.
         /// </summary>
         /// <param name="components">The configured <see cref="IComponentContext" />.</param>
-        public LocalDispatcher(IComponentContext components)
+        public RequestRouter(IComponentContext components)
         {
             _components = components;
         }
 
         /// <inheritdoc />
-        public virtual async Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null)
+        public virtual async Task<MessageResult> Route(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null)
         {
             CancellationTokenSource source;
             if (timeout.HasValue || endPoint.Timeout.HasValue)
@@ -49,7 +49,7 @@ namespace Slalom.Stacks.Services.Messaging
 
             var context = new ExecutionContext(request, endPoint, source.Token, parentContext);
 
-            var handler = _components.Resolve(endPoint.ServiceType);
+            var handler = _components.Resolve(endPoint.EndPointType);
             var service = handler as IEndPoint;
             if (service != null)
             {
@@ -57,13 +57,13 @@ namespace Slalom.Stacks.Services.Messaging
             }
 
             var body = request.Message.Body;
-            var parameterType = endPoint.Method.GetParameters().First().ParameterType;
+            var parameterType = endPoint.InvokeMethod.GetParameters().First().ParameterType;
             if (body == null || body.GetType() != parameterType)
             {
                 body = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(body ?? ""), parameterType);
             }
 
-            await (Task) endPoint.Method.Invoke(handler, new[] {body});
+            await (Task)endPoint.InvokeMethod.Invoke(handler, new[] { body });
 
             await this.Complete(context);
 

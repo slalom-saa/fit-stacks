@@ -113,5 +113,12 @@ namespace Slalom.Stacks.Search
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="predicate" /> argument is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the <paramref name="expression" /> argument is null.</exception>
         Task UpdateAsync<TSearchResult>(Expression<Func<TSearchResult, bool>> predicate, Expression<Func<TSearchResult, TSearchResult>> expression) where TSearchResult : class, ISearchResult;
+
+        /// <summary>
+        /// Indexes the the items with the specified IDs.
+        /// </summary>
+        /// <param name="ids">The IDs of the items to index.</param>
+        /// <returns>Retuns a task for asynchronous programming.</returns>
+        Task Index<TSearchResult>(params string[] ids) where TSearchResult : class, ISearchResult;
     }
 }

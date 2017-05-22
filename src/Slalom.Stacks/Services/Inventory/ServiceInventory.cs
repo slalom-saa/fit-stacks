@@ -8,6 +8,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Services.Messaging;
 
@@ -19,16 +20,29 @@ namespace Slalom.Stacks.Services.Inventory
     public class ServiceInventory
     {
         /// <summary>
-        /// Gets the end points in the inventory.
+        /// Initializes a new instance of the <see cref="ServiceInventory"/> class.
         /// </summary>
-        /// <value>The end points in the inventory.</value>
-        public IEnumerable<EndPointMetaData> EndPoints => this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints);
+        /// <param name="application">The application that contain the endpoints.</param>
+        public ServiceInventory(Application application)
+        {
+            this.Application = application;
+        }
 
         /// <summary>
-        /// Gets the registered services.
+        /// Gets the application that contain the endpoints.
         /// </summary>
-        /// <value>The registered services.</value>
-        public List<ServiceHost> Hosts { get; } = new List<ServiceHost>();
+        /// <value>
+        /// The application that contain the endpoints.
+        /// </value>
+        public Application Application { get; }
+
+        /// <summary>
+        /// Gets or sets the inventoried end points.
+        /// </summary>
+        /// <value>
+        /// The inventoried end points.
+        /// </value>
+        public List<EndPointMetaData> EndPoints { get; set; } = new List<EndPointMetaData>();
 
         /// <summary>
         /// Finds the endpoint for the specified message.
@@ -41,7 +55,7 @@ namespace Slalom.Stacks.Services.Inventory
             {
                 return Enumerable.Empty<EndPointMetaData>();
             }
-            return this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).Where(e => e.RequestType == message.GetType());
+            return this.EndPoints.Where(e => e.RequestType == message.GetType());
         }
 
         /// <summary>
@@ -56,13 +70,9 @@ namespace Slalom.Stacks.Services.Inventory
                 return null;
             }
 
-            var endPoints = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints);
-            var target = endPoints.FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
-            if (target == null)
-            {
-                target = endPoints.Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
-            }
-            return target;
+            path = path.Trim('/');
+
+            return this.EndPoints.FirstOrDefault(e => e.Path == path);
         }
 
         /// <summary>
@@ -72,7 +82,7 @@ namespace Slalom.Stacks.Services.Inventory
         /// <returns>Returns the endpoint for the specified message.</returns>
         public IEnumerable<EndPointMetaData> Find(EventMessage message)
         {
-            return this.EndPoints.Where(e => e.RequestType.FullName == message.MessageType || e.ServiceType.GetAllAttributes<SubscribeAttribute>().Any());
+            return this.EndPoints.Where(e => e.RequestType.FullName == message.MessageType || e.EndPointType.GetAllAttributes<SubscribeAttribute>().Any());
         }
 
         /// <summary>
@@ -103,20 +113,27 @@ namespace Slalom.Stacks.Services.Inventory
         }
 
         /// <summary>
-        /// Registers all local services using the specified assemblies.
+        /// Loads all local services using the specified assemblies.
         /// </summary>
         /// <param name="assemblies">The assemblies to use to scan.</param>
-        public void RegisterLocal(params Assembly[] assemblies)
+        public void Load(params Assembly[] assemblies)
         {
-            var host = new ServiceHost();
             foreach (var service in assemblies.SafelyGetTypes(typeof(IEndPoint)).Distinct())
             {
                 if (!service.GetTypeInfo().IsGenericType && !service.IsDynamic() && !service.GetTypeInfo().IsAbstract)
                 {
-                    host.Add(service);
+                    this.EndPoints.AddRange(EndPointMetaData.Create(service));
                 }
             }
-            this.Hosts.Add(host);
+            foreach (var group in this.EndPoints.GroupBy(e => e.Path))
+            {
+                var current = group.Max(e => e.Version);
+                foreach (var previous in group.Where(e => e.Version != current))
+                {
+                    previous.Path = $"v{previous.Version}/{previous.Path}";
+                    previous.IsVersioned = true;
+                }
+            }
         }
     }
 }

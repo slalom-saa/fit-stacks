@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using Slalom.Stacks.Serialization;
 
 namespace Slalom.Stacks.Text
 {
@@ -106,11 +107,7 @@ namespace Slalom.Stacks.Text
         /// <returns>Returns the JSON representation.</returns>
         public static string ToJson(this object instance)
         {
-            return JsonConvert.SerializeObject(instance, new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
+            return JsonConvert.SerializeObject(instance, DefaultSerializationSettings.Instance);
         }
 
         /// <summary>
@@ -154,7 +151,9 @@ namespace Slalom.Stacks.Text
         /// <returns>Returns a copy of the string as a title.</returns>
         public static string ToTitle(this string instance)
         {
-            return Regex.Replace(instance, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToUpper(m.Value[1])}");
+            instance = Regex.Replace(instance, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToUpper(m.Value[1])}");
+
+            return Regex.Replace(instance, @"^\w|\b\w(?=\w{{2}})", m => m.Value.ToUpperInvariant());
         }
 
         /// <summary>

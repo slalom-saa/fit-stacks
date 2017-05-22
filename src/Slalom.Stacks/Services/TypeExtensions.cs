@@ -84,19 +84,6 @@ namespace Slalom.Stacks.Services
         }
 
         /// <summary>
-        /// Gets any input properties for the specified type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>Returns any input properties for the specified type.</returns>
-        public static IEnumerable<EndPointProperty> GetInputProperties(this Type type)
-        {
-            foreach (var property in type.GetProperties())
-            {
-                yield return new EndPointProperty(property);
-            }
-        }
-
-        /// <summary>
         /// Gets the path for the endPoint.
         /// </summary>
         /// <param name="type">The type.</param>

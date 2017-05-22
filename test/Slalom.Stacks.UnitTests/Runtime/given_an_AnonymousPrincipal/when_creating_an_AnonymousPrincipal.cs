@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Security;
 using Xunit;
 
 namespace Slalom.Stacks.UnitTests.Runtime.given_an_AnonymousPrincipal

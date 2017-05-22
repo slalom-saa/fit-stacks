@@ -7,7 +7,7 @@
 
 using System.Security.Principal;
 
-namespace Slalom.Stacks.Runtime
+namespace Slalom.Stacks.Security
 {
     /// <summary>
     /// Represents an anonymous principal.  Intended to implement the null object pattern.

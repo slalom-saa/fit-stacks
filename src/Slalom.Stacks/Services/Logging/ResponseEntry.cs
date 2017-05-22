@@ -7,15 +7,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Utilities.NewId;
 using Slalom.Stacks.Validation;
-using Environment = Slalom.Stacks.Runtime.Environment;
 
 namespace Slalom.Stacks.Services.Logging
 {
     /// <summary>
-    /// An entry to capture the response, or action, of a request.
+    /// A serializable record of a response.
     /// </summary>
     /// <remarks>
     /// The entry is intended to be created on the same process and thread as the executing
@@ -35,26 +36,27 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <param name="context">The completed context.</param>
         /// <param name="environment">The current environment.</param>
-        public ResponseEntry(ExecutionContext context, Environment environment)
+        public ResponseEntry(ExecutionContext context, Application environment)
         {
             this.CorrelationId = context.Request.CorrelationId;
             this.RequestId = context.Request.Message.Id;
             this.Completed = context.Completed;
-            this.EndPoint = context.EndPoint.ServiceType.AssemblyQualifiedName;
+            this.EndPoint = context.EndPoint.EndPointType.AssemblyQualifiedName;
             this.Exception = context.Exception?.ToString();
             this.IsSuccessful = context.IsSuccessful;
             this.Started = context.Started;
             this.ValidationErrors = context.ValidationErrors;
             this.TimeStamp = DateTimeOffset.Now;
-            this.MachineName = environment.MachineName;
-            this.ApplicationName = environment.ApplicationName;
-            this.EnvironmentName = environment.EnvironmentName;
-            this.ThreadId = environment.ThreadId;
+            this.MachineName = Environment.MachineName;
+            this.ApplicationName = environment.Title;
             this.Path = context.Request.Path;
+            this.Version = environment.Version;
+            this.Build = Assembly.GetEntryAssembly().GetName().Version.ToString();
             if (this.Completed.HasValue)
             {
                 this.Elapsed = this.Completed.Value - this.Started;
             }
+            this.EnvironmentName = environment.Environment;
         }
 
         /// <summary>
@@ -62,6 +64,14 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <value>The application name where the endpoint executed.</value>
         public string ApplicationName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the build number.
+        /// </summary>
+        /// <value>
+        /// The build number.
+        /// </value>
+        public string Build { get; set; }
 
         /// <summary>
         /// Gets the execution completion date and time.
@@ -88,9 +98,11 @@ namespace Slalom.Stacks.Services.Logging
         public string EndPoint { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the environment.  This should be DEV, QA, PROD, etc.
+        /// Gets or sets the name of the environment.
         /// </summary>
-        /// <value>The name of the environment.</value>
+        /// <value>
+        /// The name of the environment.
+        /// </value>
         public string EnvironmentName { get; set; }
 
         /// <summary>
@@ -136,12 +148,6 @@ namespace Slalom.Stacks.Services.Logging
         public DateTimeOffset Started { get; set; }
 
         /// <summary>
-        /// Gets or sets the identifier of the thread that executed the endpoint.
-        /// </summary>
-        /// <value>The identifier of the thread that executed the endpoint.</value>
-        public int ThreadId { get; set; }
-
-        /// <summary>
         /// Gets or sets the date and time when this entry was created.
         /// </summary>
         /// <value>The date and time when this entry was created.</value>
@@ -152,5 +158,13 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <value>The validation errors that were raised.</value>
         public IEnumerable<ValidationError> ValidationErrors { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version number.
+        /// </summary>
+        /// <value>
+        /// The version number.
+        /// </value>
+        public string Version { get; set; }
     }
 }

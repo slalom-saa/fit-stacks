@@ -21,6 +21,7 @@ namespace Slalom.Stacks.Serialization
         public DefaultSerializationSettings()
         {
             this.Formatting = Formatting.Indented;
+            this.NullValueHandling = NullValueHandling.Ignore;
             this.ContractResolver = new DefaultContractResolver();
         }
 

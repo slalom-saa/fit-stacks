@@ -14,7 +14,7 @@ namespace Slalom.Stacks.Services.EndPoints
     /// <summary>
     /// Gets all connected remote endpoints.
     /// </summary>
-    [EndPoint("_system/endpoints/remote")]
+    [EndPoint("_system/endpoints/remote", Method = "GET", Public = false)]
     public class GetRemoteEndPoints : EndPoint
     {
         private readonly RemoteServiceInventory _inventory;

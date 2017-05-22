@@ -7,15 +7,15 @@
 
 using System;
 using Newtonsoft.Json;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Utilities.NewId;
-using Environment = Slalom.Stacks.Runtime.Environment;
 
 namespace Slalom.Stacks.Services.Logging
 {
     /// <summary>
-    /// Represents a request log entry - something that tracks the request at the application level.
+    /// A serializable record of a request.
     /// </summary>
     public class RequestEntry
     {
@@ -31,7 +31,7 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="environment">The environment.</param>
-        public RequestEntry(Request request, Environment environment)
+        public RequestEntry(Request request, Application environment)
         {
             try
             {
@@ -64,10 +64,9 @@ namespace Slalom.Stacks.Services.Logging
             this.SourceAddress = request.SourceAddress;
             this.CorrelationId = request.CorrelationId;
             this.Parent = request.Parent?.Message?.Id;
-            this.MachineName = environment.MachineName;
-            this.ApplicationName = environment.ApplicationName;
-            this.EnvironmentName = environment.EnvironmentName;
-            this.ThreadId = environment.ThreadId;
+            this.MachineName = Environment.MachineName;
+            this.ApplicationName = environment.Title;
+            this.EnvironmentName = environment.Environment;
         }
 
         /// <summary>
@@ -89,9 +88,11 @@ namespace Slalom.Stacks.Services.Logging
         public string CorrelationId { get; set; }
 
         /// <summary>
-        /// Gets or sets the name of the environment that received the request (Local, DEV, QA, PROD, etc.)
+        /// Gets or sets the name of the environment.
         /// </summary>
-        /// <value>The name of the environment that received the request.</value>
+        /// <value>
+        /// The name of the environment.
+        /// </value>
         public string EnvironmentName { get; set; }
 
         /// <summary>
@@ -141,12 +142,6 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <value>The user host address.</value>
         public string SourceAddress { get; set; }
-
-        /// <summary>
-        /// Gets or sets the ID of the thread that received the request.
-        /// </summary>
-        /// <value>The ID of the thread that received the request.</value>
-        public int ThreadId { get; set; }
 
         /// <summary>
         /// Gets or sets the message time stamp.

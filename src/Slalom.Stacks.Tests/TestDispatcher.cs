@@ -9,7 +9,7 @@ using ExecutionContext = Slalom.Stacks.Services.Messaging.ExecutionContext;
 
 namespace Slalom.Stacks.Tests
 {
-    public class TestDispatcher : LocalDispatcher, IRemoteMessageDispatcher
+    public class TestDispatcher : RequestRouter, IRemoteRouter
     {
         private Dictionary<string, Action<object>> _endPoints = new Dictionary<string, Action<object>>();
         private Dictionary<string, Action<Request>> _namedEndPoints = new Dictionary<string, Action<Request>>();
@@ -26,7 +26,7 @@ namespace Slalom.Stacks.Tests
         {
         }
 
-        public override Task<MessageResult> Dispatch(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null)
+        public override Task<MessageResult> Route(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null)
         {
             if (_endPoints.ContainsKey(request.Message.MessageType))
             {
@@ -46,7 +46,7 @@ namespace Slalom.Stacks.Tests
                 return Task.FromResult(new MessageResult(context));
             }
 
-            return base.Dispatch(request, endPoint, parentContext, timeout);
+            return base.Route(request, endPoint, parentContext, timeout);
         }
 
         public void UseEndPoint(string path, Action<Request> action)
@@ -54,14 +54,14 @@ namespace Slalom.Stacks.Tests
             _namedEndPoints.Add(path, action);
         }
 
-        public bool CanDispatch(Request request)
+        public bool CanRoute(Request request)
         {
             return true;
         }
 
-        public Task<MessageResult> Dispatch(Request request, ExecutionContext parentContext, TimeSpan? timeout = null)
+        public Task<MessageResult> Route(Request request, ExecutionContext parentContext, TimeSpan? timeout = null)
         {
-            if (_endPoints.ContainsKey(request.Message.MessageType))
+            if (request.Message.MessageType != null && _endPoints.ContainsKey(request.Message.MessageType))
             {
                 var context = new ExecutionContext(request, parentContext);
 

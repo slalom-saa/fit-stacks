@@ -1,11 +1,5 @@
-﻿/* 
- * Copyright (c) Stacks Contributors
- * 
- * This file is subject to the terms and conditions defined in
- * the LICENSE file, which is part of this source code package.
- */
-
-using System;
+﻿using System;
+using System.Reflection;
 
 namespace Slalom.Stacks.Validation
 {
@@ -23,6 +17,20 @@ namespace Slalom.Stacks.Validation
         public NotNullOrWhiteSpaceAttribute(string message)
             : base(message)
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NotNullOrWhiteSpaceAttribute" /> class.
+        /// </summary>
+        public NotNullOrWhiteSpaceAttribute()
+            : base(null)
+        {
+        }
+
+        /// <inheritdoc />
+        public override ValidationError GetValidationError(PropertyInfo property)
+        {
+            return new ValidationError(this.Code, this.Message ?? property.Name + " must be specified.");
         }
 
         /// <summary>

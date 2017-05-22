@@ -14,7 +14,7 @@ namespace Slalom.Stacks.Services.Pipeline
     /// The completion step of the usecase execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Services.Pipeline.IMessageExecutionStep" />
-    public class Complete : IMessageExecutionStep
+    internal class Complete : IMessageExecutionStep
     {
         /// <inheritdoc />
         public Task Execute(ExecutionContext context)

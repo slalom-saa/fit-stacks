@@ -12,6 +12,7 @@ namespace Slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock
             this.Quantity = quantity;
         }
 
+        [NotNull]
         public string ProductId { get; }
 
         [GreaterThan(0, "The product quantity must be greater than 0.")]

@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Validation;
 
@@ -18,7 +18,7 @@ namespace Slalom.Stacks.Services.Logging
 {
     internal class InMemoryEventStore : IEventStore
     {
-        private readonly IEnvironmentContext _environment;
+        private readonly Application _environment;
 
         /// <summary>
         /// The lock for the instances.
@@ -34,7 +34,7 @@ namespace Slalom.Stacks.Services.Logging
         /// Initializes a new instance of the <see cref="InMemoryEventStore" /> class.
         /// </summary>
         /// <param name="environment">The environment.</param>
-        public InMemoryEventStore(IEnvironmentContext environment)
+        public InMemoryEventStore(Application environment)
         {
             _environment = environment;
         }
@@ -61,7 +61,7 @@ namespace Slalom.Stacks.Services.Logging
             CacheLock.EnterWriteLock();
             try
             {
-                Instances.Add(new EventEntry(instance, _environment.Resolve()));
+                Instances.Add(new EventEntry(instance, _environment));
             }
             finally
             {

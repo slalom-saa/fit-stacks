@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Services.Pipeline
     /// The validate message step of the usecase execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Services.Pipeline.IMessageExecutionStep" />
-    public class ValidateMessage : IMessageExecutionStep
+    internal class ValidateMessage : IMessageExecutionStep
     {
         private readonly IComponentContext _components;
 

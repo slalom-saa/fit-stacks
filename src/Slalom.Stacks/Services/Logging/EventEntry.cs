@@ -7,13 +7,13 @@
 
 using System;
 using Newtonsoft.Json;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Services.Messaging;
-using Environment = Slalom.Stacks.Runtime.Environment;
 
 namespace Slalom.Stacks.Services.Logging
 {
     /// <summary>
-    /// An entry of an event that has been raised.
+    /// A serializable record of an event that has been raised.
     /// </summary>
     public class EventEntry
     {
@@ -29,11 +29,10 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <param name="instance">The event instance.</param>
         /// <param name="environment">The current environment.</param>
-        public EventEntry(EventMessage instance, Environment environment)
+        public EventEntry(EventMessage instance, Application environment)
         {
             this.RequestId = instance.RequestId;
-            this.ApplicationName = environment.ApplicationName;
-            this.EnvironmentName = environment.EnvironmentName;
+            this.ApplicationName = environment.Title;
             try
             {
                 this.Body = JsonConvert.SerializeObject(instance.Body);
@@ -45,6 +44,7 @@ namespace Slalom.Stacks.Services.Logging
             this.Id = instance.Id;
             this.MessageType = instance.MessageType;
             this.Name = instance.Name;
+            this.EnvironmentName = environment.Environment;
         }
 
         /// <summary>
@@ -60,9 +60,11 @@ namespace Slalom.Stacks.Services.Logging
         public string Body { get; set; }
 
         /// <summary>
-        /// Gets the name of the environment.
+        /// Gets or sets the name of the environment.
         /// </summary>
-        /// <value>The name of the environment.</value>
+        /// <value>
+        /// The name of the environment.
+        /// </value>
         public string EnvironmentName { get; set; }
 
         /// <summary>

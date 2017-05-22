@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Slalom.Stacks.Validation
 {
@@ -12,8 +13,23 @@ namespace Slalom.Stacks.Validation
         /// Initializes a new instance of the <see cref="UrlAttribute" /> class.
         /// </summary>
         /// <param name="message">The message.</param>
-        public UrlAttribute(string message) : base(message)
+        public UrlAttribute(string message)
+            : base(message)
         {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UrlAttribute" /> class.
+        /// </summary>
+        public UrlAttribute()
+            : base(null)
+        {
+        }
+
+        /// <inheritdoc />
+        public override ValidationError GetValidationError(PropertyInfo property)
+        {
+            return new ValidationError(this.Code, this.Message ?? property.Name + " must be a well-formed URL.");
         }
 
         /// <inheritdoc />
@@ -25,7 +41,7 @@ namespace Slalom.Stacks.Validation
             }
             if (value is string)
             {
-                var strInput = ((string) value).Trim();
+                var strInput = ((string)value).Trim();
                 return Uri.IsWellFormedUriString(strInput, UriKind.RelativeOrAbsolute);
             }
             return false;

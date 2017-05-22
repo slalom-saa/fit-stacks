@@ -14,6 +14,7 @@ namespace Slalom.Stacks.Services
     /// Indicates the handler should subscribe to a specific channel.
     /// </summary>
     /// <seealso cref="System.Attribute" />
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class SubscribeAttribute : Attribute
     {
         /// <summary>

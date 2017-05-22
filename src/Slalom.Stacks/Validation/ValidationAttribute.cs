@@ -1,11 +1,5 @@
-/* 
- * Copyright (c) Stacks Contributors
- * 
- * This file is subject to the terms and conditions defined in
- * the LICENSE file, which is part of this source code package.
- */
-
 using System;
+using System.Reflection;
 
 namespace Slalom.Stacks.Validation
 {
@@ -37,16 +31,20 @@ namespace Slalom.Stacks.Validation
         public string Message { get; }
 
         /// <summary>
-        /// Gets the validation error message.
-        /// </summary>
-        /// <value>The validation error message.</value>
-        public ValidationError ValidationError => new ValidationError(this.Code, this.Message);
-
-        /// <summary>
         /// Returns true if the object value is valid.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns><c>true</c> if the specified value is valid; otherwise, <c>false</c>.</returns>
         public abstract bool IsValid(object value);
+
+        /// <summary>
+        /// Gets the validation error for the specified property.
+        /// </summary>
+        /// <param name="property">The property being validated.</param>
+        /// <returns>Returns the validation error for the specified property.</returns>
+        public virtual ValidationError GetValidationError(PropertyInfo property)
+        {
+            return new ValidationError(this.Code, this.Message);
+        }
     }
 }

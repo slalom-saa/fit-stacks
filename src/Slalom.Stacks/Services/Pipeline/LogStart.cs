@@ -17,7 +17,7 @@ namespace Slalom.Stacks.Services.Pipeline
     /// The log startup step of the EndPoint execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Services.Pipeline.IMessageExecutionStep" />
-    public class LogStart : IMessageExecutionStep
+    internal class LogStart : IMessageExecutionStep
     {
         private readonly ILogger _logger;
         private readonly IRequestLog _requests;

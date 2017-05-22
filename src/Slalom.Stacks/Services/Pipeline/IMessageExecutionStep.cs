@@ -13,7 +13,7 @@ namespace Slalom.Stacks.Services.Pipeline
     /// <summary>
     /// A defined step of the usecase execution pipeline.
     /// </summary>
-    public interface IMessageExecutionStep
+    internal interface IMessageExecutionStep
     {
         /// <summary>
         /// Executes the step of the message execution pipeline.

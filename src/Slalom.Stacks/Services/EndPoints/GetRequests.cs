@@ -14,9 +14,9 @@ using Slalom.Stacks.Validation;
 namespace Slalom.Stacks.Services.EndPoints
 {
     /// <summary>
-    /// Gets requests that have happened in the service context.
+    /// Gets requests that have been executed in the application context.
     /// </summary>
-    [EndPoint("_system/requests")]
+    [EndPoint("_system/requests", Method = "GET")]
     public class GetRequests : EndPoint<GetRequestsRequest, IEnumerable<RequestEntry>>
     {
         private readonly IRequestLog _source;

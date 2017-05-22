@@ -9,8 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Logging;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
 
@@ -20,10 +20,10 @@ namespace Slalom.Stacks.Services.Pipeline
     /// The log completion step of the use case execution pipeline.
     /// </summary>
     /// <seealso cref="Slalom.Stacks.Services.Pipeline.IMessageExecutionStep" />
-    public class LogCompletion : IMessageExecutionStep
+    internal class LogCompletion : IMessageExecutionStep
     {
         private readonly IResponseLog _actions;
-        private readonly IEnvironmentContext _environmentContext;
+        private readonly Application _environmentContext;
         private readonly ILogger _logger;
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Slalom.Stacks.Services.Pipeline
         {
             _actions = components.Resolve<IResponseLog>();
             _logger = components.Resolve<ILogger>();
-            _environmentContext = components.Resolve<IEnvironmentContext>();
+            _environmentContext = components.Resolve<Application>();
         }
 
         /// <inheritdoc />
@@ -45,7 +45,7 @@ namespace Slalom.Stacks.Services.Pipeline
                 return Task.FromResult(0);
             }
 
-            var tasks = new List<Task> {_actions.Append(new ResponseEntry(context, _environmentContext.Resolve()))};
+            var tasks = new List<Task> {_actions.Append(new ResponseEntry(context, _environmentContext))};
 
             var name = context.Request.Path ?? context.Request.Message.Name;
             if (!context.IsSuccessful)
