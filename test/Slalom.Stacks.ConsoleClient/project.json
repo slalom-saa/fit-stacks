@@ -15,11 +15,8 @@
     },
     "Slalom.Stacks": {
       "target": "project"
-    },
-    "Slalom.Stacks.Tests": {
-      "target": "project"
     }
-    },
+  },
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [

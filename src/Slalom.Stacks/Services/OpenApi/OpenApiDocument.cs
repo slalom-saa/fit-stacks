@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Newtonsoft.Json;
 using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Services.Inventory;
 using Slalom.Stacks.Text;
@@ -79,7 +78,7 @@ namespace Slalom.Stacks.Services.OpenApi
         public void Load(ServiceInventory services)
         {
             this.Info = services.Application;
-            foreach (var endPoint in services.EndPoints)
+            foreach (var endPoint in services.EndPoints.Where(e => e.Public))
             {
                 if (endPoint.RequestType != null)
                 {
@@ -99,17 +98,6 @@ namespace Slalom.Stacks.Services.OpenApi
                     });
                 }
             }
-        }
-
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this, new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new OpenApiContractResolver()
-            });
         }
 
         private Operation GetGetOperation(EndPointMetaData endPoint)
@@ -213,7 +201,7 @@ namespace Slalom.Stacks.Services.OpenApi
             {
                 responses.Add("400", new Response
                 {
-                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError)),
+                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[])),
                     Description = builder.ToString()
                 });
             }
@@ -226,7 +214,7 @@ namespace Slalom.Stacks.Services.OpenApi
             {
                 responses.Add("409", new Response
                 {
-                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError)),
+                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[])),
                     Description = builder.ToString()
                 });
             }
@@ -239,7 +227,7 @@ namespace Slalom.Stacks.Services.OpenApi
             {
                 responses.Add("403", new Response
                 {
-                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError)),
+                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[])),
                     Description = builder.ToString()
                 });
             }

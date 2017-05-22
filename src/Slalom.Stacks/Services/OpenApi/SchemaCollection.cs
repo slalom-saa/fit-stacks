@@ -58,6 +58,11 @@ namespace Slalom.Stacks.Services.OpenApi
 
         private Schema CreateSchema(Type type, string description = null)
         {
+            if (type.IsNullable())
+            {
+                return this.CreateSchema(Nullable.GetUnderlyingType(type), description);
+            }
+
             if (type.GetTypeInfo().IsEnum)
             {
                 return this.CreateEnumSchema(type, description);
@@ -203,7 +208,7 @@ namespace Slalom.Stacks.Services.OpenApi
             }
             else if (type.IsArray)
             {
-                return this.GetOrAdd(type.GetElementType());
+                return this.CreateArraySchema(type.GetElementType());
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {

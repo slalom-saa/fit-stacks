@@ -1,0 +1,620 @@
+{
+  "definitions": {
+    "addProductCommand": {
+      "description": "Adds a product to the product catalog.",
+      "properties": {
+        "description": {
+          "description": "The description.",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    },
+    "eventEntry": {
+      "description": "An entry of an event that has been raised.",
+      "properties": {
+        "applicationName": {
+          "description": "The name of the application.",
+          "type": "string"
+        },
+        "body": {
+          "description": "The body or content of the event.",
+          "type": "string"
+        },
+        "environmentName": {
+          "description": "The name of the environment.",
+          "type": "string"
+        },
+        "id": {
+          "description": "The Id of the event.",
+          "type": "string"
+        },
+        "messageType": {
+          "description": "The type of the message.",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the message.",
+          "type": "string"
+        },
+        "requestId": {
+          "description": "The request message identifier.",
+          "type": "string"
+        },
+        "timeStamp": {
+          "description": "When the event was created.",
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "getEventsRequest": {
+      "description": "Message to get the events that have occurred within the service context.",
+      "properties": {
+        "end": {
+          "description": "The end of the requested range.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "start": {
+          "description": "The start of the requested range.",
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "getRequestsRequest": {
+      "description": "Message to get requests that have happened in the service context.",
+      "properties": {
+        "end": {
+          "description": "The end of the requested range.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "start": {
+          "description": "The start of the requested range.",
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "getResponsesRequest": {
+      "description": "Message to get responses that have been provided in a service context.",
+      "properties": {
+        "end": {
+          "description": "The end of the requested range.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "start": {
+          "description": "The start of the requested range.",
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "requestEntry": {
+      "description": "Represents a request log entry - something that tracks the request at the application level.",
+      "properties": {
+        "applicationName": {
+          "description": "The name of the application that received the request.",
+          "type": "string"
+        },
+        "body": {
+          "description": "The request payload.",
+          "type": "string"
+        },
+        "correlationId": {
+          "description": "The correlation identifier.",
+          "type": "string"
+        },
+        "id": {
+          "description": "The instance identifier.",
+          "type": "string"
+        },
+        "machineName": {
+          "description": "The name of the machine that received the request.",
+          "type": "string"
+        },
+        "parent": {
+          "description": "The parent request identifier.",
+          "type": "string"
+        },
+        "path": {
+          "description": "The request path or URL.",
+          "type": "string"
+        },
+        "requestId": {
+          "description": "The request identifier.",
+          "type": "string"
+        },
+        "requestType": {
+          "description": "The name of the request.",
+          "type": "string"
+        },
+        "sessionId": {
+          "description": "The session identifier.",
+          "type": "string"
+        },
+        "sourceAddress": {
+          "description": "The user host address.",
+          "type": "string"
+        },
+        "timeStamp": {
+          "description": "The the message stamp.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "userName": {
+          "description": "The name of the user.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "responseEntry": {
+      "description": "An entry to capture the response, or action, of a request.",
+      "properties": {
+        "applicationName": {
+          "description": "The application name where the endpoint executed.",
+          "type": "string"
+        },
+        "build": {
+          "description": "The build number.",
+          "type": "string"
+        },
+        "completed": {
+          "description": "The execution completion date and time.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "correlationId": {
+          "description": "The request correlation identifier.",
+          "type": "string"
+        },
+        "elapsed": {
+          "description": "The execution time elapsed from start to end.",
+          "example": "00:00:32",
+          "type": "string"
+        },
+        "endPoint": {
+          "description": "The type of the endpoint.",
+          "type": "string"
+        },
+        "exception": {
+          "description": "The exception that was raised, if any.",
+          "type": "string"
+        },
+        "id": {
+          "description": "The identifier.",
+          "type": "string"
+        },
+        "isSuccessful": {
+          "description": "true if execution was; otherwise, false.",
+          "type": "boolean"
+        },
+        "machineName": {
+          "description": "The name of the machine that executed the endpoint.",
+          "type": "string"
+        },
+        "path": {
+          "description": "The path that the endpoint was listening on.",
+          "type": "string"
+        },
+        "requestId": {
+          "description": "The request message identifier.",
+          "type": "string"
+        },
+        "started": {
+          "description": "The date and time that the request was received.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "timeStamp": {
+          "description": "The date and time when this entry was created.",
+          "format": "date-time",
+          "type": "string"
+        },
+        "validationErrors": {
+          "items": {
+            "$ref": "#/definitions/validationError"
+          },
+          "type": "array"
+        },
+        "version": {
+          "description": "The version number.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "stockProductCommand": {
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "quantity": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "productId",
+        "quantity"
+      ],
+      "type": "object"
+    },
+    "stockProductEvent": {
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "quantity": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "validationError": {
+      "description": "Represents a validation error and contains user facing messaging.",
+      "properties": {
+        "code": {
+          "description": "The message code.",
+          "type": "string"
+        },
+        "message": {
+          "description": "The message text.",
+          "type": "string"
+        },
+        "type": {
+          "description": "The validation type.",
+          "enum": [
+            "none",
+            "input",
+            "security",
+            "business"
+          ],
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "validationType": {
+      "description": "Indicates the validation error type.",
+      "enum": [
+        "none",
+        "input",
+        "security",
+        "business"
+      ],
+      "type": "string"
+    }
+  },
+  "info": {
+    "title": "Envio",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/_system/endpoints/remote": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Gets all connected remote endpoints.",
+        "operationId": "GET /_system/endpoints/remote",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content is returned from this endpoint."
+          }
+        },
+        "summary": "Get Remote End Points",
+        "tags": [
+          "Stacks"
+        ]
+      }
+    },
+    "/_system/events": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Gets the events that have occurred within the service context.",
+        "operationId": "GET /_system/events",
+        "parameters": [
+          {
+            "name": "End",
+            "in": "query",
+            "description": "The end of the requested range.",
+            "required": false,
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "name": "Start",
+            "in": "query",
+            "description": "The start of the requested range.",
+            "required": false,
+            "format": "date-time",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/eventEntry"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "Get Events",
+        "tags": [
+          "Stacks"
+        ]
+      }
+    },
+    "/_system/health": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Checks the health of the service and returns nothing if everything is good.  If there is an issue with the system health then\n            an exception is thrown.",
+        "operationId": "GET /_system/health",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content is returned from this endpoint."
+          }
+        },
+        "summary": "Check Health",
+        "tags": [
+          "Stacks"
+        ]
+      }
+    },
+    "/_system/open-api": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Gets the OpenAPI definition document.",
+        "operationId": "GET /_system/open-api",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content is returned from this endpoint."
+          }
+        },
+        "summary": "Get OpenAPI Definition",
+        "tags": [
+          "Stacks"
+        ]
+      }
+    },
+    "/_system/requests": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Gets requests that have happened in the service context.",
+        "operationId": "GET /_system/requests",
+        "parameters": [
+          {
+            "name": "End",
+            "in": "query",
+            "description": "The end of the requested range.",
+            "required": false,
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "name": "Start",
+            "in": "query",
+            "description": "The start of the requested range.",
+            "required": false,
+            "format": "date-time",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/requestEntry"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "Get Requests",
+        "tags": [
+          "Stacks"
+        ]
+      }
+    },
+    "/_system/responses": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Gets responses that have been provided in a service context.",
+        "operationId": "GET /_system/responses",
+        "parameters": [
+          {
+            "name": "End",
+            "in": "query",
+            "description": "The end of the requested range.",
+            "required": false,
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "name": "Start",
+            "in": "query",
+            "description": "The start of the requested range.",
+            "required": false,
+            "format": "date-time",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/responseEntry"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "Get Responses",
+        "tags": [
+          "Stacks"
+        ]
+      }
+    },
+    "/catalog/products/add": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Adds a product to the product catalog.",
+        "operationId": "POST /catalog/products/add",
+        "parameters": [
+          {
+            "schema": {
+              "$ref": "#/definitions/addProductCommand"
+            },
+            "name": "body",
+            "in": "body",
+            "required": true
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content is returned from this endpoint."
+          },
+          "400": {
+            "description": "Name is required.    \r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/validationError"
+              },
+              "type": "array"
+            }
+          },
+          "409": {
+            "description": "Name must be unique.  \r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/validationError"
+              },
+              "type": "array"
+            }
+          },
+          "403": {
+            "description": "User is employee.    \r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/validationError"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "Add Product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/shipping/products/stock": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "operationId": "POST /shipping/products/stock",
+        "parameters": [
+          {
+            "schema": {
+              "$ref": "#/definitions/stockProductCommand"
+            },
+            "name": "body",
+            "in": "body",
+            "required": true
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/stockProductEvent"
+            }
+          },
+          "400": {
+            "description": "The product quantity must be greater than 0.    \r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/validationError"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "Stock Product",
+        "tags": [
+          "Products"
+        ]
+      }
+    }
+  },
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "swagger": "2.0",
+  "tags": [
+    {
+      "description": "System defined endpoints.",
+      "name": "Stacks"
+    }
+  ]
+}

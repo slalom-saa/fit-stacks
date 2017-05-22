@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 using Slalom.Stacks.Services.Inventory;
 using Slalom.Stacks.Services.OpenApi;
 
@@ -27,7 +28,12 @@ namespace Slalom.Stacks.Services.EndPoints
             var document = new OpenApiDocument();
             document.Load(_services);
 
-            this.Respond(document.ToString());
+            this.Respond(JsonConvert.SerializeObject(document, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new OpenApiContractResolver()
+            }));
         }
     }
 }

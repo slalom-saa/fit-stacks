@@ -167,7 +167,7 @@ namespace Slalom.Stacks.Services.Messaging
             {
                 return (IMessage)message;
             }
-            return new Message(message);
+            return message == null ? new Message() : new Message(message);
         }
 
         private IMessage GetMessage(string message, EndPointMetaData endPoint)

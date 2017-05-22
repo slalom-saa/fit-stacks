@@ -61,7 +61,7 @@ namespace Slalom.Stacks.Tests
 
         public Task<MessageResult> Route(Request request, ExecutionContext parentContext, TimeSpan? timeout = null)
         {
-            if (_endPoints.ContainsKey(request.Message.MessageType))
+            if (request.Message.MessageType != null && _endPoints.ContainsKey(request.Message.MessageType))
             {
                 var context = new ExecutionContext(request, parentContext);
 
