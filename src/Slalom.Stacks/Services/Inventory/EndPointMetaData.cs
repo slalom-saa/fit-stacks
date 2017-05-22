@@ -67,12 +67,6 @@ namespace Slalom.Stacks.Services.Inventory
         public bool Public { get; set; }
 
         /// <summary>
-        /// Gets or sets the request properties.
-        /// </summary>
-        /// <value>The request properties.</value>
-        public List<EndPointProperty> RequestProperties { get; set; }
-
-        /// <summary>
         /// Gets or sets the request type.
         /// </summary>
         /// <value>The request type.</value>
@@ -154,7 +148,6 @@ namespace Slalom.Stacks.Services.Inventory
                             ResponseType = GetResponseType(method),
                             Rules = requestType?.GetRules().Select(e => new EndPointRule(e)).ToList(),
                             Version = version,
-                            RequestProperties = requestType?.GetInputProperties().ToList(),
                             Summary = summary?.Summary,
                             RootPath = rootPath,
                             Timeout = timeout,

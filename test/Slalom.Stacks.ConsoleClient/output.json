@@ -2,253 +2,66 @@
   "definitions": {
     "addProductCommand": {
       "description": "Adds a product to the product catalog.",
-      "properties": {
-        "description": {
-          "description": "The description.",
-          "type": "string"
-        },
-        "name": {
-          "description": "The name.",
-          "type": "string"
-        }
-      },
       "required": [
         "name"
       ],
       "type": "object"
     },
+    "application": {
+      "description": "Contains information about the application or API.",
+      "type": "object"
+    },
+    "contact": {
+      "description": "Contact information for the exposed API.",
+      "type": "object"
+    },
     "eventEntry": {
       "description": "An entry of an event that has been raised.",
-      "properties": {
-        "applicationName": {
-          "description": "The name of the application.",
-          "type": "string"
-        },
-        "body": {
-          "description": "The body or content of the event.",
-          "type": "string"
-        },
-        "environmentName": {
-          "description": "The name of the environment.",
-          "type": "string"
-        },
-        "id": {
-          "description": "The Id of the event.",
-          "type": "string"
-        },
-        "messageType": {
-          "description": "The type of the message.",
-          "type": "string"
-        },
-        "name": {
-          "description": "The name of the message.",
-          "type": "string"
-        },
-        "requestId": {
-          "description": "The request message identifier.",
-          "type": "string"
-        },
-        "timeStamp": {
-          "description": "When the event was created.",
-          "format": "date-time",
-          "type": "string"
-        }
-      },
+      "type": "object"
+    },
+    "externalDocs": {
+      "description": "Allows referencing an external resource for extended documentation.",
       "type": "object"
     },
     "getEventsRequest": {
       "description": "Message to get the events that have occurred within the service context.",
-      "properties": {
-        "end": {
-          "description": "The end of the requested range.",
-          "format": "date-time",
-          "type": "string"
-        },
-        "start": {
-          "description": "The start of the requested range.",
-          "format": "date-time",
-          "type": "string"
-        }
-      },
+      "type": "object"
+    },
+    "getOpenApiRequest": {
       "type": "object"
     },
     "getRequestsRequest": {
       "description": "Message to get requests that have happened in the service context.",
-      "properties": {
-        "end": {
-          "description": "The end of the requested range.",
-          "format": "date-time",
-          "type": "string"
-        },
-        "start": {
-          "description": "The start of the requested range.",
-          "format": "date-time",
-          "type": "string"
-        }
-      },
       "type": "object"
     },
     "getResponsesRequest": {
       "description": "Message to get responses that have been provided in a service context.",
-      "properties": {
-        "end": {
-          "description": "The end of the requested range.",
-          "format": "date-time",
-          "type": "string"
-        },
-        "start": {
-          "description": "The start of the requested range.",
-          "format": "date-time",
-          "type": "string"
-        }
-      },
+      "type": "object"
+    },
+    "keyValuePair`2": {
+      "type": "object"
+    },
+    "license": {
+      "description": "License information for the exposed API.",
+      "type": "object"
+    },
+    "openApiDocument": {
+      "description": "This is the root document object for the API specification. It combines what previously was the Resource Listing and API Declaration (version 1.2 and earlier) together into one document.",
       "type": "object"
     },
     "requestEntry": {
       "description": "Represents a request log entry - something that tracks the request at the application level.",
-      "properties": {
-        "applicationName": {
-          "description": "The name of the application that received the request.",
-          "type": "string"
-        },
-        "body": {
-          "description": "The request payload.",
-          "type": "string"
-        },
-        "correlationId": {
-          "description": "The correlation identifier.",
-          "type": "string"
-        },
-        "id": {
-          "description": "The instance identifier.",
-          "type": "string"
-        },
-        "machineName": {
-          "description": "The name of the machine that received the request.",
-          "type": "string"
-        },
-        "parent": {
-          "description": "The parent request identifier.",
-          "type": "string"
-        },
-        "path": {
-          "description": "The request path or URL.",
-          "type": "string"
-        },
-        "requestId": {
-          "description": "The request identifier.",
-          "type": "string"
-        },
-        "requestType": {
-          "description": "The name of the request.",
-          "type": "string"
-        },
-        "sessionId": {
-          "description": "The session identifier.",
-          "type": "string"
-        },
-        "sourceAddress": {
-          "description": "The user host address.",
-          "type": "string"
-        },
-        "timeStamp": {
-          "description": "The the message stamp.",
-          "format": "date-time",
-          "type": "string"
-        },
-        "userName": {
-          "description": "The name of the user.",
-          "type": "string"
-        }
-      },
       "type": "object"
     },
     "responseEntry": {
       "description": "An entry to capture the response, or action, of a request.",
-      "properties": {
-        "applicationName": {
-          "description": "The application name where the endpoint executed.",
-          "type": "string"
-        },
-        "build": {
-          "description": "The build number.",
-          "type": "string"
-        },
-        "completed": {
-          "description": "The execution completion date and time.",
-          "format": "date-time",
-          "type": "string"
-        },
-        "correlationId": {
-          "description": "The request correlation identifier.",
-          "type": "string"
-        },
-        "elapsed": {
-          "description": "The execution time elapsed from start to end.",
-          "example": "00:00:32",
-          "type": "string"
-        },
-        "endPoint": {
-          "description": "The type of the endpoint.",
-          "type": "string"
-        },
-        "exception": {
-          "description": "The exception that was raised, if any.",
-          "type": "string"
-        },
-        "id": {
-          "description": "The identifier.",
-          "type": "string"
-        },
-        "isSuccessful": {
-          "description": "true if execution was; otherwise, false.",
-          "type": "boolean"
-        },
-        "machineName": {
-          "description": "The name of the machine that executed the endpoint.",
-          "type": "string"
-        },
-        "path": {
-          "description": "The path that the endpoint was listening on.",
-          "type": "string"
-        },
-        "requestId": {
-          "description": "The request message identifier.",
-          "type": "string"
-        },
-        "started": {
-          "description": "The date and time that the request was received.",
-          "format": "date-time",
-          "type": "string"
-        },
-        "timeStamp": {
-          "description": "The date and time when this entry was created.",
-          "format": "date-time",
-          "type": "string"
-        },
-        "validationErrors": {
-          "items": {
-            "$ref": "#/definitions/validationError"
-          },
-          "type": "array"
-        },
-        "version": {
-          "description": "The version number.",
-          "type": "string"
-        }
-      },
+      "type": "object"
+    },
+    "schema": {
+      "description": "The Schema Object allows the definition of input and output data types. These types can be objects, but also primitives and arrays. This object is based on the JSON Schema Specification Draft 4 and uses a predefined subset of it. On top of this subset, there are extensions provided by this specification to allow for more complete documentation.",
       "type": "object"
     },
     "stockProductCommand": {
-      "properties": {
-        "productId": {
-          "type": "string"
-        },
-        "quantity": {
-          "format": "int32",
-          "type": "integer"
-        }
-      },
       "required": [
         "productId",
         "quantity"
@@ -256,39 +69,14 @@
       "type": "object"
     },
     "stockProductEvent": {
-      "properties": {
-        "productId": {
-          "type": "string"
-        },
-        "quantity": {
-          "format": "int32",
-          "type": "integer"
-        }
-      },
+      "type": "object"
+    },
+    "tag": {
+      "description": "Allows adding meta data to a single tag that is used by the Operation Object. It is not mandatory to have a Tag Object per tag used there.",
       "type": "object"
     },
     "validationError": {
       "description": "Represents a validation error and contains user facing messaging.",
-      "properties": {
-        "code": {
-          "description": "The message code.",
-          "type": "string"
-        },
-        "message": {
-          "description": "The message text.",
-          "type": "string"
-        },
-        "type": {
-          "description": "The validation type.",
-          "enum": [
-            "none",
-            "input",
-            "security",
-            "business"
-          ],
-          "type": "string"
-        }
-      },
       "type": "object"
     },
     "validationType": {
@@ -300,6 +88,10 @@
         "business"
       ],
       "type": "string"
+    },
+    "xml": {
+      "description": "A metadata object that allows for more fine-tuned XML model definitions. When using arrays, XML element names are not inferred(for singular/plural forms) and the name property should be used to add that information.See examples for expected behavior.",
+      "type": "object"
     }
   },
   "info": {
@@ -307,27 +99,6 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/_system/endpoints/remote": {
-      "get": {
-        "consumes": [
-          "application/json"
-        ],
-        "description": "Gets all connected remote endpoints.",
-        "operationId": "GET /_system/endpoints/remote",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "204": {
-            "description": "No content is returned from this endpoint."
-          }
-        },
-        "summary": "Get Remote End Points",
-        "tags": [
-          "Stacks"
-        ]
-      }
-    },
     "/_system/events": {
       "get": {
         "consumes": [
@@ -405,8 +176,11 @@
           "application/json"
         ],
         "responses": {
-          "204": {
-            "description": "No content is returned from this endpoint."
+          "200": {
+            "description": "This is the root document object for the API specification. It combines what previously was the Resource Listing and API Declaration (version 1.2 and earlier) together into one document.",
+            "schema": {
+              "$ref": "#/definitions/openApiDocument"
+            }
           }
         },
         "summary": "Get OpenAPI Definition",
@@ -530,7 +304,7 @@
             "description": "No content is returned from this endpoint."
           },
           "400": {
-            "description": "Name is required.    \r\n",
+            "description": "1. Name is required.\r\n\r\n",
             "schema": {
               "items": {
                 "$ref": "#/definitions/validationError"
@@ -539,7 +313,7 @@
             }
           },
           "409": {
-            "description": "Name must be unique.  \r\n",
+            "description": "1. Name must be unique.\r\n\r\n",
             "schema": {
               "items": {
                 "$ref": "#/definitions/validationError"
@@ -590,7 +364,7 @@
             }
           },
           "400": {
-            "description": "The product quantity must be greater than 0.    \r\n",
+            "description": "1. ProductId must be specified.\r\n\r\n1. The product quantity must be greater than 0.\r\n\r\n",
             "schema": {
               "items": {
                 "$ref": "#/definitions/validationError"

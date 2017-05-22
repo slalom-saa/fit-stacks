@@ -19,7 +19,7 @@ namespace Slalom.Stacks.Services.OpenApi
         /// </summary>
         /// <param name="type">The type to use for the schema.</param>
         /// <returns>Returns the existing or added schema.</returns>
-        public Schema GetOrAdd(Type type)
+        public Schema GetOrAdd(Type type, string description = null)
         {
             if (type == null || type == typeof(Object))
             {
@@ -38,19 +38,19 @@ namespace Slalom.Stacks.Services.OpenApi
 
             if (typeof(IEnumerable).IsAssignableFrom(type) || type.IsArray)
             {
-                return null;
+                return this.CreateArraySchema(type);
             }
 
             if (this.ContainsKey(type.Name))
             {
                 return this[type.Name];
             }
-           
-            this.Add(type.Name, this.CreateSchema(type));
+
+            this.Add(type.Name, this.CreateSchema(type, description));
 
             foreach (var item in type.GetProperties())
             {
-                this.GetOrAdd(item.PropertyType);
+                this.GetOrAdd(item.PropertyType, description);
             }
 
             return this[type.Name];
@@ -71,9 +71,21 @@ namespace Slalom.Stacks.Services.OpenApi
             {
                 return this.CreatePrimitiveSchema(type, description);
             }
-            else if (type.IsArray)
+            else if (type.IsArray || typeof(IEnumerable).IsAssignableFrom(type))
             {
-                return this.GetOrAdd(type.GetElementType());
+                return this.CreateArraySchema(type);
+            }
+            else
+            {
+                return this.CreateObjectSchema(type, description);
+            }
+        }
+
+        private Schema CreateArraySchema(Type type)
+        {
+            if (type.IsArray)
+            {
+                return this.CreateArraySchema(type.GetElementType());
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
@@ -87,14 +99,7 @@ namespace Slalom.Stacks.Services.OpenApi
                     return this.CreateArraySchema(target.GetGenericArguments()[0]);
                 }
             }
-            else
-            {
-                return this.CreateObjectSchema(type, description);
-            }
-        }
 
-        private Schema CreateArraySchema(Type type)
-        {
             this.GetOrAdd(type);
 
             return new Schema
@@ -115,7 +120,7 @@ namespace Slalom.Stacks.Services.OpenApi
             var required = new List<string>();
             foreach (var property in type.GetProperties())
             {
-                schema.Properties.Add(property.Name, this.CreateSchema(property.PropertyType, property.GetComments()?.Value));
+                schema.Properties.Add(property.Name, this.CreateSchema(property.PropertyType));
                 if (property.GetCustomAttributes<ValidationAttribute>(true).Any())
                 {
                     required.Add(property.Name.ToCamelCase());

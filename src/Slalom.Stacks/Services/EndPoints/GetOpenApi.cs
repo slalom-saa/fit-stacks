@@ -9,7 +9,7 @@ namespace Slalom.Stacks.Services.EndPoints
     /// Gets the OpenAPI definition document.
     /// </summary>
     [EndPoint("_system/open-api", Method = "GET", Name = "Get OpenAPI Definition")]
-    public class GetOpenApi : EndPoint
+    public class GetOpenApi : EndPoint<GetOpenApiRequest, OpenApiDocument>
     {
         private readonly ServiceInventory _services;
 
@@ -23,17 +23,12 @@ namespace Slalom.Stacks.Services.EndPoints
         }
 
         /// <inheritdoc />
-        public override void Receive()
+        public override OpenApiDocument Receive(GetOpenApiRequest instance)
         {
             var document = new OpenApiDocument();
             document.Load(_services);
 
-            this.Respond(JsonConvert.SerializeObject(document, new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new OpenApiContractResolver()
-            }));
+            return document;
         }
     }
 }

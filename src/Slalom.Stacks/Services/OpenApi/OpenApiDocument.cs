@@ -105,23 +105,19 @@ namespace Slalom.Stacks.Services.OpenApi
             if (endPoint.HttpMethod == "GET")
             {
                 var parameters = new List<IParameter>();
-                foreach (var property in endPoint.RequestProperties)
+                foreach (var property in endPoint.RequestType.GetProperties())
                 {
-                    var type = Type.GetType(property.Type, false);
-                    if (type != null)
+                    var schema = this.Definitions.CreatePrimitiveSchema(property.PropertyType);
+                    var required = property.GetCustomAttributes<ValidationAttribute>(true).Any();
+                    parameters.Add(new NonBodyParameter
                     {
-                        var schema = this.Definitions.CreatePrimitiveSchema(type);
-                        var required = endPoint.EndPointType.GetProperty(property.Name)?.GetCustomAttributes<ValidationAttribute>(true).Any() == true;
-                        parameters.Add(new NonBodyParameter
-                        {
-                            Name = property.Name,
-                            Required = required,
-                            In = "query",
-                            Description = property.Comments?.Value,
-                            Type = schema.Type,
-                            Format = schema.Format
-                        });
-                    }
+                        Name = property.Name,
+                        Required = required,
+                        In = "query",
+                        Description = property.GetComments()?.Value,
+                        Type = schema.Type,
+                        Format = schema.Format
+                    });
                 }
 
                 return new Operation
@@ -189,9 +185,12 @@ namespace Slalom.Stacks.Services.OpenApi
                 });
             }
             var builder = new StringBuilder();
-            foreach (var property in endPoint.RequestProperties.Where(e => e.Validation != null))
+            foreach (var property in endPoint.RequestType.GetProperties())
             {
-                builder.AppendLine(property.Validation + "    ");
+                foreach (var attribute in property.GetCustomAttributes<ValidationAttribute>(true))
+                {
+                    builder.AppendLine("1. " + attribute.GetValidationError(property).Message + "\r\n");
+                }
             }
             foreach (var source in endPoint.Rules.Where(e => e.RuleType == ValidationType.Input))
             {
@@ -208,7 +207,7 @@ namespace Slalom.Stacks.Services.OpenApi
             builder.Clear();
             foreach (var source in endPoint.Rules.Where(e => e.RuleType == ValidationType.Business))
             {
-                builder.AppendLine(source.Name.ToTitle() + ".  ");
+                builder.AppendLine("1. " + source.Name.ToTitle() + ".\r\n");
             }
             if (builder.Length > 0)
             {
