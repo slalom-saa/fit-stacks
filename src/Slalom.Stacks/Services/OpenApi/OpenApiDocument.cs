@@ -247,7 +247,7 @@ namespace Slalom.Stacks.Services.OpenApi
             builder.Clear();
             foreach (var source in endPoint.Rules.Where(e => e.RuleType == ValidationType.Security))
             {
-                builder.AppendLine(source.Name.ToTitle() + ".    ");
+                builder.AppendLine("1. " + source.Name.ToTitle() + ".\r\n");
             }
             if (builder.Length > 0)
             {
