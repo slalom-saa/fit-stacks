@@ -27,6 +27,7 @@ namespace Slalom.Stacks.Services.EndPoints
         {
             var document = new OpenApiDocument();
             document.Load(_services);
+            document.Host = instance.Host;
 
             return document;
         }

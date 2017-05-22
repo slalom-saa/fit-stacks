@@ -1,8 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Autofac;
 using Newtonsoft.Json;
+using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
+using Slalom.Stacks.ConsoleClient.Domain.Products;
 using Slalom.Stacks.Serialization;
+using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.OpenApi;
 using Slalom.Stacks.Text;
 
@@ -10,6 +14,22 @@ using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.ConsoleClient
 {
+    [EndPoint("catalog/products/add", Version = 2)]
+    public class AddProduct : EndPoint<AddProductCommand>
+    {
+        /// <inheritdoc />
+        public override async Task ReceiveAsync(AddProductCommand command)
+        {
+            var target = new Product(command.Name, command.Description);
+
+            await this.Domain.Add(target);
+
+            //await this.Send(new SendNotification("adsf", "adf"));
+
+            this.AddRaisedEvent(new ProductAdded(target.Name, target.Description));
+        }
+    }
+
     internal class Program
     {
         private static void Main(string[] args)
@@ -25,7 +45,10 @@ namespace Slalom.Stacks.ConsoleClient
 
                 using (var stack = new Stack())
                 {
-                    var result = stack.Send("_system/open-api").Result;
+                    var result = stack.Send("_system/open-api", new
+                    {
+                        Host = "localhost"
+                    }).Result;
 
                     result.OutputToJson();
 

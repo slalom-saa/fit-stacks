@@ -44,6 +44,7 @@ namespace Slalom.Stacks.Services.Logging
             this.Id = instance.Id;
             this.MessageType = instance.MessageType;
             this.Name = instance.Name;
+            this.EnvironmentName = environment.Environment;
         }
 
         /// <summary>
@@ -59,9 +60,11 @@ namespace Slalom.Stacks.Services.Logging
         public string Body { get; set; }
 
         /// <summary>
-        /// Gets the name of the environment.
+        /// Gets or sets the name of the environment.
         /// </summary>
-        /// <value>The name of the environment.</value>
+        /// <value>
+        /// The name of the environment.
+        /// </value>
         public string EnvironmentName { get; set; }
 
         /// <summary>

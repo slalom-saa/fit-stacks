@@ -6,6 +6,7 @@
  */
 
 using System;
+using Newtonsoft.Json;
 
 namespace Slalom.Stacks.Configuration
 {
@@ -61,5 +62,14 @@ namespace Slalom.Stacks.Configuration
         /// The version of the application API (not to be confused with the specification version).
         /// </value>
         public string Version { get; set; }
+
+        /// <summary>
+        /// Gets or sets the environment name.
+        /// </summary>
+        /// <value>
+        /// The environment name.
+        /// </value>
+        [JsonProperty("x-environment")]
+        public string Environment { get; set; }
     }
 }

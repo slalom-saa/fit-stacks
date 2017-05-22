@@ -24,12 +24,36 @@ namespace Slalom.Stacks.Services.OpenApi
     public class OpenApiDocument
     {
         /// <summary>
+        /// Gets or sets the base path on which the API is served, which is relative to the host. If it is not included, the API is served directly under the host. The value MUST start with a leading slash (/). The basePath does not support path templating.
+        /// </summary>
+        /// <value>
+        /// The base path on which the API is served.
+        /// </value>
+        public string BasePath { get; set; }
+
+        /// <summary>
         /// Gets or sets the object to hold data types produced and consumed by operations.
         /// </summary>
         /// <value>
         /// The object to hold data types produced and consumed by operations.
         /// </value>
         public SchemaCollection Definitions { get; set; } = new SchemaCollection();
+
+        /// <summary>
+        /// Gets or sets the additional external documentation.
+        /// </summary>
+        /// <value>
+        /// The external additional external documentation.
+        /// </value>
+        public IList<ExternalDocs> ExternalDocs { get; set; }
+
+        /// <summary>
+        /// Gets or sets the host (name or ip) serving the API. This MUST be the host only and does not include the scheme nor sub-paths. It MAY include a port. If the host is not included, the host serving the documentation is to be used (including the port). The host does not support path templating.
+        /// </summary>
+        /// <value>
+        /// The host (name or ip) serving the API.
+        /// </value>
+        public string Host { get; set; }
 
         /// <summary>
         /// Gets or sets the metadata about the API. The metadata can be used by the clients if needed.
@@ -45,7 +69,7 @@ namespace Slalom.Stacks.Services.OpenApi
         /// <value>
         /// The available paths and operations for the API.
         /// </value>
-        public IDictionary<string, PathItem> Paths { get; set; } = new SortedDictionary<string, PathItem>();
+        public IDictionary<string, PathItem> Paths { get; set; } = new SortedDictionary<string, PathItem>(new PathComparer());
 
         /// <summary>
         /// Gets or sets the transfer protocol of the API. Values MUST be from the list: "http", "https", "ws", "wss". If the schemes is not included, the default scheme to be used is the one used to access the Swagger definition itself.
@@ -78,7 +102,8 @@ namespace Slalom.Stacks.Services.OpenApi
         public void Load(ServiceInventory services)
         {
             this.Info = services.Application;
-            foreach (var endPoint in services.EndPoints.Where(e => e.Public))
+            var endPoints = services.EndPoints.Where(e => e.Public).ToList();
+            foreach (var endPoint in endPoints)
             {
                 if (endPoint.RequestType != null)
                 {
@@ -160,7 +185,7 @@ namespace Slalom.Stacks.Services.OpenApi
             {
                 yield return new BodyParameter
                 {
-                    Schema = this.Definitions.GetReferenceSchema(endPoint.RequestType)
+                    Schema = this.Definitions.GetReferenceSchema(endPoint.RequestType, endPoint.RequestType.GetComments()?.Summary)
                 };
             }
         }
@@ -181,7 +206,7 @@ namespace Slalom.Stacks.Services.OpenApi
                 responses.Add("200", new Response
                 {
                     Description = responseType.GetComments()?.Summary ?? "",
-                    Schema = this.Definitions.GetReferenceSchema(responseType)
+                    Schema = this.Definitions.GetReferenceSchema(responseType, endPoint.ResponseType.GetComments()?.Summary)
                 });
             }
             var builder = new StringBuilder();
@@ -200,7 +225,7 @@ namespace Slalom.Stacks.Services.OpenApi
             {
                 responses.Add("400", new Response
                 {
-                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[])),
+                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[]), null),
                     Description = builder.ToString()
                 });
             }
@@ -213,7 +238,7 @@ namespace Slalom.Stacks.Services.OpenApi
             {
                 responses.Add("409", new Response
                 {
-                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[])),
+                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[]), null),
                     Description = builder.ToString()
                 });
             }
@@ -226,7 +251,7 @@ namespace Slalom.Stacks.Services.OpenApi
             {
                 responses.Add("403", new Response
                 {
-                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[])),
+                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[]), null),
                     Description = builder.ToString()
                 });
             }
@@ -249,7 +274,23 @@ namespace Slalom.Stacks.Services.OpenApi
             var segments = endPoint.Path.Split('/');
             if (segments.Length >= 3)
             {
-                yield return segments[1].ToTitle();
+                yield return segments[1].Replace("-", " ").ToTitle();
+            }
+        }
+
+        private class PathComparer : IComparer<string>
+        {
+            public int Compare(string x, string y)
+            {
+                if (x?.Trim('/').StartsWith("_") == true && y?.Trim('/').StartsWith("_") == false)
+                {
+                    return 1;
+                }
+                if (y?.Trim('/').StartsWith("_") == true && x?.Trim('/').StartsWith("_") == false)
+                {
+                    return -1;
+                }
+                return string.CompareOrdinal(x, y);
             }
         }
     }

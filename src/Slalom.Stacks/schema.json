@@ -45,6 +45,9 @@
         },
         "license": {
           "$ref": "#/definitions/license"
+        },
+        "externalDocs": {
+          "$ref": "#/definitions/externalDocs"
         }
       }
     },
@@ -101,6 +104,28 @@
       "description": "Any property starting with x- is valid.",
       "additionalProperties": true,
       "additionalItems": true
+    },
+    "externalDocs": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "information about external documentation",
+      "required": [
+        "url"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "patternProperties": {
+        "^x-": {
+          "$ref": "#/definitions/vendorExtension"
+        }
+      }
     }
   }
 }

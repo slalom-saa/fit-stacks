@@ -47,7 +47,7 @@ namespace Slalom.Stacks.Services.Logging
             this.Started = context.Started;
             this.ValidationErrors = context.ValidationErrors;
             this.TimeStamp = DateTimeOffset.Now;
-            this.MachineName = System.Environment.MachineName;
+            this.MachineName = Environment.MachineName;
             this.ApplicationName = environment.Title;
             this.Path = context.Request.Path;
             this.Version = environment.Version;
@@ -56,6 +56,7 @@ namespace Slalom.Stacks.Services.Logging
             {
                 this.Elapsed = this.Completed.Value - this.Started;
             }
+            this.EnvironmentName = environment.Environment;
         }
 
         /// <summary>
@@ -95,6 +96,14 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <value>The type of the endpoint.</value>
         public string EndPoint { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the environment.
+        /// </summary>
+        /// <value>
+        /// The name of the environment.
+        /// </value>
+        public string EnvironmentName { get; set; }
 
         /// <summary>
         /// Gets the exception that was raised, if any.

@@ -125,6 +125,18 @@ namespace Slalom.Stacks.Reflection
         }
 
         /// <summary>
+        /// Determines whether the type is a dictionary.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns>
+        ///   <c>true</c> if it is a dictionary; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsDictionary(this Type instance)
+        {
+            return instance.GetInterfaces().Any(e => e.GetTypeInfo().IsGenericType && e.GetGenericTypeDefinition() == typeof(IDictionary<,>));
+        }
+
+        /// <summary>
         /// Determines whether the type is nullable.
         /// </summary>
         /// <param name="instance">The instance.</param>

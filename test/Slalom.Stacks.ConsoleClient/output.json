@@ -1,52 +1,19 @@
 {
   "definitions": {
-    "addProductCommand": {
-      "description": "Adds a product to the product catalog.",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "type": "object"
-    },
-    "application": {
+    "slalom.Stacks.Configuration.Application": {
       "description": "Contains information about the application or API.",
       "properties": {
         "contact": {
-          "description": "Contact information for the exposed API.",
-          "properties": {
-            "email": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "url": {
-              "type": "string"
-            }
-          },
-          "type": "object"
+          "$ref": "#/definitions/slalom.Stacks.Configuration.Contact"
         },
         "description": {
           "type": "string"
         },
+        "environment": {
+          "type": "string"
+        },
         "license": {
-          "description": "License information for the exposed API.",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "url": {
-              "type": "string"
-            }
-          },
-          "type": "object"
+          "$ref": "#/definitions/slalom.Stacks.Configuration.License"
         },
         "termsOfService": {
           "type": "string"
@@ -60,7 +27,7 @@
       },
       "type": "object"
     },
-    "contact": {
+    "slalom.Stacks.Configuration.Contact": {
       "description": "Contact information for the exposed API.",
       "properties": {
         "email": {
@@ -75,10 +42,113 @@
       },
       "type": "object"
     },
-    "dictionary`2": {
+    "slalom.Stacks.Configuration.License": {
+      "description": "License information for the exposed API.",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
       "type": "object"
     },
-    "eventEntry": {
+    "slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add.AddProductCommand": {
+      "description": "Adds a product to the product catalog.",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    },
+    "slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock.StockProductCommand": {
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "quantity": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "productId",
+        "quantity"
+      ],
+      "type": "object"
+    },
+    "slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock.StockProductEvent": {
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "quantity": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "slalom.Stacks.Services.EndPoints.GetEventsRequest": {
+      "description": "Message to get the events that have occurred within the service context.",
+      "properties": {
+        "end": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "slalom.Stacks.Services.EndPoints.GetOpenApiRequest": {
+      "description": "Request to get the OpenAPI definition.",
+      "properties": {
+        "host": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "slalom.Stacks.Services.EndPoints.GetRequestsRequest": {
+      "description": "Message to get requests that have happened in the service context.",
+      "properties": {
+        "end": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "slalom.Stacks.Services.EndPoints.GetResponsesRequest": {
+      "description": "Message to get responses that have been provided in a service context.",
+      "properties": {
+        "end": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "slalom.Stacks.Services.Logging.EventEntry": {
       "description": "An entry of an event that has been raised.",
       "properties": {
         "applicationName": {
@@ -109,151 +179,7 @@
       },
       "type": "object"
     },
-    "externalDocs": {
-      "description": "Allows referencing an external resource for extended documentation.",
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "getEventsRequest": {
-      "description": "Message to get the events that have occurred within the service context.",
-      "properties": {
-        "end": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "start": {
-          "format": "date-time",
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "getOpenApiRequest": {
-      "type": "object"
-    },
-    "getRequestsRequest": {
-      "description": "Message to get requests that have happened in the service context.",
-      "properties": {
-        "end": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "start": {
-          "format": "date-time",
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "getResponsesRequest": {
-      "description": "Message to get responses that have been provided in a service context.",
-      "properties": {
-        "end": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "start": {
-          "format": "date-time",
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "license": {
-      "description": "License information for the exposed API.",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "openApiDocument": {
-      "description": "This is the root document object for the API specification. It combines what previously was the Resource Listing and API Declaration (version 1.2 and earlier) together into one document.",
-      "properties": {
-        "definitions": {
-          "type": "object"
-        },
-        "info": {
-          "description": "Contains information about the application or API.",
-          "properties": {
-            "contact": {
-              "description": "Contact information for the exposed API.",
-              "properties": {
-                "email": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string"
-                }
-              },
-              "type": "object"
-            },
-            "description": {
-              "type": "string"
-            },
-            "license": {
-              "description": "License information for the exposed API.",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string"
-                }
-              },
-              "type": "object"
-            },
-            "termsOfService": {
-              "type": "string"
-            },
-            "title": {
-              "type": "string"
-            },
-            "version": {
-              "type": "string"
-            }
-          },
-          "type": "object"
-        },
-        "paths": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "schemes": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "swagger": {
-          "type": "string"
-        },
-        "tags": {
-          "items": {
-            "$ref": "#/definitions/tag"
-          },
-          "type": "array"
-        }
-      },
-      "type": "object"
-    },
-    "requestEntry": {
+    "slalom.Stacks.Services.Logging.RequestEntry": {
       "description": "Represents a request log entry - something that tracks the request at the application level.",
       "properties": {
         "applicationName": {
@@ -263,6 +189,9 @@
           "type": "string"
         },
         "correlationId": {
+          "type": "string"
+        },
+        "environmentName": {
           "type": "string"
         },
         "id": {
@@ -299,7 +228,7 @@
       },
       "type": "object"
     },
-    "responseEntry": {
+    "slalom.Stacks.Services.Logging.ResponseEntry": {
       "description": "An entry to capture the response, or action, of a request.",
       "properties": {
         "applicationName": {
@@ -320,6 +249,9 @@
           "type": "string"
         },
         "endPoint": {
+          "type": "string"
+        },
+        "environmentName": {
           "type": "string"
         },
         "exception": {
@@ -350,7 +282,7 @@
         },
         "validationErrors": {
           "items": {
-            "$ref": "#/definitions/validationError"
+            "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
           },
           "type": "array"
         },
@@ -360,17 +292,81 @@
       },
       "type": "object"
     },
-    "schema": {
-      "description": "The Schema Object allows the definition of input and output data types. These types can be objects, but also primitives and arrays. This object is based on the JSON Schema Specification Draft 4 and uses a predefined subset of it. On top of this subset, there are extensions provided by this specification to allow for more complete documentation.",
+    "slalom.Stacks.Services.OpenApi.ExternalDocs": {
+      "description": "Allows referencing an external resource for extended documentation.",
       "properties": {
-        "additionalProperties": null,
-        "allOf": {
+        "description": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "slalom.Stacks.Services.OpenApi.OpenApiDocument": {
+      "description": "This is the root document object for the API specification. It combines what previously was the Resource Listing and API Declaration (version 1.2 and earlier) together into one document.",
+      "properties": {
+        "basePath": {
+          "type": "string"
+        },
+        "definitions": {
+          "additionalProperties": {
+            "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.Schema"
+          },
+          "type": "object"
+        },
+        "externalDocs": {
           "items": {
-            "$ref": "#/definitions/schema"
+            "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.ExternalDocs"
           },
           "type": "array"
         },
-        "default": null,
+        "host": {
+          "type": "string"
+        },
+        "info": {
+          "$ref": "#/definitions/slalom.Stacks.Configuration.Application"
+        },
+        "paths": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "schemes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "swagger": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.Tag"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "slalom.Stacks.Services.OpenApi.Schema": {
+      "description": "The Schema Object allows the definition of input and output data types. These types can be objects, but also primitives and arrays. This object is based on the JSON Schema Specification Draft 4 and uses a predefined subset of it. On top of this subset, there are extensions provided by this specification to allow for more complete documentation.",
+      "properties": {
+        "additionalProperties": {
+          "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.Schema"
+        },
+        "allOf": {
+          "items": {
+            "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.Schema"
+          },
+          "type": "array"
+        },
+        "default": {
+          "type": "string"
+        },
         "description": {
           "type": "string"
         },
@@ -383,7 +379,9 @@
           },
           "type": "array"
         },
-        "example": null,
+        "example": {
+          "type": "string"
+        },
         "exclusiveMaximum": {
           "type": "boolean"
         },
@@ -391,24 +389,20 @@
           "type": "boolean"
         },
         "extensions": {
+          "additionalProperties": {
+            "type": "string"
+          },
           "type": "object"
         },
         "externalDocs": {
-          "description": "Allows referencing an external resource for extended documentation.",
-          "properties": {
-            "description": {
-              "type": "string"
-            },
-            "url": {
-              "type": "string"
-            }
-          },
-          "type": "object"
+          "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.ExternalDocs"
         },
         "format": {
           "type": "string"
         },
-        "items": null,
+        "items": {
+          "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.Schema"
+        },
         "maximum": {
           "format": "int32",
           "type": "integer"
@@ -472,77 +466,19 @@
           "type": "boolean"
         },
         "xml": {
-          "description": "A metadata object that allows for more fine-tuned XML model definitions. When using arrays, XML element names are not inferred(for singular/plural forms) and the name property should be used to add that information.See examples for expected behavior.",
-          "properties": {
-            "attribute": {
-              "type": "boolean"
-            },
-            "name": {
-              "type": "string"
-            },
-            "namespace": {
-              "type": "string"
-            },
-            "prefix": {
-              "type": "string"
-            },
-            "wrapped": {
-              "type": "boolean"
-            }
-          },
-          "type": "object"
+          "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.Xml"
         }
       },
       "type": "object"
     },
-    "schemaCollection": {
-      "type": "object"
-    },
-    "stockProductCommand": {
-      "properties": {
-        "productId": {
-          "type": "string"
-        },
-        "quantity": {
-          "format": "int32",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "productId",
-        "quantity"
-      ],
-      "type": "object"
-    },
-    "stockProductEvent": {
-      "properties": {
-        "productId": {
-          "type": "string"
-        },
-        "quantity": {
-          "format": "int32",
-          "type": "integer"
-        }
-      },
-      "type": "object"
-    },
-    "tag": {
+    "slalom.Stacks.Services.OpenApi.Tag": {
       "description": "Allows adding meta data to a single tag that is used by the Operation Object. It is not mandatory to have a Tag Object per tag used there.",
       "properties": {
         "description": {
           "type": "string"
         },
         "externalDocs": {
-          "description": "Allows referencing an external resource for extended documentation.",
-          "properties": {
-            "description": {
-              "type": "string"
-            },
-            "url": {
-              "type": "string"
-            }
-          },
-          "type": "object"
+          "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.ExternalDocs"
         },
         "name": {
           "type": "string"
@@ -550,39 +486,7 @@
       },
       "type": "object"
     },
-    "validationError": {
-      "description": "Represents a validation error and contains user facing messaging.",
-      "properties": {
-        "code": {
-          "type": "string"
-        },
-        "message": {
-          "type": "string"
-        },
-        "type": {
-          "description": "Indicates the validation error type.",
-          "enum": [
-            "none",
-            "input",
-            "security",
-            "business"
-          ],
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "validationType": {
-      "description": "Indicates the validation error type.",
-      "enum": [
-        "none",
-        "input",
-        "security",
-        "business"
-      ],
-      "type": "string"
-    },
-    "xml": {
+    "slalom.Stacks.Services.OpenApi.Xml": {
       "description": "A metadata object that allows for more fine-tuned XML model definitions. When using arrays, XML element names are not inferred(for singular/plural forms) and the name property should be used to add that information.See examples for expected behavior.",
       "properties": {
         "attribute": {
@@ -602,13 +506,199 @@
         }
       },
       "type": "object"
+    },
+    "slalom.Stacks.Validation.ValidationError": {
+      "description": "Represents a validation error and contains user facing messaging.",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/slalom.Stacks.Validation.ValidationType"
+        }
+      },
+      "type": "object"
+    },
+    "slalom.Stacks.Validation.ValidationType": {
+      "description": "Indicates the validation error type.",
+      "enum": [
+        "none",
+        "input",
+        "security",
+        "business"
+      ],
+      "type": "string"
     }
   },
+  "host": "localhost",
   "info": {
     "title": "Envio",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "x-environment": "local"
   },
   "paths": {
+    "/catalog/products/add": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "operationId": "POST /catalog/products/add",
+        "parameters": [
+          {
+            "schema": {
+              "description": "Adds a product to the product catalog.",
+              "$ref": "#/definitions/slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add.AddProductCommand"
+            },
+            "name": "body",
+            "in": "body",
+            "required": true
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content is returned from this endpoint."
+          },
+          "400": {
+            "description": "1. Name is required.\r\n\r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          },
+          "409": {
+            "description": "1. Name must be unique.\r\n\r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          },
+          "403": {
+            "description": "User is employee.    \r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "Add Product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/shipping/products/stock": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "operationId": "POST /shipping/products/stock",
+        "parameters": [
+          {
+            "schema": {
+              "$ref": "#/definitions/slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock.StockProductCommand"
+            },
+            "name": "body",
+            "in": "body",
+            "required": true
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/slalom.Stacks.ConsoleClient.Application.Shipping.Products.Stock.StockProductEvent"
+            }
+          },
+          "400": {
+            "description": "1. ProductId must be specified.\r\n\r\n1. The product quantity must be greater than 0.\r\n\r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "Stock Product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
+    "/v1/catalog/products/add": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Adds a product to the product catalog.",
+        "operationId": "POST /catalog/products/add",
+        "parameters": [
+          {
+            "schema": {
+              "description": "Adds a product to the product catalog.",
+              "$ref": "#/definitions/slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add.AddProductCommand"
+            },
+            "name": "body",
+            "in": "body",
+            "required": true
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content is returned from this endpoint."
+          },
+          "400": {
+            "description": "1. Name is required.\r\n\r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          },
+          "409": {
+            "description": "1. Name must be unique.\r\n\r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          },
+          "403": {
+            "description": "User is employee.    \r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "Add Product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
     "/_system/events": {
       "get": {
         "consumes": [
@@ -642,7 +732,7 @@
             "description": "",
             "schema": {
               "items": {
-                "$ref": "#/definitions/eventEntry"
+                "$ref": "#/definitions/slalom.Stacks.Services.Logging.EventEntry"
               },
               "type": "array"
             }
@@ -682,6 +772,15 @@
         ],
         "description": "Gets the OpenAPI definition document.",
         "operationId": "GET /_system/open-api",
+        "parameters": [
+          {
+            "name": "Host",
+            "in": "query",
+            "description": "The host name to display in the document.",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "produces": [
           "application/json"
         ],
@@ -689,7 +788,8 @@
           "200": {
             "description": "This is the root document object for the API specification. It combines what previously was the Resource Listing and API Declaration (version 1.2 and earlier) together into one document.",
             "schema": {
-              "$ref": "#/definitions/openApiDocument"
+              "description": "This is the root document object for the API specification. It combines what previously was the Resource Listing and API Declaration (version 1.2 and earlier) together into one document.",
+              "$ref": "#/definitions/slalom.Stacks.Services.OpenApi.OpenApiDocument"
             }
           }
         },
@@ -732,7 +832,7 @@
             "description": "",
             "schema": {
               "items": {
-                "$ref": "#/definitions/requestEntry"
+                "$ref": "#/definitions/slalom.Stacks.Services.Logging.RequestEntry"
               },
               "type": "array"
             }
@@ -777,7 +877,7 @@
             "description": "",
             "schema": {
               "items": {
-                "$ref": "#/definitions/responseEntry"
+                "$ref": "#/definitions/slalom.Stacks.Services.Logging.ResponseEntry"
               },
               "type": "array"
             }
@@ -786,106 +886,6 @@
         "summary": "Get Responses",
         "tags": [
           "Stacks"
-        ]
-      }
-    },
-    "/catalog/products/add": {
-      "post": {
-        "consumes": [
-          "application/json"
-        ],
-        "description": "Adds a product to the product catalog.",
-        "operationId": "POST /catalog/products/add",
-        "parameters": [
-          {
-            "schema": {
-              "$ref": "#/definitions/addProductCommand"
-            },
-            "name": "body",
-            "in": "body",
-            "required": true
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "204": {
-            "description": "No content is returned from this endpoint."
-          },
-          "400": {
-            "description": "1. Name is required.\r\n\r\n",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/validationError"
-              },
-              "type": "array"
-            }
-          },
-          "409": {
-            "description": "1. Name must be unique.\r\n\r\n",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/validationError"
-              },
-              "type": "array"
-            }
-          },
-          "403": {
-            "description": "User is employee.    \r\n",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/validationError"
-              },
-              "type": "array"
-            }
-          }
-        },
-        "summary": "Add Product",
-        "tags": [
-          "Products"
-        ]
-      }
-    },
-    "/shipping/products/stock": {
-      "post": {
-        "consumes": [
-          "application/json"
-        ],
-        "operationId": "POST /shipping/products/stock",
-        "parameters": [
-          {
-            "schema": {
-              "$ref": "#/definitions/stockProductCommand"
-            },
-            "name": "body",
-            "in": "body",
-            "required": true
-          }
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/stockProductEvent"
-            }
-          },
-          "400": {
-            "description": "1. ProductId must be specified.\r\n\r\n1. The product quantity must be greater than 0.\r\n\r\n",
-            "schema": {
-              "items": {
-                "$ref": "#/definitions/validationError"
-              },
-              "type": "array"
-            }
-          }
-        },
-        "summary": "Stock Product",
-        "tags": [
-          "Products"
         ]
       }
     }

@@ -64,8 +64,9 @@ namespace Slalom.Stacks.Services.Logging
             this.SourceAddress = request.SourceAddress;
             this.CorrelationId = request.CorrelationId;
             this.Parent = request.Parent?.Message?.Id;
-            this.MachineName = System.Environment.MachineName;
+            this.MachineName = Environment.MachineName;
             this.ApplicationName = environment.Title;
+            this.EnvironmentName = environment.Environment;
         }
 
         /// <summary>
@@ -85,6 +86,14 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <value>The correlation identifier.</value>
         public string CorrelationId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the environment.
+        /// </summary>
+        /// <value>
+        /// The name of the environment.
+        /// </value>
+        public string EnvironmentName { get; set; }
 
         /// <summary>
         /// Gets or sets the instance identifier.
