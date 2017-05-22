@@ -16,4 +16,9 @@
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.targets" Condition="'$(VSToolsPath)' != ''" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties appsettings_1json__JSONSchema="..\..\src\Slalom.Stacks\schema.json" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -60,7 +60,7 @@ namespace Slalom.Stacks.Services.Modules
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 
-            builder.Register(c => new ServiceInventory())
+            builder.RegisterType<ServiceInventory>()
                 .AsSelf()
                 .SingleInstance()
                 .OnActivated(e => { e.Instance.RegisterLocal(_stack.Assemblies.ToArray()); });

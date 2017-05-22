@@ -8,6 +8,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Reflection;
 using Slalom.Stacks.Services.Messaging;
 
@@ -18,6 +19,23 @@ namespace Slalom.Stacks.Services.Inventory
     /// </summary>
     public class ServiceInventory
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServiceInventory"/> class.
+        /// </summary>
+        /// <param name="application">The application that contain the endpoints.</param>
+        public ServiceInventory(Application application)
+        {
+            this.Application = application;
+        }
+
+        /// <summary>
+        /// Gets the application that contain the endpoints.
+        /// </summary>
+        /// <value>
+        /// The application that contain the endpoints.
+        /// </value>
+        public Application Application { get; }
+
         /// <summary>
         /// Gets the end points in the inventory.
         /// </summary>
@@ -56,13 +74,9 @@ namespace Slalom.Stacks.Services.Inventory
                 return null;
             }
 
-            var endPoints = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints);
-            var target = endPoints.FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path);
-            if (target == null)
-            {
-                target = endPoints.Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
-            }
-            return target;
+            var endPoints = this.Hosts.SelectMany(e => e.Services).SelectMany(e => e.EndPoints).ToList();
+
+            return endPoints.FirstOrDefault(e => $"v{e.Version}/{e.Path}" == path) ?? endPoints.Where(e => e.Path == path).OrderBy(e => e.Version).LastOrDefault();
         }
 
         /// <summary>
@@ -72,7 +86,7 @@ namespace Slalom.Stacks.Services.Inventory
         /// <returns>Returns the endpoint for the specified message.</returns>
         public IEnumerable<EndPointMetaData> Find(EventMessage message)
         {
-            return this.EndPoints.Where(e => e.RequestType.FullName == message.MessageType || e.ServiceType.GetAllAttributes<SubscribeAttribute>().Any());
+            return this.EndPoints.Where(e => e.RequestType.FullName == message.MessageType || e.EndPointType.GetAllAttributes<SubscribeAttribute>().Any());
         }
 
         /// <summary>

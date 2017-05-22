@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Validation;
 
@@ -18,7 +18,7 @@ namespace Slalom.Stacks.Services.Logging
 {
     internal class InMemoryRequestLog : IRequestLog
     {
-        private readonly IEnvironmentContext _environment;
+        private readonly Application _environment;
 
         /// <summary>
         /// The lock for the instances.
@@ -30,7 +30,7 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         protected readonly List<RequestEntry> Instances = new List<RequestEntry>();
 
-        public InMemoryRequestLog(IEnvironmentContext environment)
+        public InMemoryRequestLog(Application environment)
         {
             _environment = environment;
         }
@@ -42,7 +42,7 @@ namespace Slalom.Stacks.Services.Logging
             CacheLock.EnterWriteLock();
             try
             {
-                Instances.Add(new RequestEntry(entry, _environment.Resolve()));
+                Instances.Add(new RequestEntry(entry, _environment));
             }
             finally
             {

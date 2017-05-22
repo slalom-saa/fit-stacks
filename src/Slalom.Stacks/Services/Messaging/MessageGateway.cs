@@ -63,7 +63,7 @@ namespace Slalom.Stacks.Services.Messaging
                 }
                 else
                 {
-                    var attribute = endPoint.ServiceType.GetAllAttributes<SubscribeAttribute>().FirstOrDefault();
+                    var attribute = endPoint.EndPointType.GetAllAttributes<SubscribeAttribute>().FirstOrDefault();
                     if (attribute != null)
                     {
                         if (attribute.Channel == instance.Name)
@@ -104,7 +104,7 @@ namespace Slalom.Stacks.Services.Messaging
                 current = new EventMessage(NewId.NextId(), message);
             }
 
-            foreach (var endPoint in _services.Value.EndPoints.Where(e => e.ServiceType.GetAllAttributes<SubscribeAttribute>().Any(x => x.Channel == channel)))
+            foreach (var endPoint in _services.Value.EndPoints.Where(e => e.EndPointType.GetAllAttributes<SubscribeAttribute>().Any(x => x.Channel == channel)))
             {
                 var request = _requestContext.Value.Resolve(current, endPoint);
 
@@ -117,7 +117,7 @@ namespace Slalom.Stacks.Services.Messaging
         {
             var current = new EventMessage(NewId.NextId(), instance);
 
-            foreach (var endPoint in _services.Value.EndPoints.Where(e => e.ServiceType.GetAllAttributes<SubscribeAttribute>().Any(x => x.Channel == current.MessageType.Split(',')[0].Split('.').Last())))
+            foreach (var endPoint in _services.Value.EndPoints.Where(e => e.EndPointType.GetAllAttributes<SubscribeAttribute>().Any(x => x.Channel == current.MessageType.Split(',')[0].Split('.').Last())))
             {
                 var request = _requestContext.Value.Resolve(current, endPoint);
 

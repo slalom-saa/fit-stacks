@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using Slalom.Stacks.Runtime;
+using Slalom.Stacks.Configuration;
 
 namespace Slalom.Stacks.Logging
 {
@@ -20,14 +20,14 @@ namespace Slalom.Stacks.Logging
     public class CompositeLogger : ILogger
     {
         private readonly IComponentContext _components;
-        private readonly IEnvironmentContext _environment;
+        private readonly Application _environment;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompositeLogger" /> class.
         /// </summary>
         /// <param name="components">The configured component context.</param>
         /// <param name="environment">The environment.</param>
-        public CompositeLogger(IComponentContext components, IEnvironmentContext environment)
+        public CompositeLogger(IComponentContext components, Application environment)
         {
             _components = components;
             _environment = environment;
@@ -206,7 +206,7 @@ namespace Slalom.Stacks.Logging
         {
             return original.Union(new[]
                 {
-                    _environment.Resolve()
+                    _environment
                 })
                 .ToArray();
         }

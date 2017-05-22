@@ -7,10 +7,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Services.Messaging;
 using Slalom.Stacks.Utilities.NewId;
 using Slalom.Stacks.Validation;
-using Environment = Slalom.Stacks.Runtime.Environment;
 
 namespace Slalom.Stacks.Services.Logging
 {
@@ -35,23 +36,22 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <param name="context">The completed context.</param>
         /// <param name="environment">The current environment.</param>
-        public ResponseEntry(ExecutionContext context, Environment environment)
+        public ResponseEntry(ExecutionContext context, Application environment)
         {
             this.CorrelationId = context.Request.CorrelationId;
             this.RequestId = context.Request.Message.Id;
             this.Completed = context.Completed;
-            this.EndPoint = context.EndPoint.ServiceType.AssemblyQualifiedName;
+            this.EndPoint = context.EndPoint.EndPointType.AssemblyQualifiedName;
             this.Exception = context.Exception?.ToString();
             this.IsSuccessful = context.IsSuccessful;
             this.Started = context.Started;
             this.ValidationErrors = context.ValidationErrors;
             this.TimeStamp = DateTimeOffset.Now;
-            this.MachineName = environment.MachineName;
-            this.ApplicationName = environment.ApplicationName;
-            this.EnvironmentName = environment.EnvironmentName;
+            this.MachineName = System.Environment.MachineName;
+            this.ApplicationName = environment.Title;
             this.Path = context.Request.Path;
             this.Version = environment.Version;
-            this.Build = environment.Build;
+            this.Build = Assembly.GetEntryAssembly().GetName().Version.ToString();
             if (this.Completed.HasValue)
             {
                 this.Elapsed = this.Completed.Value - this.Started;
@@ -95,12 +95,6 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <value>The type of the endpoint.</value>
         public string EndPoint { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the environment.  This should be DEV, QA, PROD, etc.
-        /// </summary>
-        /// <value>The name of the environment.</value>
-        public string EnvironmentName { get; set; }
 
         /// <summary>
         /// Gets the exception that was raised, if any.

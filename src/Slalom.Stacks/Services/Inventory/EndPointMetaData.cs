@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Slalom.Stacks.Reflection;
+using Slalom.Stacks.Text;
 
 namespace Slalom.Stacks.Services.Inventory
 {
@@ -19,6 +20,20 @@ namespace Slalom.Stacks.Services.Inventory
     /// </summary>
     public class EndPointMetaData
     {
+        /// <summary>
+        /// Gets or sets the endpoint type.
+        /// </summary>
+        /// <value>The endpoint type.</value>
+        public Type EndPointType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the HTTP method.
+        /// </summary>
+        /// <value>
+        /// The HTTP method.
+        /// </value>
+        public string HttpMethod { get; set; }
+
         /// <summary>
         /// Gets a value indicating whether this instance is local.
         /// </summary>
@@ -30,6 +45,14 @@ namespace Slalom.Stacks.Services.Inventory
         /// </summary>
         /// <value>The endpoint method.</value>
         public MethodInfo Method { get; set; }
+
+        /// <summary>
+        /// Gets or sets the endpoint name.
+        /// </summary>
+        /// <value>
+        /// The endpoint name.
+        /// </value>
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the relative path.
@@ -80,12 +103,6 @@ namespace Slalom.Stacks.Services.Inventory
         public bool Secure { get; set; }
 
         /// <summary>
-        /// Gets or sets the service type.
-        /// </summary>
-        /// <value>The service type.</value>
-        public Type ServiceType { get; set; }
-
-        /// <summary>
         /// Gets or sets the endpoint summary.
         /// </summary>
         /// <value>The endpoint summary.</value>
@@ -129,8 +146,10 @@ namespace Slalom.Stacks.Services.Inventory
                         var requestType = method.GetParameters().FirstOrDefault()?.ParameterType;
                         var endPoint = new EndPointMetaData
                         {
+                            Name = attribute?.Name ?? service.Name.ToTitle(),
                             Path = path,
-                            ServiceType = service,
+                            HttpMethod = attribute?.Method ?? "POST",
+                            EndPointType = service,
                             RequestType = requestType,
                             ResponseType = GetResponseType(method),
                             Rules = requestType?.GetRules().Select(e => new EndPointRule(e)).ToList(),
@@ -149,14 +168,13 @@ namespace Slalom.Stacks.Services.Inventory
             }
         }
 
-
         private static Type GetResponseType(MethodInfo method)
         {
             if (method.ReturnType == typeof(Task))
             {
                 return null;
             }
-            if ((bool) method.ReturnType?.GetTypeInfo().IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
+            if ((bool)method.ReturnType?.GetTypeInfo().IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
             {
                 return method.ReturnType.GetGenericArguments()[0];
             }

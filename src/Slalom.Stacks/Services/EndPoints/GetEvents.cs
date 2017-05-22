@@ -16,7 +16,7 @@ namespace Slalom.Stacks.Services.EndPoints
     /// <summary>
     /// Gets the events that have occurred within the service context.
     /// </summary>
-    [EndPoint("_system/events", Public = false)]
+    [EndPoint("_system/events", Method = "GET")]
     public class GetEvents : EndPoint<GetEventsRequest, IEnumerable<EventEntry>>
     {
         private readonly IEventStore _events;

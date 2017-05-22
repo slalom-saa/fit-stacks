@@ -16,7 +16,7 @@ namespace Slalom.Stacks.Services.EndPoints
     /// <summary>
     /// Gets responses that have been provided in a service context.
     /// </summary>
-    [EndPoint("_system/responses")]
+    [EndPoint("_system/responses", Method = "GET")]
     public class GetResponses : EndPoint<GetResponsesRequest, IEnumerable<ResponseEntry>>
     {
         private readonly IResponseLog _source;

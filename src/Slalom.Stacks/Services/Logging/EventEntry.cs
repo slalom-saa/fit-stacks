@@ -7,8 +7,8 @@
 
 using System;
 using Newtonsoft.Json;
+using Slalom.Stacks.Configuration;
 using Slalom.Stacks.Services.Messaging;
-using Environment = Slalom.Stacks.Runtime.Environment;
 
 namespace Slalom.Stacks.Services.Logging
 {
@@ -29,11 +29,10 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <param name="instance">The event instance.</param>
         /// <param name="environment">The current environment.</param>
-        public EventEntry(EventMessage instance, Environment environment)
+        public EventEntry(EventMessage instance, Application environment)
         {
             this.RequestId = instance.RequestId;
-            this.ApplicationName = environment.ApplicationName;
-            this.EnvironmentName = environment.EnvironmentName;
+            this.ApplicationName = environment.Title;
             try
             {
                 this.Body = JsonConvert.SerializeObject(instance.Body);

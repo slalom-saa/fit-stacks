@@ -11,7 +11,7 @@ namespace Slalom.Stacks.Services.EndPoints
     /// Checks the health of the service and returns nothing if everything is good.  If there is an issue with the system health then
     /// an exception is thrown.
     /// </summary>
-    [EndPoint("_system/health")]
+    [EndPoint("_system/health", Method = "GET")]
     public class CheckHealth : EndPoint
     {
         /// <summary>

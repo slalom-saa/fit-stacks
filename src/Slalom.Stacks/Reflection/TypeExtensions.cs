@@ -18,7 +18,24 @@ namespace Slalom.Stacks.Reflection
     /// </summary>
     public static class TypeExtensions
     {
-        private static readonly ConcurrentDictionary<Assembly, Type[]> _loadedTypes = new ConcurrentDictionary<Assembly, Type[]>();
+        private static readonly ConcurrentDictionary<Assembly, Type[]> LoadedTypes = new ConcurrentDictionary<Assembly, Type[]>();
+
+        private static readonly HashSet<Type> PrimitiveTypes = new HashSet<Type>
+        {
+            typeof(DateTime),
+            typeof(DateTimeOffset),
+            typeof(TimeSpan),
+            typeof(string),
+            typeof(char),
+            typeof(decimal),
+            typeof(int),
+            typeof(uint),
+            typeof(short),
+            typeof(ushort),
+            typeof(long),
+            typeof(ulong),
+            typeof(Guid)
+        };
 
         /// <summary>
         /// Returns all custom attributes of the specified type.
@@ -34,7 +51,8 @@ namespace Slalom.Stacks.Reflection
                 target.AddRange(type.GetTypeInfo().GetCustomAttributes<T>());
                 target.AddRange(type.GetInterfaces().SelectMany(e => e.GetAllAttributes<T>()));
                 type = type.GetTypeInfo().BaseType;
-            } while (type != null);
+            }
+            while (type != null);
 
             return target.AsEnumerable();
         }
@@ -107,6 +125,30 @@ namespace Slalom.Stacks.Reflection
         }
 
         /// <summary>
+        /// Determines whether the type is nullable.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns>
+        ///   <c>true</c> if nullable; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsNullable(this Type instance)
+        {
+            return instance.GetTypeInfo().IsGenericType && instance.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        /// <summary>
+        /// Determines whether the type is primitive.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <returns>
+        ///   <c>true</c> if primitive; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool IsPrimitive(this Type instance)
+        {
+            return instance.GetTypeInfo().IsPrimitive || PrimitiveTypes.Contains(instance);
+        }
+
+        /// <summary>
         /// Safely gets all types when some referenced assemblies may not be available.
         /// </summary>
         /// <param name="assemblies">The instance.</param>
@@ -148,7 +190,7 @@ namespace Slalom.Stacks.Reflection
         /// <returns>Returns all types when some referenced assemblies may not be available.</returns>
         public static Type[] SafelyGetTypes(this Assembly assembly)
         {
-            return _loadedTypes.GetOrAdd(assembly, a =>
+            return LoadedTypes.GetOrAdd(assembly, a =>
             {
                 try
                 {

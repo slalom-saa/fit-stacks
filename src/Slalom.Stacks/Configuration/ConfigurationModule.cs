@@ -12,7 +12,6 @@ using Slalom.Stacks.Caching;
 using Slalom.Stacks.Domain.Modules;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Reflection;
-using Slalom.Stacks.Runtime;
 using Slalom.Stacks.Search;
 using Slalom.Stacks.Services.Modules;
 
@@ -48,44 +47,48 @@ namespace Slalom.Stacks.Configuration
             base.Load(builder);
 
             builder.Register(c =>
-                {
-                    var currentDirectory = Directory.GetCurrentDirectory();
-                    var configurationBuilder = new ConfigurationBuilder();
-                    configurationBuilder.SetBasePath(currentDirectory);
-                    configurationBuilder.AddJsonFile("appsettings.json", true, true);
-                    configurationBuilder.AddJsonFile("stacks.json", true, true);
-                    foreach (var path in Directory.GetFiles(currentDirectory, "stacks.*.json"))
-                    {
-                        configurationBuilder.AddJsonFile(Path.GetFileName(path), true, true);
-                    }
-                    if (Directory.Exists(Path.Combine(currentDirectory, "config")))
-                    {
-                        foreach (var path in Directory.GetFiles(currentDirectory, "config\\stacks**.json"))
-                        {
-                            configurationBuilder.AddJsonFile("config\\" + Path.GetFileName(path), true, true);
-                        }
-                    }
-                    configurationBuilder.AddEnvironmentVariables();
-                    return configurationBuilder.Build();
-                })
-                .As<IConfiguration>()
-                .SingleInstance();
+                   {
+                       var currentDirectory = Directory.GetCurrentDirectory();
+                       var configurationBuilder = new ConfigurationBuilder();
+                       configurationBuilder.SetBasePath(currentDirectory);
+                       configurationBuilder.AddJsonFile("appsettings.json", true, true);
+                       configurationBuilder.AddJsonFile("stacks.json", true, true);
+                       foreach (var path in Directory.GetFiles(currentDirectory, "stacks.*.json"))
+                       {
+                           configurationBuilder.AddJsonFile(Path.GetFileName(path), true, true);
+                       }
+                       if (Directory.Exists(Path.Combine(currentDirectory, "config")))
+                       {
+                           foreach (var path in Directory.GetFiles(currentDirectory, "config\\stacks**.json"))
+                           {
+                               configurationBuilder.AddJsonFile("config\\" + Path.GetFileName(path), true, true);
+                           }
+                       }
+                       configurationBuilder.AddEnvironmentVariables();
+                       return configurationBuilder.Build();
+                   })
+                   .As<IConfiguration>()
+                   .SingleInstance();
 
-            builder.RegisterType<Environment>()
-                .As<IEnvironmentContext>();
+            builder.RegisterType<Application>()
+                   .SingleInstance()
+                   .OnActivated(c =>
+                   {
+                       var configuration = c.Context.Resolve<IConfiguration>();
+                       configuration.GetSection("Stacks")?.Bind(c.Instance);
+                   });
 
             builder.RegisterModule(new DomainModule(_stack));
             builder.RegisterModule(new MessagingModule(_stack));
             builder.RegisterModule(new SearchModule(_stack));
-            builder.RegisterModule(new RuntimeModule());
             builder.RegisterModule(new ReflectionModule(_stack));
 
             builder.RegisterModule(new LoggingModule());
             builder.RegisterModule(new NullCachingModule());
 
             builder.RegisterType<DiscoveryService>()
-                .As<IDiscoverTypes>()
-                .SingleInstance();
+                   .As<IDiscoverTypes>()
+                   .SingleInstance();
         }
     }
 }

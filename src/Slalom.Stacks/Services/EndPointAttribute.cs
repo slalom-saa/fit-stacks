@@ -26,6 +26,14 @@ namespace Slalom.Stacks.Services
         }
 
         /// <summary>
+        /// Gets or sets the HTTP method.
+        /// </summary>
+        /// <value>
+        /// The HTTP method.
+        /// </value>
+        public string Method { get; set; } = "POST";
+
+        /// <summary>
         /// Gets or sets the endpoint name.
         /// </summary>
         /// <value>The endpoint name.</value>
