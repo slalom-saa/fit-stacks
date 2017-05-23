@@ -76,10 +76,14 @@ namespace Slalom.Stacks.Configuration
                    {
                        var configuration = c.Context.Resolve<IConfiguration>();
                        configuration.GetSection("Stacks")?.Bind(c.Instance);
+                       configuration.GetReloadToken().RegisterChangeCallback(_ =>
+                       {
+                           configuration.GetSection("Stacks")?.Bind(c.Instance);
+                       }, configuration);
                    });
 
             builder.RegisterModule(new DomainModule(_stack));
-            builder.RegisterModule(new MessagingModule(_stack));
+            builder.RegisterModule(new ServicesModule(_stack));
             builder.RegisterModule(new SearchModule(_stack));
             builder.RegisterModule(new ReflectionModule(_stack));
 

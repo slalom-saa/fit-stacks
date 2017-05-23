@@ -5,10 +5,12 @@
  * the LICENSE file, which is part of this source code package.
  */
 
+using System;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Microsoft.Extensions.Configuration;
 using Slalom.Stacks.Services.Inventory;
 using Slalom.Stacks.Services.Logging;
 using Slalom.Stacks.Services.Messaging;
@@ -20,17 +22,17 @@ using Module = Autofac.Module;
 namespace Slalom.Stacks.Services.Modules
 {
     /// <summary>
-    /// An Autofac module to configure the communication dependencies.
+    /// An Autofac module to configure the services dependencies.
     /// </summary>
     /// <seealso cref="Autofac.Module" />
-    internal class MessagingModule : Module
+    internal class ServicesModule : Module
     {
         private readonly Stack _stack;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessagingModule" /> class.
+        /// Initializes a new instance of the <see cref="ServicesModule" /> class.
         /// </summary>
-        public MessagingModule(Stack stack)
+        public ServicesModule(Stack stack)
         {
             _stack = stack;
         }
@@ -56,14 +58,17 @@ namespace Slalom.Stacks.Services.Modules
 
             builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
 
-            builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] {typeof(IMessageExecutionStep).GetTypeInfo().Assembly}).ToArray())
+            builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 
             builder.RegisterType<ServiceInventory>()
                 .AsSelf()
                 .SingleInstance()
-                .OnActivated(e => { e.Instance.Load(_stack.Assemblies.ToArray()); });
+                .OnActivated(e =>
+                {
+                    e.Instance.Load(_stack.Assemblies.ToArray());
+                });
 
             builder.Register(c => new Request())
                 .As<IRequestContext>();
@@ -96,7 +101,7 @@ namespace Slalom.Stacks.Services.Modules
                 .AsBaseAndContractTypes()
                 .AsSelf()
                 .AllPropertiesAutowired()
-                .OnActivated(e => { ((IEndPoint) e.Instance).OnStart(); });
+                .OnActivated(e => { ((IEndPoint)e.Instance).OnStart(); });
 
             builder.RegisterAssemblyTypes(assemblies)
                 .Where(e => e.GetInterfaces().Contains(typeof(IEventPublisher)))

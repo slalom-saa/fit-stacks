@@ -9,7 +9,7 @@ namespace Slalom.Stacks.Services.EndPoints
     /// <summary>
     /// Gets the [OpenAPI](https://www.openapis.org/) definition for the API.
     /// </summary>
-    [EndPoint("_system/endpoints/open-api", Method = "GET", Name = "Get OpenAPI Definition")]
+    [EndPoint("_system/endpoints/open-api", Method = "GET", Name = "Get OpenAPI Definition", Public = false)]
     public class GetOpenApi : EndPoint<GetOpenApiRequest, OpenApiDocument>
     {
         private readonly ServiceInventory _services;
@@ -30,7 +30,7 @@ namespace Slalom.Stacks.Services.EndPoints
         public override OpenApiDocument Receive(GetOpenApiRequest instance)
         {
             var document = new OpenApiDocument();
-            document.Load(_services);
+            document.Load(_services, instance.All);
             document.Host = instance.Host;
 
             var externalDocs = new ExternalDocs();

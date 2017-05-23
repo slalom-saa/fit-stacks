@@ -9,28 +9,28 @@
     "xmlDoc": true
   },
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.1.1"
-    },
+    //"Microsoft.NETCore.App": {
+    //  "type": "platform",
+    //  "version": "1.1.1"
+    //},
     "Slalom.Stacks": {
       "target": "project"
     }
   },
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": [
-        "dotnet54",
-        "portable-net45+win8"
-      ]
-    }
-    //"net461": {
-    //  "dependencies": {
-    //  },
-    //  "imports": "dnxcore50",
-    //  "frameworkAssemblies": {
-    //    "System.Windows.Forms": {}
-    //  }
+    //"netcoreapp1.0": {
+    //  "imports": [
+    //    "dotnet54",
+    //    "portable-net45+win8"
+    //  ]
     //}
+    "net461": {
+      "dependencies": {
+      },
+      "imports": "dnxcore50",
+      "frameworkAssemblies": {
+        "System.Windows.Forms": {}
+      }
+    }
   }
 }

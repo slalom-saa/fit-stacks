@@ -7,6 +7,7 @@ using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
 using Slalom.Stacks.ConsoleClient.Domain.Products;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.EndPoints;
 using Slalom.Stacks.Services.OpenApi;
 using Slalom.Stacks.Text;
 
@@ -36,23 +37,9 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-                //var collection = new SchemaCollection();
-                //var result = collection.GetOrAdd(typeof(OpenApiDocument));
-
-
-                //result.OutputToJson();
-                //File.WriteAllText("output.json", JsonConvert.SerializeObject(result, DefaultSerializationSettings.Instance));
-
                 using (var stack = new Stack())
                 {
-                    var result = stack.Send("_system/endpoints/open-api", new
-                    {
-                        Host = "localhost"
-                    }).Result;
-
-                    result.OutputToJson();
-
-                    File.WriteAllText("output.json", JsonConvert.SerializeObject(result.Response, DefaultSerializationSettings.Instance));
+                  File.WriteAllText("output.json",  stack.Send(new GetOpenApiRequest(null, true)).Result.Response.ToJson());
                 }
             }
             catch (Exception exception)

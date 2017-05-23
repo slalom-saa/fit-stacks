@@ -25,6 +25,17 @@ namespace Slalom.Stacks.Services.OpenApi
     public class OpenApiDocument
     {
         /// <summary>
+        /// Gets or sets the security scheme definitions that can be used across the specification.
+        /// </summary>
+        /// <value>
+        /// The security scheme definitions that can be used across the specification.
+        /// </value>
+        public IDictionary<string, SecurityScheme> SecurityDefinitions { get; set; } = new SortedDictionary<string, SecurityScheme>
+        {
+            { "cookies", new SecurityScheme { Type = "basic" } }
+        };
+
+        /// <summary>
         /// Gets or sets the base path on which the API is served, which is relative to the host. If it is not included, the API is served directly under the host. The value MUST start with a leading slash (/). The basePath does not support path templating.
         /// </summary>
         /// <value>
@@ -78,7 +89,7 @@ namespace Slalom.Stacks.Services.OpenApi
         /// <value>
         /// The transfer protocol of the API. Values MUST be from the list: "http", "https", "ws", "wss". If the schemes is not included, the default scheme to be used is the one used to access the Swagger definition itself.
         /// </value>
-        public string[] Schemes { get; set; } = { "https", "http" };
+        public string[] Schemes { get; set; } = { "http", "https" };
 
         /// <summary>
         /// Gets or sets the Swagger Specification version being used. It can be used by the Swagger UI and other clients to interpret the API listing. The value MUST be "2.0".
@@ -100,10 +111,11 @@ namespace Slalom.Stacks.Services.OpenApi
         /// Loads the document using hte specified service inventory.
         /// </summary>
         /// <param name="services">The service inventory.</param>
-        public void Load(ServiceInventory services)
+        /// <param name="includeAll">Indicates whether all endpoints should be retreived or just public.</param>
+        public void Load(ServiceInventory services, bool includeAll = false)
         {
             this.Info = services.Application;
-            var endPoints = services.EndPoints.Where(e => e.Public && !e.IsVersioned).ToList();
+            var endPoints = services.EndPoints.Where(e => includeAll || e.Public && !e.IsVersioned).ToList();
             foreach (var endPoint in endPoints)
             {
                 if (endPoint.RequestType != null)
@@ -165,7 +177,7 @@ namespace Slalom.Stacks.Services.OpenApi
         {
             if (endPoint.Method == "POST")
             {
-                return new Operation
+                var operation =  new Operation
                 {
                     Tags = this.GetTags(endPoint).ToList(),
                     Summary = endPoint.Name,
@@ -176,6 +188,13 @@ namespace Slalom.Stacks.Services.OpenApi
                     Parameters = this.GetPostParameters(endPoint).ToList(),
                     Responses = this.GetResponses(endPoint)
                 };
+
+                if (operation.Responses.ContainsKey("401"))
+                {
+                    operation.IncludeSecurity("cookies");
+                }
+
+                return operation;
             }
             return null;
         }
@@ -231,6 +250,16 @@ namespace Slalom.Stacks.Services.OpenApi
                 });
             }
             builder.Clear();
+
+            if (endPoint.Secure)
+            {
+                responses.Add("401", new Response
+                {
+                    Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[]), null),
+                    Description = "This endpoint requires authorization."
+                });
+            }
+
             foreach (var source in endPoint.Rules.Where(e => e.RuleType == ValidationType.Business))
             {
                 builder.AppendLine("1. " + source.Name.ToTitle() + ".\r\n");
@@ -246,16 +275,25 @@ namespace Slalom.Stacks.Services.OpenApi
             builder.Clear();
             foreach (var source in endPoint.Rules.Where(e => e.RuleType == ValidationType.Security))
             {
-                builder.AppendLine(source.Name.ToTitle() + ".    ");
+                builder.AppendLine("1. " + source.Name.ToTitle() + ".\r\n");
             }
             if (builder.Length > 0)
             {
+                if (!responses.ContainsKey("401"))
+                {
+                    responses.Add("401", new Response
+                    {
+                        Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[]), null),
+                        Description = "This endpoint requires authorization."
+                    });
+                }
                 responses.Add("403", new Response
                 {
                     Schema = this.Definitions.GetReferenceSchema(typeof(ValidationError[]), null),
                     Description = builder.ToString()
                 });
             }
+
             return responses;
         }
 

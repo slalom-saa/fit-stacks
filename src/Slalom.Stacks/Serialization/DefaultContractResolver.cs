@@ -18,7 +18,7 @@ namespace Slalom.Stacks.Serialization
     /// Overrides the default behavior of skipping over private members.
     /// </summary>
     /// <seealso cref="Newtonsoft.Json.Serialization.DefaultContractResolver" />
-    public class DefaultContractResolver : CamelCasePropertyNamesContractResolver
+    public class DefaultContractResolver : BaseContractResolver
     {
         /// <summary>
         /// Creates a <see cref="T:Newtonsoft.Json.Serialization.JsonProperty" /> for the given <see cref="T:System.Reflection.MemberInfo" />.

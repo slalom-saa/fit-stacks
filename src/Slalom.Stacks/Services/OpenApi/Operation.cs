@@ -103,7 +103,7 @@ namespace Slalom.Stacks.Services.OpenApi
         /// <value>
         /// The declaration of which security schemes are applied for this operation.
         /// </value>
-        public IList<IDictionary<string, IEnumerable<string>>> Security { get; set; }
+        public List<Dictionary<string, List<string>>> Security { get; set; }
 
         /// <summary>
         /// Gets or sets the short summary of what the operation does. For maximum readability in the swagger-ui, this field SHOULD be less than 120 characters.
@@ -120,5 +120,16 @@ namespace Slalom.Stacks.Services.OpenApi
         /// The list of tags for API documentation control. Tags can be used for logical grouping of operations by resources or any other qualifier.
         /// </value>
         public IList<string> Tags { get; set; }
+
+        public void IncludeSecurity(string definition)
+        {
+            if (this.Security == null)
+            {
+                this.Security = new List<Dictionary<string, List<string>>>();
+            }
+            var x = new Dictionary<string, List<string>>();
+            x.Add(definition, new List<string>());
+            this.Security.Add(x);
+        }
     }
 }
