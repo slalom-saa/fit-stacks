@@ -22,7 +22,9 @@ namespace Slalom.Stacks.Serialization
         {
             this.Formatting = Formatting.Indented;
             this.NullValueHandling = NullValueHandling.Ignore;
+            this.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             this.ContractResolver = new DefaultContractResolver();
+            this.Converters.Add(new ClaimsPrincipalConverter());
         }
 
         /// <summary>

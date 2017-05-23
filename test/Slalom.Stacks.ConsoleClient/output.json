@@ -1,7 +1,9 @@
 {
   "securityDefinitions": {
-    "cookies": {
-      "type": "basic"
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
     }
   },
   "definitions": {
@@ -121,6 +123,9 @@
       "properties": {
         "all": {
           "type": "boolean"
+        },
+        "basePath": {
+          "type": "string"
         },
         "host": {
           "type": "string"
@@ -549,9 +554,9 @@
     "url": "https://pds-patolus.atlassian.net/wiki/display/PDSPAT/PDS-Patolus"
   },
   "info": {
-    "title": "Envioss",
+    "title": "Stacks Console",
     "version": "1.0.0",
-    "x-environment": "locasdfal"
+    "x-environment": "Local"
   },
   "paths": {
     "/catalog/products/add": {
@@ -559,7 +564,7 @@
         "consumes": [
           "application/json"
         ],
-        "operationId": "656a0000181de4b31aaf08d4a1736f72",
+        "operationId": "656a0000181de4b3db0108d4a206a1c4",
         "parameters": [
           {
             "schema": {
@@ -617,12 +622,12 @@
         },
         "security": [
           {
-            "cookies": []
+            "api_key": []
           }
         ],
         "summary": "Add Product",
         "tags": [
-          "Products"
+          "asdf"
         ]
       }
     },
@@ -631,7 +636,7 @@
         "consumes": [
           "application/json"
         ],
-        "operationId": "656a0000181de4b3909608d4a1736f72",
+        "operationId": "656a0000181de4b35d5408d4a206a1c5",
         "parameters": [
           {
             "schema": {
@@ -673,8 +678,9 @@
         "consumes": [
           "application/json"
         ],
+        "deprecated": true,
         "description": "Adds a product to the product catalog.",
-        "operationId": "656a0000181de4b398ac08d4a1736f72",
+        "operationId": "656a0000181de4b365b808d4a206a1c5",
         "parameters": [
           {
             "schema": {
@@ -732,7 +738,7 @@
         },
         "security": [
           {
-            "cookies": []
+            "api_key": []
           }
         ],
         "summary": "Add Product",
@@ -747,7 +753,7 @@
           "application/json"
         ],
         "description": "Gets the [OpenAPI](https://www.openapis.org/) definition for the API.",
-        "operationId": "656a0000181de4b33a3e08d4a1736f71",
+        "operationId": "656a0000181de4b38cb208d4a206a1c3",
         "parameters": [
           {
             "name": "All",
@@ -755,6 +761,13 @@
             "description": "true if all endpoints should be retrieved; otherwise, false.",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "BasePath",
+            "in": "query",
+            "description": "The base path on which the API is served.",
+            "required": false,
+            "type": "string"
           },
           {
             "name": "Host",
@@ -788,7 +801,7 @@
           "application/json"
         ],
         "description": "Gets all connected remote endpoints.",
-        "operationId": "656a0000181de4b3599908d4a1736f71",
+        "operationId": "656a0000181de4b3aef508d4a206a1c3",
         "produces": [
           "application/json"
         ],
@@ -809,7 +822,7 @@
           "application/json"
         ],
         "description": "Gets the events that have occurred within the application context.",
-        "operationId": "656a0000181de4b34dd708d4a1736f70",
+        "operationId": "656a0000181de4b356ae08d4a206a1c2",
         "parameters": [
           {
             "name": "End",
@@ -849,12 +862,11 @@
       }
     },
     "/_system/health": {
-      "get": {
+      "post": {
         "consumes": [
           "application/json"
         ],
-        "description": "Checks the health of the application and returns no content if no issues are found.  An exception is raised when there is an issue present.",
-        "operationId": "656a0000181de4b3a3c008d4a1736f6e",
+        "operationId": "656a0000181de4b34f3208d4a206a1c5",
         "produces": [
           "application/json"
         ],
@@ -863,7 +875,7 @@
             "description": "No content is returned from this endpoint."
           }
         },
-        "summary": "Check Health",
+        "summary": "Check2",
         "tags": [
           "Stacks"
         ]
@@ -875,7 +887,7 @@
           "application/json"
         ],
         "description": "Gets requests that have been executed in the application context.",
-        "operationId": "656a0000181de4b3957008d4a1736f71",
+        "operationId": "656a0000181de4b308f108d4a206a1c4",
         "parameters": [
           {
             "name": "End",
@@ -920,7 +932,7 @@
           "application/json"
         ],
         "description": "Gets responses that have been executed in the application context.",
-        "operationId": "656a0000181de4b30af208d4a1736f72",
+        "operationId": "656a0000181de4b3c62908d4a206a1c4",
         "parameters": [
           {
             "name": "End",
@@ -958,6 +970,28 @@
           "Stacks"
         ]
       }
+    },
+    "/v1/_system/health": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "deprecated": true,
+        "description": "Checks the health of the application and returns no content if no issues are found.  An exception is raised when there is an issue present.",
+        "operationId": "656a0000181de4b3c6d408d4a206a1c0",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content is returned from this endpoint."
+          }
+        },
+        "summary": "Check Health",
+        "tags": [
+          "Stacks"
+        ]
+      }
     }
   },
   "schemes": [
@@ -969,6 +1003,14 @@
     {
       "description": "System defined endpoints.",
       "name": "Stacks"
+    },
+    {
+      "description": "The Products Service [Go](http://go.com)",
+      "externalDocs": {
+        "description": "The Patolus Project Confluence site",
+        "url": "https://pds-patolus.atlassian.net/wiki/display/PDSPAT/PDS-Patolus"
+      },
+      "name": "Products"
     }
   ]
 }

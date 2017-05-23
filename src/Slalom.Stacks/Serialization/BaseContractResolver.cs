@@ -7,13 +7,14 @@
 
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace Slalom.Stacks.Serialization
 {
     /// <summary>
-    /// A JSON Contract Resolver that ignores sensitive members.
+    /// A base JSON contract resolver that handles sensitive properties.
     /// </summary>
     /// <seealso cref="Newtonsoft.Json.Serialization.DefaultContractResolver" />
     public class BaseContractResolver : CamelCasePropertyNamesContractResolver

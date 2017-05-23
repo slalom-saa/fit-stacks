@@ -6,15 +6,17 @@
  */
 
 using System;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Newtonsoft.Json;
 using Slalom.Stacks.Serialization;
+
+#if !core
+using System.Threading;
+#endif
 
 namespace Slalom.Stacks.Text
 {
@@ -44,6 +46,16 @@ namespace Slalom.Stacks.Text
                     return Convert.ToBase64String(outStream.ToArray());
                 }
             }
+        }
+
+        /// <summary>
+        /// Outputs the JSON representation to a file.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="path">The file path.</param>
+        public static void OutputToFile(this object instance, string path)
+        {
+            File.WriteAllText(path, instance.ToJson());
         }
 
         /// <summary>

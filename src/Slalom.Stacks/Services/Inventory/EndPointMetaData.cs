@@ -27,18 +27,26 @@ namespace Slalom.Stacks.Services.Inventory
         public Type EndPointType { get; set; }
 
         /// <summary>
+        /// Gets or sets the endpoint method.
+        /// </summary>
+        /// <value>The endpoint method.</value>
+        public MethodInfo InvokeMethod { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is an older version.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if this instance is an older version; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsVersioned { get; set; }
+
+        /// <summary>
         /// Gets or sets the HTTP method.
         /// </summary>
         /// <value>
         /// The HTTP method.
         /// </value>
         public string Method { get; set; }
-
-        /// <summary>
-        /// Gets or sets the endpoint method.
-        /// </summary>
-        /// <value>The endpoint method.</value>
-        public MethodInfo InvokeMethod { get; set; }
 
         /// <summary>
         /// Gets or sets the endpoint name.
@@ -91,6 +99,14 @@ namespace Slalom.Stacks.Services.Inventory
         public string Summary { get; set; }
 
         /// <summary>
+        /// Gets or sets the endpoint tags.
+        /// </summary>
+        /// <value>
+        /// The endpoint tags.
+        /// </value>
+        public string[] Tags { get; set; }
+
+        /// <summary>
         /// Gets or sets the endpoint timeout.
         /// </summary>
         /// <value>The endpoint timeout.</value>
@@ -101,14 +117,6 @@ namespace Slalom.Stacks.Services.Inventory
         /// </summary>
         /// <value>The endpoint version number.</value>
         public int Version { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is an older version.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is an older version; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsVersioned { get; set; }
 
         /// <summary>
         /// Creates endpoint metadata for the specified service.
@@ -140,6 +148,7 @@ namespace Slalom.Stacks.Services.Inventory
                             Method = attribute?.Method ?? "POST",
                             EndPointType = service,
                             RequestType = requestType,
+                            Tags = attribute?.Tags,
                             ResponseType = GetResponseType(method),
                             Rules = requestType?.GetRules().Select(e => new EndPointRule(e)).ToList(),
                             Version = version,

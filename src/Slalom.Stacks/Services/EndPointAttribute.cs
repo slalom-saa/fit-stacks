@@ -59,6 +59,14 @@ namespace Slalom.Stacks.Services
         public bool Secure { get; set; }
 
         /// <summary>
+        /// Gets or sets the endpoint tags.
+        /// </summary>
+        /// <value>
+        /// The endpoint tags.
+        /// </value>
+        public string[] Tags { get; set; }
+
+        /// <summary>
         /// Gets or sets the endpoint timeout in milliseconds.
         /// </summary>
         /// <value>The endpoint timeout in milliseconds.</value>

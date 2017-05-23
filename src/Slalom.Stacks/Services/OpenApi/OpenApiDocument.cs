@@ -32,7 +32,7 @@ namespace Slalom.Stacks.Services.OpenApi
         /// </value>
         public IDictionary<string, SecurityScheme> SecurityDefinitions { get; set; } = new SortedDictionary<string, SecurityScheme>
         {
-            { "cookies", new SecurityScheme { Type = "basic" } }
+            { "api_key", new SecurityScheme { Type = "apiKey", Name="api_key", In = "header" } }
         };
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace Slalom.Stacks.Services.OpenApi
                     });
                 }
 
-                return new Operation
+                var operation = new Operation
                 {
                     Tags = this.GetTags(endPoint).ToList(),
                     Summary = endPoint.Name,
@@ -169,6 +169,18 @@ namespace Slalom.Stacks.Services.OpenApi
                     Parameters = parameters,
                     Responses = this.GetResponses(endPoint)
                 };
+
+                if (operation.Responses.ContainsKey("401"))
+                {
+                    operation.IncludeSecurity("api_key");
+                }
+
+                if (endPoint.IsVersioned)
+                {
+                    operation.Deprecated = true;
+                }
+
+                return operation;
             }
             return null;
         }
@@ -177,7 +189,7 @@ namespace Slalom.Stacks.Services.OpenApi
         {
             if (endPoint.Method == "POST")
             {
-                var operation =  new Operation
+                var operation = new Operation
                 {
                     Tags = this.GetTags(endPoint).ToList(),
                     Summary = endPoint.Name,
@@ -191,7 +203,12 @@ namespace Slalom.Stacks.Services.OpenApi
 
                 if (operation.Responses.ContainsKey("401"))
                 {
-                    operation.IncludeSecurity("cookies");
+                    operation.IncludeSecurity("api_key");
+                }
+
+                if (endPoint.IsVersioned)
+                {
+                    operation.Deprecated = true;
                 }
 
                 return operation;
@@ -304,9 +321,18 @@ namespace Slalom.Stacks.Services.OpenApi
                 yield break;
             }
 
-            if (endPoint.Path.StartsWith("_system"))
+            if (endPoint.Path.StartsWith("_") || endPoint.IsVersioned && endPoint.Path.Split('/').ElementAt(1)?.StartsWith("_") == true)
             {
                 yield return "Stacks";
+                yield break;
+            }
+
+            if (endPoint.Tags != null)
+            {
+                foreach (var tag in endPoint.Tags)
+                {
+                    yield return tag;
+                }
                 yield break;
             }
 
@@ -324,19 +350,15 @@ namespace Slalom.Stacks.Services.OpenApi
             }
         }
 
+
         private class PathComparer : IComparer<string>
         {
             public int Compare(string x, string y)
             {
-                if (x?.Trim('/').StartsWith("_") == true && y?.Trim('/').StartsWith("_") == false)
-                {
-                    return 1;
-                }
-                if (y?.Trim('/').StartsWith("_") == true && x?.Trim('/').StartsWith("_") == false)
-                {
-                    return -1;
-                }
-                return string.CompareOrdinal(x, y);
+                var left = new EndPointPath(x);
+                var right = new EndPointPath(y);
+
+                return left.CompareTo(right);
             }
         }
     }
