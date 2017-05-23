@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Slalom.Stacks.Services.Inventory;
@@ -9,7 +11,7 @@ namespace Slalom.Stacks.Services.EndPoints
     /// <summary>
     /// Gets the [OpenAPI](https://www.openapis.org/) definition for the API.
     /// </summary>
-    [EndPoint("_system/endpoints/open-api", Method = "GET", Name = "Get OpenAPI Definition", Public = false)]
+    [EndPoint("_system/api", Method = "GET", Name = "Get OpenAPI Definition", Public = false)]
     public class GetOpenApi : EndPoint<GetOpenApiRequest, OpenApiDocument>
     {
         private readonly ServiceInventory _services;
@@ -33,11 +35,23 @@ namespace Slalom.Stacks.Services.EndPoints
             document.Load(_services, instance.All);
             document.Host = instance.Host;
 
+            if (!String.IsNullOrWhiteSpace(instance.BasePath))
+            {
+                document.BasePath = instance.BasePath;
+            }
+
             var externalDocs = new ExternalDocs();
             _configuration.GetSection("stacks:externalDocs").Bind(externalDocs);
             if (!String.IsNullOrWhiteSpace(externalDocs.Url))
             {
                 document.ExternalDocs = externalDocs;
+            }
+
+            var tags = new List<Tag>();
+            _configuration.GetSection("stacks:tags").Bind(tags);
+            if (tags.Any())
+            {
+                document.Tags.AddRange(tags);
             }
 
             return document;

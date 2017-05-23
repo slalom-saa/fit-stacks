@@ -48,6 +48,13 @@
         },
         "externalDocs": {
           "$ref": "#/definitions/externalDocs"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tag"
+          },
+          "uniqueItems": true
         }
       }
     },
@@ -108,17 +115,44 @@
     "externalDocs": {
       "type": "object",
       "additionalProperties": false,
-      "description": "information about external documentation",
+      "description": "Allows referencing an external resource for extended documentation.",
       "required": [
         "url"
       ],
       "properties": {
         "description": {
+          "description": "The short description of the target documentation. GFM syntax can be used for rich text representation.",
           "type": "string"
         },
         "url": {
+          "description": "The URL for the target documentation. Value MUST be in the format of a URL.",
           "type": "string",
           "format": "uri"
+        }
+      },
+      "patternProperties": {
+        "^x-": {
+          "$ref": "#/definitions/vendorExtension"
+        }
+      }
+    },
+    "tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "description": "The name of the tag.",
+          "type": "string"
+        },
+        "description": {
+          "description": "The short description for the tag. GFM syntax can be used for rich text representation.",
+          "type": "string"
+        },
+        "externalDocs": {
+          "$ref": "#/definitions/externalDocs"
         }
       },
       "patternProperties": {

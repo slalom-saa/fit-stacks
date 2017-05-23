@@ -12,5 +12,21 @@ namespace Slalom.Stacks.Services.OpenApi
         /// The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
         /// </value>
         public string Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the header or query parameter to be used.
+        /// </summary>
+        /// <value>
+        /// The name of the header or query parameter to be used..
+        /// </value>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the location of the API key. Valid values are "query" or "header"..
+        /// </summary>
+        /// <value>
+        /// The location of the API key.
+        /// </value>
+        public string In { get; set; }
     }
 }
