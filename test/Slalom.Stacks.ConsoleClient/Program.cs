@@ -7,6 +7,7 @@ using Slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add;
 using Slalom.Stacks.ConsoleClient.Domain.Products;
 using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Services;
+using Slalom.Stacks.Services.EndPoints;
 using Slalom.Stacks.Services.OpenApi;
 using Slalom.Stacks.Text;
 
@@ -36,7 +37,10 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-                "promo-codes".Replace("-", " ").ToTitle().OutputToJson();
+                using (var stack = new Stack())
+                {
+                  File.WriteAllText("output.json",  stack.Send(new GetOpenApiRequest(null, true)).Result.Response.ToJson());
+                }
             }
             catch (Exception exception)
             {

@@ -1,4 +1,9 @@
 {
+  "securityDefinitions": {
+    "cookies": {
+      "type": "basic"
+    }
+  },
   "definitions": {
     "slalom.Stacks.Configuration.Application": {
       "description": "Contains information about the application or API.",
@@ -98,7 +103,7 @@
       "type": "object"
     },
     "slalom.Stacks.Services.EndPoints.GetEventsRequest": {
-      "description": "Message to get the events that have occurred within the service context.",
+      "description": "Request to get the events that have been raised within the application context.",
       "properties": {
         "end": {
           "format": "date-time",
@@ -114,6 +119,9 @@
     "slalom.Stacks.Services.EndPoints.GetOpenApiRequest": {
       "description": "Request to get the OpenAPI definition.",
       "properties": {
+        "all": {
+          "type": "boolean"
+        },
         "host": {
           "type": "string"
         }
@@ -121,7 +129,7 @@
       "type": "object"
     },
     "slalom.Stacks.Services.EndPoints.GetRequestsRequest": {
-      "description": "Message to get requests that have happened in the service context.",
+      "description": "Request to get requests that have been requested in the application context.",
       "properties": {
         "end": {
           "format": "date-time",
@@ -135,7 +143,7 @@
       "type": "object"
     },
     "slalom.Stacks.Services.EndPoints.GetResponsesRequest": {
-      "description": "Message to get responses that have been provided in a service context.",
+      "description": "Request to get responses that have been executed in an application context.",
       "properties": {
         "end": {
           "format": "date-time",
@@ -149,7 +157,7 @@
       "type": "object"
     },
     "slalom.Stacks.Services.Logging.EventEntry": {
-      "description": "An entry of an event that has been raised.",
+      "description": "A serializable record of an event that has been raised.",
       "properties": {
         "applicationName": {
           "type": "string"
@@ -180,7 +188,7 @@
       "type": "object"
     },
     "slalom.Stacks.Services.Logging.RequestEntry": {
-      "description": "Represents a request log entry - something that tracks the request at the application level.",
+      "description": "A serializable record of a request.",
       "properties": {
         "applicationName": {
           "type": "string"
@@ -229,7 +237,7 @@
       "type": "object"
     },
     "slalom.Stacks.Services.Logging.ResponseEntry": {
-      "description": "An entry to capture the response, or action, of a request.",
+      "description": "A serializable record of a response.",
       "properties": {
         "applicationName": {
           "type": "string"
@@ -332,6 +340,12 @@
           "type": "array"
         },
         "schemes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "securityDefinitions": {
           "items": {
             "type": "string"
           },
@@ -505,7 +519,7 @@
       "type": "object"
     },
     "slalom.Stacks.Validation.ValidationError": {
-      "description": "Represents a validation error and contains user facing messaging.",
+      "description": "Represents a validation error that was raised by the system and is inteded to be returned to the user.",
       "properties": {
         "code": {
           "type": "string"
@@ -534,11 +548,10 @@
     "description": "The Patolus Project Confluence site",
     "url": "https://pds-patolus.atlassian.net/wiki/display/PDSPAT/PDS-Patolus"
   },
-  "host": "localhost",
   "info": {
-    "title": "Envio",
+    "title": "Envioss",
     "version": "1.0.0",
-    "x-environment": "local"
+    "x-environment": "locasdfal"
   },
   "paths": {
     "/catalog/products/add": {
@@ -546,7 +559,7 @@
         "consumes": [
           "application/json"
         ],
-        "operationId": "656a0000181de4b38c1a08d4a1565935",
+        "operationId": "656a0000181de4b31aaf08d4a1736f72",
         "parameters": [
           {
             "schema": {
@@ -575,7 +588,16 @@
             }
           },
           "409": {
-            "description": "1. Name must be unique.\r\n\r\n",
+            "description": "1. Name Must Be Unique.\r\n\r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          },
+          "401": {
+            "description": "This endpoint requires authorization.",
             "schema": {
               "items": {
                 "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
@@ -584,7 +606,7 @@
             }
           },
           "403": {
-            "description": "User is employee.    \r\n",
+            "description": "1. User Is Employee.\r\n\r\n",
             "schema": {
               "items": {
                 "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
@@ -593,6 +615,11 @@
             }
           }
         },
+        "security": [
+          {
+            "cookies": []
+          }
+        ],
         "summary": "Add Product",
         "tags": [
           "Products"
@@ -604,7 +631,7 @@
         "consumes": [
           "application/json"
         ],
-        "operationId": "656a0000181de4b3ee5108d4a1565935",
+        "operationId": "656a0000181de4b3909608d4a1736f72",
         "parameters": [
           {
             "schema": {
@@ -641,14 +668,94 @@
         ]
       }
     },
+    "/v1/catalog/products/add": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Adds a product to the product catalog.",
+        "operationId": "656a0000181de4b398ac08d4a1736f72",
+        "parameters": [
+          {
+            "schema": {
+              "description": "Adds a product to the product catalog.",
+              "$ref": "#/definitions/slalom.Stacks.ConsoleClient.Application.Catalog.Products.Add.AddProductCommand"
+            },
+            "name": "body",
+            "in": "body",
+            "required": true
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content is returned from this endpoint."
+          },
+          "400": {
+            "description": "1. Name is required.\r\n\r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          },
+          "409": {
+            "description": "1. Name Must Be Unique.\r\n\r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          },
+          "401": {
+            "description": "This endpoint requires authorization.",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          },
+          "403": {
+            "description": "1. User Is Employee.\r\n\r\n",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/slalom.Stacks.Validation.ValidationError"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "security": [
+          {
+            "cookies": []
+          }
+        ],
+        "summary": "Add Product",
+        "tags": [
+          "Products"
+        ]
+      }
+    },
     "/_system/endpoints/open-api": {
       "get": {
         "consumes": [
           "application/json"
         ],
         "description": "Gets the [OpenAPI](https://www.openapis.org/) definition for the API.",
-        "operationId": "656a0000181de4b3c2f308d4a1565933",
+        "operationId": "656a0000181de4b33a3e08d4a1736f71",
         "parameters": [
+          {
+            "name": "All",
+            "in": "query",
+            "description": "true if all endpoints should be retrieved; otherwise, false.",
+            "required": false,
+            "type": "boolean"
+          },
           {
             "name": "Host",
             "in": "query",
@@ -675,13 +782,34 @@
         ]
       }
     },
+    "/_system/endpoints/remote": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Gets all connected remote endpoints.",
+        "operationId": "656a0000181de4b3599908d4a1736f71",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "No content is returned from this endpoint."
+          }
+        },
+        "summary": "Get Remote End Points",
+        "tags": [
+          "Stacks"
+        ]
+      }
+    },
     "/_system/events": {
       "get": {
         "consumes": [
           "application/json"
         ],
-        "description": "Gets the events that have occurred within the service context.",
-        "operationId": "656a0000181de4b3689408d4a1565932",
+        "description": "Gets the events that have occurred within the application context.",
+        "operationId": "656a0000181de4b34dd708d4a1736f70",
         "parameters": [
           {
             "name": "End",
@@ -725,8 +853,8 @@
         "consumes": [
           "application/json"
         ],
-        "description": "Checks the health of the service and returns nothing if everything is good.  If there is an issue with the system health then\n            an exception is thrown.",
-        "operationId": "656a0000181de4b3f0b508d4a1565930",
+        "description": "Checks the health of the application and returns no content if no issues are found.  An exception is raised when there is an issue present.",
+        "operationId": "656a0000181de4b3a3c008d4a1736f6e",
         "produces": [
           "application/json"
         ],
@@ -746,8 +874,8 @@
         "consumes": [
           "application/json"
         ],
-        "description": "Gets requests that have happened in the service context.",
-        "operationId": "656a0000181de4b3a4ac08d4a1565934",
+        "description": "Gets requests that have been executed in the application context.",
+        "operationId": "656a0000181de4b3957008d4a1736f71",
         "parameters": [
           {
             "name": "End",
@@ -791,8 +919,8 @@
         "consumes": [
           "application/json"
         ],
-        "description": "Gets responses that have been provided in a service context.",
-        "operationId": "656a0000181de4b3798c08d4a1565935",
+        "description": "Gets responses that have been executed in the application context.",
+        "operationId": "656a0000181de4b30af208d4a1736f72",
         "parameters": [
           {
             "name": "End",
@@ -833,8 +961,8 @@
     }
   },
   "schemes": [
-    "https",
-    "http"
+    "http",
+    "https"
   ],
   "swagger": "2.0",
   "tags": [
