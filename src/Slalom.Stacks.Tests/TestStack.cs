@@ -49,7 +49,10 @@ namespace Slalom.Stacks.Tests
                                 });
                             }
                         }
-                        this.Assemblies.Add(assembly);
+                        if (!this.Assemblies.Contains(assembly))
+                        {
+                            this.Assemblies.Add(assembly);
+                        }
                     }
                 }
             }
@@ -60,7 +63,7 @@ namespace Slalom.Stacks.Tests
                 var scenario = (Scenario)Activator.CreateInstance(attribute.Name);
                 this.UseScenario(scenario);
             }
-            this.Use(builder => { builder.RegisterType<TestDispatcher>().AsImplementedInterfaces().SingleInstance(); });
+            //this.Use(builder => { builder.RegisterType<TestDispatcher>().AsSelf().AsImplementedInterfaces().SingleInstance(); });
         }
 
         public TestStack(params object[] markers) : base(markers)
@@ -72,13 +75,13 @@ namespace Slalom.Stacks.Tests
                 var scenario = (Scenario)Activator.CreateInstance(attribute.Name);
                 this.UseScenario(scenario);
             }
-            this.Use(builder => { builder.RegisterType<TestDispatcher>().AsImplementedInterfaces().SingleInstance(); });
+            //this.Use(builder => { builder.RegisterType<TestDispatcher>().AsSelf().AsImplementedInterfaces().SingleInstance(); });
         }
 #else
 
         public TestStack(params object[] markers) : base(markers)
         {
-            this.Use(builder => { builder.RegisterType<TestDispatcher>().AsImplementedInterfaces().SingleInstance(); });
+            //this.Use(builder => { builder.RegisterType<TestDispatcher>().AsSelf().AsImplementedInterfaces().SingleInstance(); });
         }
 
 #endif
@@ -118,28 +121,28 @@ namespace Slalom.Stacks.Tests
             });
         }
 
-        public void UseEndPoint<T>(Action<T> action = null)
+        public void UseEndPoint<T>(Action<T, Request> action = null)
         {
-            var dispatch = this.Container.Resolve<IRequestRouter>() as TestDispatcher;
+            var dispatch = this.Container.Resolve<TestDispatcher>();
 
             if (dispatch == null)
             {
                 throw new InvalidOperationException("The configured dispatcher is not a test dispatcher.  Please make sure that the test dispatcher is registered.");
             }
 
-            dispatch.UseEndPoint(action ?? (a => { }));
+            dispatch.UseEndPoint(action ?? ((a, b) => { }));
         }
 
-        public void UseEndPoint(string path, Action<Request> action = null)
+        public void UseEndPoint<T>(Func<T, Request, object> action = null)
         {
-            var dispatch = this.Container.Resolve<IRequestRouter>() as TestDispatcher;
+            var dispatch = this.Container.Resolve<TestDispatcher>();
 
             if (dispatch == null)
             {
                 throw new InvalidOperationException("The configured dispatcher is not a test dispatcher.  Please make sure that the test dispatcher is registered.");
             }
 
-            dispatch.UseEndPoint(path, action ?? (a => { }));
+            dispatch.UseEndPoint(action ?? ((a, b) => null));
         }
     }
 }

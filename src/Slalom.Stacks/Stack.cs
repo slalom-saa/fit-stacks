@@ -133,7 +133,7 @@ namespace Slalom.Stacks
                     }
                 }
 #endif
-                foreach (var source in list.Distinct())
+                foreach (var source in list.Distinct().Except(this.Assemblies))
                 {
                     this.Assemblies.Add(source);
                 }
@@ -239,7 +239,7 @@ namespace Slalom.Stacks
         /// <returns>A task for asynchronous programming.</returns>
         public Task<MessageResult> Send(string path, TimeSpan? timeout = null)
         {
-            return this.Container.Resolve<IMessageGateway>().Send(path, null, timeout); 
+            return this.Container.Resolve<IMessageGateway>().Send(path, null, timeout);
         }
 
         /// <summary>

@@ -27,7 +27,7 @@ namespace Slalom.Stacks.Services.Messaging
             var type = body.GetType();
 
             this.Body = body;
-            this.MessageType = type.AssemblyQualifiedName;
+            this.MessageType = type;
             this.Name = type.Name;
         }
 
@@ -48,7 +48,7 @@ namespace Slalom.Stacks.Services.Messaging
         public object Body { get; }
 
         /// <inheritdoc />
-        public string MessageType { get; }
+        public Type MessageType { get; }
 
         /// <inheritdoc />
         public string Name { get; protected set; }
