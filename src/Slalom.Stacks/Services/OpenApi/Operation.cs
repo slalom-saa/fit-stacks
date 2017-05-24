@@ -121,15 +121,22 @@ namespace Slalom.Stacks.Services.OpenApi
         /// </value>
         public IList<string> Tags { get; set; }
 
-        public void IncludeSecurity(string definition)
+        /// <summary>
+        /// Adds a security requirement to the operation.
+        /// </summary>
+        /// <param name="definition">The security definition.</param>
+        /// <param name="scopes">The security scopes.</param>
+        public void IncludeSecurity(string definition, params string[] scopes)
         {
             if (this.Security == null)
             {
                 this.Security = new List<Dictionary<string, List<string>>>();
             }
-            var x = new Dictionary<string, List<string>>();
-            x.Add(definition, new List<string>());
-            this.Security.Add(x);
+            var requirement = new Dictionary<string, List<string>>
+            {
+                { definition, new List<string>(scopes) }
+            };
+            this.Security.Add(requirement);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Slalom.Stacks.Services.Logging
             this.ApplicationName = environment.Title;
             this.Path = context.Request.Path;
             this.Version = environment.Version;
-            this.Build = Assembly.GetEntryAssembly().GetName().Version.ToString();
+            this.Build = Assembly.GetEntryAssembly()?.GetName()?.Version.ToString();
             if (this.Completed.HasValue)
             {
                 this.Elapsed = this.Completed.Value - this.Started;
