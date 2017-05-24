@@ -1,0 +1,1 @@
+C:\Source\Stacks\Core\.sonarqube\out\\Slalom.Stacks.ConsoleClient_8731

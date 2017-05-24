@@ -1,0 +1,14 @@
+n
+eC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Application\Catalog\Products\Add\AddProduct.csutf-8u
+lC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Application\Catalog\Products\Add\AddProductCommand.csutf-8p
+gC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Application\Catalog\Products\Add\ProductAdded.csutf-8}
+tC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Application\Catalog\Products\Add\Rules\name_must_be_unique.csutf-8s
+jC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Application\Shipping\Products\Stock\StockProduct.csutf-8z
+qC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Application\Shipping\Products\Stock\StockProductCommand.csutf-8x
+oC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Application\Shipping\Products\Stock\StockProductEvent.csutf-8Z
+QC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Domain\Products\Product.csutf-8e
+\C:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Domain\Products\ProductDescription.csutf-8^
+UC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Domain\Products\ProductName.csutf-8\
+SC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Domain\Shipping\StockItem.csutf-8J
+AC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Program.csutf-8Z
+QC:\Source\Stacks\Core\test\Slalom.Stacks.ConsoleClient\Properties\AssemblyInfo.csutf-8

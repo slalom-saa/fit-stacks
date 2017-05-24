@@ -8,19 +8,14 @@ param (
     $Packages = @("Slalom.Stacks", "Slalom.Stacks.Tests")
 )
 
+
+cd $PSScriptRoot
+
+
+return
 function Increment-Version() {
     $jsonpath = 'project.json'
-    $json = Get-Content -Raw -Path $jsonpath | ConvertFrom-Json
-    $versionString = $json.version
-    $patchInt = [convert]::ToInt32($versionString.Split(".")[2].Split("-")[0], 10)
-    [int]$incPatch = $patchInt + 1
-    $patchUpdate = $versionString.Split(".")[0] + "." + $versionString.Split(".")[1] + "." + ($incPatch -as [string]) + "-*"
-    $json.version = $patchUpdate
-    $json = ConvertTo-Json $json -Depth 100
-
-
-    $json = Format-Json $json    
-    $json | Out-File  -FilePath $jsonpath
+   
 }
 
 
