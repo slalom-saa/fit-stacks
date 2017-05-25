@@ -255,3 +255,4 @@ Examples/Authentication/Security Rules/Authentication.SecurityRules/src/Authenti
 Examples/Deploy/Slalom.Products/src/Slalom.Products.WebHost/Properties/launchSettings.json
 Slalom.Stacks.crdata
 Slalom.Stacks.sln.CodeItRight.xml
+.sonarqube/

@@ -42,7 +42,7 @@ namespace Slalom.Stacks.Services.Logging
                 this.Body = "{ \"error\" : \"Serialization failed.\" }";
             }
             this.Id = instance.Id;
-            this.MessageType = instance.MessageType;
+            this.MessageType = instance.MessageType.FullName;
             this.Name = instance.Name;
             this.EnvironmentName = environment.Environment;
         }

@@ -58,7 +58,7 @@ namespace Slalom.Stacks.Services.Modules
 
             builder.RegisterType<InMemoryEventStore>().As<IEventStore>().SingleInstance();
 
-            builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).ToArray())
+            builder.RegisterAssemblyTypes(_stack.Assemblies.Union(new[] { typeof(IMessageExecutionStep).GetTypeInfo().Assembly }).Distinct().ToArray())
                 .Where(e => e.GetInterfaces().Any(x => x == typeof(IMessageExecutionStep)))
                 .AsSelf();
 

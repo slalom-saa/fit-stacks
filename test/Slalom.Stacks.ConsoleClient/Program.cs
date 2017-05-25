@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Autofac;
@@ -11,6 +12,7 @@ using Slalom.Stacks.Serialization;
 using Slalom.Stacks.Services;
 using Slalom.Stacks.Services.EndPoints;
 using Slalom.Stacks.Services.OpenApi;
+using Slalom.Stacks.Tests;
 using Slalom.Stacks.Text;
 
 #pragma warning disable 1591
@@ -44,35 +46,11 @@ namespace Slalom.Stacks.ConsoleClient
         {
             try
             {
-                //var claimsIdentity = new ClaimsIdentity(new[]
-                //{
-                //    new Claim(ClaimTypes.Name, "system.admin@patolus.com"),
-                //    new Claim(ClaimTypes.Role, "System Administrator"),
-                //    new Claim(ClaimTypes.Expiration, DateTimeOffset.Now.AddDays(10).ToString())
-                //}, "api_key");
-
-                //var claims = new ClaimsPrincipal(claimsIdentity);
-
-
-
-                //Console.WriteLine(claims.Identity.IsAuthenticated);
-
-                //var content = JsonConvert.SerializeObject(claims, DefaultSerializationSettings.Instance);
-
-
-
-                //content = Encryption.Encrypt(content, "Stacks");
-
-                //content = Encryption.Decrypt(content, "Stacks");
-
-                //claims = JsonConvert.DeserializeObject<ClaimsPrincipal>(content, DefaultSerializationSettings.Instance);
-
-                //Console.WriteLine(claims.Identity.IsAuthenticated);
-
-
-                using (var stack = new Stack())
+                using (var stack = new TestStack())
                 {
-                    stack.Send(new GetOpenApiRequest(null, all: true)).Result.Response.OutputToFile("output.json");
+                    stack.UseEndPoint<AddProductCommand>((a, b) =>
+                    {
+                    });
                 }
 
             }

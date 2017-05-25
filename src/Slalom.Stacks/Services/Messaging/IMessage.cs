@@ -30,7 +30,7 @@ namespace Slalom.Stacks.Services.Messaging
         /// Gets the message type.
         /// </summary>
         /// <value>The type of the message.</value>
-        string MessageType { get; }
+        Type MessageType { get; }
 
         /// <summary>
         /// Gets the message name.

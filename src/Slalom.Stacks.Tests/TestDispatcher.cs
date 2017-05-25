@@ -11,15 +11,20 @@ namespace Slalom.Stacks.Tests
 {
     public class TestDispatcher : RequestRouter, IRemoteRouter
     {
-        private Dictionary<string, Action<object>> _endPoints = new Dictionary<string, Action<object>>();
-        private Dictionary<string, Action<Request>> _namedEndPoints = new Dictionary<string, Action<Request>>();
+        private Dictionary<Type, Func<object, Request, object>> _endPoints = new Dictionary<Type, Func<object, Request, object>>();
 
-        public void UseEndPoint<T>(Action<T> action)
+        public void UseEndPoint<T>(Action<T, Request> action)
         {
-            _endPoints.Add(typeof(T).FullName, a =>
+            _endPoints.Add(typeof(T), (a, b) =>
             {
-                action((T)a);
+                action((T)a, b);
+                return null;
             });
+        }
+
+        public void UseEndPoint<T>(Func<T, Request, object> action)
+        {
+            _endPoints.Add(typeof(T), (a, b) => action((T)a, b));
         }
 
         public TestDispatcher(IComponentContext components) : base(components)
@@ -28,30 +33,14 @@ namespace Slalom.Stacks.Tests
 
         public override Task<MessageResult> Route(Request request, EndPointMetaData endPoint, ExecutionContext parentContext, TimeSpan? timeout = null)
         {
-            if (_endPoints.ContainsKey(request.Message.MessageType))
+            if (request.Message.MessageType != null && _endPoints.ContainsKey(request.Message.MessageType))
             {
                 var context = new ExecutionContext(request, endPoint, CancellationToken.None, parentContext);
-
-                _endPoints[request.Message.MessageType](request.Message.Body);
-
-                return Task.FromResult(new MessageResult(context));
-            }
-
-            if (!String.IsNullOrWhiteSpace(endPoint.Path) && _namedEndPoints.ContainsKey(endPoint.Path))
-            {
-                var context = new ExecutionContext(request, endPoint, CancellationToken.None, parentContext);
-
-                _namedEndPoints[endPoint.Path](request);
-
+                context.Response = _endPoints[request.Message.MessageType](request.Message.Body, request);
                 return Task.FromResult(new MessageResult(context));
             }
 
             return base.Route(request, endPoint, parentContext, timeout);
-        }
-
-        public void UseEndPoint(string path, Action<Request> action)
-        {
-            _namedEndPoints.Add(path, action);
         }
 
         public bool CanRoute(Request request)
@@ -64,18 +53,7 @@ namespace Slalom.Stacks.Tests
             if (request.Message.MessageType != null && _endPoints.ContainsKey(request.Message.MessageType))
             {
                 var context = new ExecutionContext(request, parentContext);
-
-                _endPoints[request.Message.MessageType](request.Message.Body);
-
-                return Task.FromResult(new MessageResult(context));
-            }
-
-            if (!String.IsNullOrWhiteSpace(request.Path) && _namedEndPoints.ContainsKey(request.Path))
-            {
-                var context = new ExecutionContext(request, parentContext);
-
-                _namedEndPoints[request.Path](request);
-
+                context.Response = _endPoints[request.Message.MessageType](request.Message.Body, request);
                 return Task.FromResult(new MessageResult(context));
             }
 

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using Slalom.Stacks.Logging;
 using Slalom.Stacks.Validation;
+
 #if core
 using Microsoft.Extensions.DependencyModel;
 
