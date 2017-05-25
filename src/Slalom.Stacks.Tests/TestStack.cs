@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Configuration;
@@ -16,10 +17,19 @@ using Slalom.Stacks.Services.Messaging;
 
 namespace Slalom.Stacks.Tests
 {
+    public class TestRequestContext : RequestContext
+    {
+        protected override ClaimsPrincipal GetUser()
+        {
+            return this.User;
+        }
+
+        public ClaimsPrincipal User { get; set; }
+    }
+
     public class TestStack : Stack
     {
-        public readonly List<EventMessage> RaisedEvents = new List<EventMessage>();
-
+        public List<EventMessage> RaisedEvents { get; } = new List<EventMessage>();
 
 #if !core
         public TestStack()
@@ -63,7 +73,8 @@ namespace Slalom.Stacks.Tests
                 var scenario = (Scenario)Activator.CreateInstance(attribute.Name);
                 this.UseScenario(scenario);
             }
-            //this.Use(builder => { builder.RegisterType<TestDispatcher>().AsSelf().AsImplementedInterfaces().SingleInstance(); });
+
+            this.Container.Update(e => e.RegisterType<TestRequestContext>().AsSelf().AsImplementedInterfaces().SingleInstance());
         }
 
         public TestStack(params object[] markers) : base(markers)
@@ -75,13 +86,12 @@ namespace Slalom.Stacks.Tests
                 var scenario = (Scenario)Activator.CreateInstance(attribute.Name);
                 this.UseScenario(scenario);
             }
-            //this.Use(builder => { builder.RegisterType<TestDispatcher>().AsSelf().AsImplementedInterfaces().SingleInstance(); });
+            this.Container.Update(e => e.RegisterType<TestRequestContext>().AsSelf().AsImplementedInterfaces().SingleInstance());
         }
 #else
 
         public TestStack(params object[] markers) : base(markers)
         {
-            //this.Use(builder => { builder.RegisterType<TestDispatcher>().AsSelf().AsImplementedInterfaces().SingleInstance(); });
         }
 
 #endif
@@ -100,11 +110,21 @@ namespace Slalom.Stacks.Tests
             return this.LastResult = this.Container.Resolve<IMessageGateway>().Send(command).Result;
         }
 
+        public TestStack AsUser(string userName, params string[] roles)
+        {
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, userName) };
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            this.Container.Resolve<TestRequestContext>().User = new ClaimsPrincipal(new ClaimsIdentity(claims, "test_auth"));
+
+            return this;
+        }
+
         public MessageResult<T> Send<T>(object command)
         {
             var result = this.Container.Resolve<IMessageGateway>().Send(command).Result;
-
-            return (MessageResult<T>)(this.LastResult = new MessageResult<T>(result));
+            this.LastResult = new MessageResult<T>(result);
+            return (MessageResult<T>)this.LastResult;
         }
 
         public void UseScenario(Scenario scenario)
