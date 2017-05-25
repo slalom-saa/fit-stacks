@@ -2,11 +2,6 @@ version: '{build}'
 skip_tags: true
 image: Visual Studio 2015
 configuration: Release
-install:
-  - ps: (New-Object System.Net.WebClient).DownloadFile('https://go.microsoft.com/fwlink/?linkid=841686','dotnet-core-sdk.exe')
-  - ps: Write-Host "Installing .NET Core SDK..."
-  - ps: Invoke-Command -ScriptBlock { ./dotnet-core-sdk.exe /S /v/qn }
-  - ps: Write-Host "Installation succeeded." -ForegroundColor Green  
 build_script:
 - ps: ./Build.ps1
 test: off
