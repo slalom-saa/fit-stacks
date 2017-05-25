@@ -4,37 +4,8 @@
 #>
 param (
     $Configuration = "DEBUG",
-    $IncrementVersion = $false,
     $Packages = @("Slalom.Stacks", "Slalom.Stacks.Tests")
 )
-
-
-cd $PSScriptRoot
-
-
-return
-function Increment-Version() {
-    $jsonpath = 'project.json'
-   
-}
-
-
-function Format-Json([Parameter(Mandatory, ValueFromPipeline)][String] $json) {
-  $indent = 0;
-  ($json -Split '\n' |
-    % {
-      if ($_ -match '[\}\]]') { 
-        # This line contains  ] or }, decrement the indentation level
-        $indent--
-      }
-      $line = (' ' * $indent * 2) + $_.TrimStart().Replace(':  ', ': ')
-      if ($_ -match '[\{\[]') {
-        # This line contains [ or {, increment the indentation level
-        $indent++
-      }
-      $line
-  }) -Join "`n"
-}
 
 function Clear-LocalCache() {
     $paths = nuget locals all -list
@@ -64,12 +35,7 @@ function Go ($Path) {
     Push-Location $Path
 
     Remove-Item .\Bin -Force -Recurse
-    if ($IncrementVersion) {
-        Increment-Version
-    }
-    else {
-        Clear-LocalCache
-    }
+    Clear-LocalCache
     dotnet build
     dotnet pack --no-build --configuration $Configuration
     copy .\bin\$Configuration\*.nupkg c:\nuget\

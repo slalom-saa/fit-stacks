@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <Description>A flexible .NET microservice framework for agile teams.</Description>
-    <VersionPrefix>1.8.17</VersionPrefix>
+    <VersionPrefix>1.9.0</VersionPrefix>
     <Authors>Stacks Contributors</Authors>
     <TargetFrameworks>net461;netstandard1.6;</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -18,12 +17,10 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="1.1.1" />
@@ -37,7 +34,6 @@
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
     <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="1.1.1" />
@@ -53,9 +49,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.1.1" />
   </ItemGroup>
-
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
     <DefineConstants>core</DefineConstants>
   </PropertyGroup>
-  
 </Project>
