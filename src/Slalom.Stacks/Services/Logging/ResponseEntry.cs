@@ -36,7 +36,7 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <param name="context">The completed context.</param>
         /// <param name="environment">The current environment.</param>
-        public ResponseEntry(ExecutionContext context, Application environment)
+        public ResponseEntry(ExecutionContext context, ApplicationInformation environment)
         {
             this.CorrelationId = context.Request.CorrelationId;
             this.RequestId = context.Request.Message.Id;

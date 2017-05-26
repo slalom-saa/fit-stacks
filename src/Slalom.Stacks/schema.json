@@ -32,6 +32,11 @@
           "description": "A semantic version number of the API.",
           "pattern": "(\\d+)\\.(\\d+)\\.(\\d+)"
         },
+        "build": {
+          "type": "string",
+          "description": "The current build of the API.  This should be replaced by the build system.",
+          "pattern": "(\\d+)\\.(\\d+)\\.(\\d+).(\\d+)"
+        },
         "description": {
           "type": "string",
           "description": "A longer description of the API. Should be different from the title.  GitHub Flavored Markdown is allowed."

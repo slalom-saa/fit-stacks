@@ -151,6 +151,11 @@ namespace Slalom.Stacks.Services.Validation
 
         private IEnumerable<ValidationError> CheckRules(PropertyInfo property, Func<object> value, string prefix = null)
         {
+            if (prefix?.Count(e => e == '.') > 2)
+            {
+                yield break;
+            }
+
             foreach (var attribute in property.GetCustomAttributes<ValidationAttribute>())
             {
                 if (!attribute.IsValid(value()))

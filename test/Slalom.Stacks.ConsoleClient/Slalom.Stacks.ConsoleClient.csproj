@@ -24,4 +24,6 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="..\..\src\Slalom.Stacks\schema.json" /></VisualStudio></ProjectExtensions>
+
 </Project>

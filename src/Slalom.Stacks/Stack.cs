@@ -81,6 +81,14 @@ namespace Slalom.Stacks
         public IDomainFacade Domain => this.Container.Resolve<IDomainFacade>();
 
         /// <summary>
+        /// Gets the API information.
+        /// </summary>
+        /// <value>
+        /// The API information.
+        /// </value>
+        public ApplicationInformation Information => this.Container.Resolve<ApplicationInformation>();
+
+        /// <summary>
         /// Gets the configured <see cref="ILogger" />.
         /// </summary>
         /// <value>The configured <see cref="ILogger" />.</value>

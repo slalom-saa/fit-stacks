@@ -70,7 +70,7 @@ namespace Slalom.Stacks.Configuration
                    .As<IConfiguration>()
                    .SingleInstance();
 
-            builder.RegisterType<Application>()
+            builder.RegisterType<ApplicationInformation>()
                    .SingleInstance()
                    .OnActivated(c =>
                    {

@@ -23,9 +23,9 @@ namespace Slalom.Stacks.Services.Inventory
         /// Initializes a new instance of the <see cref="ServiceInventory"/> class.
         /// </summary>
         /// <param name="application">The application that contain the endpoints.</param>
-        public ServiceInventory(Application application)
+        public ServiceInventory(ApplicationInformation application)
         {
-            this.Application = application;
+            this.ApplicationInformation = application;
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Slalom.Stacks.Services.Inventory
         /// <value>
         /// The application that contain the endpoints.
         /// </value>
-        public Application Application { get; }
+        public ApplicationInformation ApplicationInformation { get; }
 
         /// <summary>
         /// Gets or sets the inventoried end points.

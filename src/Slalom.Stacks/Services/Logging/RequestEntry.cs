@@ -31,7 +31,7 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="environment">The environment.</param>
-        public RequestEntry(Request request, Application environment)
+        public RequestEntry(Request request, ApplicationInformation environment)
         {
             try
             {
