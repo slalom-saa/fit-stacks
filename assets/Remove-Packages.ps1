@@ -1,5 +1,5 @@
 ﻿param (
-    $PackageId = "Slalom.Stacks",
+    $PackageId = "Slalom.Stacks.Tests",
     $ApiKey = "4fdba183-fa91-4650-8dae-760bf2c22337"
 )
 

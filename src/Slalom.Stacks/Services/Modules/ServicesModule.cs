@@ -70,7 +70,7 @@ namespace Slalom.Stacks.Services.Modules
                     e.Instance.Load(_stack.Assemblies.ToArray());
                 });
 
-            builder.RegisterType<IRequestContext>()
+            builder.RegisterType<RequestContext>()
                 .As<IRequestContext>();
 
             builder.RegisterType<InMemoryRequestLog>().As<IRequestLog>().SingleInstance();

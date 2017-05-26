@@ -28,11 +28,11 @@ namespace Slalom.Stacks.Services.Logging
         /// Initializes a new instance of the <see cref="EventEntry" /> class.
         /// </summary>
         /// <param name="instance">The event instance.</param>
-        /// <param name="environment">The current environment.</param>
-        public EventEntry(EventMessage instance, Application environment)
+        /// <param name="application">The current environment.</param>
+        public EventEntry(EventMessage instance, Application application)
         {
             this.RequestId = instance.RequestId;
-            this.ApplicationName = environment.Title;
+            this.ApplicationName = application.Title;
             try
             {
                 this.Body = JsonConvert.SerializeObject(instance.Body);
@@ -44,7 +44,7 @@ namespace Slalom.Stacks.Services.Logging
             this.Id = instance.Id;
             this.MessageType = instance.MessageType.FullName;
             this.Name = instance.Name;
-            this.EnvironmentName = environment.Environment;
+            this.EnvironmentName = application.Environment;
         }
 
         /// <summary>
