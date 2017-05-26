@@ -30,6 +30,7 @@ namespace Slalom.Stacks.Services.Messaging
         private readonly Lazy<IRequestContext> _requestContext;
         private readonly Lazy<IRequestLog> _requests;
         private readonly Lazy<ServiceInventory> _services;
+        private readonly Lazy<IEnumerable<IEventPublisher>> _publishers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageGateway" /> class.
@@ -44,6 +45,7 @@ namespace Slalom.Stacks.Services.Messaging
             _requests = new Lazy<IRequestLog>(components.Resolve<IRequestLog>);
             _dispatcher = new Lazy<IRequestRouter>(components.Resolve<IRequestRouter>);
             _dispatchers = new Lazy<IEnumerable<IRemoteRouter>>(components.ResolveAll<IRemoteRouter>);
+            _publishers = new Lazy<IEnumerable<IEventPublisher>>(components.ResolveAll<IEventPublisher>);
         }
 
         /// <inheritdoc />
@@ -72,6 +74,11 @@ namespace Slalom.Stacks.Services.Messaging
                         }
                     }
                 }
+            }
+
+            foreach (var publisher in _publishers.Value)
+            {
+                await publisher.Publish(instance);
             }
         }
 
@@ -110,6 +117,11 @@ namespace Slalom.Stacks.Services.Messaging
 
                 _dispatcher.Value.Route(request, endPoint, null);
             }
+
+            foreach (var publisher in _publishers.Value)
+            {
+                publisher.Publish(current);
+            }
         }
 
         /// <inheritdoc />
@@ -122,6 +134,11 @@ namespace Slalom.Stacks.Services.Messaging
                 var request = _requestContext.Value.Resolve(current, endPoint);
 
                 _dispatcher.Value.Route(request, endPoint, null);
+            }
+
+            foreach (var publisher in _publishers.Value)
+            {
+                publisher.Publish(current);
             }
         }
 
