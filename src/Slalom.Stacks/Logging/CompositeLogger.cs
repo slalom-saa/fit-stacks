@@ -20,14 +20,14 @@ namespace Slalom.Stacks.Logging
     public class CompositeLogger : ILogger
     {
         private readonly IComponentContext _components;
-        private readonly Application _environment;
+        private readonly ApplicationInformation _environment;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompositeLogger" /> class.
         /// </summary>
         /// <param name="components">The configured component context.</param>
         /// <param name="environment">The environment.</param>
-        public CompositeLogger(IComponentContext components, Application environment)
+        public CompositeLogger(IComponentContext components, ApplicationInformation environment)
         {
             _components = components;
             _environment = environment;

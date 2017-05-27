@@ -18,7 +18,7 @@ namespace Slalom.Stacks.Services.Logging
 {
     internal class InMemoryRequestLog : IRequestLog
     {
-        private readonly Application _environment;
+        private readonly ApplicationInformation _environment;
 
         /// <summary>
         /// The lock for the instances.
@@ -30,7 +30,7 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         protected readonly List<RequestEntry> Instances = new List<RequestEntry>();
 
-        public InMemoryRequestLog(Application environment)
+        public InMemoryRequestLog(ApplicationInformation environment)
         {
             _environment = environment;
         }

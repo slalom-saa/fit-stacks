@@ -23,7 +23,7 @@ namespace Slalom.Stacks.Services.Pipeline
     internal class LogCompletion : IMessageExecutionStep
     {
         private readonly IResponseLog _actions;
-        private readonly Application _environmentContext;
+        private readonly ApplicationInformation _environmentContext;
         private readonly ILogger _logger;
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Slalom.Stacks.Services.Pipeline
         {
             _actions = components.Resolve<IResponseLog>();
             _logger = components.Resolve<ILogger>();
-            _environmentContext = components.Resolve<Application>();
+            _environmentContext = components.Resolve<ApplicationInformation>();
         }
 
         /// <inheritdoc />

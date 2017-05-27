@@ -18,7 +18,7 @@ namespace Slalom.Stacks.Services.Logging
 {
     internal class InMemoryEventStore : IEventStore
     {
-        private readonly Application _environment;
+        private readonly ApplicationInformation _environment;
 
         /// <summary>
         /// The lock for the instances.
@@ -34,7 +34,7 @@ namespace Slalom.Stacks.Services.Logging
         /// Initializes a new instance of the <see cref="InMemoryEventStore" /> class.
         /// </summary>
         /// <param name="environment">The environment.</param>
-        public InMemoryEventStore(Application environment)
+        public InMemoryEventStore(ApplicationInformation environment)
         {
             _environment = environment;
         }

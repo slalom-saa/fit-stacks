@@ -73,7 +73,7 @@ namespace Slalom.Stacks.Services.OpenApi
         /// <value>
         /// The metadata about the API. The metadata can be used by the clients if needed.
         /// </value>
-        public Application Info { get; set; }
+        public ApplicationInformation Info { get; set; }
 
         /// <summary>
         /// Gets or sets the available paths and operations for the API.
@@ -114,7 +114,7 @@ namespace Slalom.Stacks.Services.OpenApi
         /// <param name="includeAll">Indicates whether all endpoints should be retreived or just public.</param>
         public void Load(ServiceInventory services, bool includeAll = false)
         {
-            this.Info = services.Application;
+            this.Info = services.ApplicationInformation;
             var endPoints = services.EndPoints.Where(e => includeAll || e.Public && !e.IsVersioned).ToList();
             foreach (var endPoint in endPoints)
             {

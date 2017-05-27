@@ -29,7 +29,7 @@ namespace Slalom.Stacks.Services.Logging
         /// </summary>
         /// <param name="instance">The event instance.</param>
         /// <param name="application">The current environment.</param>
-        public EventEntry(EventMessage instance, Application application)
+        public EventEntry(EventMessage instance, ApplicationInformation application)
         {
             this.RequestId = instance.RequestId;
             this.ApplicationName = application.Title;
