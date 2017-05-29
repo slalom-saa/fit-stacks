@@ -17,7 +17,7 @@ public class AddProductRequest
 }
 ```
 
-Requests that change state should end in "Request".
+Requests should end in "Request".  Variations can include "Command" or "Query".
 ```csharp
 AddProductRequest
 ```
