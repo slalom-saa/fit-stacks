@@ -40,9 +40,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rules", "rules", "{BBDABEB4-0683-42C8-B9C2-080E33CE795A}"
 	ProjectSection(SolutionItems) = preProject
 		docs\rules\business-rule.md = docs\rules\business-rule.md
-		docs\rules\command.md = docs\rules\command.md
 		docs\rules\endpoint.md = docs\rules\endpoint.md
 		docs\rules\external-command.md = docs\rules\external-command.md
+		docs\rules\request.md = docs\rules\request.md
 		docs\rules\security-rule.md = docs\rules\security-rule.md
 		docs\rules\solution.md = docs\rules\solution.md
 	EndProjectSection
