@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Slalom.Stacks.Services.Inventory;
 using Slalom.Stacks.Services.Messaging;
+using Slalom.Stacks.Validation;
 using ExecutionContext = Slalom.Stacks.Services.Messaging.ExecutionContext;
 
 namespace Slalom.Stacks.Tests
@@ -36,7 +37,15 @@ namespace Slalom.Stacks.Tests
             if (request.Message.MessageType != null && _endPoints.ContainsKey(request.Message.MessageType))
             {
                 var context = new ExecutionContext(request, endPoint, CancellationToken.None, parentContext);
-                context.Response = _endPoints[request.Message.MessageType](request.Message.Body, request);
+                var response = _endPoints[request.Message.MessageType](request.Message.Body, request);
+                if (response is ValidationError)
+                {
+                    context.AddValidationErrors(new[] { response as ValidationError });
+                }
+                else
+                {
+                    context.Response = response;
+                }
                 return Task.FromResult(new MessageResult(context));
             }
 
@@ -53,7 +62,15 @@ namespace Slalom.Stacks.Tests
             if (request.Message.MessageType != null && _endPoints.ContainsKey(request.Message.MessageType))
             {
                 var context = new ExecutionContext(request, parentContext);
-                context.Response = _endPoints[request.Message.MessageType](request.Message.Body, request);
+                var response = _endPoints[request.Message.MessageType](request.Message.Body, request);
+                if (response is ValidationError)
+                {
+                    context.AddValidationErrors(new[] { response as ValidationError });
+                }
+                else
+                {
+                    context.Response = response;
+                }
                 return Task.FromResult(new MessageResult(context));
             }
 
