@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>A flexible .NET microservice framework for agile teams.</Description>
     <VersionPrefix>1.9.5</VersionPrefix>
@@ -16,7 +16,7 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Version>1.9.5</Version>
+    <Version>1.9.6</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.0.0" />
