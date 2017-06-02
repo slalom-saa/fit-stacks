@@ -165,7 +165,7 @@ namespace Slalom.Stacks.Services.OpenApi
                     Description = endPoint.Summary,
                     Consumes = new List<string> { "application/json" },
                     Produces = new List<string> { "application/json" },
-                    OperationId = NewId.NextId().Replace("-", ""),
+                    OperationId = "(GET)" + endPoint.Path,
                     Parameters = parameters,
                     Responses = this.GetResponses(endPoint)
                 };
@@ -196,7 +196,7 @@ namespace Slalom.Stacks.Services.OpenApi
                     Description = endPoint.Summary,
                     Consumes = new List<string> { "application/json" },
                     Produces = new List<string> { "application/json" },
-                    OperationId = NewId.NextId().Replace("-", ""),
+                    OperationId = "(POST)" + endPoint.Path,
                     Parameters = this.GetPostParameters(endPoint).ToList(),
                     Responses = this.GetResponses(endPoint)
                 };
